@@ -1,0 +1,378 @@
+import sqlite3
+from datetime import datetime, timedelta
+
+DB_PATH = "predictions.db"
+
+
+def get_conn():
+    conn = sqlite3.connect(DB_PATH, timeout=10)
+    conn.execute("PRAGMA journal_mode=WAL")
+    conn.execute("PRAGMA busy_timeout=5000")
+    return conn
+
+
+def init_db():
+    conn = get_conn()
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS predictions_log (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            logged_at TEXT,
+            league TEXT,
+            fixture_id INTEGER,
+            match_date TEXT,
+            home_team TEXT,
+            away_team TEXT,
+            market_code TEXT,
+            pick_label TEXT,
+            pick_pct REAL,
+            status TEXT DEFAULT 'pending',
+            actual_home_goals INTEGER,
+            actual_away_goals INTEGER,
+            market_odds REAL,
+            our_fair_odds REAL
+        )
+    """)
+    for col_def in ["market_odds REAL", "our_fair_odds REAL"]:
+        try:
+            conn.execute(f"ALTER TABLE predictions_log ADD COLUMN {col_def}")
+        except sqlite3.OperationalError:
+            pass
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS odds_cache (
+            fixture_id INTEGER PRIMARY KEY,
+            home_odds REAL,
+            draw_odds REAL,
+            away_odds REAL,
+            over25_odds REAL,
+            under25_odds REAL,
+            fetched_at TEXT
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS injuries_cache (
+            fixture_id INTEGER PRIMARY KEY,
+            home_injuries INTEGER,
+            away_injuries INTEGER,
+            ok INTEGER,
+            fetched_at TEXT
+        )
+    """)
+    conn.commit()
+    conn.close()
+
+
+def log_prediction(league, fixture_id, match_date, home, away, market_code, pick_label, pick_pct,
+                    market_odds=None, our_fair_odds=None):
+    # 2026-08-10: INSERT OR IGNORE вместо SELECT-then-INSERT - старият модел
+    # имаше TOCTOU race при паралелни заявки (два thread-а минават SELECT
+    # проверката преди първият да успее да INSERT-не), причинил реален
+    # дубликат на живо (fixture_id=1551072, dc_1x). Сега, с UNIQUE индекс
+    # idx_predictions_fixture_market, race-ът е безопасен - вторият опит
+    # просто се игнорира на ниво SQLite, атомарно.
+    conn = get_conn()
+    cur = conn.execute(
+        """INSERT OR IGNORE INTO predictions_log (logged_at, league, fixture_id, match_date, home_team, away_team,
+           market_code, pick_label, pick_pct, market_odds, our_fair_odds)
+           VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
+        (datetime.now().isoformat(), league, fixture_id, match_date, home, away,
+         market_code, pick_label, pick_pct, market_odds, our_fair_odds)
+    )
+    conn.commit()
+    if cur.rowcount == 0:
+        existing = conn.execute(
+            "SELECT id FROM predictions_log WHERE fixture_id=? AND market_code=?",
+            (fixture_id, market_code)
+        ).fetchone()
+        conn.close()
+        return existing[0] if existing else None
+    log_id = cur.lastrowid
+    conn.close()
+    return log_id
+
+
+MARKET_ODDS_MAP = {
+    "home_win": "home_win", "draw": "draw", "away_win": "away_win",
+    "over25": "over25", "under25": "under25",
+    "home_over15": "home_over15", "home_under15": "home_under15",
+    "away_over15": "away_over15", "away_under15": "away_under15",
+    "dc_1x": "dc_1x", "dc_x2": "dc_x2", "dc_12": "dc_12",
+}
+for _a in ("1", "X", "2"):
+    for _b in ("1", "X", "2"):
+        MARKET_ODDS_MAP[f"htft:{_a}/{_b}"] = f"htft:{_a}/{_b}"
+
+
+def already_logged(fixture_id):
+    conn = get_conn()
+    existing = conn.execute("SELECT id FROM predictions_log WHERE fixture_id=? LIMIT 1", (fixture_id,)).fetchone()
+    conn.close()
+    return existing is not None
+def get_fixtures_needing_odds_refresh(hours_ahead=48):
+    """НОВО (Фаза F0): намира fixture_id-та, логнати преди коефициентите
+    да са били налични (market_odds IS NULL), чийто начален час е в
+    близките hours_ahead часа - прозорецът, в който букмейкърите обичайно
+    вече имат котировки. Използва се от refresh_pending_odds.py, НЕ от
+    nightly_snapshot.py - целенасочено, за да не умножава API заявките за
+    целия 7-дневен прозорец всяка нощ."""
+    now = datetime.now()
+    cutoff = (now + timedelta(hours=hours_ahead)).strftime("%Y-%m-%d %H:%M")
+    now_str = now.strftime("%Y-%m-%d %H:%M")
+    # ВАЖНО: филтрираме само по пазари, за които изобщо теглим коефициент
+    # (MARKET_ODDS_MAP). Иначе corners/cards/offsides/btts редовете (чийто
+    # market_odds е NULL завинаги, по дизайн - REJECTED tier) биха държали
+    # fixture-а в списъка безкрайно, дори след като всичко проследимо вече
+    # е обновено.
+    trackable = list(MARKET_ODDS_MAP.keys())
+    placeholders = ",".join("?" for _ in trackable)
+    conn = get_conn()
+    conn.row_factory = sqlite3.Row
+    rows = conn.execute(f"""
+        SELECT DISTINCT fixture_id, league, match_date, home_team, away_team
+        FROM predictions_log
+        WHERE market_odds IS NULL
+          AND market_code IN ({placeholders})
+          AND match_date >= ?
+          AND match_date <= ?
+        ORDER BY match_date ASC
+    """, (*trackable, now_str, cutoff)).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+def update_odds_for_fixture(fixture_id, real_odds):
+    """НОВО (Фаза F0): обновява market_odds за вече логнати редове на
+    fixture_id, при които все още е NULL. НИКОГА не презаписва
+    съществуваща стойност и НИКОГА не пипа pick_pct/pick_label -
+    прогнозата остава заключена към момента на първото логване, само
+    коефициентът се допълва, когато стане наличен."""
+    if not real_odds:
+        return 0
+    conn = get_conn()
+    cur = conn.cursor()
+    updated = 0
+    rows = conn.execute(
+        "SELECT id, market_code FROM predictions_log WHERE fixture_id=? AND market_odds IS NULL",
+        (fixture_id,)
+    ).fetchall()
+    for row_id, market_code in rows:
+        odds_key = MARKET_ODDS_MAP.get(market_code)
+        odds_val = real_odds.get(odds_key) if odds_key else None
+        if odds_val is None:
+            continue
+        cur.execute(
+            "UPDATE predictions_log SET market_odds=? WHERE id=? AND market_odds IS NULL",
+            (odds_val, row_id)
+        )
+        updated += cur.rowcount
+    conn.commit()
+    conn.close()
+    return updated
+
+
+def log_all_markets(league, fixture_id, match_date, home, away, groups, real_odds=None):
+    count = 0
+    for title, items, has_form in groups:
+        for row in items:
+            if len(row) > 3 and row[3]:
+                market_code = row[3]
+                pick_pct = row[1]
+                fair = round(100 / pick_pct, 2) if pick_pct > 0 else None
+                odds_key = MARKET_ODDS_MAP.get(market_code)
+                market_odds = real_odds.get(odds_key) if (real_odds and odds_key) else None
+                log_prediction(league, fixture_id, match_date, home, away, market_code, row[0], pick_pct,
+                                market_odds=market_odds, our_fair_odds=fair)
+                count += 1
+    return count
+
+
+def list_predictions():
+    conn = get_conn()
+    conn.row_factory = sqlite3.Row
+    rows = conn.execute("SELECT * FROM predictions_log ORDER BY match_date DESC, id DESC").fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+
+def get_predictions_for_fixture(fixture_id):
+    conn = get_conn()
+    conn.row_factory = sqlite3.Row
+    rows = conn.execute("SELECT * FROM predictions_log WHERE fixture_id=? ORDER BY pick_pct DESC",
+                         (fixture_id,)).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+
+STALE_DAYS_CUTOFF = 3
+
+
+def check_results(api_key, base_url, requests_module):
+    import sys
+    sys.path.insert(0, '.')
+    import bets_tracker as bt
+
+    conn = get_conn()
+    conn.row_factory = sqlite3.Row
+    pending = conn.execute("SELECT * FROM predictions_log WHERE status='pending'").fetchall()
+    updated = 0
+    no_data = 0
+    fixture_cache = {}
+    now = datetime.now()
+
+    for row in pending:
+        fixture_id = row["fixture_id"]
+        market_code = row["market_code"]
+
+        def mark_stale_if_old():
+            nonlocal no_data
+            try:
+                match_dt = datetime.fromisoformat(row["match_date"])
+            except (ValueError, TypeError):
+                return
+            if (now - match_dt).days >= STALE_DAYS_CUTOFF:
+                conn.execute("UPDATE predictions_log SET status='no_data' WHERE id=?", (row["id"],))
+                no_data += 1
+
+        if fixture_id not in fixture_cache:
+            r = requests_module.get(f"{base_url}/fixtures", headers={"x-apisports-key": api_key},
+                                     params={"id": fixture_id})
+            data = r.json()
+            fixture_cache[fixture_id] = data.get("response", [])
+
+        response = fixture_cache[fixture_id]
+        if not response:
+            mark_stale_if_old()
+            continue
+        fixture = response[0]
+        if fixture["fixture"]["status"]["short"] != "FT":
+            mark_stale_if_old()
+            continue
+
+        hg = fixture["goals"]["home"]
+        ag = fixture["goals"]["away"]
+        ht = fixture.get("score", {}).get("halftime", {})
+        ht_hg, ht_ag = ht.get("home"), ht.get("away")
+
+        if market_code.startswith(("corners_", "cards_", "offsides_")):
+            stats = bt.fetch_fixture_stats(api_key, base_url, requests_module, fixture_id,
+                                             row["home_team"], row["away_team"])
+            result = bt.evaluate_stat_market(market_code, stats)
+        else:
+            result = bt.evaluate_market_v2(market_code, hg, ag, ht_hg, ht_ag)
+
+        if result is None:
+            mark_stale_if_old()
+            continue
+
+        new_status = "won" if result else "lost"
+        conn.execute(
+            "UPDATE predictions_log SET status=?, actual_home_goals=?, actual_away_goals=? WHERE id=?",
+            (new_status, hg, ag, row["id"]),
+        )
+        updated += 1
+
+    conn.commit()
+    conn.close()
+    return updated
+
+
+def get_stats_by_market():
+    conn = get_conn()
+    conn.row_factory = sqlite3.Row
+    rows = conn.execute("""
+        SELECT market_code,
+               SUM(CASE WHEN status='won' THEN 1 ELSE 0 END) as won,
+               SUM(CASE WHEN status='lost' THEN 1 ELSE 0 END) as lost,
+               SUM(CASE WHEN status='pending' THEN 1 ELSE 0 END) as pending
+        FROM predictions_log
+        GROUP BY market_code
+        ORDER BY (won + lost) DESC
+    """).fetchall()
+    conn.close()
+    result = []
+    for r in rows:
+        total = r["won"] + r["lost"]
+        win_rate = (r["won"] / total * 100) if total > 0 else None
+        result.append({"market_code": r["market_code"], "won": r["won"], "lost": r["lost"],
+                        "pending": r["pending"], "win_rate": win_rate})
+    return result
+
+
+def get_stats_by_league():
+    conn = get_conn()
+    conn.row_factory = sqlite3.Row
+    rows = conn.execute("""
+        SELECT league,
+               SUM(CASE WHEN status='won' THEN 1 ELSE 0 END) as won,
+               SUM(CASE WHEN status='lost' THEN 1 ELSE 0 END) as lost,
+               SUM(CASE WHEN status='pending' THEN 1 ELSE 0 END) as pending
+        FROM predictions_log
+        GROUP BY league
+        ORDER BY (won + lost) DESC
+    """).fetchall()
+    conn.close()
+    result = []
+    for r in rows:
+        total = r["won"] + r["lost"]
+        win_rate = (r["won"] / total * 100) if total > 0 else None
+        result.append({"league": r["league"], "won": r["won"], "lost": r["lost"],
+                        "pending": r["pending"], "win_rate": win_rate})
+    return result
+
+
+def set_cached_odds(fixture_id, odds_dict):
+    """odds_dict: {'home_win':.., 'draw':.., 'away_win':.., 'over25':.., 'under25':..} (decimal odds, могат да липсват)."""
+    conn = get_conn()
+    conn.execute("""
+        INSERT INTO odds_cache (fixture_id, home_odds, draw_odds, away_odds, over25_odds, under25_odds, fetched_at)
+        VALUES (?,?,?,?,?,?,?)
+        ON CONFLICT(fixture_id) DO UPDATE SET
+            home_odds=excluded.home_odds, draw_odds=excluded.draw_odds, away_odds=excluded.away_odds,
+            over25_odds=excluded.over25_odds, under25_odds=excluded.under25_odds, fetched_at=excluded.fetched_at
+    """, (fixture_id, odds_dict.get("home_win"), odds_dict.get("draw"), odds_dict.get("away_win"),
+          odds_dict.get("over25"), odds_dict.get("under25"), datetime.now().isoformat()))
+    conn.commit()
+    conn.close()
+
+
+def get_cached_odds(fixture_id):
+    conn = get_conn()
+    conn.row_factory = sqlite3.Row
+    row = conn.execute("SELECT * FROM odds_cache WHERE fixture_id=?", (fixture_id,)).fetchone()
+    conn.close()
+    if not row:
+        return None
+    return {
+        "home_win": row["home_odds"], "draw": row["draw_odds"], "away_win": row["away_odds"],
+        "over25": row["over25_odds"], "under25": row["under25_odds"], "fetched_at": row["fetched_at"],
+    }
+def set_cached_injuries(fixture_id, home_inj, away_inj, ok):
+    # Хотфикс 12.08.2026: /daily?league=all правеше живо API извикване за
+    # контузии на ВСЕКИ мач при ВСЯКО зареждане (нула кеш) - с до 8 успоредни
+    # лиги наведнъж това пробиваше rate limit-а на API-Football (потвърдено
+    # на живо, вж. PROJECT_STATE/ACTION_PLAN_v2 N.3 бележка). Кеш с TTL,
+    # по образец на odds_cache.
+    conn = get_conn()
+    conn.execute("""
+        INSERT INTO injuries_cache (fixture_id, home_injuries, away_injuries, ok, fetched_at)
+        VALUES (?,?,?,?,?)
+        ON CONFLICT(fixture_id) DO UPDATE SET
+            home_injuries=excluded.home_injuries, away_injuries=excluded.away_injuries,
+            ok=excluded.ok, fetched_at=excluded.fetched_at
+    """, (fixture_id, home_inj, away_inj, int(ok), datetime.now().isoformat()))
+    conn.commit()
+    conn.close()
+def get_cached_injuries(fixture_id, max_age_hours=6):
+    conn = get_conn()
+    conn.row_factory = sqlite3.Row
+    row = conn.execute("SELECT * FROM injuries_cache WHERE fixture_id=?", (fixture_id,)).fetchone()
+    conn.close()
+    if not row:
+        return None
+    try:
+        fetched = datetime.fromisoformat(row["fetched_at"])
+    except (ValueError, TypeError):
+        return None
+    if datetime.now() - fetched > timedelta(hours=max_age_hours):
+        return None
+    return row["home_injuries"], row["away_injuries"], bool(row["ok"])
+
+
+init_db()
