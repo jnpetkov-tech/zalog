@@ -432,18 +432,24 @@ def devig_ou(over_odds, under_odds):
     return io / total, iu / total
 
 
-def _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds=None):
+def _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds=None, rho=0.0):
     """Суровите candidates (label, prob_0_1, code) от Poisson + пазарен
     blend - БЕЗ policy филтриране/дедупликация/класиране. Тази логика вече
     е в pick_selection.py (Фаза I.1), за да не се разминава между
-    top_pick_with_code(), top_picks_with_code() и index_home()."""
+    top_pick_with_code(), top_picks_with_code() и index_home().
+
+    rho: Фаза K.1 (20.08.2026) - Dixon-Coles параметър от ft_model["rho"],
+    подаден от викащия. 0.0 (по подразбиране) = без корекция, старо
+    поведение точно."""
     max_g = 10
     pm = np.outer(poisson.pmf(range(max_g), lam), poisson.pmf(range(max_g), mu))
+    if rho:
+        pm = fl.dc_adjust_matrix(pm, lam, mu, rho)
     home_win = np.sum(np.tril(pm, -1))
     draw = np.sum(np.diag(pm))
     away_win = np.sum(np.triu(pm, 1))
-    _, ou_p = fl.btts_ou_probs(lam, mu)
-    extra = fl.extra_markets_probs(lam, mu)
+    _, ou_p = fl.btts_ou_probs(lam, mu, rho=rho)
+    extra = fl.extra_markets_probs(lam, mu, rho=rho)
     best_htft = max(ht_ft_probs.items(), key=lambda x: x[1])
 
     used_market = False
@@ -478,19 +484,19 @@ def _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds=None):
     return candidates, used_market
 
 
-def top_pick_with_code(lam, mu, home, away, ht_ft_probs, league, market_odds=None):
-    candidates, used_market = _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds)
+def top_pick_with_code(lam, mu, home, away, ht_ft_probs, league, market_odds=None, rho=0.0):
+    candidates, used_market = _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds, rho=rho)
     label, pct, code = ps.rank_candidates(candidates, league, policy, n=1)[0]
     return label, pct, code, used_market
 
 
-def top_picks_with_code(lam, mu, home, away, ht_ft_probs, league, market_odds=None, n=3):
+def top_picks_with_code(lam, mu, home, away, ht_ft_probs, league, market_odds=None, n=3, rho=0.0):
     """Топ N picks (Фаза F3) - сега през каноничния
     pick_selection.rank_candidates() (Фаза I.1) вместо собствена копирана
     fallback/дедупликационна логика. НОВО спрямо преди Фаза I.1: вече
     отхвърля и тук >=95% кандидати (pick_selection.MAX_PUBLISHABLE_PCT) -
     съзнателна унификация, виж claude/ACTION_PLAN.md Фаза I.1."""
-    candidates, used_market = _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds)
+    candidates, used_market = _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds, rho=rho)
     ranked = ps.rank_candidates(candidates, league, policy, n=n)
     return ranked, used_market
 
@@ -506,29 +512,36 @@ def compute_grouped_markets(league, home, away, home_inj=0, away_inj=0, real_odd
     lam, mu = get_ft_lambdas(ft_model, team_idx, home, away, home_inj, away_inj)
     lam_ht, mu_ht = fl.get_lambdas(ht_model, team_idx, home, away)
     lam_2h, mu_2h = fl.get_lambdas(h2_model, team_idx, home, away)
+    # Фаза K.1 (20.08.2026): Dixon-Coles rho, фитнат в fit_goals_model()
+    # (ft_model["rho"] е 0.0 за модели трениран със старото use_dc=False,
+    # т.е. и за fit_goals_direct_covariate() моделите - виж bel.).
+    rho_ft = ft_model.get("rho", 0.0)
 
     max_g = 10
 
-    def probs_1x2_ou(l, m):
+    def probs_1x2_ou(l, m, rho=0.0):
         pm = np.outer(poisson.pmf(range(max_g), l), poisson.pmf(range(max_g), m))
+        if rho:
+            pm = fl.dc_adjust_matrix(pm, l, m, rho)
         hw = np.sum(np.tril(pm, -1))
         dr = np.sum(np.diag(pm))
         aw = np.sum(np.triu(pm, 1))
-        btts_p, ou_p = fl.btts_ou_probs(l, m)
+        btts_p, ou_p = fl.btts_ou_probs(l, m, rho=rho)
         return hw, dr, aw, btts_p, ou_p
 
-    home_win, draw, away_win, btts_p, ou_p = probs_1x2_ou(lam, mu)
-    extra = fl.extra_markets_probs(lam, mu)
+    home_win, draw, away_win, btts_p, ou_p = probs_1x2_ou(lam, mu, rho=rho_ft)
+    extra = fl.extra_markets_probs(lam, mu, rho=rho_ft)
     ht_ft_probs = predict_ht_ft(lam_ht, mu_ht, lam_2h, mu_2h)
 
     form_data = None
     if recent_model:
         lam_r, mu_r = fl.get_lambdas(recent_model, team_idx, home, away)
-        hw_r, dr_r, aw_r, _, ou_r = probs_1x2_ou(lam_r, mu_r)
+        rho_recent = recent_model.get("rho", 0.0)
+        hw_r, dr_r, aw_r, _, ou_r = probs_1x2_ou(lam_r, mu_r, rho=rho_recent)
         form_data = {"home_win": hw_r * 100, "draw": dr_r * 100, "away_win": aw_r * 100,
                       "over25": ou_r * 100, "under25": (1 - ou_r) * 100, "n": recent_matches_count}
 
-    top_label, top_pct, top_code, _ = top_pick_with_code(lam, mu, home, away, ht_ft_probs, league, market_odds=None)
+    top_label, top_pct, top_code, _ = top_pick_with_code(lam, mu, home, away, ht_ft_probs, league, market_odds=None, rho=rho_ft)
     home_cy, away_cy = to_cyrillic(home, league), to_cyrillic(away, league)
 
     groups = []
@@ -1734,6 +1747,7 @@ def _predict_matches_for_league(league, from_date, to_date):
     fixtures, api_error = fetch_upcoming_fixtures(league, from_date, to_date)
     (teams, team_idx, ft_model, ht_model, h2_model, corners_model, cards_model,
      offsides_model, recent_model, recent_matches_count, has_injuries) = get_models(league)
+    rho_ft = ft_model.get("rho", 0.0)  # Фаза K.1 (20.08.2026)
 
     matches = []
     for f in fixtures:
@@ -1794,7 +1808,7 @@ def _predict_matches_for_league(league, from_date, to_date):
         # (доказано локално с 300 случайни случая преди деплой), затова
         # комбинираната колонка/залог логиката по-долу (която разчита на
         # единичните pick/pct/code) остава непроменена.
-        picks_raw, used_market = top_picks_with_code(lam, mu, home, away, ht_ft_probs, league, market_odds=cached_odds, n=3)
+        picks_raw, used_market = top_picks_with_code(lam, mu, home, away, ht_ft_probs, league, market_odds=cached_odds, n=3, rho=rho_ft)
         pick, pct, code = picks_raw[0]
         picks_list = [
             {"label": p_label, "pct": p_pct, "code": p_code, "odds": fair_odds(p_pct)}

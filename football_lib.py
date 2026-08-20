@@ -13,6 +13,50 @@ LEAGUE_XI = {
     "france": 0.0005,
 }
 
+# --- Фаза K.1 (20.08.2026): Dixon-Coles ниска-резултатна корекция -------
+# Независимият Poisson модел системно подценява 0-0/1-1 и надценява
+# 1-0/0-1 (Dixon & Coles, 1997) - rho се фитва заедно с attack/defence/
+# home_adv във fit_goals_model() (use_dc=True), не е фиксирана константа.
+
+
+def dc_tau(hg, ag, lam, mu, rho):
+    """Dixon-Coles τ(x,y). hg/ag/lam/mu - numpy масиви (или скалари) с
+    еднаква форма. НЕ е гарантирано > 0 за произволно rho - викащият
+    трябва да clip-не преди log() при MLE (виж fit_goals_model)."""
+    hg = np.asarray(hg)
+    ag = np.asarray(ag)
+    lam = np.asarray(lam)
+    mu = np.asarray(mu)
+    tau = np.ones(np.broadcast(hg, ag, lam, mu).shape, dtype=float)
+    m00 = (hg == 0) & (ag == 0)
+    m01 = (hg == 0) & (ag == 1)
+    m10 = (hg == 1) & (ag == 0)
+    m11 = (hg == 1) & (ag == 1)
+    tau = np.where(m00, 1 - lam * mu * rho, tau)
+    tau = np.where(m01, 1 + lam * rho, tau)
+    tau = np.where(m10, 1 + mu * rho, tau)
+    tau = np.where(m11, 1 - rho, tau)
+    return tau
+
+
+def dc_adjust_matrix(pm, lam, mu, rho):
+    """pm: independent-Poisson съвместна матрица (outer product), вече
+    построена от викащия. Прилага DC корекция върху 4-те ниско-резултатни
+    клетки и renormalize-ва (DC не гарантира сума точно 1, отклонението е
+    малко, но renormalize е евтин и премахва риска изцяло)."""
+    pm = pm.copy()
+    pm[0, 0] *= max(1 - lam * mu * rho, 0.0)
+    if pm.shape[1] > 1:
+        pm[0, 1] *= max(1 + lam * rho, 0.0)
+    if pm.shape[0] > 1:
+        pm[1, 0] *= max(1 + mu * rho, 0.0)
+    if pm.shape[0] > 1 and pm.shape[1] > 1:
+        pm[1, 1] *= max(1 - rho, 0.0)
+    total = pm.sum()
+    if total > 0:
+        pm /= total
+    return pm
+
 
 def load_league_data(country_name):
     df = pd.read_csv(f"{country_name.lower()}_merged_full.csv")
@@ -39,7 +83,27 @@ def team_rating(history_df, ref_date, team, home_col, away_col, xi=None):
     return np.average(values, weights=weights)
 
 
-def fit_goals_model(history_df, ref_date, team_idx, n, cov_home_col=None, cov_away_col=None, xi=None, reg_strength=3.0):
+def fit_goals_model(history_df, ref_date, team_idx, n, cov_home_col=None, cov_away_col=None, xi=None,
+                     reg_strength=3.0, use_dc=True, low_data_extra_reg=15.0, reg_floor=1.0):
+    """Фаза K.1 (20.08.2026), две промени спрямо оригинала - и двете
+    валидирани с walk-forward backtest на 17-те лиги (виж
+    CLAUDE_HANDOFF.md K.1) преди деплой, use_dc=False+low_data_extra_reg=0.0
+    възпроизвежда СТАРОТО поведение точно (проверено - разлика < 1e-5 в
+    lambda/mu):
+
+    1. use_dc=True (по подразбиране): фитва допълнителен rho (Dixon-Coles)
+       параметър - вижда се в model["rho"]. Прилага се при показване чрез
+       dc_adjust_matrix()/dc_tau() - НЕ променя lambda/mu сами по себе си,
+       само съвместното разпределение на резултата.
+
+    2. Регуляризация зависима от обема данни на отбор (N.2 диагнозата):
+       всеки отбор получава effective reg = reg_strength +
+       low_data_extra_reg / (team_weight + reg_floor), team_weight = сума
+       от time-decay теглата на мачовете му. Отбор с малко "пресни"
+       наблюдения (напр. ЦСКА 1948 в евротурнир) се дърпа силно към
+       "среден отбор" (потвърдено: до ~44% свиване на attack+defence за
+       weight~3 срещу <5% за weight>40), вместо да дава екстремна lambda.
+       low_data_extra_reg=0.0 връща старата еднаква регуляризация точно."""
     xi_val = xi if xi is not None else XI
     valid = history_df.dropna(subset=["home_goals", "away_goals"])
     h_idx = valid["home_team"].map(team_idx).to_numpy()
@@ -48,6 +112,12 @@ def fit_goals_model(history_df, ref_date, team_idx, n, cov_home_col=None, cov_aw
     ag = valid["away_goals"].to_numpy()
     days_ago = (ref_date - valid["date"]).dt.days.to_numpy()
     weights = np.exp(-xi_val * np.clip(days_ago, 0, None))
+
+    team_weight = np.zeros(n)
+    np.add.at(team_weight, h_idx, weights)
+    np.add.at(team_weight, a_idx, weights)
+    reg_vec = reg_strength + low_data_extra_reg / (team_weight + reg_floor)
+
     use_covariate = cov_home_col is not None
     if use_covariate:
         teams = list(team_idx.keys())
@@ -61,32 +131,55 @@ def fit_goals_model(history_df, ref_date, team_idx, n, cov_home_col=None, cov_aw
     else:
         ratings, league_avg, scale = None, None, None
         home_diff = away_diff = None
+
     def nll(params):
         attack = params[:n]
         defence = params[n:2 * n]
-        home_adv = params[-2] if use_covariate else params[-1]
         if use_covariate:
-            beta = params[-1]
+            home_adv = params[-3] if use_dc else params[-2]
+            beta = params[-2] if use_dc else params[-1]
+            rho = params[-1] if use_dc else 0.0
             lam = np.exp(attack[h_idx] - defence[a_idx] + home_adv + beta * home_diff / scale)
             mu = np.exp(attack[a_idx] - defence[h_idx] + beta * away_diff / scale)
         else:
+            home_adv = params[-2] if use_dc else params[-1]
+            rho = params[-1] if use_dc else 0.0
             lam = np.exp(attack[h_idx] - defence[a_idx] + home_adv)
             mu = np.exp(attack[a_idx] - defence[h_idx])
         ll = poisson.logpmf(hg, lam) + poisson.logpmf(ag, mu)
-        reg = reg_strength * (np.sum(attack ** 2) + np.sum(defence ** 2))
+        if use_dc:
+            tau = dc_tau(hg, ag, lam, mu, rho)
+            ll = ll + np.log(np.clip(tau, 1e-10, None))
+        reg = np.sum(reg_vec * (attack ** 2 + defence ** 2))
         return -np.sum(ll * weights) + reg
-    n_params = 2 * n + 2 if use_covariate else 2 * n + 1
+
+    if use_covariate:
+        n_params = 2 * n + 3 if use_dc else 2 * n + 2
+    else:
+        n_params = 2 * n + 2 if use_dc else 2 * n + 1
     x0 = np.zeros(n_params)
-    result = minimize(nll, x0, method="L-BFGS-B")
+    bounds = None
+    if use_dc:
+        bounds = [(None, None)] * (n_params - 1) + [(-0.9, 0.9)]
+    result = minimize(nll, x0, method="L-BFGS-B", bounds=bounds)
+
+    if use_covariate:
+        home_adv_i, beta_i = (-3, -2) if use_dc else (-2, -1)
+    else:
+        home_adv_i, beta_i = ((-2, None) if use_dc else (-1, None))
+    rho_val = float(result.x[-1]) if use_dc else 0.0
+
     return {
         "attack": result.x[:n],
         "defence": result.x[n:2 * n],
-        "home_adv": result.x[-2] if use_covariate else result.x[-1],
-        "beta": result.x[-1] if use_covariate else 0.0,
+        "home_adv": result.x[home_adv_i],
+        "beta": result.x[beta_i] if (use_covariate and beta_i is not None) else 0.0,
         "ratings": ratings,
         "league_avg": league_avg,
         "scale": scale,
         "use_covariate": use_covariate,
+        "rho": rho_val,
+        "team_weight": team_weight,
     }
 
 
@@ -108,8 +201,10 @@ def get_lambdas(model, team_idx, home, away):
     return lam, mu
 
 
-def btts_ou_probs(lam, mu, max_g=10):
+def btts_ou_probs(lam, mu, max_g=10, rho=0.0):
     pm = np.outer(poisson.pmf(range(max_g), lam), poisson.pmf(range(max_g), mu))
+    if rho:
+        pm = dc_adjust_matrix(pm, lam, mu, rho)
     btts_yes = sum(pm[x, y] for x in range(max_g) for y in range(max_g) if x >= 1 and y >= 1)
     over25 = sum(pm[x, y] for x in range(max_g) for y in range(max_g) if x + y > 2.5)
     return btts_yes, over25
@@ -156,8 +251,10 @@ def backtest_covariate(df, team_idx, n, cov_home_col, cov_away_col, retrain_ever
     }
 
 
-def extra_markets_probs(lam, mu, max_g=10):
+def extra_markets_probs(lam, mu, max_g=10, rho=0.0):
     pm = np.outer(poisson.pmf(range(max_g), lam), poisson.pmf(range(max_g), mu))
+    if rho:
+        pm = dc_adjust_matrix(pm, lam, mu, rho)
 
     home_clean_sheet = sum(pm[x, 0] for x in range(max_g))
     away_clean_sheet = sum(pm[0, y] for y in range(max_g))
@@ -230,15 +327,17 @@ def backtest_extra_markets(df, team_idx, n, retrain_every=15):
     return results, total
 
 
-def select_best_pick(lam, mu, ht_ft_probs=None):
+def select_best_pick(lam, mu, ht_ft_probs=None, rho=0.0):
     max_g = 10
     pm = np.outer(poisson.pmf(range(max_g), lam), poisson.pmf(range(max_g), mu))
+    if rho:
+        pm = dc_adjust_matrix(pm, lam, mu, rho)
     home_win = np.sum(np.tril(pm, -1))
     draw = np.sum(np.diag(pm))
     away_win = np.sum(np.triu(pm, 1))
 
-    btts_p, ou_p = btts_ou_probs(lam, mu)
-    extra = extra_markets_probs(lam, mu)
+    btts_p, ou_p = btts_ou_probs(lam, mu, rho=rho)
+    extra = extra_markets_probs(lam, mu, rho=rho)
 
     candidates = {
         "Домакинът печели": home_win,
