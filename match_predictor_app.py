@@ -69,7 +69,7 @@ def require_auth():
     from flask import session
     if request.endpoint == "login" or request.path.startswith("/static"):
         return
-    if request.path == "/refresh_odds_cache":
+    if request.path in ("/refresh_odds_cache", "/refresh_injuries_cache"):
         if request.headers.get("X-Refresh-Token") == REFRESH_TOKEN:
             return
         return redirect(url_for("login", next=request.path))
@@ -1029,6 +1029,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="lambdas">{{date}} | Очаквани голове: {{home_cy}} ~{{"%.2f"|format(extra_info[0])}} | {{away_cy}} ~{{"%.2f"|format(extra_info[1])}}
   {% if lineups_confirmed %} | <span style="color:#0F6E56;">🟢 Стартови състави потвърдени - по-коректна прогноза</span>{% endif %}
 </div>
+{% if inj_note %}<div class="inj-note">🩹 {{inj_note}}</div>{% endif %}
 <div class="form-note">{{extra_info[4]}}</div>
 
 {% if extra_info[5] %}
@@ -1487,6 +1488,52 @@ def refresh_odds_cache_route():
     return "OK", 200
 
 
+def run_refresh_injuries_cache():
+    """Фаза N.3 (20.08.2026): преди тази промяна injuries_cache се пълнеше
+    само инцидентно, докато някой реално отваря /daily за конкретна лига
+    (виж CLAUDE_HANDOFF.md N.3) - мачове, които никой не разгледа навреме,
+    оставаха без кеширани контузии дори близо до началото. Тук - целенасочено
+    опресняване за прозорец от 48 часа (по-тесен от 7-дневния на
+    run_refresh_odds_cache(), защото контузийните новини са релевантни само
+    близо до мача), за ВСИЧКИ лиги еднакво - контузиите тук са чисто
+    информационни за /match_detail, не вход за модела (виж
+    NO_INJURY_MODEL_LEAGUES/has_injuries - отделен, непроменен от това
+    гейт). get_cached_injuries() вече връща None при изтекъл кеш (>6ч,
+    виж system_tracker.py), затова просто пропускаме fixture-и с все още
+    свеж кеш."""
+    from_date = date.today()
+    to_date = from_date + timedelta(days=2)
+    checked = 0
+    updated = 0
+    for key in ALL_LEAGUES.keys():
+        try:
+            fixtures, _ = fetch_upcoming_fixtures(key, from_date, to_date)
+        except Exception:
+            continue
+        for f in fixtures:
+            fixture_id = f["fixture"]["id"]
+            if st.get_cached_injuries(fixture_id) is not None:
+                continue
+            checked += 1
+            try:
+                home_inj, away_inj, ok = fetch_fixture_injuries(fixture_id)
+                st.set_cached_injuries(fixture_id, home_inj, away_inj, ok)
+                if ok:
+                    updated += 1
+            except Exception:
+                pass
+    with open("injuries_refresh_log.txt", "a", encoding="utf-8") as log_f:
+        log_f.write(f"{datetime.now().isoformat()} - проверени(извикани API) {checked}, "
+                     f"с намерени данни {updated}\n")
+
+
+@app.route("/refresh_injuries_cache", methods=["POST"])
+def refresh_injuries_cache_route():
+    thread = threading.Thread(target=run_refresh_injuries_cache, daemon=True)
+    thread.start()
+    return "OK", 200
+
+
 @app.route("/refresh_odds_cache_manual", methods=["POST"])
 def refresh_odds_cache_manual_route():
     thread = threading.Thread(target=run_refresh_odds_cache, daemon=True)
@@ -1833,9 +1880,27 @@ def match_detail():
     away = request.args.get("away")
     match_date = request.args.get("date")
     home_inj, away_inj = 0, 0
+    inj_note = None
     has_injuries = get_models(league)[10]
-    if has_injuries and fixture_id:
-        home_inj, away_inj, _ = fetch_fixture_injuries(int(fixture_id))
+    if fixture_id:
+        # Фаза N.3 (20.08.2026): кеш-първо (st.get_cached_injuries), само при
+        # "студен"/изтекъл кеш живо API извикване - същия модел като хотфикса
+        # за /daily (12.08.2026). Показваме контузиите на страницата за
+        # ВСИЧКИ лиги (чисто информативно), но подаваме числата на модела по-
+        # долу само ако has_injuries е вярно - без промяна в поведението на
+        # самата прогноза спрямо преди тази промяна.
+        cached_inj = st.get_cached_injuries(int(fixture_id))
+        if cached_inj is not None:
+            fetched_home, fetched_away, ok = cached_inj
+        else:
+            fetched_home, fetched_away, ok = fetch_fixture_injuries(int(fixture_id))
+            st.set_cached_injuries(int(fixture_id), fetched_home, fetched_away, ok)
+        if ok:
+            inj_note = f"Контузии: {to_cyrillic(home, league)} {fetched_home}, {to_cyrillic(away, league)} {fetched_away}"
+        else:
+            inj_note = "Няма данни за контузии за този мач (все още)"
+        if has_injuries:
+            home_inj, away_inj = fetched_home, fetched_away
     real_odds = None
     lineups_confirmed = False
     api_predictions = None
@@ -1864,7 +1929,7 @@ def match_detail():
     return render_template_string(MATCH_DETAIL_TEMPLATE, groups=groups, extra_info=extra_info,
                                     home=home, away=away, home_cy=home_cy, away_cy=away_cy,
                                     date=match_date, fixture_id=fixture_id, selected_league=league,
-                                    real_odds=real_odds, lineups_confirmed=lineups_confirmed,
+                                    real_odds=real_odds, lineups_confirmed=lineups_confirmed, inj_note=inj_note,
                                     api_predictions=api_predictions, player_props=player_props_data, active_page='daily')
 
 
