@@ -871,6 +871,7 @@ function dtShowTab(name) {
   <button type="button" class="tab-btn" data-tab="live" onclick="dtShowTab('live')">🔴 На живо <span style="font-size:11px;color:var(--sub);">({{live_count}})</span></button>
   <button type="button" class="tab-btn active" data-tab="upcoming" onclick="dtShowTab('upcoming')">📅 Предстоящи <span style="font-size:11px;color:var(--sub);">({{upcoming_count}})</span></button>
   <button type="button" class="tab-btn" data-tab="finished" onclick="dtShowTab('finished')">✅ Приключили <span style="font-size:11px;color:var(--sub);">({{finished_count}})</span></button>
+  <button type="button" class="tab-btn" data-tab="skipped" onclick="dtShowTab('skipped')">🚫 Пропуснати <span style="font-size:11px;color:var(--sub);">({{skipped_count}})</span></button>
 </div>
 
 <div id="dt-tab-live" class="tab-content">
@@ -1007,6 +1008,30 @@ function dtShowTab(name) {
 {% if not finished_groups %}<p style="color:var(--sub);">Няма приключили мачове в избрания период.</p>{% endif %}
 </div>
 
+<div id="dt-tab-skipped" class="tab-content">
+<p style="color:var(--sub);font-size:12.5px;margin-bottom:14px;">Мачове, които ти отбеляза като "пропусни" (виж бележката на страницата на мача). Не участват в основните списъци по-горе. Свали отметката на страницата на мача, за да се върне.</p>
+{% for g in skipped_groups %}
+<div class="league-group">
+  <div class="league-head" onclick="this.parentElement.classList.toggle('collapsed')">{{g.flag}} {{g.name}} <span class="lcount">{{g.matches|length}} мача</span><span class="chev">▾</span></div>
+  <div class="league-body">
+  {% for m in g.matches %}
+  <div class="match-card" style="opacity:0.85;">
+    <div class="match-header">
+      <span class="match-teams">{{m.home_cy}} <span style="color:var(--sub);">vs</span> {{m.away_cy}}</span>
+      <span class="match-date">{{m.date}}</span>
+    </div>
+    {% if m.note %}<div class="inj-note">📝 {{m.note}}</div>{% endif %}
+    <div class="match-pick-row">
+      <a href="/match_detail?league={{m.league}}&fixture_id={{m.fixture_id}}&home={{m.home}}&away={{m.away}}&date={{m.date}}" style="font-size:12px;color:var(--accent);text-decoration:none;">Прегледай / върни в списъка →</a>
+    </div>
+  </div>
+  {% endfor %}
+  </div>
+</div>
+{% endfor %}
+{% if not skipped_groups %}<p style="color:var(--sub);">Няма пропуснати мачове.</p>{% endif %}
+</div>
+
 </div></body></html>
 """
 
@@ -1031,6 +1056,29 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 {% if inj_note %}<div class="inj-note">🩹 {{inj_note}}</div>{% endif %}
 <div class="form-note">{{extra_info[4]}}</div>
+
+<div class="group" style="border-left:3px solid var(--accent);">
+<div class="group-title">📝 Твоя бележка за мача</div>
+{% if match_note and match_note.skip %}
+<div style="font-size:12.5px;color:var(--live);padding:4px 0 10px;">🚫 Отбелязан е като пропуснат - не се показва в основния списък на /daily.</div>
+{% endif %}
+<form method="post" action="/save_match_note">
+  <input type="hidden" name="league" value="{{selected_league}}">
+  <input type="hidden" name="fixture_id" value="{{fixture_id}}">
+  <input type="hidden" name="home" value="{{home}}">
+  <input type="hidden" name="away" value="{{away}}">
+  <input type="hidden" name="date" value="{{date}}">
+  <textarea name="note" rows="2" placeholder="напр. чух, че титулярен играч е контузен - без да пипа прогнозата, само за твоя справка"
+    style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--text);font-family:inherit;font-size:13px;resize:vertical;">{{match_note.note or ''}}</textarea>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+    <label style="font-size:13px;color:var(--sub);display:flex;align-items:center;gap:6px;">
+      <input type="checkbox" name="skip" {% if match_note and match_note.skip %}checked{% endif %}> Пропусни мача (извади от /daily списъка)
+    </label>
+    <button type="submit" class="small">Запази</button>
+  </div>
+</form>
+<div style="font-size:11px;color:var(--sub);padding-top:8px;">Само информативно - никога не променя прогнозата или процента по-долу.</div>
+</div>
 
 {% if extra_info[5] %}
 <div class="group"><div class="group-title">\U0001F48E Value bets (EV \u0026 препоръчан залог)</div>
@@ -1830,6 +1878,18 @@ def daily():
     for _m in matches:
         _m["date_label"] = date_group_label(_m["date"])
 
+    # Фаза N.4, етап 2 (20.08.2026): мачове, отбелязани от Дака като
+    # "пропусни" (виж st.set_match_note()//match_detail), се махат от
+    # основните раздели и отиват в отделен раздел "Пропуснати" по-долу -
+    # чисто визуално местене, не пипа prediction/pick_pct на нищо.
+    notes_map = st.get_all_match_notes()
+    for _m in matches:
+        _n = notes_map.get(_m["fixture_id"])
+        _m["note"] = _n["note"] if _n else None
+        _m["skipped"] = bool(_n and _n["skip"])
+    skipped_matches = [m for m in matches if m["skipped"]]
+    matches = [m for m in matches if not m["skipped"]]
+
     def _classify(m):
         s = m.get("status_short") or "NS"
         if s in LIVE_STATUSES:
@@ -1862,11 +1922,13 @@ def daily():
     live_groups = _group_by_league(live_matches)
     upcoming_groups = _group_by_league(upcoming_matches)
     finished_groups = _group_by_league(finished_matches)
+    skipped_groups = _group_by_league(skipped_matches)
 
     return render_template_string(DAILY_TEMPLATE, leagues=get_leagues(), selected_league=league,
                                     league_name=league_name, days_ahead=DAYS_AHEAD,
                                     api_error=api_error,
                                     live_groups=live_groups, upcoming_groups=upcoming_groups, finished_groups=finished_groups,
+                                    skipped_groups=skipped_groups, skipped_count=len(skipped_matches),
                                     live_count=len(live_matches), upcoming_count=len(upcoming_matches), finished_count=len(finished_matches),
                                     total_upcoming=len(upcoming_matches),
                                     from_value=(from_date or default_from).isoformat(),
@@ -1926,11 +1988,31 @@ def match_detail():
             new_groups.append((title, new_items, has_form))
         groups = new_groups
     home_cy, away_cy = to_cyrillic(home, league), to_cyrillic(away, league)
+    # Фаза N.4, етап 1 (20.08.2026): виж st.get_match_note() - ръчна бележка
+    # + флаг "пропусни", редактирани направо тук, на страницата на мача.
+    match_note = st.get_match_note(int(fixture_id)) if fixture_id else None
     return render_template_string(MATCH_DETAIL_TEMPLATE, groups=groups, extra_info=extra_info,
                                     home=home, away=away, home_cy=home_cy, away_cy=away_cy,
                                     date=match_date, fixture_id=fixture_id, selected_league=league,
                                     real_odds=real_odds, lineups_confirmed=lineups_confirmed, inj_note=inj_note,
+                                    match_note=match_note,
                                     api_predictions=api_predictions, player_props=player_props_data, active_page='daily')
+
+
+@app.route("/save_match_note", methods=["POST"])
+def save_match_note_route():
+    # Фаза N.4, етап 1-2 (20.08.2026): ръчна бележка/контекст + флаг
+    # "пропусни мача" - виж st.set_match_note(). Категорична забрана,
+    # записана изрично от Дака: това НИКОГА не пипа pick_pct/прогнозата,
+    # чисто информативно + изключва мача от препоръчания списък на /daily
+    # (мести се в отделен раздел "Пропуснати", виж daily()).
+    fixture_id = int(request.form["fixture_id"])
+    note = request.form.get("note", "").strip() or None
+    skip = bool(request.form.get("skip"))
+    st.set_match_note(fixture_id, note, skip)
+    return redirect(url_for("match_detail", league=request.form["league"],
+                              fixture_id=fixture_id, home=request.form["home"],
+                              away=request.form["away"], date=request.form["date"]))
 
 
 @app.route("/place_bet_market", methods=["POST"])

@@ -57,8 +57,52 @@ def init_db():
             fetched_at TEXT
         )
     """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS match_notes (
+            fixture_id INTEGER PRIMARY KEY,
+            note TEXT,
+            skip INTEGER DEFAULT 0,
+            updated_at TEXT
+        )
+    """)
     conn.commit()
     conn.close()
+
+
+def set_match_note(fixture_id, note, skip):
+    """Фаза N.4, етап 1 (20.08.2026): ръчна бележка/контекст на Дака за
+    конкретен мач + флаг "пропусни" (виж CLAUDE_HANDOFF.md - категорична
+    забрана: НИКОГА не коригира pick_pct/prediction, чисто информативно +
+    изключва мача от препоръчания списък на /daily)."""
+    conn = get_conn()
+    conn.execute("""
+        INSERT INTO match_notes (fixture_id, note, skip, updated_at)
+        VALUES (?,?,?,?)
+        ON CONFLICT(fixture_id) DO UPDATE SET
+            note=excluded.note, skip=excluded.skip, updated_at=excluded.updated_at
+    """, (fixture_id, note, int(bool(skip)), datetime.now().isoformat()))
+    conn.commit()
+    conn.close()
+
+
+def get_match_note(fixture_id):
+    conn = get_conn()
+    conn.row_factory = sqlite3.Row
+    row = conn.execute("SELECT * FROM match_notes WHERE fixture_id=?", (fixture_id,)).fetchone()
+    conn.close()
+    if not row:
+        return None
+    return {"note": row["note"], "skip": bool(row["skip"])}
+
+
+def get_all_match_notes():
+    """Едно зареждане на всички бележки наведнъж - за /daily, където се
+    проверяват много fixture_id-та наведнъж (избягва N отделни заявки)."""
+    conn = get_conn()
+    conn.row_factory = sqlite3.Row
+    rows = conn.execute("SELECT * FROM match_notes").fetchall()
+    conn.close()
+    return {r["fixture_id"]: {"note": r["note"], "skip": bool(r["skip"])} for r in rows}
 
 
 def log_prediction(league, fixture_id, match_date, home, away, market_code, pick_label, pick_pct,
