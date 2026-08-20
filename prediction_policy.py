@@ -188,6 +188,16 @@ def tier(league, market_code):
     return league_row.get(grp, DEFAULT_TIER)
 
 
+def is_proven(league, market_code):
+    """Фаза L.3 (20.08.2026): по-строго от is_publishable() - само PROVEN,
+    без WEAK fallback. Използва се от /value (value_view.py), борд, който
+    твърди конкретен количествен edge% ("тук има стойност"), не просто
+    показва прогноза с предупреждение както is_publishable() позволява за
+    WEAK пазари. Комбинация от "недостатъчно тествано" (WEAK) И "твърдим
+    конкретен процент печалба" би подвела - затова по-високата летва тук."""
+    return tier(league, market_code) == PROVEN
+
+
 def is_publishable(league, market_code):
     """Дали изобщо трябва да се показва на потребителя (в каквато и да е
     форма - основен ред, разгъната секция, ROI таблица). REJECTED и

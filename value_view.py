@@ -38,9 +38,13 @@ MIN_EDGE = 3.0
 MAX_EDGE = 15.0
 
 
-def get_value_opportunities(get_conn, is_publishable, hours_ahead=None):
+def get_value_opportunities(get_conn, is_eligible, hours_ahead=None):
     """Чете от predictions_log, филтрира по прага (виж модулния docstring)
-    + prediction_policy.is_publishable(). Само pending (все още неизиграни)
+    + предиката is_eligible(league, market_code) - Фаза L.3 (20.08.2026):
+    вече se подава prediction_policy.is_proven() тук, не is_publishable().
+    /value твърди конкретен edge% - "недостатъчно тествано" (WEAK) пазар с
+    твърдение за количествена печалба е двойна несигурност, затова по-
+    високата летва (само PROVEN). Само pending (все още неизиграни)
     записи. Връща списък от dict-и, сортирани по edge низходящо."""
     # match_date >= сега, НЕ само status='pending': check-results.timer върви
     # на 3 часа, затова status може все още да казва "pending" няколко часа
@@ -65,7 +69,7 @@ def get_value_opportunities(get_conn, is_publishable, hours_ahead=None):
     conn.close()
     out = []
     for r in rows:
-        if not is_publishable(r["league"], r["market_code"]):
+        if not is_eligible(r["league"], r["market_code"]):
             continue
         out.append(dict(r))
     return out
@@ -86,7 +90,7 @@ def register_value_view(app, ctx):
 
     @app.route("/value")
     def value_view():
-        opps = get_value_opportunities(st.get_conn, policy.is_publishable)
+        opps = get_value_opportunities(st.get_conn, policy.is_proven)
         for o in opps:
             o["home_cy"] = to_cyrillic(o["home_team"], o["league"])
             o["away_cy"] = to_cyrillic(o["away_team"], o["league"])
@@ -137,7 +141,9 @@ def _build_template(BASE_STYLE, SIDEBAR_STYLE, SIDEBAR_HTML):
   много по-висока летва, за която все още нямаме измерване. Прагът тук (вероятност {{min_pct}}-{{max_pct}}%,
   edge {{min_edge}}-{{max_edge}}%) е избран от реално разпределение на данните (не произволно) - над {{max_edge}}%
   edge умишлено НЕ се показва, защото засега по-често означава грешка в нашата оценка, отколкото реална находка.
-  Следим резултатите с времето, за да видим дали хипотезата се потвърждава.
+  Следим резултатите с времето, за да видим дали хипотезата се потвърждава. Показват се само пазари с ниво
+  <b>PROVEN</b> (доказано бият baseline при backtest) - недостатъчно тествани (WEAK) пазари не влизат тук, дори
+  ако изглеждат с висок edge.
 </div>
 <div class="vv-kpis">
   <div class="vv-kpi"><div class="k">Възможности</div><div class="v">{{total}}</div></div>
