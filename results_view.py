@@ -440,7 +440,7 @@ def _build_template(BASE_STYLE, SIDEBAR_STYLE, SIDEBAR_HTML):
     </div>
     <div class="n">на база {{eval_summary.roi_n}} публикувани със сигурен коеф.</div>
   </div>
-  <div class="rv-kpi"><div class="k">Среден коеф.</div><div class="v">{% if overall.avg_odds %}{{"%.2f"|format(overall.avg_odds)}}{% else %}—{% endif %}</div></div>
+  <div class="rv-kpi"><div class="k">Среден коеф.</div><div class="v">{% if eval_summary.avg_odds %}{{"%.2f"|format(eval_summary.avg_odds)}}{% else %}—{% endif %}</div></div>
 </div>
 
 <div class="rv-tblwrap">
@@ -526,12 +526,12 @@ def _build_template(BASE_STYLE, SIDEBAR_STYLE, SIDEBAR_HTML):
     <div class="v">{% if eval_summary.brier is not none %}{{"%.3f"|format(eval_summary.brier)}}{% else %}—{% endif %}</div>
     <div class="n">по-ниско = по-добре &middot; n={{eval_summary.brier_n}}</div>
   </div>
-  <div class="rv-kpi"><div class="k">Чиста печалба</div><div class="v {% if overall.profit>=0 %}rv-pos{% else %}rv-neg{% endif %}">{{"%+.1f"|format(overall.profit)}}</div><div class="n">единици &middot; сурови редове, виж бележка</div></div>
-  <div class="rv-kpi"><div class="k">Среден коеф.</div><div class="v">{% if overall.avg_odds %}{{"%.2f"|format(overall.avg_odds)}}{% else %}—{% endif %}</div></div>
+  <div class="rv-kpi"><div class="k">Чиста печалба</div><div class="v {% if eval_summary.profit is not none %}{% if eval_summary.profit>=0 %}rv-pos{% else %}rv-neg{% endif %}{% else %}rv-neu{% endif %}">{% if eval_summary.profit is not none %}{{"%+.1f"|format(eval_summary.profit)}}{% else %}—{% endif %}</div><div class="n">единици &middot; на база {{eval_summary.roi_n}} публикувани прогнози</div></div>
+  <div class="rv-kpi"><div class="k">Среден коеф.</div><div class="v">{% if eval_summary.avg_odds %}{{"%.2f"|format(eval_summary.avg_odds)}}{% else %}—{% endif %}</div></div>
 </div>
 
 {% if eval_summary.roi_n < 100 %}
-<div class="rv-note rv-warn">⚠️ Възвръщаемостта (честна) стъпва само на {{eval_summary.roi_n}} публикувани прогнози с реален пазарен коефициент — малка извадка, чети с повишено внимание. "Чиста печалба" и "Среден коеф." горе все още смятат по суровите редове от predictions_log (не само публикуваните), затова не пасват точно на процента възвръщаемост — предстои изравняване в следваща стъпка. Калибрацията долу стъпва на всичките {{eval_summary.n_settled}} публикувани приключени прогнози.</div>
+<div class="rv-note rv-warn">⚠️ Възвръщаемостта (честна) стъпва само на {{eval_summary.roi_n}} публикувани прогнози с реален пазарен коефициент — малка извадка, чети с повишено внимание. Калибрацията долу стъпва на всичките {{eval_summary.n_settled}} публикувани приключени прогнози.</div>
 {% endif %}
 
 <div class="rv-sec">Калибрация — вярна ли е увереността ни?</div>

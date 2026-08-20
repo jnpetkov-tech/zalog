@@ -164,6 +164,17 @@ def summary(rows, policy, bands=None):
     brier, brier_n = brier_score(picks)
     ll, ll_n = log_loss(picks)
     roi_pct, roi_n = roi(picks)
+    # Фаза I.3 (остатък, 20.08.2026): "Чиста печалба" и "Среден коеф." на
+    # /results смятаха по суровите редове от predictions_log (всеки логнат
+    # пазар, не само публикуваната прогноза) - не пасваха на roi_pct горе,
+    # който вече е честен (виж бележката в results_view.py преди тази
+    # промяна). Същият eligible набор като roi() - settled публикувани
+    # прогнози с реален market_odds.
+    roi_eligible = [p for p in settled if p["market_odds"]]
+    profit = (sum((p["market_odds"] if p["status"] == "won" else 0.0) - 1.0 for p in roi_eligible)
+              if roi_eligible else None)
+    avg_odds = (sum(p["market_odds"] for p in roi_eligible) / len(roi_eligible)
+                if roi_eligible else None)
 
     return {
         "n_published": len(picks),
@@ -174,4 +185,5 @@ def summary(rows, policy, bands=None):
         "brier": brier, "brier_n": brier_n,
         "log_loss": ll, "log_loss_n": ll_n,
         "roi": roi_pct, "roi_n": roi_n,
+        "profit": profit, "avg_odds": avg_odds,
     }
