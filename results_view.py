@@ -293,6 +293,7 @@ def register_results_view(app, ctx):
         rmarket = roi_by_market(filtered, market_label)
         rleague = roi_by_league(filtered, ALL_LEAGUES, LEAGUE_FLAGS)
         weekly = weekly_roi(filtered)
+        weekly_brier = evaluation.weekly_brier(filtered, policy)
 
         return render_template_string(
             RESULTS_TEMPLATE,
@@ -301,7 +302,7 @@ def register_results_view(app, ctx):
             matches=page_matches, total=total, page=page, total_pages=total_pages,
             league_options=league_options, market_options=market_options,
             overall=overall, eval_summary=eval_summary, roi_market=rmarket,
-            roi_league=rleague, weekly=weekly, market_label=market_label,
+            roi_league=rleague, weekly=weekly, weekly_brier=weekly_brier, market_label=market_label,
             LEAGUE_FLAGS=LEAGUE_FLAGS, cyrillic=to_cyrillic,
             BASE_STYLE=BASE_STYLE, SIDEBAR_STYLE=SIDEBAR_STYLE, SIDEBAR_HTML=SIDEBAR_HTML,
         )
@@ -521,6 +522,10 @@ def _build_template(BASE_STYLE, SIDEBAR_STYLE, SIDEBAR_HTML):
     </div>
     <div class="n">на база {{eval_summary.roi_n}} публикувани прогнози с коеф.</div>
   </div>
+  <div class="rv-kpi"><div class="k">Brier score</div>
+    <div class="v">{% if eval_summary.brier is not none %}{{"%.3f"|format(eval_summary.brier)}}{% else %}—{% endif %}</div>
+    <div class="n">по-ниско = по-добре &middot; n={{eval_summary.brier_n}}</div>
+  </div>
   <div class="rv-kpi"><div class="k">Чиста печалба</div><div class="v {% if overall.profit>=0 %}rv-pos{% else %}rv-neg{% endif %}">{{"%+.1f"|format(overall.profit)}}</div><div class="n">единици &middot; сурови редове, виж бележка</div></div>
   <div class="rv-kpi"><div class="k">Среден коеф.</div><div class="v">{% if overall.avg_odds %}{{"%.2f"|format(overall.avg_odds)}}{% else %}—{% endif %}</div></div>
 </div>
@@ -616,6 +621,25 @@ def _build_template(BASE_STYLE, SIDEBAR_STYLE, SIDEBAR_HTML):
   </div>
   <div style="display:flex;gap:6px;margin-top:6px;">
     {% for w in weekly %}<div style="flex:1;text-align:center;font-size:11px;color:var(--sub);">{{w.week}}</div>{% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{% if weekly_brier %}
+<div class="rv-sec">Brier score по седмици <span class="rv-note" style="margin:0;">(по-нисък стълб = по-добра калибрация)</span></div>
+<p class="rv-note">Малки седмични извадки (виж n под всеки стълб) — очаквай шум, гледай посоката за няколко седмици напред, не единична седмица.</p>
+<div style="background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:20px;">
+  <div class="rv-trend">
+    {% set maxb = (weekly_brier|map(attribute='brier')|max) %}
+    {% for w in weekly_brier %}
+    <div class="rv-tcol">
+      <div class="rv-tbar" style="height:{{ ((w.brier) / (maxb if maxb>0 else 1) * 100)|round|int }}%;background:{% if w.brier<=0.25 %}var(--green){% else %}var(--live){% endif %}"></div>
+      <div class="rv-tlab">{{"%.2f"|format(w.brier)}} (n={{w.n}})</div>
+    </div>
+    {% endfor %}
+  </div>
+  <div style="display:flex;gap:6px;margin-top:6px;">
+    {% for w in weekly_brier %}<div style="flex:1;text-align:center;font-size:11px;color:var(--sub);">{{w.week}}</div>{% endfor %}
   </div>
 </div>
 {% endif %}

@@ -14,6 +14,7 @@ sqlite3.Row обекти), без БД връзка вътре в себе си 
 (напр. от system_tracker) и policy модула (prediction_policy).
 """
 import math
+from datetime import datetime, timedelta
 
 import pick_selection as ps
 
@@ -91,6 +92,34 @@ def brier_score(picks):
         outcome = 1.0 if p["status"] == "won" else 0.0
         total += (prob - outcome) ** 2
     return total / len(settled), len(settled)
+
+
+def weekly_brier(rows, policy, n_weeks=8):
+    """Фаза I.4 (20.08.2026): Brier score по седмици върху ПУБЛИКУВАНИ
+    прогнози (същата методология като brier_score() - виж бележката там
+    защо суровият predictions_log е неизползваем). Седмица = понеделник
+    старт, като weekly_roi() в results_view.py. Цел: да се вижда дали
+    калибрацията се подобрява или влошава във времето, не само едно общо
+    число за целия период. Връща последните n_weeks непразни седмици,
+    най-старата първа (за хронологична графика). Празни списъци, ако няма
+    settled публикувани прогнози."""
+    picks = published_picks(rows, policy)
+    settled = _settled(picks)
+    buckets = {}
+    for p in settled:
+        try:
+            d = datetime.strptime((p["match_date"] or "")[:10], "%Y-%m-%d").date()
+        except (ValueError, TypeError):
+            continue
+        wk_start = d - timedelta(days=d.weekday())
+        buckets.setdefault(wk_start, []).append(p)
+    out = []
+    for wk, items in sorted(buckets.items()):
+        score, n = brier_score(items)
+        if score is None:
+            continue
+        out.append({"week": wk.strftime("%d.%m"), "brier": score, "n": n})
+    return out[-n_weeks:]
 
 
 def log_loss(picks, eps=1e-9):
