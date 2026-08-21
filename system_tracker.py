@@ -106,6 +106,33 @@ def init_db():
         CREATE INDEX IF NOT EXISTS idx_predictions_snapshot_league_date
         ON predictions_snapshot(league, match_date)
     """)
+    # Партида 4, Стъпка 1 (21.08.2026, ARCHITECTURE.md, Граница 3: „измерване
+    # срещу правило"). Едно място за реалното измерено доверие в
+    # (лига, пазарна група) - за разлика от TRUST_MATRIX в prediction_policy.py
+    # (ръчно писана, веднъж), тук се пише автоматично, нощно, от реални
+    # settled публикувани прогнози (виж build_trust_derived.py). market_group
+    # използва СЪЩАТА група като policy.market_group() (1x2/ou25/team_total/
+    # htft/double_chance/btts/corners/cards/offsides/other), не суровия
+    # market_code - иначе таблицата би имала 150+ реда, никой не би я четял
+    # смислено с малкия обем settled данни, който реално имаме сега.
+    # UNIQUE(league, market_group) - INSERT OR REPLACE презаписва при всяко
+    # ново нощно смятане, не трупа история (различно от predictions_log).
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS trust_derived (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            league TEXT NOT NULL,
+            market_group TEXT NOT NULL,
+            n_settled INTEGER NOT NULL,
+            model_brier REAL,
+            baseline_brier REAL,
+            promised_avg REAL,
+            actual_pct REAL,
+            status TEXT NOT NULL,
+            reason TEXT NOT NULL,
+            computed_at TEXT NOT NULL,
+            UNIQUE(league, market_group)
+        )
+    """)
     conn.commit()
     conn.close()
 
@@ -306,6 +333,44 @@ def get_snapshot_freshness():
     row = conn.execute("SELECT MAX(computed_at) FROM predictions_snapshot").fetchone()
     conn.close()
     return row[0] if row else None
+
+
+def save_trust_derived(rows):
+    """Партида 4, Стъпка 1 (21.08.2026): UPSERT в trust_derived по
+    (league, market_group) - по образец на save_snapshot_predictions().
+    rows: списък dict-и с league, market_group, n_settled, model_brier,
+    baseline_brier (може None и двете, ако n_settled=0), promised_avg,
+    actual_pct (може None), status, reason."""
+    if not rows:
+        return
+    conn = get_conn()
+    now = datetime.now().isoformat()
+    conn.executemany("""
+        INSERT INTO trust_derived
+            (league, market_group, n_settled, model_brier, baseline_brier,
+             promised_avg, actual_pct, status, reason, computed_at)
+        VALUES (?,?,?,?,?,?,?,?,?,?)
+        ON CONFLICT(league, market_group) DO UPDATE SET
+            n_settled=excluded.n_settled, model_brier=excluded.model_brier,
+            baseline_brier=excluded.baseline_brier, promised_avg=excluded.promised_avg,
+            actual_pct=excluded.actual_pct, status=excluded.status,
+            reason=excluded.reason, computed_at=excluded.computed_at
+    """, [(r["league"], r["market_group"], r["n_settled"], r.get("model_brier"),
+           r.get("baseline_brier"), r.get("promised_avg"), r.get("actual_pct"),
+           r["status"], r["reason"], now) for r in rows])
+    conn.commit()
+    conn.close()
+
+
+def get_all_trust_derived():
+    """Всички редове от trust_derived, ключувани по (league, market_group) -
+    за prediction_policy.py (Стъпка 4, все още не wire-нато) и за ръчна
+    инспекция на резултата от build_trust_derived.py."""
+    conn = get_conn()
+    conn.row_factory = sqlite3.Row
+    rows = conn.execute("SELECT * FROM trust_derived").fetchall()
+    conn.close()
+    return {(r["league"], r["market_group"]): dict(r) for r in rows}
 
 
 def get_fixtures_needing_odds_refresh(hours_ahead=48):
