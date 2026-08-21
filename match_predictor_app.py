@@ -949,13 +949,7 @@ def run_refresh_all():
 
 def render_refresh_confirmation(done, label):
     message = f"✅ {label}" if done else "🔄 Стартирано, продължава на фон"
-    return f"""<!DOCTYPE html><html lang="bg"><head><meta charset="UTF-8"><title>Опресняване</title>
-<style>{BASE_STYLE}</style></head><body><div class="container" style="max-width:400px;text-align:center;padding-top:80px;">
-<div style="font-size:20px;color:var(--text);margin-bottom:20px;">{message}</div>
-<a href="/" style="color:var(--accent);text-decoration:none;font-size:14px;">← Начало</a>
-<span style="color:var(--sub);margin:0 8px;">·</span>
-<a href="/refresh_status" style="color:var(--sub);text-decoration:none;font-size:14px;">Пълен лог →</a>
-</div></body></html>"""
+    return render_template("refresh_confirmation.html", BASE_STYLE=BASE_STYLE, message=message)
 
 
 @app.route("/refresh_all", methods=["POST"])
