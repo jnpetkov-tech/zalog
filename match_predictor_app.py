@@ -2817,42 +2817,6 @@ def system_check_results_route():
     return redirect(url_for("system_check"))
 
 
-MATCH_RESULT_TEMPLATE = """
-<!DOCTYPE html><html lang="bg"><head><meta charset="UTF-8"><title>Резултат от мача</title>
-<style>""" + BASE_STYLE + SIDEBAR_STYLE + """
-  .pred-row-won { background:#0F6E5615; border-left:4px solid #0F6E56; }
-  .pred-row-lost { background:#B23B3B15; border-left:4px solid #B23B3B; }
-  .pred-row-pending { background:#88878010; border-left:4px solid #D3D1C7; }
-  .pred-row-nodata { background:#88878008; border-left:4px solid #D3D1C7; opacity:0.7; }
-</style></head><body>""" + SIDEBAR_HTML + """<div class="container">
-<a href="/system_check" style="font-size:13px;color:#185FA5;text-decoration:none;">\u2190 Обратно към проверка</a>
-<h1 style="margin-top:12px;">{{home_cy}} vs {{away_cy}}</h1>
-<div style="color:#5F5E5A;font-size:13px;margin-bottom:4px;">{{league_name}} | {{match_date}}</div>
-{% if actual_hg is not none and actual_ag is not none %}
-<div style="font-size:28px;font-weight:600;margin:16px 0;">{{actual_hg}} : {{actual_ag}}</div>
-{% endif %}
-
-<div class="stats-row">
-  <div class="stat-box"><div class="stat-value" style="color:#0F6E56;">{{won_count}}</div><div class="stat-label">Познати</div></div>
-  <div class="stat-box"><div class="stat-value" style="color:#B23B3B;">{{lost_count}}</div><div class="stat-label">Непознати</div></div>
-</div>
-
-<div class="group-title" style="margin-top:20px;">Всички публикувани прогнози</div>
-{% for p in predictions %}
-<div class="match-card pred-row-{{ p.status if p.status in ['won','lost','pending'] else 'nodata' }}" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
-  <span>{{p.label}} <span style="color:#888780;">({{"%.1f"|format(p.pick_pct)}}%)</span></span>
-  <span style="font-size:11px;color:#888780;">
-    {% if p.our_fair_odds %}наш: {{p.our_fair_odds}}{% endif %}
-    {% if p.market_odds %} | пазар: {{p.market_odds}}{% endif %}
-  </span>
-  <span style="font-size:13px;font-weight:600;">
-    {% if p.status == 'won' %}\u2705 Позна{% elif p.status == 'lost' %}\u274c Не позна{% elif p.status == 'no_data' %}\u2753 Няма данни{% else %}\u23f3 Чака{% endif %}
-  </span>
-</div>
-{% endfor %}
-</div></body></html>
-"""
-
 
 @app.route("/match_result")
 def match_result():
@@ -2873,7 +2837,7 @@ def match_result():
     won_count = sum(1 for p in predictions if p["status"] == "won")
     lost_count = sum(1 for p in predictions if p["status"] == "lost")
     league_name = ALL_LEAGUES.get(league, {}).get("name", league)
-    return render_template_string(MATCH_RESULT_TEMPLATE, predictions=predictions, home_cy=home_cy, away_cy=away_cy,
+    return render_template("match_result.html", predictions=predictions, home_cy=home_cy, away_cy=away_cy,
                                     league_name=league_name, match_date=first["match_date"],
                                     actual_hg=actual_hg, actual_ag=actual_ag, won_count=won_count, lost_count=lost_count,
                                     active_page='system_check')
