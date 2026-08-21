@@ -1,0 +1,262 @@
+
+<!DOCTYPE html><html lang="bg"><head><meta charset="UTF-8"><title>{{home_cy}} vs {{away_cy}}</title>
+<style>
+  :root {
+    --bg:#0f1115; --panel:#171a21; --panel2:#1d212b; --sidebar-bg:#12141a; --border:#2a2f3a;
+    --text:#e8eaed; --sub:#8b93a3; --accent:#3b82f6;
+    --green:#22c55e; --green-bg:#16311f; --yellow:#eab308; --yellow-bg:#332a10;
+    --grey:#5b6473; --live:#ef4444; --red:#ef4444;
+  }
+  body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 24px; }
+  .container { max-width: 680px; margin: 0 auto; }
+  h1 { font-size: 20px; font-weight: 500; margin-bottom: 12px; color: var(--text); }
+  .nav { margin-bottom: 20px; }
+  .nav a { color: var(--accent); text-decoration: none; font-size: 13px; margin-right: 16px; }
+  form.filter { background: var(--panel2); border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border); }
+  select, button { width: 100%; padding: 10px; margin-bottom: 10px; font-size: 14px;
+                    border-radius: 8px; border: 1px solid var(--border); box-sizing: border-box; }
+  select { background: var(--panel2); color: var(--text); }
+  button { background: var(--accent); color: white; border: none; cursor: pointer; font-weight: 500; }
+  button:hover { background: #2563eb; }
+  button.small { width: auto; padding: 6px 14px; font-size: 12px; }
+  button.green { background: var(--green); }
+  .top-pick { background: var(--green-bg); border: 1px solid rgba(34,197,94,0.35); border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; }
+  .top-pick-label { font-size: 12px; color: var(--green); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .top-pick-row { display: flex; justify-content: space-between; align-items: center; }
+  .top-pick-name { font-size: 16px; font-weight: 500; color: var(--green); }
+  .top-pick-pct { font-size: 22px; font-weight: 600; color: var(--green); }
+  .lambdas { color: var(--sub); font-size: 13px; margin-bottom: 4px; }
+  .form-note { color: var(--sub); font-size: 12px; margin-bottom: 16px; font-style: italic; }
+  .group { margin-bottom: 16px; }
+  .group-title { font-size: 12px; color: var(--sub); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; padding-left: 4px; }
+  table { width: 100%; border-collapse: collapse; background: var(--panel2); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+  td, th { padding: 8px 14px; text-align: left; font-size: 13px; border-bottom: 1px solid var(--border); }
+  th { background: var(--panel); font-weight: 500; font-size: 11px; color: var(--sub); text-transform: uppercase; }
+  td:not(:first-child), th:not(:first-child) { text-align: right; font-weight: 500; }
+  tr:last-child td { border-bottom: none; }
+  .form-col { color: var(--accent); }
+  .match-card { background: var(--panel2); border: 1px solid var(--border); border-radius: 10px; padding: 9px 14px; margin-bottom: 6px; }
+  .date-group-header { font-size:13px; font-weight:600; color:var(--sub); margin:20px 0 10px; padding-left:2px; }
+  .match-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; gap: 10px; }
+  .match-teams { font-size: 13px; font-weight: 500; line-height: 1.3; }
+  .match-date { font-size: 10px; color: var(--sub); white-space: nowrap; }
+  .match-pick-row { display: flex; justify-content: space-between; align-items: center; }
+  .stats-row { display: flex; gap: 12px; margin-bottom: 20px; }
+  .stat-box { flex: 1; background: var(--panel2); border-radius: 10px; padding: 14px; text-align: center; border: 1px solid var(--border); }
+  .stat-value { font-size: 22px; font-weight: 600; }
+  .stat-label { font-size: 11px; color: var(--sub); text-transform: uppercase; }
+  .won { color: var(--green); } .lost { color: var(--red); } .pending { color: var(--sub); }
+  .checkbox-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+  .inj-note { font-size: 11px; color: var(--sub); margin-top: 4px; }
+
+  .sidebar { position: fixed; top:0; left:0; bottom:0; width:220px; background:var(--sidebar-bg); border-right:1px solid var(--border); padding:24px 0; overflow-y:auto; z-index:200; }
+  .sidebar-logo { padding:0 20px 20px; font-size:16px; font-weight:600; color:var(--accent); }
+  .sidebar-section { padding:16px 20px 6px; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:#525a68; font-weight:700; }
+  .sidebar a { display:flex; align-items:center; gap:10px; padding:10px 20px; color:var(--sub); text-decoration:none; font-size:13px; }
+  .sidebar a.active { background:rgba(59,130,246,0.15); color:var(--accent); font-weight:500; border-right:3px solid var(--accent); }
+  .sidebar a:hover { background:var(--panel2); }
+  .sidebar-toggle { display:none; position:fixed; top:16px; left:16px; z-index:300; background:var(--panel2); color:var(--text); border:1px solid var(--border); border-radius:8px; width:40px; height:40px; align-items:center; justify-content:center; font-size:18px; cursor:pointer; }
+  body { padding-left:244px; }
+  @media (max-width: 860px) {
+    .sidebar { transform:translateX(-100%); transition:transform 0.2s ease; box-shadow:4px 0 12px rgba(0,0,0,0.4); }
+    .sidebar.open { transform:translateX(0); }
+    .sidebar-toggle { display:flex; }
+    body { padding-left:24px; padding-top:70px; }
+  }
+</style></head><body>
+<div class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</div>
+<div class="sidebar">
+  <a href="/" class="{% if active_page=='home' %}active{% endif %}">🏠 Начало</a>
+  <div class="sidebar-section">Прогнози</div>
+  <a href="/daily" class="{% if active_page=='daily' %}active{% endif %}">📅 Предстоящи</a>
+  <a href="/value" class="{% if active_page=='value' %}active{% endif %}">💰 Стойност</a>
+  <a href="/results" class="{% if active_page=='results' %}active{% endif %}">📋 Резултати и ефективност</a>
+  <div class="sidebar-section">Инструменти</div>
+  <a href="/manual" class="{% if active_page=='manual' %}active{% endif %}">🔍 Търсене</a>
+  <div class="sidebar-section">Настройки</div>
+  <a href="/leagues_admin" class="{% if active_page=='leagues_admin' %}active{% endif %}">⚙️ Лиги</a>
+  <a href="/diagnostics" class="{% if active_page=='diagnostics' %}active{% endif %}">🔧 Диагностика</a>
+</div>
+
+<div id="loadingOverlay" style="display:none;position:fixed;inset:0;background:rgba(241,239,232,0.92);z-index:9999;align-items:center;justify-content:center;font-size:16px;color:#185FA5;font-weight:500;">⏳ Зареждане...</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('form.filter').forEach(function(f) {
+    f.addEventListener('submit', function() {
+      document.getElementById('loadingOverlay').style.display = 'flex';
+    });
+  });
+});
+</script>
+<div class="container">
+<h1>{{home_cy}} vs {{away_cy}}</h1>
+<div class="lambdas">{{date}} | Очаквани голове: {{home_cy}} ~{{"%.2f"|format(extra_info[0])}} | {{away_cy}} ~{{"%.2f"|format(extra_info[1])}}
+  {% if lineups_confirmed %} | <span style="color:#0F6E56;">🟢 Стартови състави потвърдени - по-коректна прогноза</span>{% endif %}
+</div>
+{% if inj_note %}<div class="inj-note">🩹 {{inj_note}}</div>{% endif %}
+<div class="form-note">{{extra_info[4]}}</div>
+
+{% if form_standings and (form_standings.home_last5 or form_standings.away_last5 or form_standings.home_standing or form_standings.away_standing) %}
+<div class="group">
+<div class="group-title">📊 Форма и класиране</div>
+<div style="display:flex;gap:20px;flex-wrap:wrap;">
+  {% for side_name, standing, last5 in [(home_cy, form_standings.home_standing, form_standings.home_last5), (away_cy, form_standings.away_standing, form_standings.away_last5)] %}
+  <div style="flex:1;min-width:230px;">
+    <div style="font-weight:500;font-size:13px;margin-bottom:6px;">{{side_name}}</div>
+    {% if standing %}
+    <div style="font-size:12.5px;color:var(--sub);margin-bottom:8px;">
+      {{standing.rank}}-то място{% if form_standings.total_teams %} от {{form_standings.total_teams}}{% endif %} &middot; {{standing.points}} т. ({{standing.played}} мача)
+    </div>
+    {% else %}
+    <div style="font-size:12.5px;color:var(--sub);margin-bottom:8px;">Няма данни за класиране</div>
+    {% endif %}
+    {% if last5 %}
+    <table style="font-size:12.5px;">
+    {% for m in last5 %}
+    <tr>
+      <td style="width:26px;">
+        <span style="display:inline-block;min-width:16px;text-align:center;border-radius:4px;padding:1px 5px;font-weight:600;font-size:11px;
+          {% if m.result=='W' %}background:var(--green-bg);color:var(--green);
+          {% elif m.result=='L' %}background:rgba(239,68,68,0.12);color:var(--live);
+          {% else %}background:rgba(139,145,157,0.14);color:var(--sub);{% endif %}">{{m.result}}</span>
+      </td>
+      <td style="color:var(--sub);white-space:nowrap;padding:0 6px;">{{m.date[5:]}}</td>
+      <td style="white-space:nowrap;padding:0 6px;">{{m.gf}}:{{m.ga}} {{ '(д)' if m.is_home else '(г)' }}</td>
+      <td style="color:var(--sub);">{{m.opponent}}</td>
+    </tr>
+    {% endfor %}
+    </table>
+    {% else %}
+    <div style="font-size:12px;color:var(--sub);">Няма данни за последни мачове</div>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+<div style="font-size:11px;color:var(--sub);padding-top:10px;">Последни 5 в тази лига (не всички турнири на отбора) + текуща позиция в таблицата - чисто информативно, не влияе на прогнозата по-долу.</div>
+</div>
+{% endif %}
+
+<div class="group" style="border-left:3px solid var(--accent);">
+<div class="group-title">📝 Твоя бележка за мача</div>
+{% if match_note and match_note.skip %}
+<div style="font-size:12.5px;color:var(--live);padding:4px 0 10px;">🚫 Отбелязан е като пропуснат - не се показва в основния списък на /daily.</div>
+{% endif %}
+<form method="post" action="/save_match_note">
+  <input type="hidden" name="league" value="{{selected_league}}">
+  <input type="hidden" name="fixture_id" value="{{fixture_id}}">
+  <input type="hidden" name="home" value="{{home}}">
+  <input type="hidden" name="away" value="{{away}}">
+  <input type="hidden" name="date" value="{{date}}">
+  <textarea name="note" rows="2" placeholder="напр. чух, че титулярен играч е контузен - без да пипа прогнозата, само за твоя справка"
+    style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--text);font-family:inherit;font-size:13px;resize:vertical;">{{match_note.note or ''}}</textarea>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+    <label style="font-size:13px;color:var(--sub);display:flex;align-items:center;gap:6px;">
+      <input type="checkbox" name="skip" {% if match_note and match_note.skip %}checked{% endif %}> Пропусни мача (извади от /daily списъка)
+    </label>
+    <button type="submit" class="small">Запази</button>
+  </div>
+</form>
+<div style="font-size:11px;color:var(--sub);padding-top:8px;">Само информативно - никога не променя прогнозата или процента по-долу.</div>
+</div>
+
+{% if extra_info[5] %}
+<div class="group"><div class="group-title">💎 Value bets (EV & препоръчан залог)</div>
+<table>
+<tr><th>Пазар</th><th>Наша</th><th>Пазарна (коеф.)</th><th>EV</th><th>Залог (Kelly 25%)</th></tr>
+{% for vb in extra_info[5][:5] %}
+<tr style="background:{{ '#0F6E5615' if vb.ev > 5 else '#D9A64B15' }};">
+  <td>{{vb.label}}</td>
+  <td>{{"%.1f"|format(vb.our_pct)}}%</td>
+  <td>{{"%.1f"|format(vb.market_pct)}}% ({{vb.odd}})</td>
+  <td style="color:{{ '#0F6E56' if vb.ev > 5 else '#8A6D1F' }};font-weight:600;">+{{"%.1f"|format(vb.ev)}}%</td>
+  <td>{{"%.1f"|format(vb.kelly_stake)}}% от банката</td>
+</tr>
+{% endfor %}
+</table>
+<div style="font-size:11px;color:#888780;padding:8px 0;">EV = очаквана дългосрочна възвръщаемост. Залогът е с дробен Kelly (25% от пълния) заради несигурност на модела - не залагай пълния изчислен размер.</div>
+</div>
+{% else %}
+<div class="top-pick"><div class="top-pick-label">Топ прогноза</div>
+<div class="top-pick-row"><span class="top-pick-name">{{extra_info[2]}}</span><span class="top-pick-pct">{{"%.1f"|format(extra_info[3])}}%</span></div></div>
+{% endif %}
+
+{% if extra_info[6] %}
+<div class="group" style="border-left:3px solid #D9A64B;">
+<div class="group-title">⚠️ Пренебрегнати оценки (твърде високо разминаване с пазара)</div>
+{% for db in extra_info[6][:5] %}
+<div style="font-size:13px;color:#8A6D1F;padding:6px 0;">
+<b>{{db.label}}</b>: моделът дава {{"%.1f"|format(db.our_pct)}}% при пазарни {{"%.1f"|format(db.market_pct)}}% (очаквана печалба +{{"%.1f"|format(db.ev)}}%). Разлика от този порядък обикновено значи грешка в модела, а не пропусната от пазара стойност. Не се препоръчва залог.
+</div>
+{% endfor %}
+</div>
+{% endif %}
+
+{% if real_odds %}
+<div class="group"><div class="group-title">Реални коефициенти от букмейкъри (осреднени)</div><table>
+<tr><th>Пазар</th><th>Коеф.</th></tr>
+{% if real_odds.home_win %}<tr><td>{{home_cy}} печели</td><td>{{real_odds.home_win}}</td></tr>{% endif %}
+{% if real_odds.draw %}<tr><td>Равен</td><td>{{real_odds.draw}}</td></tr>{% endif %}
+{% if real_odds.away_win %}<tr><td>{{away_cy}} печели</td><td>{{real_odds.away_win}}</td></tr>{% endif %}
+{% if real_odds.over25 %}<tr><td>Над 2.5 гола</td><td>{{real_odds.over25}}</td></tr>{% endif %}
+</table></div>
+{% endif %}
+
+{% if api_predictions %}
+<div class="group"><div class="group-title">Вградена прогноза на API-Football (за сравнение, не е нашата)</div><table>
+<tr><th>Пазар</th><th>%</th></tr>
+{% if api_predictions.home_pct %}<tr><td>{{home_cy}} печели</td><td>{{api_predictions.home_pct}}</td></tr>{% endif %}
+{% if api_predictions.draw_pct %}<tr><td>Равен</td><td>{{api_predictions.draw_pct}}</td></tr>{% endif %}
+{% if api_predictions.away_pct %}<tr><td>{{away_cy}} печели</td><td>{{api_predictions.away_pct}}</td></tr>{% endif %}
+</table>
+{% if api_predictions.advice %}<div style="font-size:12px;color:#888780;padding:8px 0;">{{api_predictions.advice}}</div>{% endif %}
+</div>
+{% endif %}
+
+{% if player_props %}
+<div class="group"><div class="group-title">🎯 Играчи (базирано на текуща форма)</div>
+{% for team_name, players in player_props.items() %}
+<div style="font-weight:500;font-size:13px;margin:10px 0 4px;">{{team_name}}</div>
+<table>
+<tr><th>Играч</th><th>Гол</th><th>Пръв</th><th>Картон</th></tr>
+{% for p in players|sort(attribute='anytime_scorer_pct', reverse=True) %}
+<tr>
+  <td>{{p.name}}{% if p.pos %} <small style="color:#888780;">({{p.pos}})</small>{% endif %}</td>
+  <td>{{"%.1f"|format(p.anytime_scorer_pct)}}%</td>
+  <td>{{"%.1f"|format(p.get('first_scorer_pct', 0))}}%</td>
+  <td>{{"%.1f"|format(p.card_pct)}}%</td>
+</tr>
+{% endfor %}
+</table>
+{% endfor %}
+<div style="font-size:11px;color:#888780;padding:8px 0;">Базирано на скорост на голове/картони на 90 мин (коригирана за малка извадка). "Пръв" е пропорционална оценка, не е бектествана на ниво точен ред на головете.</div>
+</div>
+{% endif %}
+
+{% for title, items, has_form in groups %}
+<div class="group"><div class="group-title">{{title}}</div><table>
+<tr><th>Пазар</th><th>%</th><th>Коеф.</th><th></th></tr>
+{% for row in items %}
+<tr>
+  <td>{{row[0]}}</td>
+  <td>{{"%.1f"|format(row[1])}}%</td>
+  <td>{{ row[4] if row[4] else "—" }}</td>
+  <td>
+  {% if row[3] %}
+  <form method="post" action="/place_bet_market" style="margin:0;">
+    <input type="hidden" name="league" value="{{selected_league}}">
+    <input type="hidden" name="fixture_id" value="{{fixture_id}}">
+    <input type="hidden" name="date" value="{{date}}">
+    <input type="hidden" name="home" value="{{home}}">
+    <input type="hidden" name="away" value="{{away}}">
+    <input type="hidden" name="market_code" value="{{row[3]}}">
+    <input type="hidden" name="pick_label" value="{{row[0]}}">
+    <input type="hidden" name="pick_pct" value="{{row[1]}}">
+    <button type="submit" class="small green">Залог</button>
+  </form>
+  {% endif %}
+  </td>
+</tr>
+{% endfor %}
+</table></div>
+{% endfor %}
+</div></body></html>
