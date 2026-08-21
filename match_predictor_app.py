@@ -8,7 +8,7 @@ import shutil
 import tarfile
 import io
 from concurrent.futures import ThreadPoolExecutor
-from flask import Flask, request, render_template_string, redirect, url_for, copy_current_request_context, send_file
+from flask import Flask, request, render_template_string, render_template, redirect, url_for, copy_current_request_context, send_file
 import numpy as np
 import pandas as pd
 import requests
@@ -31,26 +31,6 @@ app.permanent_session_lifetime = timedelta(days=30)
 LOGIN_PASSWORD = "anton20"
 REFRESH_TOKEN = "f6d2a9c7e1b84a3f9c05e2d7a1b6f4e8"
 
-LOGIN_TEMPLATE = """<!doctype html><html><head><meta charset="utf-8">
-<title>Вход</title><style>
-body{background:#0f1115;color:#e8eaed;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-display:flex;align-items:center;justify-content:center;height:100vh;margin:0;}
-.box{background:#171a21;border:1px solid #2a2f3a;border-radius:12px;padding:32px;width:300px;}
-h1{font-size:18px;margin:0 0 20px;color:#e8eaed;}
-input[type=password]{width:100%;box-sizing:border-box;padding:10px 12px;border-radius:8px;
-border:1px solid #2a2f3a;background:#1d212b;color:#e8eaed;font-size:15px;margin-bottom:14px;}
-button{width:100%;padding:10px;border-radius:8px;border:none;background:#3b82f6;color:#fff;
-font-size:15px;cursor:pointer;}
-button:hover{background:#2563eb;}
-.err{color:#ef4444;font-size:13px;margin-bottom:12px;}
-</style></head><body>
-<div class="box"><h1>Sportbg Залози</h1>
-{% if error %}<div class="err">Грешна парола.</div>{% endif %}
-<form method="post"><input type="password" name="password" placeholder="Парола" autofocus>
-<button type="submit">Вход</button></form></div>
-</body></html>"""
-
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     from flask import session
@@ -60,8 +40,8 @@ def login():
             session["authed"] = True
             next_url = request.args.get("next") or "/"
             return redirect(next_url)
-        return render_template_string(LOGIN_TEMPLATE, error=True)
-    return render_template_string(LOGIN_TEMPLATE, error=False)
+        return render_template("login.html", error=True)
+    return render_template("login.html", error=False)
 
 
 @app.before_request
