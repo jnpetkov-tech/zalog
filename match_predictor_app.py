@@ -1743,7 +1743,45 @@ def index():
                                     extra_info=extra_info, cyrillic=cyrillic, active_page='manual')
 
 
+# Фаза И.3, стъпка 2 (21.08.2026): TTL кеш на сглобения резултат за
+# (лига, from_date, to_date) - предложен в CLAUDE_HANDOFF.md като кандидат
+# за И.3. Дори след стъпка 1 (пропускане на compute_grouped_markets за вече
+# логнати мачове), CPU остава ~130% сустейнд през целия request - основната
+# Poisson/Dixon-Coles сметка за top pick-а на всеки мач се прави така или
+# иначе за всеки мач, при всяко зареждане.
+#
+# TTL = 300 сек (не първоначално обмисляните 60-120), защото измерено на
+# живо: /daily?league=all отнема ~100-125 сек дори с топли модели - при
+# по-кратък TTL най-рано обработените лиги (обхождани паралелно през 17-те)
+# вече "изтичат" преди цялата заявка да приключи, така че веднага следваща
+# заявка пак пресмята почти всичко. 300 сек дава запас над измереното
+# най-лошо време. Компромис: живите мачове (elapsed/резултат) може да
+# изостанат до 5 мин при чести зареждания - приемливо за този инструмент,
+# не е live-betting табло с посекундна точност.
+#
+# ВАЖНО: при cache hit връщаме SHALLOW COPY на всеки match dict (не same
+# obj), защото daily() мутира резултата in-place (date_label/note/skipped/
+# idx) - без копие мутациите от една заявка биха "изтекли" в кеша и биха
+# се видели от следваща заявка в рамките на TTL прозореца (доказано с
+# локален тест преди деплой).
+_daily_predict_cache = {}
+DAILY_PREDICT_CACHE_TTL = 300  # секунди
+
+
 def _predict_matches_for_league(league, from_date, to_date):
+    cache_key = (league, from_date.isoformat() if from_date else None,
+                 to_date.isoformat() if to_date else None)
+    now = time.time()
+    cached = _daily_predict_cache.get(cache_key)
+    if cached and (now - cached[0]) < DAILY_PREDICT_CACHE_TTL:
+        cached_matches, cached_api_error = cached[1], cached[2]
+        return [dict(m) for m in cached_matches], cached_api_error
+    matches, api_error = _predict_matches_for_league_impl(league, from_date, to_date)
+    _daily_predict_cache[cache_key] = (now, matches, api_error)
+    return matches, api_error
+
+
+def _predict_matches_for_league_impl(league, from_date, to_date):
     fixtures, api_error = fetch_upcoming_fixtures(league, from_date, to_date)
     (teams, team_idx, ft_model, ht_model, h2_model, corners_model, cards_model,
      offsides_model, recent_model, recent_matches_count, has_injuries) = get_models(league)
