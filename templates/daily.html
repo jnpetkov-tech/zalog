@@ -1,0 +1,322 @@
+
+<!DOCTYPE html><html lang="bg"><head><meta charset="UTF-8"><title>Прогнози</title>
+<style>
+  :root {
+    --bg:#0f1115; --panel:#171a21; --panel2:#1d212b; --sidebar-bg:#12141a; --border:#2a2f3a;
+    --text:#e8eaed; --sub:#8b93a3; --accent:#3b82f6;
+    --green:#22c55e; --green-bg:#16311f; --yellow:#eab308; --yellow-bg:#332a10;
+    --grey:#5b6473; --live:#ef4444; --red:#ef4444;
+  }
+  body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 24px; }
+  .container { max-width: 680px; margin: 0 auto; }
+  h1 { font-size: 20px; font-weight: 500; margin-bottom: 12px; color: var(--text); }
+  .nav { margin-bottom: 20px; }
+  .nav a { color: var(--accent); text-decoration: none; font-size: 13px; margin-right: 16px; }
+  form.filter { background: var(--panel2); border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border); }
+  select, button { width: 100%; padding: 10px; margin-bottom: 10px; font-size: 14px;
+                    border-radius: 8px; border: 1px solid var(--border); box-sizing: border-box; }
+  select { background: var(--panel2); color: var(--text); }
+  button { background: var(--accent); color: white; border: none; cursor: pointer; font-weight: 500; }
+  button:hover { background: #2563eb; }
+  button.small { width: auto; padding: 6px 14px; font-size: 12px; }
+  button.green { background: var(--green); }
+  .top-pick { background: var(--green-bg); border: 1px solid rgba(34,197,94,0.35); border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; }
+  .top-pick-label { font-size: 12px; color: var(--green); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .top-pick-row { display: flex; justify-content: space-between; align-items: center; }
+  .top-pick-name { font-size: 16px; font-weight: 500; color: var(--green); }
+  .top-pick-pct { font-size: 22px; font-weight: 600; color: var(--green); }
+  .lambdas { color: var(--sub); font-size: 13px; margin-bottom: 4px; }
+  .form-note { color: var(--sub); font-size: 12px; margin-bottom: 16px; font-style: italic; }
+  .group { margin-bottom: 16px; }
+  .group-title { font-size: 12px; color: var(--sub); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; padding-left: 4px; }
+  table { width: 100%; border-collapse: collapse; background: var(--panel2); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+  td, th { padding: 8px 14px; text-align: left; font-size: 13px; border-bottom: 1px solid var(--border); }
+  th { background: var(--panel); font-weight: 500; font-size: 11px; color: var(--sub); text-transform: uppercase; }
+  td:not(:first-child), th:not(:first-child) { text-align: right; font-weight: 500; }
+  tr:last-child td { border-bottom: none; }
+  .form-col { color: var(--accent); }
+  .match-card { background: var(--panel2); border: 1px solid var(--border); border-radius: 10px; padding: 9px 14px; margin-bottom: 6px; }
+  .date-group-header { font-size:13px; font-weight:600; color:var(--sub); margin:20px 0 10px; padding-left:2px; }
+  .match-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; gap: 10px; }
+  .match-teams { font-size: 13px; font-weight: 500; line-height: 1.3; }
+  .match-date { font-size: 10px; color: var(--sub); white-space: nowrap; }
+  .match-pick-row { display: flex; justify-content: space-between; align-items: center; }
+  .stats-row { display: flex; gap: 12px; margin-bottom: 20px; }
+  .stat-box { flex: 1; background: var(--panel2); border-radius: 10px; padding: 14px; text-align: center; border: 1px solid var(--border); }
+  .stat-value { font-size: 22px; font-weight: 600; }
+  .stat-label { font-size: 11px; color: var(--sub); text-transform: uppercase; }
+  .won { color: var(--green); } .lost { color: var(--red); } .pending { color: var(--sub); }
+  .checkbox-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+  .inj-note { font-size: 11px; color: var(--sub); margin-top: 4px; }
+
+  .sidebar { position: fixed; top:0; left:0; bottom:0; width:220px; background:var(--sidebar-bg); border-right:1px solid var(--border); padding:24px 0; overflow-y:auto; z-index:200; }
+  .sidebar-logo { padding:0 20px 20px; font-size:16px; font-weight:600; color:var(--accent); }
+  .sidebar-section { padding:16px 20px 6px; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:#525a68; font-weight:700; }
+  .sidebar a { display:flex; align-items:center; gap:10px; padding:10px 20px; color:var(--sub); text-decoration:none; font-size:13px; }
+  .sidebar a.active { background:rgba(59,130,246,0.15); color:var(--accent); font-weight:500; border-right:3px solid var(--accent); }
+  .sidebar a:hover { background:var(--panel2); }
+  .sidebar-toggle { display:none; position:fixed; top:16px; left:16px; z-index:300; background:var(--panel2); color:var(--text); border:1px solid var(--border); border-radius:8px; width:40px; height:40px; align-items:center; justify-content:center; font-size:18px; cursor:pointer; }
+  body { padding-left:244px; }
+  @media (max-width: 860px) {
+    .sidebar { transform:translateX(-100%); transition:transform 0.2s ease; box-shadow:4px 0 12px rgba(0,0,0,0.4); }
+    .sidebar.open { transform:translateX(0); }
+    .sidebar-toggle { display:flex; }
+    body { padding-left:24px; padding-top:70px; }
+  }
+
+  .tabs { display:flex; gap:4px; margin-bottom:20px; border-bottom:1px solid var(--border); }
+  .tab-btn { padding:10px 18px; background:none; border:none; font-size:14px; font-weight:500; color:var(--sub); cursor:pointer; border-bottom:2px solid transparent; width:auto; margin-bottom:-1px; }
+  .tab-btn.active { color:var(--accent); border-bottom:2px solid var(--accent); }
+  .tab-content { display:none; }
+  .tab-content.active { display:block; }
+  .league-group { margin-bottom:16px; border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+  .league-head { display:flex; align-items:center; gap:8px; padding:12px 16px; background:var(--panel2); cursor:pointer; font-size:13.5px; font-weight:600; }
+  .league-head .lcount { color:var(--sub); font-weight:400; font-size:12px; }
+  .league-head .chev { margin-left:auto; color:var(--sub); font-size:12px; transition:transform 0.15s; }
+  .league-group.collapsed .league-body { display:none; }
+  .league-group.collapsed .chev { transform:rotate(-90deg); }
+  .league-body { padding:10px 16px 14px; }
+  .livebadge { background:rgba(239,68,68,0.15); color:var(--live); font-size:11px; font-weight:700; padding:2px 8px; border-radius:6px; }
+</style></head><body>
+<div class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</div>
+<div class="sidebar">
+  <a href="/" class="{% if active_page=='home' %}active{% endif %}">🏠 Начало</a>
+  <div class="sidebar-section">Прогнози</div>
+  <a href="/daily" class="{% if active_page=='daily' %}active{% endif %}">📅 Предстоящи</a>
+  <a href="/value" class="{% if active_page=='value' %}active{% endif %}">💰 Стойност</a>
+  <a href="/results" class="{% if active_page=='results' %}active{% endif %}">📋 Резултати и ефективност</a>
+  <div class="sidebar-section">Инструменти</div>
+  <a href="/manual" class="{% if active_page=='manual' %}active{% endif %}">🔍 Търсене</a>
+  <div class="sidebar-section">Настройки</div>
+  <a href="/leagues_admin" class="{% if active_page=='leagues_admin' %}active{% endif %}">⚙️ Лиги</a>
+  <a href="/diagnostics" class="{% if active_page=='diagnostics' %}active{% endif %}">🔧 Диагностика</a>
+</div>
+
+<div id="loadingOverlay" style="display:none;position:fixed;inset:0;background:rgba(15,17,21,0.92);z-index:9999;align-items:center;justify-content:center;font-size:16px;color:var(--accent);font-weight:500;">⏳ Зареждане...</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('form.filter').forEach(function(f) {
+    f.addEventListener('submit', function() {
+      document.getElementById('loadingOverlay').style.display = 'flex';
+    });
+  });
+});
+function dtShowTab(name) {
+  document.querySelectorAll('.tab-content').forEach(function(el){ el.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(el){ el.classList.remove('active'); });
+  document.getElementById('dt-tab-' + name).classList.add('active');
+  document.querySelector('.tab-btn[data-tab="' + name + '"]').classList.add('active');
+}
+</script>
+<div class="container">
+<h1>Прогнози - {{league_name}}</h1>
+<form class="filter" method="get" style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:14px;">
+  <div style="flex:2;min-width:200px;">
+    <label style="font-size:11px;color:var(--sub);">Лига</label>
+    <select name="league" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);box-sizing:border-box;background:var(--panel2);color:var(--text);"><option value="all" {% if selected_league=="all" %}selected{% endif %}>🌍 Всички лиги</option>{% for key, name in leagues.items() %}<option value="{{key}}" {% if key==selected_league %}selected{% endif %}>{{name}}</option>{% endfor %}</select>
+  </div>
+  <div style="flex:1;min-width:130px;">
+    <label style="font-size:11px;color:var(--sub);">От дата</label>
+    <input type="date" name="from_date" value="{{from_value}}" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);box-sizing:border-box;background:var(--panel2);color:var(--text);">
+  </div>
+  <div style="flex:1;min-width:130px;">
+    <label style="font-size:11px;color:var(--sub);">До дата</label>
+    <input type="date" name="to_date" value="{{to_value}}" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);box-sizing:border-box;background:var(--panel2);color:var(--text);">
+  </div>
+  <button type="submit" style="flex:0 0 auto;">Покажи</button>
+</form>
+
+{% if selected_league == "conference_league" %}
+<div style="background:var(--yellow-bg);border:1px solid rgba(234,179,8,0.35);border-radius:12px;padding:16px 20px;margin-bottom:20px;color:var(--yellow);font-size:13px;">
+  ⚠️ Експериментална лига - 1X2 прогнозите тук НЕ са потвърдени статистически (334 разнородни отбора, твърде хетерогенна извадка). Публикувай с повишено внимание.
+</div>
+{% elif selected_league == "portugal2" %}
+<div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.35);border-radius:12px;padding:16px 20px;margin-bottom:20px;color:var(--live);font-size:13px;">
+  ❌ Експериментална лига - при backtest НИТО ЕДИН пазар (1X2, Над/Под, BTTS) не би baseline. Прогнозите тук са на собствен риск, следим резултатите за преоценка.
+</div>
+{% elif selected_league == "spain2" %}
+<div style="background:var(--yellow-bg);border:1px solid rgba(234,179,8,0.35);border-radius:12px;padding:16px 20px;margin-bottom:20px;color:var(--yellow);font-size:13px;">
+  ⚠️ 1X2 прогнозата тук е маргинална при backtest (+0.9pp над baseline, вероятно в рамките на шум). Над/Под 2.5 е по-силна (+4.7pp). Залагай на 1X2 с повишено внимание.
+</div>
+{% elif selected_league in ["france2", "italy2", "bulgaria2"] %}
+<div style="background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:20px;color:var(--sub);font-size:13px;">
+  🆕 Нова лига (базов модел, малка тестова извадка). Backtest показва положителен резултат за 1X2 и Над/Под 2.5, но следим живите резултати за по-сигурна преценка с времето.
+</div>
+{% endif %}
+{% if api_error %}
+<div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.35);border-radius:12px;padding:16px 20px;margin-bottom:20px;color:var(--live);font-size:13px;">
+  ⚠️ {{api_error}}
+</div>
+{% endif %}
+{% if snapshot_stale_warning %}
+<div style="background:var(--yellow-bg);border:1px solid rgba(234,179,8,0.35);border-radius:12px;padding:16px 20px;margin-bottom:20px;color:var(--yellow);font-size:13px;">
+  ⚠️ {{snapshot_stale_warning}}
+</div>
+{% endif %}
+
+<div class="tabs">
+  <button type="button" class="tab-btn" data-tab="live" onclick="dtShowTab('live')">🔴 На живо <span style="font-size:11px;color:var(--sub);">({{live_count}})</span></button>
+  <button type="button" class="tab-btn active" data-tab="upcoming" onclick="dtShowTab('upcoming')">📅 Предстоящи <span style="font-size:11px;color:var(--sub);">({{upcoming_count}})</span></button>
+  <button type="button" class="tab-btn" data-tab="finished" onclick="dtShowTab('finished')">✅ Приключили <span style="font-size:11px;color:var(--sub);">({{finished_count}})</span></button>
+  <button type="button" class="tab-btn" data-tab="skipped" onclick="dtShowTab('skipped')">🚫 Пропуснати <span style="font-size:11px;color:var(--sub);">({{skipped_count}})</span></button>
+</div>
+
+<div id="dt-tab-live" class="tab-content">
+{% for g in live_groups %}
+<div class="league-group">
+  <div class="league-head" onclick="this.parentElement.classList.toggle('collapsed')">{{g.flag}} {{g.name}} <span class="lcount">{{g.matches|length}} мача</span><span class="chev">▾</span></div>
+  <div class="league-body">
+  {% for m in g.matches %}
+  <div class="match-card">
+    <div class="match-header">
+      <span class="match-teams">
+        {% if m.home_logo %}<img src="{{m.home_logo}}" style="width:20px;height:20px;vertical-align:-5px;margin-right:4px;">{% endif %}{{m.home_cy}}
+        <span style="color:var(--sub);">vs</span>
+        {{m.away_cy}}{% if m.away_logo %}<img src="{{m.away_logo}}" style="width:20px;height:20px;vertical-align:-5px;margin-left:4px;">{% endif %}
+      </span>
+      <span class="livebadge">🔴 {{m.elapsed if m.elapsed is not none else "?"}}' {{m.goals_home}}:{{m.goals_away}}</span>
+    </div>
+    <div class="match-pick-row">
+      {% if m.pct is none %}
+      <span style="color:var(--sub);">{{m.pick}}</span>
+      <span>
+        <a href="/live?league={{m.league}}&home={{m.home}}&away={{m.away}}&minute={{m.elapsed if m.elapsed is not none else 0}}&hg={{m.goals_home}}&ag={{m.goals_away}}" style="font-size:12px;color:var(--sub);text-decoration:none;">Персонализирай →</a>
+      </span>
+      {% elif m.live_result %}
+      <span>{{m.home_cy}} {{"%.0f"|format(m.live_result.home_win*100)}}% · Равен {{"%.0f"|format(m.live_result.draw*100)}}% · {{m.away_cy}} {{"%.0f"|format(m.live_result.away_win*100)}}%</span>
+      <span>
+        <a href="/match_detail?league={{m.league}}&fixture_id={{m.fixture_id}}&home={{m.home}}&away={{m.away}}&date={{m.date}}" style="font-size:12px;color:var(--accent);text-decoration:none;margin-right:10px;">Пълна прогноза →</a>
+        <a href="/live?league={{m.league}}&home={{m.home}}&away={{m.away}}&minute={{m.elapsed if m.elapsed is not none else 0}}&hg={{m.goals_home}}&ag={{m.goals_away}}" style="font-size:12px;color:var(--sub);text-decoration:none;">Персонализирай →</a>
+      </span>
+      {% else %}
+      <span style="color:var(--sub);">{{m.pick}} <b>{{"%.1f"|format(m.pct)}}%</b> <span style="font-size:11px;">(предмачова прогноза)</span></span>
+      <span>
+        <a href="/match_detail?league={{m.league}}&fixture_id={{m.fixture_id}}&home={{m.home}}&away={{m.away}}&date={{m.date}}" style="font-size:12px;color:var(--accent);text-decoration:none;margin-right:10px;">Пълна прогноза →</a>
+        <a href="/live?league={{m.league}}&home={{m.home}}&away={{m.away}}&minute={{m.elapsed if m.elapsed is not none else 0}}&hg={{m.goals_home}}&ag={{m.goals_away}}" style="font-size:12px;color:var(--sub);text-decoration:none;">Персонализирай →</a>
+      </span>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+  </div>
+</div>
+{% endfor %}
+{% if not live_groups %}<p style="color:var(--sub);">В момента няма мачове на живо в избраните лиги.</p>{% endif %}
+</div>
+
+<div id="dt-tab-upcoming" class="tab-content active">
+{% if upcoming_groups %}
+<form method="post" action="/place_combo">
+<input type="hidden" name="total" value="{{total_upcoming}}">
+{% for g in upcoming_groups %}
+<div class="league-group">
+  <div class="league-head" onclick="this.parentElement.classList.toggle('collapsed')">{{g.flag}} {{g.name}} <span class="lcount">{{g.matches|length}} мача</span><span class="chev">▾</span></div>
+  <div class="league-body">
+  {% for m in g.matches %}
+  <div class="match-card">
+    <div class="match-header">
+      <span class="match-teams">
+        {% if m.home_logo %}<img src="{{m.home_logo}}" style="width:20px;height:20px;vertical-align:-5px;margin-right:4px;">{% endif %}{{m.home_cy}}
+        <span style="color:var(--sub);">vs</span>
+        {{m.away_cy}}{% if m.away_logo %}<img src="{{m.away_logo}}" style="width:20px;height:20px;vertical-align:-5px;margin-left:4px;">{% endif %}
+      </span>
+      <span class="match-date">{{m.date}} {% if m.lineups_confirmed %}<span style="color:var(--green);">🟢 състави потвърдени</span>{% endif %}</span>
+    </div>
+    <div class="match-pick-row" style="display:block;">
+      {% if m.pct is not none %}
+      <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px;">
+        {% for p in m.picks %}
+        <span style="background:var(--panel2);border:1px solid {% if loop.first %}var(--accent){% else %}var(--border){% endif %};border-radius:8px;padding:5px 10px;font-size:13px;">{{p.label}} <b>{{"%.1f"|format(p.pct)}}%</b>{% if p.odds %} <span style="color:var(--sub);font-size:11px;" title="Наша изчислена честна цена по вероятността - НЕ котировка на букмейкър">оценка ≈{{p.odds}}</span>{% endif %}</span>
+        {% endfor %}
+        {% if m.used_market %}<span style="font-size:11px;background:var(--green-bg);color:var(--green);padding:2px 6px;border-radius:6px;">🎯 с пазарни коеф.</span>{% else %}<span style="font-size:11px;background:var(--panel2);color:var(--sub);padding:2px 6px;border-radius:6px;">⏳ чисто моделна</span>{% endif %}
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <a href="/match_detail?league={{m.league}}&fixture_id={{m.fixture_id}}&home={{m.home}}&away={{m.away}}&date={{m.date}}" style="font-size:12px;color:var(--accent);text-decoration:none;">Влез в мача →</a>
+        <button type="submit" formaction="/place_bet_single/{{m.idx}}" class="small" style="background:transparent;border:1px solid var(--border);color:var(--sub);font-weight:400;">Залог на топ прогнозата</button>
+      </div>
+      {% else %}
+      <span style="color:var(--sub);">{{m.pick}}</span>
+      <span>
+        <a href="/live?league={{m.league}}&home={{m.home}}&away={{m.away}}" style="font-size:12px;color:var(--sub);text-decoration:none;">Следи на живо →</a>
+      </span>
+      {% endif %}
+    </div>
+    {% if m.inj_note %}<div class="inj-note">{{m.inj_note}}</div>{% endif %}
+    {% if m.pct is not none %}
+    <div class="checkbox-row">
+      <input type="checkbox" name="sel_{{m.idx}}" id="sel_{{m.idx}}">
+      <label for="sel_{{m.idx}}" style="font-size:12px;color:var(--sub);">Добави в комбинирана колонка</label>
+      <input type="hidden" name="league_{{m.idx}}" value="{{m.league}}">
+      <input type="hidden" name="fixture_id_{{m.idx}}" value="{{m.fixture_id}}">
+      <input type="hidden" name="date_{{m.idx}}" value="{{m.date}}">
+      <input type="hidden" name="home_{{m.idx}}" value="{{m.home}}">
+      <input type="hidden" name="away_{{m.idx}}" value="{{m.away}}">
+      <input type="hidden" name="code_{{m.idx}}" value="{{m.code}}">
+      <input type="hidden" name="pick_{{m.idx}}" value="{{m.pick}}">
+      <input type="hidden" name="pct_{{m.idx}}" value="{{m.pct}}">
+    </div>
+    {% endif %}
+  </div>
+  {% endfor %}
+  </div>
+</div>
+{% endfor %}
+<button type="submit" class="green">Направи комбинирана колонка от избраните</button>
+</form>
+{% else %}
+<p style="color:var(--sub);">Няма предстоящи мачове в следващите {{days_ahead}} дни.</p>
+{% endif %}
+</div>
+
+<div id="dt-tab-finished" class="tab-content">
+{% for g in finished_groups %}
+<div class="league-group">
+  <div class="league-head" onclick="this.parentElement.classList.toggle('collapsed')">{{g.flag}} {{g.name}} <span class="lcount">{{g.matches|length}} мача</span><span class="chev">▾</span></div>
+  <div class="league-body">
+  {% for m in g.matches %}
+  <div class="match-card" style="opacity:0.85;">
+    <div class="match-header">
+      <span class="match-teams">{{m.home_cy}} <b style="color:var(--text);">{{ m.goals_home if m.goals_home is not none else "?" }} : {{ m.goals_away if m.goals_away is not none else "?" }}</b> {{m.away_cy}}</span>
+      <span class="match-date">{{m.date}}</span>
+    </div>
+    <div class="match-pick-row">
+      {% if m.pct is not none %}
+      <span style="color:var(--sub);">Наша прогноза: {{m.pick}} ({{"%.1f"|format(m.pct)}}%)</span>
+      {% else %}
+      <span style="color:var(--sub);">{{m.pick}}</span>
+      {% endif %}
+      <a href="/match_detail?league={{m.league}}&fixture_id={{m.fixture_id}}&home={{m.home}}&away={{m.away}}&date={{m.date}}" style="font-size:12px;color:var(--accent);text-decoration:none;">Детайли →</a>
+    </div>
+  </div>
+  {% endfor %}
+  </div>
+</div>
+{% endfor %}
+{% if not finished_groups %}<p style="color:var(--sub);">Няма приключили мачове в избрания период.</p>{% endif %}
+</div>
+
+<div id="dt-tab-skipped" class="tab-content">
+<p style="color:var(--sub);font-size:12.5px;margin-bottom:14px;">Мачове, които ти отбеляза като "пропусни" (виж бележката на страницата на мача). Не участват в основните списъци по-горе. Свали отметката на страницата на мача, за да се върне.</p>
+{% for g in skipped_groups %}
+<div class="league-group">
+  <div class="league-head" onclick="this.parentElement.classList.toggle('collapsed')">{{g.flag}} {{g.name}} <span class="lcount">{{g.matches|length}} мача</span><span class="chev">▾</span></div>
+  <div class="league-body">
+  {% for m in g.matches %}
+  <div class="match-card" style="opacity:0.85;">
+    <div class="match-header">
+      <span class="match-teams">{{m.home_cy}} <span style="color:var(--sub);">vs</span> {{m.away_cy}}</span>
+      <span class="match-date">{{m.date}}</span>
+    </div>
+    {% if m.note %}<div class="inj-note">📝 {{m.note}}</div>{% endif %}
+    <div class="match-pick-row">
+      <a href="/match_detail?league={{m.league}}&fixture_id={{m.fixture_id}}&home={{m.home}}&away={{m.away}}&date={{m.date}}" style="font-size:12px;color:var(--accent);text-decoration:none;">Прегледай / върни в списъка →</a>
+    </div>
+  </div>
+  {% endfor %}
+  </div>
+</div>
+{% endfor %}
+{% if not skipped_groups %}<p style="color:var(--sub);">Няма пропуснати мачове.</p>{% endif %}
+</div>
+
+</div></body></html>
