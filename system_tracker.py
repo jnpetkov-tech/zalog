@@ -1,3 +1,4 @@
+import json
 import sqlite3
 from datetime import datetime, timedelta
 
@@ -65,8 +66,51 @@ def init_db():
             updated_at TEXT
         )
     """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS form_standings_cache (
+            fixture_id INTEGER PRIMARY KEY,
+            data TEXT,
+            fetched_at TEXT
+        )
+    """)
     conn.commit()
     conn.close()
+
+
+def set_cached_form_standings(fixture_id, data):
+    # Фаза P.1 (21.08.2026): последни 5 мача + класиране на /match_detail -
+    # 3 допълнителни API извиквания (2x /fixtures last5 + 1x /standings) на
+    # некеширан преглед, по образец на injuries_cache (виж N.3) - кешираме
+    # дори частичен резултат (напр. standings=None за чист knockout турнир),
+    # за да не удряме API-то при всяко презареждане на страницата.
+    conn = get_conn()
+    conn.execute("""
+        INSERT INTO form_standings_cache (fixture_id, data, fetched_at)
+        VALUES (?,?,?)
+        ON CONFLICT(fixture_id) DO UPDATE SET
+            data=excluded.data, fetched_at=excluded.fetched_at
+    """, (fixture_id, json.dumps(data), datetime.now().isoformat()))
+    conn.commit()
+    conn.close()
+
+
+def get_cached_form_standings(fixture_id, max_age_hours=12):
+    conn = get_conn()
+    conn.row_factory = sqlite3.Row
+    row = conn.execute("SELECT * FROM form_standings_cache WHERE fixture_id=?", (fixture_id,)).fetchone()
+    conn.close()
+    if not row:
+        return None
+    try:
+        fetched = datetime.fromisoformat(row["fetched_at"])
+    except (ValueError, TypeError):
+        return None
+    if datetime.now() - fetched > timedelta(hours=max_age_hours):
+        return None
+    try:
+        return json.loads(row["data"])
+    except (ValueError, TypeError):
+        return None
 
 
 def set_match_note(fixture_id, note, skip):

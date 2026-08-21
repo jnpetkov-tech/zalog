@@ -258,11 +258,85 @@ def fetch_fixture_predictions(fixture_id):
         percent = pred.get("percent", {})
         advice = pred.get("advice")
         winner = pred.get("winner", {}).get("name")
+        # Фаза P.1 (21.08.2026): team id-та идват безплатно в същия отговор -
+        # ползвани за /fixtures?team=.. (последни 5 мача) и /standings по-долу,
+        # без допълнително API извикване само за да намерим team id.
+        teams = data["response"][0].get("teams", {})
+        home_id = teams.get("home", {}).get("id")
+        away_id = teams.get("away", {}).get("id")
 
         return {
             "home_pct": percent.get("home"), "draw_pct": percent.get("draw"), "away_pct": percent.get("away"),
-            "advice": advice, "winner": winner,
+            "advice": advice, "winner": winner, "home_id": home_id, "away_id": away_id,
         }
+    except Exception:
+        return None
+
+
+def fetch_team_recent_form(team_id, league_id, season, exclude_fixture_id, n=5):
+    """Фаза P.1 (21.08.2026): последните n изиграни мача на отбор В СЪЩАТА
+    лига (не всички турнири на отбора) - чисто информативно на /match_detail,
+    не вход за модела. exclude_fixture_id маха текущия преглеждан мач, ако
+    вече е приключил и се е промъкнал в резултата."""
+    try:
+        r = requests.get(f"{BASE_URL}/fixtures", headers=API_HEADERS,
+                          params={"team": team_id, "league": league_id, "season": season,
+                                   "last": n + 3}, timeout=10)
+        data = r.json()
+        if data.get("errors") or not data.get("response"):
+            return None
+        out = []
+        for f in data["response"]:
+            if f["fixture"]["status"]["short"] not in FINISHED_STATUSES:
+                continue
+            if f["fixture"]["id"] == exclude_fixture_id:
+                continue
+            hg, ag = f["goals"]["home"], f["goals"]["away"]
+            if hg is None or ag is None:
+                continue
+            is_home = f["teams"]["home"]["id"] == team_id
+            gf, ga = (hg, ag) if is_home else (ag, hg)
+            opponent = f["teams"]["away"]["name"] if is_home else f["teams"]["home"]["name"]
+            if gf > ga:
+                result = "W"
+            elif gf < ga:
+                result = "L"
+            else:
+                result = "D"
+            out.append({
+                "date": f["fixture"]["date"][:10], "opponent": opponent,
+                "gf": gf, "ga": ga, "is_home": is_home, "result": result,
+            })
+        out.sort(key=lambda x: x["date"], reverse=True)
+        return out[:n]
+    except Exception:
+        return None
+
+
+def fetch_league_standings_for_teams(league_id, season, home_id, away_id):
+    """Фаза P.1 (21.08.2026): текуща позиция в таблицата за двата отбора -
+    чисто информативно. Групите (UEFA турнири с групова фаза) се сплескват
+    в едно - връща None за отбор, който не е намерен (напр. чист knockout
+    турнир без класическа таблица), не гърми."""
+    try:
+        r = requests.get(f"{BASE_URL}/standings", headers=API_HEADERS,
+                          params={"league": league_id, "season": season}, timeout=10)
+        data = r.json()
+        if data.get("errors") or not data.get("response"):
+            return None
+        groups = data["response"][0]["league"]["standings"]
+        flat = [row for group in groups for row in group]
+        total = len(flat)
+        by_id = {row["team"]["id"]: row for row in flat}
+
+        def pick(tid):
+            row = by_id.get(tid)
+            if not row:
+                return None
+            return {"rank": row["rank"], "points": row["points"],
+                     "played": row["all"]["played"], "form": row.get("form")}
+
+        return {"home": pick(home_id), "away": pick(away_id), "total_teams": total}
     except Exception:
         return None
 
@@ -1069,6 +1143,46 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 {% if inj_note %}<div class="inj-note">🩹 {{inj_note}}</div>{% endif %}
 <div class="form-note">{{extra_info[4]}}</div>
+
+{% if form_standings and (form_standings.home_last5 or form_standings.away_last5 or form_standings.home_standing or form_standings.away_standing) %}
+<div class="group">
+<div class="group-title">📊 Форма и класиране</div>
+<div style="display:flex;gap:20px;flex-wrap:wrap;">
+  {% for side_name, standing, last5 in [(home_cy, form_standings.home_standing, form_standings.home_last5), (away_cy, form_standings.away_standing, form_standings.away_last5)] %}
+  <div style="flex:1;min-width:230px;">
+    <div style="font-weight:500;font-size:13px;margin-bottom:6px;">{{side_name}}</div>
+    {% if standing %}
+    <div style="font-size:12.5px;color:var(--sub);margin-bottom:8px;">
+      {{standing.rank}}-то място{% if form_standings.total_teams %} от {{form_standings.total_teams}}{% endif %} &middot; {{standing.points}} т. ({{standing.played}} мача)
+    </div>
+    {% else %}
+    <div style="font-size:12.5px;color:var(--sub);margin-bottom:8px;">Няма данни за класиране</div>
+    {% endif %}
+    {% if last5 %}
+    <table style="font-size:12.5px;">
+    {% for m in last5 %}
+    <tr>
+      <td style="width:26px;">
+        <span style="display:inline-block;min-width:16px;text-align:center;border-radius:4px;padding:1px 5px;font-weight:600;font-size:11px;
+          {% if m.result=='W' %}background:var(--green-bg);color:var(--green);
+          {% elif m.result=='L' %}background:rgba(239,68,68,0.12);color:var(--live);
+          {% else %}background:rgba(139,145,157,0.14);color:var(--sub);{% endif %}">{{m.result}}</span>
+      </td>
+      <td style="color:var(--sub);white-space:nowrap;padding:0 6px;">{{m.date[5:]}}</td>
+      <td style="white-space:nowrap;padding:0 6px;">{{m.gf}}:{{m.ga}} {{ '(д)' if m.is_home else '(г)' }}</td>
+      <td style="color:var(--sub);">{{m.opponent}}</td>
+    </tr>
+    {% endfor %}
+    </table>
+    {% else %}
+    <div style="font-size:12px;color:var(--sub);">Няма данни за последни мачове</div>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+<div style="font-size:11px;color:var(--sub);padding-top:10px;">Последни 5 в тази лига (не всички турнири на отбора) + текуща позиция в таблицата - чисто информативно, не влияе на прогнозата по-долу.</div>
+</div>
+{% endif %}
 
 <div class="group" style="border-left:3px solid var(--accent);">
 <div class="group-title">📝 Твоя бележка за мача</div>
@@ -2030,10 +2144,37 @@ def match_detail():
     lineups_confirmed = False
     api_predictions = None
     player_props_data = None
+    form_standings = None
     if fixture_id:
         real_odds = fetch_fixture_odds(int(fixture_id))
         lineups_confirmed = fetch_lineups_available(int(fixture_id))
         api_predictions = fetch_fixture_predictions(int(fixture_id))
+        # Фаза P.1 (21.08.2026): последни 5 мача + класиране - кеш-първо
+        # (st.get_cached_form_standings), същия модел като инжуриите (N.3).
+        # team id-тата идват безплатно от api_predictions по-горе - без тях
+        # (напр. API-Football грешка/квота) просто не показваме секцията.
+        cached_fs = st.get_cached_form_standings(int(fixture_id))
+        if cached_fs is not None:
+            form_standings = cached_fs
+        elif api_predictions and api_predictions.get("home_id") and api_predictions.get("away_id"):
+            try:
+                match_dt = datetime.strptime((match_date or "")[:10], "%Y-%m-%d")
+            except (ValueError, TypeError):
+                match_dt = datetime.now()
+            season = match_dt.year if match_dt.month >= 7 else match_dt.year - 1
+            league_id = ALL_LEAGUES.get(league, {}).get("id")
+            if league_id:
+                home_id, away_id = api_predictions["home_id"], api_predictions["away_id"]
+                home_last5 = fetch_team_recent_form(home_id, league_id, season, int(fixture_id))
+                away_last5 = fetch_team_recent_form(away_id, league_id, season, int(fixture_id))
+                standings = fetch_league_standings_for_teams(league_id, season, home_id, away_id)
+                form_standings = {
+                    "home_last5": home_last5, "away_last5": away_last5,
+                    "home_standing": standings["home"] if standings else None,
+                    "away_standing": standings["away"] if standings else None,
+                    "total_teams": standings["total_teams"] if standings else None,
+                }
+                st.set_cached_form_standings(int(fixture_id), form_standings)
     groups, extra_info = compute_grouped_markets(league, home, away, home_inj, away_inj, real_odds=real_odds)
     if lineups_confirmed and extra_info:
         try:
@@ -2059,7 +2200,8 @@ def match_detail():
                                     date=match_date, fixture_id=fixture_id, selected_league=league,
                                     real_odds=real_odds, lineups_confirmed=lineups_confirmed, inj_note=inj_note,
                                     match_note=match_note,
-                                    api_predictions=api_predictions, player_props=player_props_data, active_page='daily')
+                                    api_predictions=api_predictions, player_props=player_props_data,
+                                    form_standings=form_standings, active_page='daily')
 
 
 @app.route("/save_match_note", methods=["POST"])
