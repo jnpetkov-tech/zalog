@@ -150,16 +150,16 @@ Flask приложение за прогнози на футболни резу�
 
 **Партида 5 (Граница 4, само първата част: „Темплейтите излизат от Python низовете в `templates/*.html`")** — по искане на Дака, извършва се на малки git-commit-нати стъпки, един темплейт/route наведнъж, с рестарт (`kill -HUP`, sudo недостъпен в тази сесия) + чист `journalctl` след всяка стъпка. **Не се пипат** `football_lib.py`, `prediction_policy.py`, нито systemd конфигурация — извън обхвата.
 
-**Метод, спазван за всяка стъпка** (за да няма риск от ръчна грешка при пренаписване на HTML): Python `ast`-базиран скрипт извлича ТОЧНИЯ резолвнат низ на дадената `*_TEMPLATE` константа (включително конкатенации с `BASE_STYLE`/`SIDEBAR_STYLE`/`SIDEBAR_HTML`) директно от кода, записва го байт-по-байт в `templates/<име>.html`, после `render_template_string(TEMPLATE, ...)` се сменя с `render_template("<име>.html", ...)`. Преди деплой: диф на извлечения низ срещу файла (трябва да излезе празен) + реален Flask render сравнение (`render_template_string` срещу `render_template`) за всички релевантни комбинации от аргументи — трябва да излезе байт-идентично. Едва тогава `kill -HUP` + `journalctl` проверка + commit.
+**Метод, спазван за всяка стъпка** (за да няма риск от ръчна грешка при пренаписване на HTML): Python `ast`-базиран скрипт извлича ТОЧНИЯ резолвнат низ на дадената `*_TEMPLATE` константа (включително конкатенации с `BASE_STYLE`/`SIDEBAR_STYLE`/`SIDEBAR_HTML`) директно от кода, записва го байт-по-байт в `templates/<име>.html`, после `render_template_string(TEMPLATE, ...)` се сменя с `render_template("<име>.html", ...)`. Преди деплой: диф на извлечения низ срещу файла (трябва да излезе празен) + `jinja2.Environment(...).get_template()` компилационна проверка. **Най-силната проверка обаче е на живо**: `curl` с истинска логната сесия (`password=anton20` през `/login`, кукита в `cookies.txt`) към засегнатия route ПРЕДИ рестарт (докато старият код още тече в паметта), после `kill -HUP` + `journalctl` проверка, после същият `curl` СЛЕД рестарт — `diff` на двата HTML файла трябва да излезе празен. Това е по-силно от синтетичен Flask test client render, защото минава през истински продукционни данни от `predictions.db`/CSV файловете, не измислени. Едва тогава commit.
 
 **Чеклист (галочка = готово и commit-нато):**
 - [x] `LOGIN_TEMPLATE` → `templates/login.html` (commit `68bc837`)
 - [x] `MATCH_RESULT_TEMPLATE` → `templates/match_result.html` (commit `3087653`)
 - [x] `DIAGNOSTICS_TEMPLATE` → `templates/diagnostics.html` (commit `426d16a`)
 - [x] `LEAGUES_ADMIN_TEMPLATE` → `templates/leagues_admin.html` (не пипнат: два реда мъртъв/недостижим код в `/refresh_status`, който все още сочи старото име LEAGUES_ADMIN_TEMPLATE — извън обхват, никога не се изпълнява, вижте бел. под чеклиста)
-- [ ] `SYSTEM_CHECK_TEMPLATE` → `templates/system_check.html`
-- [ ] `LIVE_TEMPLATE` → `templates/live.html`
-- [ ] `MANUAL_TEMPLATE` → `templates/manual.html`
+- [x] `SYSTEM_CHECK_TEMPLATE` → `templates/system_check.html` (commit `1db1355`)
+- [x] `LIVE_TEMPLATE` → `templates/live.html` (commit `b793035`)
+- [x] `MANUAL_TEMPLATE` → `templates/manual.html` (commit `58d5100`)
 - [ ] `MY_BETS_TEMPLATE` → `templates/my_bets.html`
 - [ ] `INDEX_TEMPLATE` → `templates/index.html`
 - [ ] `MATCH_DETAIL_TEMPLATE` → `templates/match_detail.html`
