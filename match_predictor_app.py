@@ -824,40 +824,6 @@ SIDEBAR_HTML = """
 """
 
 
-MANUAL_TEMPLATE = """
-<!DOCTYPE html><html lang="bg"><head><meta charset="UTF-8"><title>Ръчна проверка</title>
-<style>""" + BASE_STYLE + SIDEBAR_STYLE + """</style></head><body>""" + SIDEBAR_HTML + """
-<div id="loadingOverlay" style="display:none;position:fixed;inset:0;background:rgba(241,239,232,0.92);z-index:9999;align-items:center;justify-content:center;font-size:16px;color:#185FA5;font-weight:500;">⏳ Зареждане...</div>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('form.filter').forEach(function(f) {
-    f.addEventListener('submit', function() {
-      document.getElementById('loadingOverlay').style.display = 'flex';
-    });
-  });
-});
-</script>
-<div class="container">
-<h1>Ръчна проверка на мач</h1>
-<form class="filter" method="get">
-  <select name="league" onchange="this.form.submit()">{% for key, name in leagues.items() %}<option value="{{key}}" {% if key==selected_league %}selected{% endif %}>{{name}}</option>{% endfor %}</select>
-  <select name="home"><option value="">-- избери домакин --</option>{% for t in teams %}<option value="{{t}}" {% if t==home %}selected{% endif %}>{{cyrillic[t]}}</option>{% endfor %}</select>
-  <select name="away"><option value="">-- избери гост --</option>{% for t in teams %}<option value="{{t}}" {% if t==away %}selected{% endif %}>{{cyrillic[t]}}</option>{% endfor %}</select>
-  <button type="submit">Изчисли всички прогнози</button>
-</form>
-{% if groups %}
-<div class="top-pick"><div class="top-pick-label">Топ прогноза</div>
-<div class="top-pick-row"><span class="top-pick-name">{{extra_info[2]}}</span><span class="top-pick-pct">{{"%.1f"|format(extra_info[3])}}%</span></div></div>
-<div class="lambdas">Очаквани голове: {{cyrillic[home]}} ~{{"%.2f"|format(extra_info[0])}} | {{cyrillic[away]}} ~{{"%.2f"|format(extra_info[1])}}</div>
-<div class="form-note">{{extra_info[4]}}</div>
-{% for title, items, has_form in groups %}
-<div class="group"><div class="group-title">{{title}}</div><table>
-{% if has_form %}<tr><th>Пазар</th><th>Пълна история</th><th class="form-col">Посл. 3 мес.</th></tr>{% else %}<tr><th>Пазар</th><th>%</th></tr>{% endif %}
-{% for row in items %}<tr><td>{{row[0]}}</td><td>{{"%.1f"|format(row[1])}}%</td>{% if has_form %}<td class="form-col">{{ "%.1f%%"|format(row[2]) if row[2] is not none else "—" }}</td>{% endif %}</tr>{% endfor %}
-</table></div>{% endfor %}
-{% endif %}
-</div></body></html>
-"""
 
 
 DAILY_TEMPLATE = """
@@ -1797,7 +1763,7 @@ def index():
     if home and away:
         groups, extra_info = compute_grouped_markets(league, home, away)
 
-    return render_template_string(MANUAL_TEMPLATE, leagues=get_leagues(), selected_league=league,
+    return render_template("manual.html", leagues=get_leagues(), selected_league=league,
                                     teams=teams, home=home, away=away, groups=groups,
                                     extra_info=extra_info, cyrillic=cyrillic, active_page='manual')
 
