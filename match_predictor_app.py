@@ -2843,87 +2843,6 @@ def match_result():
                                     active_page='system_check')
 
 
-DIAGNOSTICS_TEMPLATE = """
-<!DOCTYPE html><html lang="bg"><head><meta charset="UTF-8"><title>Диагностика</title>
-<style>""" + BASE_STYLE + SIDEBAR_STYLE + """</style></head><body>""" + SIDEBAR_HTML + """<div class="container">
-<h1>🔧 Диагностика на системата</h1>
-
-<div style="display:flex;gap:12px;margin:16px 0;flex-wrap:wrap;">
-  <a href="/diagnostics"><button type="button" class="green">🔄 Тествай отново</button></a>
-  <a href="/diagnostics/backup"><button type="button" class="green">💾 Свали бекъп</button></a>
-</div>
-
-<div class="group-title">🗄️ Бази данни</div>
-{% for d in results.db %}
-<div class="match-card">
-  <div class="match-header">
-    <span class="match-teams">{{ '✅' if d.ok else '❌' }} {{d.name}}</span>
-    <span class="match-date">{% if d.size_mb is defined %}{{d.size_mb}} MB{% endif %}</span>
-  </div>
-  {% if d.exists %}
-  <div style="font-size:13px;padding:4px 0;">Цялост: {{d.integrity}}</div>
-  {% for t, cnt in d.row_counts.items() %}
-  <div style="font-size:12px;color:#5F5E5A;padding:2px 0;">{{t}}: {{cnt}} реда</div>
-  {% endfor %}
-  {% else %}
-  <div style="font-size:13px;color:#B23B3B;">Файлът не съществува!</div>
-  {% endif %}
-  {% if d.error %}<div style="font-size:12px;color:#B23B3B;">Грешка: {{d.error}}</div>{% endif %}
-</div>
-{% endfor %}
-
-<div class="group-title" style="margin-top:20px;">🌐 API-Football</div>
-{% for a in results.api %}
-<div class="match-card">
-  <div class="match-header">
-    <span class="match-teams">{{ '✅' if a.ok else '❌' }} {{a.name}}</span>
-    <span class="match-date">{% if a.response_ms is defined %}{{a.response_ms}} ms{% endif %}</span>
-  </div>
-  {% if a.ok %}
-  <div style="font-size:13px;padding:4px 0;">Използвани днес: {{a.used_today}} / {{a.limit_day}} (остават {{a.remaining}})</div>
-  {% else %}
-  <div style="font-size:13px;color:#B23B3B;">Грешка: {{a.error}}</div>
-  {% endif %}
-  {% if a.errors %}<div style="font-size:12px;color:#B23B3B;">{{a.errors}}</div>{% endif %}
-</div>
-{% endfor %}
-
-<div class="group-title" style="margin-top:20px;">🧠 Кеширани модели</div>
-<table>
-<tr><th>Лига</th><th>CSV последно</th><th>Модел последно</th><th>Статус</th></tr>
-{% for m in results.models %}
-<tr>
-<td>{{m.league}}</td>
-<td>{% if m.csv_exists %}{{m.csv_modified}}{% else %}липсва{% endif %}</td>
-<td>{% if m.pkl_exists %}{{m.pkl_modified}}{% else %}липсва{% endif %}</td>
-<td>{{ '✅ актуален' if m.cache_fresh else '⚠️ остарял/липсва' }}</td>
-</tr>
-{% endfor %}
-</table>
-
-<div class="group-title" style="margin-top:20px;">⚙️ Услуги (systemd)</div>
-<table>
-<tr><th>Услуга</th><th>Статус</th></tr>
-{% for s in results.services %}
-<tr><td>{{s.name}}</td><td>{{ '✅ ' + s.status if s.ok else '❌ ' + (s.status or s.error or 'грешка') }}</td></tr>
-{% endfor %}
-</table>
-
-<div class="group-title" style="margin-top:20px;">💽 Дисково пространство</div>
-<div class="match-card">
-  <div style="font-size:13px;">{{ '✅' if results.disk.ok else '⚠️' }} Свободно: {{results.disk.free_gb}} GB от {{results.disk.total_gb}} GB ({{results.disk.free_pct}}%)</div>
-</div>
-
-<div class="group-title" style="margin-top:20px;">📋 Грешки в логовете (последните 500 реда)</div>
-<div class="match-card">
-  <div style="font-size:13px;">Открити грешки: {{results.recent_errors_count}}</div>
-  {% for line in results.recent_errors_sample %}
-  <div style="font-size:11px;color:#888780;padding:2px 0;font-family:monospace;">{{line}}</div>
-  {% endfor %}
-</div>
-
-</div></body></html>
-"""
 
 
 def run_diagnostics():
@@ -3028,7 +2947,7 @@ def run_diagnostics():
 @app.route("/diagnostics")
 def diagnostics():
     results = run_diagnostics()
-    return render_template_string(DIAGNOSTICS_TEMPLATE, results=results, active_page='diagnostics')
+    return render_template("diagnostics.html", results=results, active_page='diagnostics')
 
 
 @app.route("/diagnostics/backup")
