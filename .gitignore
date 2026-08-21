@@ -40,3 +40,4 @@ db_backups/
 271
 307
 308
+!trust_derived_nightly.csv
