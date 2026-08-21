@@ -1262,111 +1262,6 @@ document.addEventListener('DOMContentLoaded', function() {
 """
 
 
-MY_BETS_TEMPLATE = """
-<!DOCTYPE html><html lang="bg"><head><meta charset="UTF-8"><title>Моите залози</title>
-<style>""" + BASE_STYLE + SIDEBAR_STYLE + """
-.bet-acc{background:var(--panel);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;}
-.bet-acc-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;cursor:pointer;gap:12px;}
-.bet-acc-teams{font-weight:500;color:var(--text);font-size:14px;}
-.bet-acc-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
-.bet-acc-date{font-size:12px;color:var(--sub);white-space:nowrap;}
-.bet-acc-summary{display:flex;gap:8px;font-size:12px;white-space:nowrap;}
-.bet-acc-summary .s-won{color:var(--green);}
-.bet-acc-summary .s-lost{color:var(--red);}
-.bet-acc-summary .s-pending{color:var(--yellow);}
-.bet-acc .chev{color:var(--sub);transition:transform 0.15s;display:inline-block;}
-.bet-acc.collapsed .chev{transform:rotate(-90deg);}
-.bet-acc-body{padding:0 16px 12px;}
-.bet-acc.collapsed .bet-acc-body{display:none;}
-.bet-line{font-size:13px;padding:4px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:12px;}
-.bet-line:last-child{border-bottom:none;}
-.bet-line .s-won{color:var(--green);}
-.bet-line .s-lost{color:var(--red);}
-.bet-line .s-pending{color:var(--yellow);}
-.bet-pct{color:var(--sub);}
-.bet-combo-pct{margin-top:8px;padding-top:8px;font-weight:500;color:var(--text);font-size:13px;}
-</style></head><body>""" + SIDEBAR_HTML + """
-<div id="loadingOverlay" style="display:none;position:fixed;inset:0;background:rgba(15,17,21,0.92);z-index:9999;align-items:center;justify-content:center;font-size:16px;color:var(--accent);font-weight:500;">⏳ Зареждане...</div>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('form.filter').forEach(function(f) {
-    f.addEventListener('submit', function() {
-      document.getElementById('loadingOverlay').style.display = 'flex';
-    });
-  });
-});
-</script>
-<div class="container">
-<h1>Моите залози</h1>
-
-<div class="stats-row">
-  <div class="stat-box"><div class="stat-value">{{stats.won}}</div><div class="stat-label">Печеливши</div></div>
-  <div class="stat-box"><div class="stat-value">{{stats.lost}}</div><div class="stat-label">Губещи</div></div>
-  <div class="stat-box"><div class="stat-value">{{stats.pending}}</div><div class="stat-label">Чакащи</div></div>
-  <div class="stat-box"><div class="stat-value">{{ "%.1f%%"|format(stats.win_rate) if stats.win_rate is not none else "—" }}</div><div class="stat-label">Успеваемост</div></div>
-</div>
-
-<form method="post" action="/check_results" style="margin-bottom:20px;">
-  <button type="submit" class="green">Провери резултатите</button>
-</form>
-
-{% macro match_card(m) %}
-<div class="bet-acc collapsed">
-  <div class="bet-acc-head" onclick="this.parentElement.classList.toggle('collapsed')">
-    <span class="bet-acc-teams">{{cyrillic(m.home)}} - {{cyrillic(m.away)}}</span>
-    <span class="bet-acc-right">
-      <span class="bet-acc-date">{{m.date}}</span>
-      <span class="bet-acc-summary">
-        {% if m.won %}<span class="s-won">✅{{m.won}}</span>{% endif %}
-        {% if m.lost %}<span class="s-lost">❌{{m.lost}}</span>{% endif %}
-        {% if m.pending %}<span class="s-pending">⏳{{m.pending}}</span>{% endif %}
-      </span>
-      <span class="chev">▾</span>
-    </span>
-  </div>
-  <div class="bet-acc-body">
-  {% for b in m.bets %}
-  <div class="bet-line">
-    <span>{{b.pick_label}} <span class="bet-pct">({{"%.1f"|format(b.pick_pct)}}%)</span></span>
-    <span class="s-{{b.status}}">{{ {'won':'✅','lost':'❌','pending':'⏳'}[b.status] }}</span>
-  </div>
-  {% endfor %}
-  </div>
-</div>
-{% endmacro %}
-
-{% macro combo_card(c) %}
-<div class="bet-acc collapsed">
-  <div class="bet-acc-head" onclick="this.parentElement.classList.toggle('collapsed')">
-    <span class="bet-acc-teams">Колона #{{c.combo_id}} ({{c.legs|length}} мача)</span>
-    <span class="bet-acc-right">
-      <span class="s-{{c.status}}">{{ {'won':'✅','lost':'❌','pending':'⏳'}[c.status] }}</span>
-      <span class="chev">▾</span>
-    </span>
-  </div>
-  <div class="bet-acc-body">
-  {% for leg in c.legs %}
-  <div class="bet-line">
-    <span>{{leg.match_date}} - {{cyrillic(leg.home_team)}} - {{cyrillic(leg.away_team)}}: {{leg.pick_label}}</span>
-    <span class="s-{{leg.status}}">{{ {'won':'✅','lost':'❌','pending':'⏳'}[leg.status] }}</span>
-  </div>
-  {% endfor %}
-  <div class="bet-combo-pct">Комбинирана вероятност: {{"%.1f"|format(c.combined_pct)}}%</div>
-  </div>
-</div>
-{% endmacro %}
-
-<div class="group-title">🟢 Активни залози</div>
-{% for m in active_matches %}{{ match_card(m) }}{% endfor %}
-{% for c in active_combos %}{{ combo_card(c) }}{% endfor %}
-{% if not active_matches and not active_combos %}<p style="color:var(--sub);font-size:13px;">Няма активни залози.</p>{% endif %}
-
-<div class="group-title" style="margin-top:24px;">⚪ Приключили залози</div>
-{% for m in completed_matches %}{{ match_card(m) }}{% endfor %}
-{% for c in completed_combos %}{{ combo_card(c) }}{% endfor %}
-{% if not completed_matches and not completed_combos %}<p style="color:var(--sub);font-size:13px;">Все още няма приключили залози.</p>{% endif %}
-</div></body></html>
-"""
 
 
 
@@ -2684,7 +2579,7 @@ def my_bets():
     active_combos = [c for c in combos if c["status"] == "pending"]
     completed_combos = [c for c in combos if c["status"] != "pending"]
 
-    return render_template_string(MY_BETS_TEMPLATE,
+    return render_template("my_bets.html",
                                     active_matches=active_matches, completed_matches=completed_matches,
                                     active_combos=active_combos, completed_combos=completed_combos,
                                     stats=stats, cyrillic=to_cyrillic, active_page='my_bets')
