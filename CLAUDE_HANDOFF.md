@@ -154,8 +154,8 @@ Flask приложение за прогнози на футболни резу�
 
 **Чеклист (галочка = готово и commit-нато):**
 - [x] `LOGIN_TEMPLATE` → `templates/login.html` (commit `68bc837`)
-- [ ] `MATCH_RESULT_TEMPLATE` → `templates/match_result.html`
-- [ ] `DIAGNOSTICS_TEMPLATE` → `templates/diagnostics.html`
+- [x] `MATCH_RESULT_TEMPLATE` → `templates/match_result.html` (commit `3087653`)
+- [x] `DIAGNOSTICS_TEMPLATE` → `templates/diagnostics.html` (commit `426d16a`)
 - [ ] `LEAGUES_ADMIN_TEMPLATE` → `templates/leagues_admin.html`
 - [ ] `SYSTEM_CHECK_TEMPLATE` → `templates/system_check.html`
 - [ ] `LIVE_TEMPLATE` → `templates/live.html`
