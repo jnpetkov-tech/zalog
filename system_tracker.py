@@ -228,6 +228,46 @@ def already_logged(fixture_id):
     existing = conn.execute("SELECT id FROM predictions_log WHERE fixture_id=? LIMIT 1", (fixture_id,)).fetchone()
     conn.close()
     return existing is not None
+
+
+def save_snapshot_predictions(rows):
+    """Партида 3, Стъпка 2 (21.08.2026, ARCHITECTURE.md): UPSERT в
+    predictions_snapshot по (fixture_id, market_code) - за разлика от
+    log_prediction() (predictions_log, append-once история), тук всяко
+    ново пресмятане ПРЕЗАПИСВА реда - таблицата пази текущото състояние,
+    не история. rows: списък dict-и с fixture_id, league, match_date,
+    home_team, away_team, market_code, pick_label, pick_pct, fair_odds,
+    ev (може None), model_version."""
+    if not rows:
+        return
+    conn = get_conn()
+    now = datetime.now().isoformat()
+    conn.executemany("""
+        INSERT INTO predictions_snapshot
+            (fixture_id, league, match_date, home_team, away_team, market_code,
+             pick_label, pick_pct, fair_odds, ev, computed_at, model_version)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+        ON CONFLICT(fixture_id, market_code) DO UPDATE SET
+            league=excluded.league, match_date=excluded.match_date,
+            home_team=excluded.home_team, away_team=excluded.away_team,
+            pick_label=excluded.pick_label, pick_pct=excluded.pick_pct,
+            fair_odds=excluded.fair_odds, ev=excluded.ev,
+            computed_at=excluded.computed_at, model_version=excluded.model_version
+    """, [(r["fixture_id"], r["league"], r["match_date"], r["home_team"], r["away_team"],
+           r["market_code"], r["pick_label"], r["pick_pct"], r["fair_odds"], r.get("ev"),
+           now, r.get("model_version")) for r in rows])
+    conn.commit()
+    conn.close()
+
+
+def clear_stale_snapshot(before_date):
+    """Изтрива редове с match_date преди before_date (ISO YYYY-MM-DD) -
+    държи predictions_snapshot ограничена до текущия 7-дневен прозорец,
+    вместо да трупа мачове, изпаднали от него, безкрайно."""
+    conn = get_conn()
+    conn.execute("DELETE FROM predictions_snapshot WHERE match_date < ?", (before_date,))
+    conn.commit()
+    conn.close()
 def get_fixtures_needing_odds_refresh(hours_ahead=48):
     """НОВО (Фаза F0): намира fixture_id-та, логнати преди коефициентите
     да са били налични (market_odds IS NULL), чийто начален час е в
