@@ -268,6 +268,33 @@ def clear_stale_snapshot(before_date):
     conn.execute("DELETE FROM predictions_snapshot WHERE match_date < ?", (before_date,))
     conn.commit()
     conn.close()
+
+
+def get_snapshot_picks_for_fixtures(fixture_ids):
+    """Партида 3, Стъпка 4: чете предварително пресметнатите picks за
+    списък fixture_id-та наведнъж (ИЗБЯГВА N отделни заявки за N мача на
+    страница - по образец на get_all_match_notes()). Връща
+    {fixture_id: [ред, ред, ...]}, всеки списък сортиран по pick_pct
+    низходящо (rank_candidates() вече е избрал/подредил picks-а при
+    смятането - тук просто пазим същата подредба)."""
+    if not fixture_ids:
+        return {}
+    conn = get_conn()
+    conn.row_factory = sqlite3.Row
+    placeholders = ",".join("?" for _ in fixture_ids)
+    rows = conn.execute(f"""
+        SELECT fixture_id, market_code, pick_label, pick_pct, fair_odds, ev, computed_at, model_version
+        FROM predictions_snapshot
+        WHERE fixture_id IN ({placeholders})
+        ORDER BY fixture_id, pick_pct DESC
+    """, fixture_ids).fetchall()
+    conn.close()
+    result = {}
+    for r in rows:
+        result.setdefault(r["fixture_id"], []).append(dict(r))
+    return result
+
+
 def get_fixtures_needing_odds_refresh(hours_ahead=48):
     """НОВО (Фаза F0): намира fixture_id-та, логнати преди коефициентите
     да са били налични (market_odds IS NULL), чийто начален час е в

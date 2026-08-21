@@ -1882,16 +1882,150 @@ _daily_predict_cache = {}
 DAILY_PREDICT_CACHE_TTL = 300  # секунди
 
 
-def _predict_matches_for_league(league, from_date, to_date):
+def _predict_matches_for_league(league, from_date, to_date, use_snapshot=True):
+    # use_snapshot влиза в cache_key нарочно (Партида 3, Стъпка 4) -
+    # ?source=live/?source=snapshot сравнение не бива да чете кеш, писан
+    # от другия път.
     cache_key = (league, from_date.isoformat() if from_date else None,
-                 to_date.isoformat() if to_date else None)
+                 to_date.isoformat() if to_date else None, use_snapshot)
     now = time.time()
     cached = _daily_predict_cache.get(cache_key)
     if cached and (now - cached[0]) < DAILY_PREDICT_CACHE_TTL:
         cached_matches, cached_api_error = cached[1], cached[2]
         return [dict(m) for m in cached_matches], cached_api_error
-    matches, api_error = _predict_matches_for_league_impl(league, from_date, to_date)
+    if use_snapshot:
+        matches, api_error = _predict_matches_for_league_from_snapshot(league, from_date, to_date)
+    else:
+        matches, api_error = _predict_matches_for_league_impl(league, from_date, to_date)
     _daily_predict_cache[cache_key] = (now, matches, api_error)
+    return matches, api_error
+
+
+# Партида 3, Стъпка 4 (21.08.2026, ARCHITECTURE.md, Граница 2: „смятане
+# срещу показване"). Флаг за връщане към стария път без промяна в кода -
+# просто смени на False. ?source=live / ?source=snapshot в заявката
+# override-ва флага за момента (сравнение без рестарт).
+DAILY_USE_SNAPSHOT = True
+
+
+def _daily_use_snapshot(req):
+    override = req.args.get("source")
+    if override == "live":
+        return False
+    if override == "snapshot":
+        return True
+    return DAILY_USE_SNAPSHOT
+
+
+def _predict_matches_for_league_from_snapshot(league, from_date, to_date):
+    """Партида 3, Стъпка 4: чете pick/pct/code от predictions_snapshot
+    (вече смятано на фон от build_predictions_snapshot.py, на всеки 30 мин
+    - виж build-predictions-snapshot.timer) вместо да смята Poisson/
+    Dixon-Coles/compute_grouped_markets „на момента" за всеки мач - точно
+    тази сметка беше установеният проблем зад бавния студен старт на
+    /daily (виж И.3 по-горе). Списъкът с мачове (fixture_id, дата, отбори,
+    лога, живо статус/резултат) си остава от fetch_upcoming_fixtures() -
+    евтина API заявка, никога не е била установеният проблем.
+
+    Ако снимката още няма ред за даден fixture (нов мач, появил се между
+    две пускания на фоновата задача - прозорец до 30 мин) - НЕ смятаме на
+    момента (би върнало старата бавност точно за случая, който тази
+    стъпка маха) - показваме честно „изчаква следващо изчисление".
+
+    inj_note/lineups_confirmed логиката е ИДЕНТИЧНА на старата (евтини,
+    кеширани справки - никога не са били установеният проблем).
+    used_market се извежда наново от текущия cached_odds (същото условие
+    като в _raw_candidates) вместо да се пази в снимката - козметичен
+    бедж„🎯 с пазарни коеф." срещу „⏳ чисто моделна", не самата прогноза;
+    евентуално разминаване от няколко минути е приемливо и за старата, и
+    за новата логика."""
+    fixtures, api_error = fetch_upcoming_fixtures(league, from_date, to_date)
+    (teams, team_idx, ft_model, ht_model, h2_model, corners_model, cards_model,
+     offsides_model, recent_model, recent_matches_count, has_injuries) = get_models(league)
+
+    snapshot_by_fixture = st.get_snapshot_picks_for_fixtures([f["fixture"]["id"] for f in fixtures])
+
+    matches = []
+    for f in fixtures:
+        home = f["teams"]["home"]["name"]
+        away = f["teams"]["away"]["name"]
+        match_date = f["fixture"]["date"][:16].replace("T", " ")
+        fixture_id = f["fixture"]["id"]
+        status_short = f["fixture"]["status"].get("short", "NS")
+        elapsed = f["fixture"]["status"].get("elapsed")
+        goals_home = f["goals"]["home"]
+        goals_away = f["goals"]["away"]
+        base = {
+            "date": match_date, "home": home, "away": away,
+            "home_cy": to_cyrillic(home, league), "away_cy": to_cyrillic(away, league),
+            "home_logo": f["teams"]["home"].get("logo"), "away_logo": f["teams"]["away"].get("logo"),
+            "fixture_id": fixture_id,
+            "league": league, "league_name": ALL_LEAGUES[league]["name"],
+            "status_short": status_short, "elapsed": elapsed,
+            "goals_home": goals_home, "goals_away": goals_away,
+        }
+
+        if home not in team_idx or away not in team_idx:
+            matches.append({**base, "pick": "Няма прогноза (нов отбор)", "pct": None, "code": None,
+                             "odds": None, "picks": [], "inj_note": None, "lineups_confirmed": False,
+                             "used_market": None, "odds_updated_at": None, "live_result": None})
+            continue
+
+        picks_rows = snapshot_by_fixture.get(fixture_id)
+        if not picks_rows:
+            matches.append({**base, "pick": "Изчаква следващо изчисление (до 30 мин)", "pct": None,
+                             "code": None, "odds": None, "picks": [], "inj_note": None,
+                             "lineups_confirmed": False, "used_market": None, "odds_updated_at": None,
+                             "live_result": None})
+            continue
+
+        top = picks_rows[0]
+        picks_list = [{"label": r["pick_label"], "pct": r["pick_pct"], "code": r["market_code"],
+                        "odds": r["fair_odds"]} for r in picks_rows]
+
+        inj_note = None
+        if has_injuries:
+            cached_inj = st.get_cached_injuries(fixture_id)
+            if cached_inj is not None:
+                home_inj, away_inj, ok = cached_inj
+            else:
+                home_inj, away_inj, ok = fetch_fixture_injuries(fixture_id)
+                st.set_cached_injuries(fixture_id, home_inj, away_inj, ok)
+            if ok:
+                inj_note = f"Контузии: {to_cyrillic(home, league)} {home_inj}, {to_cyrillic(away, league)} {away_inj}"
+            else:
+                inj_note = "Няма данни за контузии за този мач (все още)"
+
+        live_result = None
+        if status_short in LIVE_STATUSES and elapsed is not None:
+            lam_ht, mu_ht = fl.get_lambdas(ht_model, team_idx, home, away)
+            lam_2h, mu_2h = fl.get_lambdas(h2_model, team_idx, home, away)
+            if lam_ht is not None:
+                try:
+                    live_result = fl.live_match_probs_v2(lam_ht, mu_ht, lam_2h, mu_2h,
+                                                           elapsed, goals_home or 0, goals_away or 0)
+                except Exception:
+                    live_result = None
+
+        cached_odds = st.get_cached_odds(fixture_id)
+        used_market = bool(cached_odds and cached_odds.get("home_win") and cached_odds.get("draw")
+                            and cached_odds.get("away_win")) or bool(
+                            cached_odds and cached_odds.get("over25") and cached_odds.get("under25"))
+
+        try:
+            kickoff = datetime.fromisoformat(f["fixture"]["date"])
+            minutes_to_kickoff = (kickoff - datetime.now(kickoff.tzinfo)).total_seconds() / 60
+        except Exception:
+            minutes_to_kickoff = 9999
+        lineups_confirmed = False
+        if 0 <= minutes_to_kickoff <= 60:
+            lineups_confirmed = fetch_lineups_available(fixture_id)
+
+        matches.append({**base, "pick": top["pick_label"], "pct": top["pick_pct"], "code": top["market_code"],
+                         "odds": top["fair_odds"], "picks": picks_list, "inj_note": inj_note,
+                         "lineups_confirmed": lineups_confirmed, "used_market": used_market,
+                         "odds_updated_at": (cached_odds.get("fetched_at") if cached_odds else None),
+                         "live_result": live_result})
     return matches, api_error
 
 
@@ -2035,12 +2169,15 @@ def daily():
     default_from = date.today()
     default_to = date.today() + timedelta(days=DAYS_AHEAD)
 
+    use_snapshot = _daily_use_snapshot(request)
+
     matches = []
     api_error = None
     if league == "all":
         league_keys = list(get_leagues().keys())
         with ThreadPoolExecutor(max_workers=min(8, len(league_keys) or 1)) as executor:
-            futures = [executor.submit(_predict_matches_for_league, lg, from_date, to_date) for lg in league_keys]
+            futures = [executor.submit(_predict_matches_for_league, lg, from_date, to_date, use_snapshot)
+                       for lg in league_keys]
             for fut in futures:
                 lg_matches, lg_api_error = fut.result()
                 matches.extend(lg_matches)
@@ -2048,7 +2185,7 @@ def daily():
                     api_error = lg_api_error
         league_name = "Всички лиги"
     else:
-        matches, api_error = _predict_matches_for_league(league, from_date, to_date)
+        matches, api_error = _predict_matches_for_league(league, from_date, to_date, use_snapshot)
         league_name = get_leagues()[league]
 
     matches.sort(key=lambda m: m["date"])
