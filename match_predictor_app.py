@@ -2344,80 +2344,6 @@ def check_results_route():
     return redirect(url_for("my_bets"))
 
 
-LIVE_TEMPLATE = """
-<style>""" + BASE_STYLE + SIDEBAR_STYLE + """</style></head><body>""" + SIDEBAR_HTML + """
-<div id="loadingOverlay" style="display:none;position:fixed;inset:0;background:rgba(241,239,232,0.92);z-index:9999;align-items:center;justify-content:center;font-size:16px;color:#185FA5;font-weight:500;">⏳ Зареждане...</div>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('form.filter').forEach(function(f) {
-    f.addEventListener('submit', function() {
-      document.getElementById('loadingOverlay').style.display = 'flex';
-    });
-  });
-});
-</script>
-<div class="container">
-<h1>Прогноза на живо</h1>
-<form class="filter" method="get">
-  <select name="league" onchange="this.form.submit()">{% for key, name in leagues.items() %}<option value="{{key}}" {% if key==selected_league %}selected{% endif %}>{{name}}</option>{% endfor %}</select>
-  <select name="home"><option value="">-- избери домакин --</option>{% for t in teams %}<option value="{{t}}" {% if t==home %}selected{% endif %}>{{cyrillic[t]}}</option>{% endfor %}</select>
-  <select name="away"><option value="">-- избери гост --</option>{% for t in teams %}<option value="{{t}}" {% if t==away %}selected{% endif %}>{{cyrillic[t]}}</option>{% endfor %}</select>
-  <div style="display:flex;gap:10px;margin-bottom:10px;">
-    <div style="flex:1;"><label style="font-size:11px;color:#5F5E5A;">Изминала минута</label>
-      <input type="number" name="minute" value="{{minute}}" min="0" max="120" style="width:100%;padding:10px;border-radius:8px;border:1px solid #D3D1C7;box-sizing:border-box;"></div>
-    <div style="flex:1;"><label style="font-size:11px;color:#5F5E5A;">Гол домакин</label>
-      <input type="number" name="hg" value="{{hg}}" min="0" style="width:100%;padding:10px;border-radius:8px;border:1px solid #D3D1C7;box-sizing:border-box;"></div>
-    <div style="flex:1;"><label style="font-size:11px;color:#5F5E5A;">Гол гост</label>
-      <input type="number" name="ag" value="{{ag}}" min="0" style="width:100%;padding:10px;border-radius:8px;border:1px solid #D3D1C7;box-sizing:border-box;"></div>
-  </div>
-  <button type="submit">Изчисли на живо</button>
-</form>
-{% if result %}
-<div class="top-pick"><div class="top-pick-label">Текущ резултат: {{hg}} - {{ag}} ({{minute}}')</div></div>
-
-{% if not fixture_id %}
-<div style="background:#B23B3B15;border:1px solid #B23B3B40;border-radius:12px;padding:12px 16px;margin-bottom:16px;color:#B23B3B;font-size:12px;">
-  ⚠️ Не намерих реален мач за днес с тези отбори - залозите тук няма да могат да се сверят автоматично. Провери имената на отборите.
-</div>
-{% endif %}
-
-{% macro live_bet_row(label, pct, code) %}
-<tr>
-  <td>{{label}}</td>
-  <td>{{"%.1f"|format(pct*100)}}%</td>
-  <td>
-  {% if fixture_id %}
-  <form method="post" action="/place_bet_market" style="margin:0;">
-    <input type="hidden" name="league" value="{{selected_league}}">
-    <input type="hidden" name="fixture_id" value="{{fixture_id}}">
-    <input type="hidden" name="date" value="{{today}} (на живо, {{minute}}')">
-    <input type="hidden" name="home" value="{{home}}">
-    <input type="hidden" name="away" value="{{away}}">
-    <input type="hidden" name="market_code" value="{{code}}">
-    <input type="hidden" name="pick_label" value="{{label}} (на живо {{hg}}-{{ag}}, {{minute}}')">
-    <input type="hidden" name="pick_pct" value="{{pct*100}}">
-    <button type="submit" class="small green">Залог</button>
-  </form>
-  {% endif %}
-  </td>
-</tr>
-{% endmacro %}
-
-<div class="group"><div class="group-title">Краен резултат (проектиран)</div><table>
-<tr><th>Пазар</th><th>%</th><th></th></tr>
-{{ live_bet_row(cyrillic[home] + " печели", result.home_win, "home_win") }}
-{{ live_bet_row("Равен", result.draw, "draw") }}
-{{ live_bet_row(cyrillic[away] + " печели", result.away_win, "away_win") }}
-</table></div>
-<div class="group"><div class="group-title">Общо голове (проектирано)</div><table>
-<tr><th>Пазар</th><th>%</th><th></th></tr>
-{{ live_bet_row("Над 2.5", result.over25, "over25") }}
-{{ live_bet_row("Под 2.5", result.under25, "under25") }}
-</table></div>
-<div class="form-note">Опростен модел - приема постоянно темпо на вкарване през целия мач. Оставащи очаквани голове: {{cyrillic[home]}} ~{{"%.2f"|format(result.remaining_lam)}}, {{cyrillic[away]}} ~{{"%.2f"|format(result.remaining_mu)}} (за {{result.remaining_minutes}} мин.)</div>
-{% endif %}
-</div></body></html>
-"""
 
 
 def fetch_fixture_id_for_today(league, home, away):
@@ -2455,7 +2381,7 @@ def live():
         if lam_ht is not None:
             result = fl.live_match_probs_v2(lam_ht, mu_ht, lam_2h, mu_2h, minute, hg, ag)
             fixture_id = fetch_fixture_id_for_today(league, home, away)
-    return render_template_string(LIVE_TEMPLATE, leagues=get_leagues(), selected_league=league,
+    return render_template("live.html", leagues=get_leagues(), selected_league=league,
                                     teams=teams, home=home, away=away, minute=minute, hg=hg, ag=ag,
                                     result=result, cyrillic=cyrillic, fixture_id=fixture_id,
                                     today=date.today().isoformat(), active_page='live')
