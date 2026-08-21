@@ -156,7 +156,7 @@ Flask приложение за прогнози на футболни резу�
 - [x] `LOGIN_TEMPLATE` → `templates/login.html` (commit `68bc837`)
 - [x] `MATCH_RESULT_TEMPLATE` → `templates/match_result.html` (commit `3087653`)
 - [x] `DIAGNOSTICS_TEMPLATE` → `templates/diagnostics.html` (commit `426d16a`)
-- [ ] `LEAGUES_ADMIN_TEMPLATE` → `templates/leagues_admin.html`
+- [x] `LEAGUES_ADMIN_TEMPLATE` → `templates/leagues_admin.html` (не пипнат: два реда мъртъв/недостижим код в `/refresh_status`, който все още сочи старото име LEAGUES_ADMIN_TEMPLATE — извън обхват, никога не се изпълнява, вижте бел. под чеклиста)
 - [ ] `SYSTEM_CHECK_TEMPLATE` → `templates/system_check.html`
 - [ ] `LIVE_TEMPLATE` → `templates/live.html`
 - [ ] `MANUAL_TEMPLATE` → `templates/manual.html`

@@ -1403,46 +1403,6 @@ document.addEventListener('DOMContentLoaded', function() {
 """
 
 
-LEAGUES_ADMIN_TEMPLATE = """
-<!DOCTYPE html><html lang="bg"><head><meta charset="UTF-8"><title>Управление на лигите</title>
-<style>""" + BASE_STYLE + SIDEBAR_STYLE + """</style></head><body>""" + SIDEBAR_HTML + """
-<div id="loadingOverlay" style="display:none;position:fixed;inset:0;background:rgba(241,239,232,0.92);z-index:9999;align-items:center;justify-content:center;font-size:16px;color:#185FA5;font-weight:500;">⏳ Зареждане...</div>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  document.querySelectorAll('form.filter').forEach(function(f) {
-    f.addEventListener('submit', function() {
-      document.getElementById('loadingOverlay').style.display = 'flex';
-    });
-  });
-});
-</script>
-<div class="container">
-<h1>Управление на лигите</h1>
-
-<form method="post" class="filter">
-  <div class="group-title">Активни лиги (отбележи кои искаш да виждаш)</div>
-  {% for key, info in all_leagues.items() %}
-  <div class="checkbox-row">
-    <input type="checkbox" name="league_{{key}}" id="league_{{key}}" {% if key in active %}checked{% endif %}>
-    <label for="league_{{key}}" style="font-size:14px;">{{info.name}}</label>
-  </div>
-  {% endfor %}
-  <button type="submit" style="margin-top:16px;">Запази</button>
-</form>
-
-{% if saved %}
-<div style="background:#0F6E5615;border:1px solid #0F6E5640;border-radius:12px;padding:12px 16px;margin-top:16px;color:#0F6E56;font-size:13px;">
-  ✅ Запазено успешно.
-{% endif %}
-
-<div class="group-title" style="margin-top:24px;">Данни</div>
-<form method="post" action="/refresh_all" class="filter">
-  <button type="submit" class="green">🔄 Опресни всички данни (тегли само новото)</button>
-</form>
-<a href="/refresh_status" style="font-size:13px;color:#185FA5;">Виж прогрес на опресняването →</a>
-
-</div></body></html>
-"""
 
 
 @app.route("/leagues_admin", methods=["GET", "POST"])
@@ -1456,7 +1416,7 @@ def leagues_admin():
         return resp
     active = load_active_leagues()
     saved = request.args.get("saved") == "1"
-    return render_template_string(LEAGUES_ADMIN_TEMPLATE, all_leagues=ALL_LEAGUES, active=active, saved=saved, active_page='leagues_admin')
+    return render_template("leagues_admin.html", all_leagues=ALL_LEAGUES, active=active, saved=saved, active_page='leagues_admin')
 
 
 INJURY_LEAGUES = {"england", "germany", "spain", "france"}
