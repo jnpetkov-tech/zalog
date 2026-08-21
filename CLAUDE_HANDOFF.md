@@ -146,32 +146,41 @@ Flask приложение за прогнози на футболни резу�
     - **Странична поправка** (`731720b`): Дака инсталира Стъпка 3 и междувременно commit-на `82c09ec` (`.gitignore` изключение + `trust_derived_nightly.csv` в git) - разминаване с първоначалния план (файлът трябваше да е rolling, необвързан с git, като `refresh_log.txt`/`odds_refresh_log.txt` - иначе `git status` би го показвал "променен" всяка сутрин след всяко ново пускане на timer-а). Питах Дака, потвърди да се върне към необвързан с git - `731720b` маха `.gitignore` изключението и `git rm --cached` на файла (остава на диска, само не се проследява).
   - **Причина защо Claude не инсталира Стъпка 3 сам:** създаване на НОВ systemd unit файл в `/etc/systemd/system/` изисква root - за разлика от рестарт на вече течащия gunicorn (`kill -HUP`, без sudo нужда, виж протокола по-долу), тук няма SIGHUP-стил заобиколен път (не е презареждане на съществуващ процес, а нов файл). Потвърдено директно в сесията: `touch` в тази папка отказва с `Permission denied`, `sudo -n -l` иска парола.
 
-### Обновено на 21.08.2026 (нощ, продължение 2) — Партида 5 от ARCHITECTURE.md, В ПРОЦЕС
+### Обновено на 21.08.2026 (нощ, продължение 2) — Партида 5 от ARCHITECTURE.md, ГОТОВА (първата част)
 
-**Партида 5 (Граница 4, само първата част: „Темплейтите излизат от Python низовете в `templates/*.html`")** — по искане на Дака, извършва се на малки git-commit-нати стъпки, един темплейт/route наведнъж, с рестарт (`kill -HUP`, sudo недостъпен в тази сесия) + чист `journalctl` след всяка стъпка. **Не се пипат** `football_lib.py`, `prediction_policy.py`, нито systemd конфигурация — извън обхвата.
+**Партида 5 (Граница 4, само първата част: „Темплейтите излизат от Python низовете в `templates/*.html`")** — **изцяло готова**, всичките 15 стъпки, на малки git-commit-нати стъпки, един темплейт/route наведнъж, с рестарт (`kill -HUP`, sudo недостъпен в тази сесия) + чист `journalctl` след всяка стъпка. Git commit-и: `68bc837`, `3087653`, `426d16a`, `af860ce`, `1db1355`, `b793035`, `58d5100`, `b420843`, `cd1a03b`, `020de2f`, `2fdb86e`, `2f8c3ac`, `1092317`, `a2b25fc`, `20dadc8`. **Не се пипнаха** `football_lib.py`, `prediction_policy.py`, нито systemd конфигурация — извън обхвата, както е поискано.
 
-**Метод, спазван за всяка стъпка** (за да няма риск от ръчна грешка при пренаписване на HTML): Python `ast`-базиран скрипт извлича ТОЧНИЯ резолвнат низ на дадената `*_TEMPLATE` константа (включително конкатенации с `BASE_STYLE`/`SIDEBAR_STYLE`/`SIDEBAR_HTML`) директно от кода, записва го байт-по-байт в `templates/<име>.html`, после `render_template_string(TEMPLATE, ...)` се сменя с `render_template("<име>.html", ...)`. Преди деплой: диф на извлечения низ срещу файла (трябва да излезе празен) + `jinja2.Environment(...).get_template()` компилационна проверка. **Най-силната проверка обаче е на живо**: `curl` с истинска логната сесия (`password=anton20` през `/login`, кукита в `cookies.txt`) към засегнатия route ПРЕДИ рестарт (докато старият код още тече в паметта), после `kill -HUP` + `journalctl` проверка, после същият `curl` СЛЕД рестарт — `diff` на двата HTML файла трябва да излезе празен. Това е по-силно от синтетичен Flask test client render, защото минава през истински продукционни данни от `predictions.db`/CSV файловете, не измислени. Едва тогава commit.
+**Резултат:** `match_predictor_app.py` 3185 → 2101 реда (-34%), `results_view.py` 659 → 312 реда, `value_view.py` 183 → 105 реда. Нова папка `templates/` с 15 `.html` файла — всеки `*_TEMPLATE` низ и всеки ad-hoc HTML f-string, който преди живееше в Python код, вече е истински файл.
 
-**Чеклист (галочка = готово и commit-нато):**
-- [x] `LOGIN_TEMPLATE` → `templates/login.html` (commit `68bc837`)
-- [x] `MATCH_RESULT_TEMPLATE` → `templates/match_result.html` (commit `3087653`)
-- [x] `DIAGNOSTICS_TEMPLATE` → `templates/diagnostics.html` (commit `426d16a`)
-- [x] `LEAGUES_ADMIN_TEMPLATE` → `templates/leagues_admin.html` (не пипнат: два реда мъртъв/недостижим код в `/refresh_status`, който все още сочи старото име LEAGUES_ADMIN_TEMPLATE — извън обхват, никога не се изпълнява, вижте бел. под чеклиста)
-- [x] `SYSTEM_CHECK_TEMPLATE` → `templates/system_check.html` (commit `1db1355`)
-- [x] `LIVE_TEMPLATE` → `templates/live.html` (commit `b793035`)
-- [x] `MANUAL_TEMPLATE` → `templates/manual.html` (commit `58d5100`)
-- [ ] `MY_BETS_TEMPLATE` → `templates/my_bets.html`
-- [ ] `INDEX_TEMPLATE` → `templates/index.html`
-- [ ] `MATCH_DETAIL_TEMPLATE` → `templates/match_detail.html`
-- [ ] `DAILY_TEMPLATE` → `templates/daily.html` (най-голям, 22К символа — последен от основните)
-- [ ] `results_view.py` `_build_template()` резултат → `templates/results.html`
-- [ ] `value_view.py` `_build_template()` резултат → `templates/value.html`
-- [ ] дребните ad-hoc f-string HTML-и (`render_refresh_confirmation()`, `/refresh_status`) — по избор, извън основния списък на ARCHITECTURE.md, ще се преценят накрая
+**Метод, спазван за всяка стъпка** (за да няма риск от ръчна грешка при пренаписване на HTML): Python `ast`-базиран скрипт извлича ТОЧНИЯ резолвнат низ на дадената `*_TEMPLATE` константа (включително конкатенации с `BASE_STYLE`/`SIDEBAR_STYLE`/`SIDEBAR_HTML`) директно от кода, записва го байт-по-байт в `templates/<име>.html`, после `render_template_string(TEMPLATE, ...)` се сменя с `render_template("<име>.html", ...)`. Преди деплой: диф на извлечения низ срещу файла (трябва да излезе празен) + `jinja2.Environment(...).get_template()` компилационна проверка. **Най-силната проверка обаче е на живо**: `curl` с истинска логната сесия (`password=anton20` през `/login`, кукита в `cookies.txt`) към засегнатия route ПРЕДИ рестарт (докато старият код още тече в паметта), после `kill -HUP` + `journalctl` проверка, после същият `curl` СЛЕД рестарт — `diff` на двата HTML файла трябва да излезе празен. Това е по-силно от синтетичен Flask test client render, защото минава през истински продукционни данни от `predictions.db`/CSV файловете, не измислени. Едва тогава commit. (За `/daily?league=all` diff-ът показа разлики между преди/след — доказано, че са чиста волатилност на живите данни, не бъг: същите разлики се появиха и между два curl-а на ВЕЧЕ рестартирания код без никаква промяна между тях, защото мачове преминават от "предстоящи" в "приключили" в реално време.)
 
-**Ако сесията прекъсне по средата:** галочките горе показват точно докъде е стигнато. Всяка отметната стъпка е самостоятелен commit, приложението е живо и коректно на всяка отметка — safe да се спре тук, не е нужно да се довършва всичко наведнъж.
+**Пълен чеклист (всичко готово):**
+- [x] `LOGIN_TEMPLATE` → `templates/login.html` (`68bc837`)
+- [x] `MATCH_RESULT_TEMPLATE` → `templates/match_result.html` (`3087653`)
+- [x] `DIAGNOSTICS_TEMPLATE` → `templates/diagnostics.html` (`426d16a`)
+- [x] `LEAGUES_ADMIN_TEMPLATE` → `templates/leagues_admin.html` (`af860ce`) — виж бел. по-долу за мъртъв код
+- [x] `SYSTEM_CHECK_TEMPLATE` → `templates/system_check.html` (`1db1355`)
+- [x] `LIVE_TEMPLATE` → `templates/live.html` (`b793035`)
+- [x] `MANUAL_TEMPLATE` → `templates/manual.html` (`58d5100`)
+- [x] `MY_BETS_TEMPLATE` → `templates/my_bets.html` (`b420843`)
+- [x] `INDEX_TEMPLATE` → `templates/index.html` (`cd1a03b`)
+- [x] `MATCH_DETAIL_TEMPLATE` → `templates/match_detail.html` (`020de2f`)
+- [x] `DAILY_TEMPLATE` → `templates/daily.html` (`2fdb86e`, най-голям, 22К символа)
+- [x] `results_view.py` `_build_template()` → `templates/results.html` (`2f8c3ac`) — премахната самата функция и `RESULTS_TEMPLATE` променливата
+- [x] `value_view.py` `_build_template()` → `templates/value.html` (`1092317`) — огледално
+- [x] `render_refresh_confirmation()` (ad-hoc f-string) → `templates/refresh_confirmation.html` (`a2b25fc`) — `BASE_STYLE`/`message` минават през `|safe`, за да пази старото не-escape-ващо поведение на f-string
+- [x] `/refresh_status` (ad-hoc f-string) → `templates/refresh_status.html` (`20dadc8`) — същото, `content` от `refresh_log.txt` през `|safe`
+
+**Съзнателно НЕ пипнато (извън обхват):** два реда мъртъв/недостижим код в `/refresh_status` (стар `return render_template_string(LEAGUES_ADMIN_TEMPLATE, ...)` след безусловен `return html` по-горе, никога не се изпълнява) — вече сочат несъществуващо име `LEAGUES_ADMIN_TEMPLATE`, но понеже редовете реално никога не се стигат, поведението е идентично на преди (и преди, и сега — NameError ако някога станат достижими, което не е така). Оставени непипнати умишлено, за да не се разширява обхватът на партидата извън чисто извличане на темплейти.
+
+**Находка встрани, ЗАБЕЛЯЗАНА, НЕ поправена (извън обхват на Партида 5):** `/match_detail` гърми с `500` (`jinja2.exceptions.UndefinedError: None has no element 0`) ако се извика само с `fixture_id`, без `league`/`home`/`away`/`date`. Възпроизведено и ПРЕДИ, и СЛЕД миграцията на темплейта (same error, same trigger) — доказано пред-съществуващо поведение на route логиката (`match_detail()` в `match_predictor_app.py`), не нещо, въведено от Партида 5 (git diff на съответния commit показва само смяна на `render_template_string`→`render_template`, нищо друго в тялото на функцията). На практика безобидно — всички реални линкове в приложението винаги подават и четирите параметъра заедно (виж `<a href="/match_detail?league=...&fixture_id=...&home=...&away=...&date=...">` навсякъде). Двата случая в `journalctl` от тази сесия са от собствените ми тестови curl-и с непълни параметри, не от реален трафик. Ако Дака някога сподели линк само с `fixture_id` (напр. от стар bookmark) - ще гръмне; кандидат за дребен бъдещ fix (validate/redirect вместо 500), не спешно.
+
+**Ако сесията прекъсне по средата на бъдеща подобна партида:** галочките в чеклист-и като този показват точно докъде е стигнато. Всяка отметната стъпка е самостоятелен commit, приложението е живо и коректно на всяка отметка.
+
+**Следва (по ARCHITECTURE.md, Граница 4, извън тази партида):** API клиентът в `api_football.py`, маршрутите по blueprint-и (`web/daily.py` и т.н.) — по-голяма промяна, отделна бъдеща партида/сесия.
 
 ### Предстоящи, по ред (виж пълния план за подробности)
-Партида 3 (смятане/показване) и Партида 4 (изведено доверие) са изцяло готови. Партида 5 (разплитане на монолита) е в процес — виж чеклиста веднага по-горе. По-старият списък L.1+L.2 (контекст на страницата, вече готов като P.1) → M (хигиена, вкл. API ключ) е паралелен, не отпада.
+Партида 3 (смятане/показване), Партида 4 (изведено доверие) и Партида 5 — първата част (темплейти извадени в `templates/*.html`) са изцяло готови. Следва остатъкът от Граница 4 (API клиент, маршрути по blueprint-и) — виж бележката в края на Партида 5 раздела по-горе. По-старият списък L.1+L.2 (контекст на страницата, вече готов като P.1) → M (хигиена, вкл. API ключ) е паралелен, не отпада.
 
 **Категорична забрана, записана изрично от Дака:** новинарски/контекстуален материал (N.4) НИКОГА не коригира автоматично процента на прогнозата. Само показване на информация + бинарен флаг "пропусни мача". Причина: пазарният коефициент вече отразява новините (букмейкърите четат същите източници преди нас), и няма честен начин да се реши колко процентни пункта струва дадена контузия — такова число би било измислено.
 
