@@ -1862,48 +1862,20 @@ def index():
                                     extra_info=extra_info, cyrillic=cyrillic, active_page='manual')
 
 
-# Фаза И.3, стъпка 2 (21.08.2026): TTL кеш на сглобения резултат за
-# (лига, from_date, to_date) - предложен в CLAUDE_HANDOFF.md като кандидат
-# за И.3. Дори след стъпка 1 (пропускане на compute_grouped_markets за вече
-# логнати мачове), CPU остава ~130% сустейнд през целия request - основната
-# Poisson/Dixon-Coles сметка за top pick-а на всеки мач се прави така или
-# иначе за всеки мач, при всяко зареждане.
-#
-# TTL = 300 сек (не първоначално обмисляните 60-120), защото измерено на
-# живо: /daily?league=all отнема ~100-125 сек дори с топли модели - при
-# по-кратък TTL най-рано обработените лиги (обхождани паралелно през 17-те)
-# вече "изтичат" преди цялата заявка да приключи, така че веднага следваща
-# заявка пак пресмята почти всичко. 300 сек дава запас над измереното
-# най-лошо време. Компромис: живите мачове (elapsed/резултат) може да
-# изостанат до 5 мин при чести зареждания - приемливо за този инструмент,
-# не е live-betting табло с посекундна точност.
-#
-# ВАЖНО: при cache hit връщаме SHALLOW COPY на всеки match dict (не same
-# obj), защото daily() мутира резултата in-place (date_label/note/skipped/
-# idx) - без копие мутациите от една заявка биха "изтекли" в кеша и биха
-# се видели от следваща заявка в рамките на TTL прозореца (доказано с
-# локален тест преди деплой).
-_daily_predict_cache = {}
-DAILY_PREDICT_CACHE_TTL = 300  # секунди
-
-
+# Партида 3, довършване (21.08.2026, ARCHITECTURE.md): TTL кешът от И.3
+# (300 сек, обвиваше сглобения резултат за лига+период - виж git история,
+# commit-и de42ed4/4ee07c5, за пълния оригинален коментар) е премахнат.
+# Причината, записана изрично в ARCHITECTURE.md: „два кеша, които се борят,
+# са по-лоши от нула" - predictions_snapshot (обновявана на 30 мин от
+# build-predictions-snapshot.timer, виж Стъпка 3 по-горе в CLAUDE_HANDOFF.md)
+# вече играе ролята на кеш пред скъпата Poisson/Dixon-Coles сметка; тя вече
+# НЕ се случва вътре в тази заявка (виж _predict_matches_for_league_from_snapshot).
+# Втори 5-минутен кеш отгоре само добавяше закъснение (live резултат/
+# lineups_confirmed можеха да изостанат до 5 мин) без реална полза.
 def _predict_matches_for_league(league, from_date, to_date, use_snapshot=True):
-    # use_snapshot влиза в cache_key нарочно (Партида 3, Стъпка 4) -
-    # ?source=live/?source=snapshot сравнение не бива да чете кеш, писан
-    # от другия път.
-    cache_key = (league, from_date.isoformat() if from_date else None,
-                 to_date.isoformat() if to_date else None, use_snapshot)
-    now = time.time()
-    cached = _daily_predict_cache.get(cache_key)
-    if cached and (now - cached[0]) < DAILY_PREDICT_CACHE_TTL:
-        cached_matches, cached_api_error = cached[1], cached[2]
-        return [dict(m) for m in cached_matches], cached_api_error
     if use_snapshot:
-        matches, api_error = _predict_matches_for_league_from_snapshot(league, from_date, to_date)
-    else:
-        matches, api_error = _predict_matches_for_league_impl(league, from_date, to_date)
-    _daily_predict_cache[cache_key] = (now, matches, api_error)
-    return matches, api_error
+        return _predict_matches_for_league_from_snapshot(league, from_date, to_date)
+    return _predict_matches_for_league_impl(league, from_date, to_date)
 
 
 # Партида 3, Стъпка 4 (21.08.2026, ARCHITECTURE.md, Граница 2: „смятане
