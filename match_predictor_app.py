@@ -1814,17 +1814,28 @@ def _predict_matches_for_league(league, from_date, to_date):
             {"label": p_label, "pct": p_pct, "code": p_code, "odds": fair_odds(p_pct)}
             for p_label, p_pct, p_code in picks_raw
         ]
-        groups_for_log, _ = compute_grouped_markets(league, home, away, home_inj, away_inj)
-        if groups_for_log and not st.already_logged(fixture_id):
-            # Хотфикс 12.08.2026: премахнато живо API извикване тук - точно
-            # това причиняваше rate limit/524 при /daily?league=all (до 8
-            # успоредни лиги x по едно допълнително API извикване на мач).
-            # Ползваме вече изтеглените cached_odds (кеширани по-горе в тази
-            # функция); ако липсват - логваме без коефициент. Съществуващата
-            # фонова задача refresh_pending_odds.py (get_fixtures_needing_odds_refresh
-            # / update_odds_for_fixture) вече е предназначена точно за
-            # асинхронно допълване на такива липсващи коефициенти по-късно.
-            st.log_all_markets(league, fixture_id, match_date, home, away, groups_for_log, real_odds=cached_odds)
+        # Фаза И.3 (21.08.2026): проверяваме already_logged() ПРЕДИ да смятаме
+        # compute_grouped_markets() - преди тук се смяташе за ВСЕКИ мач на
+        # ВСЯКО зареждане на /daily, само за да се провери после дали изобщо
+        # трябва да се логне. compute_grouped_markets() е скъпа сметка
+        # (пълна Poisson/Dixon-Coles сметка за до 8 модела), а already_logged()
+        # е една евтина индексирана справка в SQLite (idx_predictions_fixture_market).
+        # За мач, логнат при предишно зареждане, старият резултат така или
+        # иначе се изхвърляше неизползван - тази промяна само пропуска
+        # ненужната сметка, логването е побитово идентично (доказано локално
+        # преди деплой).
+        if not st.already_logged(fixture_id):
+            groups_for_log, _ = compute_grouped_markets(league, home, away, home_inj, away_inj)
+            if groups_for_log:
+                # Хотфикс 12.08.2026: премахнато живо API извикване тук - точно
+                # това причиняваше rate limit/524 при /daily?league=all (до 8
+                # успоредни лиги x по едно допълнително API извикване на мач).
+                # Ползваме вече изтеглените cached_odds (кеширани по-горе в тази
+                # функция); ако липсват - логваме без коефициент. Съществуващата
+                # фонова задача refresh_pending_odds.py (get_fixtures_needing_odds_refresh
+                # / update_odds_for_fixture) вече е предназначена точно за
+                # асинхронно допълване на такива липсващи коефициенти по-късно.
+                st.log_all_markets(league, fixture_id, match_date, home, away, groups_for_log, real_odds=cached_odds)
 
         try:
             kickoff = datetime.fromisoformat(f["fixture"]["date"])
