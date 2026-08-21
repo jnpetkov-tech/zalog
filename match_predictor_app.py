@@ -1094,14 +1094,7 @@ def refresh_status():
     except FileNotFoundError:
         content = "Все още няма стартирано опресняване."
 
-    html = f"""<!DOCTYPE html><html lang="bg"><head><meta charset="UTF-8"><title>Прогрес на опресняването</title>
-<style>{BASE_STYLE}</style></head><body><div class="container">
-<h1>Прогрес на опресняването</h1>
-<div class="nav"><a href="/" style="font-weight:500;">🏠 Начало</a><a href="/daily">Днешни/предстоящи мачове</a><a href="/live">На живо</a><a href="/my_bets">Моите залози</a><a href="/system_check">📊 Проверка</a><a href="/leagues_admin">⚙️ Лиги</a><a href="/diagnostics">🔧 Диагностика</a></div>
-<p style="font-size:12px;color:var(--sub);">Презареди страницата (F5), за да видиш последния прогрес.</p>
-<pre style="background:var(--panel2);color:var(--text);border-radius:12px;padding:16px;font-size:12px;white-space:pre-wrap;border:1px solid var(--border);">{content}</pre>
-</div></body></html>"""
-    return html
+    return render_template("refresh_status.html", BASE_STYLE=BASE_STYLE, content=content)
     return render_template_string(LEAGUES_ADMIN_TEMPLATE, all_leagues=ALL_LEAGUES, active=active, saved=saved, active_page='leagues_admin')
     active = load_active_leagues()
     return render_template_string(LEAGUES_ADMIN_TEMPLATE, all_leagues=ALL_LEAGUES, active=active, saved=saved, active_page='leagues_admin')
