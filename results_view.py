@@ -154,8 +154,11 @@ def calibration_table(rows):
 
 
 def roi_by_market(rows, market_label):
+    # Фаза O.1 (21.08.2026): само публикуваните прогнози (evaluation.published_picks(),
+    # огледално на I.3 остатъка) - иначе мач с 2+ логнати пазара се брои двойно тук.
+    picks = evaluation.published_picks(rows, policy)
     by_m = {}
-    for r in rows:
+    for r in picks:
         if r["market_code"] not in ROI_MARKETS or r["status"] not in ("won", "lost"):
             continue
         if not r["market_odds"]:
@@ -177,9 +180,11 @@ def roi_by_market(rows, market_label):
 
 
 def roi_by_league(rows, ALL_LEAGUES, LEAGUE_FLAGS):
+    # Фаза O.1 (21.08.2026): само публикуваните прогнози - виж бележката в roi_by_market().
+    picks = evaluation.published_picks(rows, policy)
     settled = {}
     pending = {}
-    for r in rows:
+    for r in picks:
         lg = r["league"]
         if r["status"] in ("pending", "no_data"):
             pending[lg] = pending.get(lg, 0) + 1
@@ -206,8 +211,10 @@ def roi_by_league(rows, ALL_LEAGUES, LEAGUE_FLAGS):
 
 
 def weekly_roi(rows):
+    # Фаза O.1 (21.08.2026): само публикуваните прогнози - виж бележката в roi_by_market().
+    picks = evaluation.published_picks(rows, policy)
     buckets = {}
-    for r in rows:
+    for r in picks:
         if r["status"] not in ("won", "lost") or not r["market_odds"]:
             continue
         try:
