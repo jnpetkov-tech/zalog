@@ -73,6 +73,39 @@ def init_db():
             fetched_at TEXT
         )
     """)
+    # Партида 3, Стъпка 1 (21.08.2026, ARCHITECTURE.md, Граница 2): празна
+    # засега таблица. ЦЕЛ (следващи стъпки, поетапно): фонова задача по
+    # график смята прогнозите за 7 дни напред за всички лиги и пълни тази
+    # таблица; /daily накрая чете от нея вместо да смята "на момента" при
+    # всяка заявка (сегашната причина за бавния студен старт и TTL кеша от
+    # И.3). За разлика от predictions_log (постоянен, append-only исторически
+    # запис за оценка на точността), тази таблица е "снимка" на ТЕКУЩОТО
+    # състояние - UNIQUE(fixture_id, market_code) + INSERT OR REPLACE
+    # презаписва реда при всяко ново пресмятане, не трупа история.
+    # model_version пази какъв код/конфигурация е дала резултата - позволява
+    # честно сравнение преди/след бъдеща промяна в модела, от реални данни.
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS predictions_snapshot (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            fixture_id INTEGER NOT NULL,
+            league TEXT NOT NULL,
+            match_date TEXT,
+            home_team TEXT,
+            away_team TEXT,
+            market_code TEXT NOT NULL,
+            pick_label TEXT,
+            pick_pct REAL,
+            fair_odds REAL,
+            ev REAL,
+            computed_at TEXT NOT NULL,
+            model_version TEXT,
+            UNIQUE(fixture_id, market_code)
+        )
+    """)
+    conn.execute("""
+        CREATE INDEX IF NOT EXISTS idx_predictions_snapshot_league_date
+        ON predictions_snapshot(league, match_date)
+    """)
     conn.commit()
     conn.close()
 
