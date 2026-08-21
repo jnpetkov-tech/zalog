@@ -1545,71 +1545,6 @@ def refresh_status():
     return render_template_string(LEAGUES_ADMIN_TEMPLATE, all_leagues=ALL_LEAGUES, active=active, saved=saved, active_page='leagues_admin')
 
 
-INDEX_TEMPLATE = """
-<!DOCTYPE html><html lang="bg"><head><meta charset="UTF-8"><title>Sportbg Прогнози</title>
-<style>""" + BASE_STYLE + SIDEBAR_STYLE + """
-.home-refresh-row{display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap;}
-.home-refresh-btn{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--text);font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
-.home-refresh-btn:hover{background:var(--panel);}
-.top-pred-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 14px;background:var(--panel);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;}
-.top-pred-teams{font-size:13px;color:var(--text);}
-.top-pred-league{font-size:11px;color:var(--sub);margin-top:2px;}
-.top-pred-pick{font-size:12px;color:var(--sub);text-align:right;white-space:nowrap;}
-</style></head><body>""" + SIDEBAR_HTML + """<div class="container">
-<h1>Sportbg Прогнози</h1>
-
-<div class="stats-row">
-  <div class="stat-box"><div class="stat-value">{{overall.won}}</div><div class="stat-label">Печеливши</div></div>
-  <div class="stat-box"><div class="stat-value">{{overall.lost}}</div><div class="stat-label">Губещи</div></div>
-  <div class="stat-box"><div class="stat-value">{{overall.pending}}</div><div class="stat-label">Чакащи</div></div>
-</div>
-{% if promised_avg is not none %}
-<div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;margin-bottom:20px;padding:14px 18px;background:var(--panel);border:1px solid var(--border);border-radius:10px;">
-  <div><div style="font-size:22px;font-weight:700;">{{ "%.1f%%"|format(promised_avg) }}</div><div style="font-size:11px;color:var(--sub);">обещано средно</div></div>
-  <div style="color:var(--sub);font-size:18px;">&rarr;</div>
-  <div><div style="font-size:22px;font-weight:700;">{{ "%.1f%%"|format(actual_pct) }}</div><div style="font-size:11px;color:var(--sub);">реално познати</div></div>
-  <div style="margin-left:auto;font-size:11px;color:var(--sub);">само публикувани прогнози &middot; n={{n_settled}} приключили</div>
-</div>
-{% endif %}
-
-<div class="group-title" style="margin-top:24px;">Топ прогнози за деня</div>
-{% if top_matches %}
-{% for m in top_matches %}
-<div class="top-pred-row">
-  <div>
-    <div class="top-pred-teams">{{cyrillic(m.home)}} - {{cyrillic(m.away)}}</div>
-    <div class="top-pred-league">{{m.league}}</div>
-  </div>
-  <div class="top-pred-pick">{{m.top_pred.pick_label}}<br>{{"%.1f"|format(m.top_pred.pick_pct)}}%</div>
-</div>
-{% endfor %}
-{% else %}
-<p style="color:var(--sub);font-size:13px;">Няма прогнози за днес все още.</p>
-{% endif %}
-
-<div class="group-title" style="margin-top:24px;">Данни</div>
-<div class="home-refresh-row">
-  <form method="post" action="/refresh_all" style="margin:0;">
-    <button type="submit" class="home-refresh-btn">🔄 Опресни всички данни</button>
-  </form>
-  <form method="post" action="/refresh_odds_cache_manual" style="margin:0;">
-    <button type="submit" class="small green">💰 Опресни пазарни коефициенти</button>
-  </form>
-  <a href="/refresh_status" style="font-size:13px;color:var(--accent);">Виж прогрес →</a>
-</div>
-
-<div class="group-title" style="margin-top:28px;">Бързи връзки</div>
-<div style="display:flex;flex-direction:column;gap:10px;">
-  <a href="/daily" class="match-card" style="display:block;text-decoration:none;color:inherit;">📅 <b>Днешни/предстоящи мачове</b><div style="font-size:12px;color:var(--sub);margin-top:4px;">Прогнози за предстоящите срещи по лиги</div></a>
-  <a href="/live" class="match-card" style="display:block;text-decoration:none;color:inherit;">⏱️ <b>На живо</b><div style="font-size:12px;color:var(--sub);margin-top:4px;">Прогноза по текущ резултат и минута</div></a>
-  <a href="/manual" class="match-card" style="display:block;text-decoration:none;color:inherit;">🔍 <b>Ръчна проверка</b><div style="font-size:12px;color:var(--sub);margin-top:4px;">Провери конкретен мач ръчно</div></a>
-  <a href="/my_bets" class="match-card" style="display:block;text-decoration:none;color:inherit;">🎯 <b>Моите залози</b><div style="font-size:12px;color:var(--sub);margin-top:4px;">Личните ти залози - активни и приключили</div></a>
-  <a href="/system_check" class="match-card" style="display:block;text-decoration:none;color:inherit;">📊 <b>Проверка на системата</b><div style="font-size:12px;color:var(--sub);margin-top:4px;">Статистика по пазар/лига, изминали прогнози</div></a>
-  <a href="/leagues_admin" class="match-card" style="display:block;text-decoration:none;color:inherit;">⚙️ <b>Лиги</b><div style="font-size:12px;color:var(--sub);margin-top:4px;">Управление на активните лиги</div></a>
-</div>
-
-</div></body></html>
-"""
 
 
 @app.route("/")
@@ -1639,7 +1574,7 @@ def index_home():
         top_matches.append({"date": mdate, "home": home, "away": away, "league": league, "top_pred": top_pred})
     top_matches.sort(key=lambda m: -m["top_pred"]["pick_pct"])
     top_matches = top_matches[:5]
-    return render_template_string(INDEX_TEMPLATE, active_page='home', overall=overall,
+    return render_template("index.html", active_page='home', overall=overall,
                                     top_matches=top_matches, cyrillic=to_cyrillic,
                                     promised_avg=eval_summary["promised_avg"],
                                     actual_pct=eval_summary["actual_pct"],
