@@ -953,6 +953,11 @@ function dtShowTab(name) {
   ⚠️ {{api_error}}
 </div>
 {% endif %}
+{% if snapshot_stale_warning %}
+<div style="background:var(--yellow-bg);border:1px solid rgba(234,179,8,0.35);border-radius:12px;padding:16px 20px;margin-bottom:20px;color:var(--yellow);font-size:13px;">
+  ⚠️ {{snapshot_stale_warning}}
+</div>
+{% endif %}
 
 <div class="tabs">
   <button type="button" class="tab-btn" data-tab="live" onclick="dtShowTab('live')">🔴 На живо <span style="font-size:11px;color:var(--sub);">({{live_count}})</span></button>
@@ -2171,6 +2176,30 @@ def daily():
 
     use_snapshot = _daily_use_snapshot(request)
 
+    # Партида 3, довършване (21.08.2026): ако build_predictions_snapshot.py
+    # гръмне през нощта и не успее да презапише таблицата, /daily (в
+    # snapshot режим) би сервирал старите редове мълчаливо, без Дака да
+    # разбере. Проверка: най-новият computed_at в цялата таблица - ако е
+    # по-стар от ~2 часа (build-predictions-snapshot.timer тръгва на 30
+    # мин), предупреждаваме на страницата, по образец на api_error банера
+    # по-долу.
+    snapshot_stale_warning = None
+    if use_snapshot:
+        freshness = st.get_snapshot_freshness()
+        if freshness is None:
+            snapshot_stale_warning = ("Снимката с прогнози (predictions_snapshot) е празна - фоновата задача "
+                                       "build_predictions_snapshot.py вероятно още не е пускана успешно.")
+        else:
+            try:
+                age_hours = (datetime.now() - datetime.fromisoformat(freshness)).total_seconds() / 3600
+                if age_hours > 2:
+                    snapshot_stale_warning = (
+                        f"Прогнозите не са преизчислявани от {age_hours:.1f} часа "
+                        f"(последно смятане: {freshness[:16].replace('T', ' ')}) - фоновата задача вероятно е спряла. "
+                        "Показваме последните успешно запазени данни, не най-новите.")
+            except (ValueError, TypeError):
+                pass
+
     matches = []
     api_error = None
     if league == "all":
@@ -2240,7 +2269,7 @@ def daily():
 
     return render_template_string(DAILY_TEMPLATE, leagues=get_leagues(), selected_league=league,
                                     league_name=league_name, days_ahead=DAYS_AHEAD,
-                                    api_error=api_error,
+                                    api_error=api_error, snapshot_stale_warning=snapshot_stale_warning,
                                     live_groups=live_groups, upcoming_groups=upcoming_groups, finished_groups=finished_groups,
                                     skipped_groups=skipped_groups, skipped_count=len(skipped_matches),
                                     live_count=len(live_matches), upcoming_count=len(upcoming_matches), finished_count=len(finished_matches),

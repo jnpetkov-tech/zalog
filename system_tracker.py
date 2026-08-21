@@ -295,6 +295,19 @@ def get_snapshot_picks_for_fixtures(fixture_ids):
     return result
 
 
+def get_snapshot_freshness():
+    """Партида 3, довършване (21.08.2026): най-новият computed_at в цялата
+    predictions_snapshot таблица - ISO низ, или None ако таблицата е
+    празна (build_predictions_snapshot.py никога не е пускан успешно).
+    Използва се от /daily, за да предупреди Дака ако фоновата задача
+    (build-predictions-snapshot.timer, на 30 мин) е спряла да презаписва -
+    иначе страницата би сервирала стари данни мълчаливо."""
+    conn = get_conn()
+    row = conn.execute("SELECT MAX(computed_at) FROM predictions_snapshot").fetchone()
+    conn.close()
+    return row[0] if row else None
+
+
 def get_fixtures_needing_odds_refresh(hours_ahead=48):
     """НОВО (Фаза F0): намира fixture_id-та, логнати преди коефициентите
     да са били налични (market_odds IS NULL), чийто начален час е в
