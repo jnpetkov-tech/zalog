@@ -57,7 +57,7 @@ def require_auth():
         return redirect(url_for("login", next=request.path))
 
 
-from api_football import API_KEY, BASE_URL, API_HEADERS, fetch_fixture_predictions, fetch_fixture_odds, fetch_lineups_available
+from api_football import API_KEY, BASE_URL, API_HEADERS, fetch_fixture_predictions, fetch_fixture_odds, fetch_lineups_available, fetch_fixture_injuries
 
 # лиги, за които контузиите ДОКАЗАНО НЕ подобряват модела (тествано и отхвърлено)
 NO_INJURY_MODEL_LEAGUES = {"champions_league", "europa_league"}
@@ -295,26 +295,6 @@ def fetch_league_standings_for_teams(league_id, season, home_id, away_id):
 
 
 
-def fetch_fixture_injuries(fixture_id):
-    try:
-        r = requests.get(f"{BASE_URL}/injuries", headers=API_HEADERS,
-                          params={"fixture": fixture_id}, timeout=10)
-        data = r.json()
-        if data.get("errors") or not data.get("response"):
-            return 0, 0, False
-        home_count = 0
-        away_count = 0
-        home_team_id = None
-        for inj in data["response"]:
-            if home_team_id is None:
-                home_team_id = inj["team"]["id"]
-            if inj["team"]["id"] == home_team_id:
-                home_count += 1
-            else:
-                away_count += 1
-        return home_count, away_count, True
-    except Exception:
-        return 0, 0, False
 
 
 

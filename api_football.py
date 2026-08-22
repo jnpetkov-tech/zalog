@@ -131,3 +131,25 @@ def fetch_lineups_available(fixture_id):
         return bool(data.get("response"))
     except Exception:
         return False
+
+
+def fetch_fixture_injuries(fixture_id):
+    try:
+        r = requests.get(f"{BASE_URL}/injuries", headers=API_HEADERS,
+                          params={"fixture": fixture_id}, timeout=10)
+        data = r.json()
+        if data.get("errors") or not data.get("response"):
+            return 0, 0, False
+        home_count = 0
+        away_count = 0
+        home_team_id = None
+        for inj in data["response"]:
+            if home_team_id is None:
+                home_team_id = inj["team"]["id"]
+            if inj["team"]["id"] == home_team_id:
+                home_count += 1
+            else:
+                away_count += 1
+        return home_count, away_count, True
+    except Exception:
+        return 0, 0, False
