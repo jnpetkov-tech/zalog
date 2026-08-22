@@ -57,7 +57,7 @@ def require_auth():
         return redirect(url_for("login", next=request.path))
 
 
-from api_football import API_KEY, BASE_URL, API_HEADERS, FINISHED_STATUSES, fetch_fixture_predictions, fetch_fixture_odds, fetch_lineups_available, fetch_fixture_injuries, fetch_fixture_lineups_full, fetch_team_recent_form
+from api_football import API_KEY, BASE_URL, API_HEADERS, FINISHED_STATUSES, fetch_fixture_predictions, fetch_fixture_odds, fetch_lineups_available, fetch_fixture_injuries, fetch_fixture_lineups_full, fetch_team_recent_form, fetch_league_standings_for_teams
 
 # лиги, за които контузиите ДОКАЗАНО НЕ подобряват модела (тествано и отхвърлено)
 NO_INJURY_MODEL_LEAGUES = {"champions_league", "europa_league"}
@@ -226,32 +226,6 @@ def get_ft_lambdas(ft_model, team_idx, home, away, home_inj=0, away_inj=0):
 
 
 
-def fetch_league_standings_for_teams(league_id, season, home_id, away_id):
-    """Фаза P.1 (21.08.2026): текуща позиция в таблицата за двата отбора -
-    чисто информативно. Групите (UEFA турнири с групова фаза) се сплескват
-    в едно - връща None за отбор, който не е намерен (напр. чист knockout
-    турнир без класическа таблица), не гърми."""
-    try:
-        r = requests.get(f"{BASE_URL}/standings", headers=API_HEADERS,
-                          params={"league": league_id, "season": season}, timeout=10)
-        data = r.json()
-        if data.get("errors") or not data.get("response"):
-            return None
-        groups = data["response"][0]["league"]["standings"]
-        flat = [row for group in groups for row in group]
-        total = len(flat)
-        by_id = {row["team"]["id"]: row for row in flat}
-
-        def pick(tid):
-            row = by_id.get(tid)
-            if not row:
-                return None
-            return {"rank": row["rank"], "points": row["points"],
-                     "played": row["all"]["played"], "form": row.get("form")}
-
-        return {"home": pick(home_id), "away": pick(away_id), "total_teams": total}
-    except Exception:
-        return None
 
 
 

@@ -215,3 +215,31 @@ def fetch_team_recent_form(team_id, league_id, season, exclude_fixture_id, n=5):
         return out[:n]
     except Exception:
         return None
+
+
+def fetch_league_standings_for_teams(league_id, season, home_id, away_id):
+    """Фаза P.1 (21.08.2026): текуща позиция в таблицата за двата отбора -
+    чисто информативно. Групите (UEFA турнири с групова фаза) се сплескват
+    в едно - връща None за отбор, който не е намерен (напр. чист knockout
+    турнир без класическа таблица), не гърми."""
+    try:
+        r = requests.get(f"{BASE_URL}/standings", headers=API_HEADERS,
+                          params={"league": league_id, "season": season}, timeout=10)
+        data = r.json()
+        if data.get("errors") or not data.get("response"):
+            return None
+        groups = data["response"][0]["league"]["standings"]
+        flat = [row for group in groups for row in group]
+        total = len(flat)
+        by_id = {row["team"]["id"]: row for row in flat}
+
+        def pick(tid):
+            row = by_id.get(tid)
+            if not row:
+                return None
+            return {"rank": row["rank"], "points": row["points"],
+                     "played": row["all"]["played"], "form": row.get("form")}
+
+        return {"home": pick(home_id), "away": pick(away_id), "total_teams": total}
+    except Exception:
+        return None
