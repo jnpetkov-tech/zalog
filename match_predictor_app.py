@@ -57,7 +57,7 @@ def require_auth():
         return redirect(url_for("login", next=request.path))
 
 
-from api_football import API_KEY, BASE_URL, API_HEADERS
+from api_football import API_KEY, BASE_URL, API_HEADERS, fetch_fixture_predictions
 
 # лиги, за които контузиите ДОКАЗАНО НЕ подобряват модела (тествано и отхвърлено)
 NO_INJURY_MODEL_LEAGUES = {"champions_league", "europa_league"}
@@ -223,32 +223,6 @@ def get_ft_lambdas(ft_model, team_idx, home, away, home_inj=0, away_inj=0):
     return fl.get_lambdas(ft_model, team_idx, home, away)
 
 
-def fetch_fixture_predictions(fixture_id):
-    """Тегли вградената прогноза на API-Football - само за информативно сравнение"""
-    try:
-        r = requests.get(f"{BASE_URL}/predictions", headers=API_HEADERS,
-                          params={"fixture": fixture_id}, timeout=10)
-        data = r.json()
-        if data.get("errors") or not data.get("response"):
-            return None
-
-        pred = data["response"][0].get("predictions", {})
-        percent = pred.get("percent", {})
-        advice = pred.get("advice")
-        winner = pred.get("winner", {}).get("name")
-        # Фаза P.1 (21.08.2026): team id-та идват безплатно в същия отговор -
-        # ползвани за /fixtures?team=.. (последни 5 мача) и /standings по-долу,
-        # без допълнително API извикване само за да намерим team id.
-        teams = data["response"][0].get("teams", {})
-        home_id = teams.get("home", {}).get("id")
-        away_id = teams.get("away", {}).get("id")
-
-        return {
-            "home_pct": percent.get("home"), "draw_pct": percent.get("draw"), "away_pct": percent.get("away"),
-            "advice": advice, "winner": winner, "home_id": home_id, "away_id": away_id,
-        }
-    except Exception:
-        return None
 
 
 def fetch_team_recent_form(team_id, league_id, season, exclude_fixture_id, n=5):
