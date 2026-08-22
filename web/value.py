@@ -29,7 +29,7 @@ NAIVE BASELINE, не дали бие ЗАТВАРЯЩАТА ПАЗАРНА ЛИ�
 our_fair_odds, pick_pct, status) - бъдещ diag_value_edge.py повторен run
 директно ще каже дали хипотезата се потвърждава.
 """
-from flask import render_template
+from flask import Blueprint, render_template
 from datetime import datetime
 
 MIN_PCT = 25
@@ -86,7 +86,9 @@ def register_value_view(app, ctx):
     st = ctx["st"]
     policy = ctx["policy"]
 
-    @app.route("/value")
+    value_bp = Blueprint("value", __name__)
+
+    @value_bp.route("/value")
     def value_view():
         opps = get_value_opportunities(st.get_conn, policy.is_proven)
         for o in opps:
@@ -103,3 +105,5 @@ def register_value_view(app, ctx):
             avg_edge=avg_edge, leagues_count=leagues_count,
             min_pct=MIN_PCT, max_pct=MAX_PCT, min_edge=MIN_EDGE, max_edge=MAX_EDGE,
         )
+
+    app.register_blueprint(value_bp)

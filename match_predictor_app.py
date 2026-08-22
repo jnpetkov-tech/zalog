@@ -1827,7 +1827,7 @@ register_results_view(app, {
     "ALL_LEAGUES": ALL_LEAGUES, "LEAGUE_FLAGS": LEAGUE_FLAGS, "market_label": market_label,
     "to_cyrillic": to_cyrillic, "st": st, "bt": bt,
 })
-from value_view import register_value_view
+from web.value import register_value_view
 register_value_view(app, {
     "BASE_STYLE": BASE_STYLE, "SIDEBAR_STYLE": SIDEBAR_STYLE, "SIDEBAR_HTML": SIDEBAR_HTML,
     "ALL_LEAGUES": ALL_LEAGUES, "LEAGUE_FLAGS": LEAGUE_FLAGS, "market_label": market_label,
