@@ -57,7 +57,7 @@ def require_auth():
         return redirect(url_for("login", next=request.path))
 
 
-from api_football import API_KEY, BASE_URL, API_HEADERS, fetch_fixture_predictions, fetch_fixture_odds
+from api_football import API_KEY, BASE_URL, API_HEADERS, fetch_fixture_predictions, fetch_fixture_odds, fetch_lineups_available
 
 # лиги, за които контузиите ДОКАЗАНО НЕ подобряват модела (тествано и отхвърлено)
 NO_INJURY_MODEL_LEAGUES = {"champions_league", "europa_league"}
@@ -317,14 +317,6 @@ def fetch_fixture_injuries(fixture_id):
         return 0, 0, False
 
 
-def fetch_lineups_available(fixture_id):
-    try:
-        r = requests.get(f"{BASE_URL}/fixtures/lineups", headers=API_HEADERS,
-                          params={"fixture": fixture_id}, timeout=10)
-        data = r.json()
-        return bool(data.get("response"))
-    except Exception:
-        return False
 
 
 def fetch_fixture_lineups_full(fixture_id):

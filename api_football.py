@@ -121,3 +121,13 @@ def fetch_fixture_odds(fixture_id):
         return result
     except Exception:
         return None
+
+
+def fetch_lineups_available(fixture_id):
+    try:
+        r = requests.get(f"{BASE_URL}/fixtures/lineups", headers=API_HEADERS,
+                          params={"fixture": fixture_id}, timeout=10)
+        data = r.json()
+        return bool(data.get("response"))
+    except Exception:
+        return False
