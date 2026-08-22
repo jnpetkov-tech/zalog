@@ -247,7 +247,7 @@ def fetch_league_standings_for_teams(league_id, season, home_id, away_id):
         return None
 
 
-def fetch_upcoming_fixtures(league, from_date=None, to_date=None):
+def fetch_upcoming_fixtures(league, from_date=None, to_date=None, use_cache=False, cache_minutes=20):
     # ALL_LEAGUES е регистърът на лигите, притежаван от match_predictor_app.py
     # (референциран и от шаблони/друга бизнес логика там) - НЕ се дублира тук.
     # Ленив import вътре в тялото (същия идиом като run_refresh_all() ->
@@ -259,6 +259,21 @@ def fetch_upcoming_fixtures(league, from_date=None, to_date=None):
         from_date = today
     if to_date is None:
         to_date = today + timedelta(days=DAYS_AHEAD)
+
+    # 22.08.2026: use_cache=True се подава САМО от фоновите задачи (виж
+    # run_refresh_odds_cache/run_refresh_injuries_cache/
+    # build_predictions_snapshot.py) - те и трите питат за практически
+    # същия списък мачове на всеки 30 мин, независимо една от друга. Кратък
+    # TTL кеш споделен между тях среже трикратното повторение. НИКОГА не се
+    # включва от страниците, които потребителят реално гледа (/daily,
+    # _predict_matches_for_league_from_snapshot) - там живия статус/резултат
+    # на мача трябва да е пресен към момента на зареждане, не до 20 мин стар.
+    if use_cache:
+        import system_tracker as _st
+        cached = _st.get_cached_fixture_list(league, from_date.isoformat(), to_date.isoformat(), cache_minutes)
+        if cached is not None:
+            return cached, None
+
     params = {
         "league": _mpa.ALL_LEAGUES[league]["id"],
         "season": from_date.year if from_date.month >= 7 else from_date.year - 1,
@@ -279,7 +294,11 @@ def fetch_upcoming_fixtures(league, from_date=None, to_date=None):
                          "Провери плана си в dashboard.api-football.com.")
         return [], f"Грешка от API-то: {errors}"
 
-    return data.get("response", []), None
+    fixtures = data.get("response", [])
+    if use_cache:
+        import system_tracker as _st
+        _st.set_cached_fixture_list(league, from_date.isoformat(), to_date.isoformat(), fixtures)
+    return fixtures, None
 
 
 def fetch_fixture_id_for_today(league, home, away):

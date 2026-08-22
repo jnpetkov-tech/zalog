@@ -666,12 +666,20 @@ def _odds_needs_refresh(fixture_id, fixture_date_str, now):
         hours_to_kickoff = (kickoff - datetime.now(kickoff.tzinfo)).total_seconds() / 3600
     except Exception:
         hours_to_kickoff = 0
+    # 22.08.2026: 25/180/720 бяха твърде агресивни - задачата тръгва на
+    # всеки 30 мин, а прагът от 25 мин за <24ч означаваше "опресни на
+    # практика на всеки единствен цикъл", независимо дали коефициентът реално
+    # се е променил. Реален разход от логовете: ~118 fetch_fixture_odds
+    # извиквания на цикъл × 48 цикъла/ден ≈ 5700/ден само от тази функция -
+    # 76% от дневния лимит от 7500. Разхлабено, за да остане запас за
+    # проверка на резултати/контузии/реални посещения на страници (виж
+    # CLAUDE_HANDOFF.md, раздел за API квотата, 22.08.2026).
     if hours_to_kickoff < 24:
-        max_age = 25
+        max_age = 90
     elif hours_to_kickoff < 72:
-        max_age = 180
+        max_age = 360
     else:
-        max_age = 720
+        max_age = 1440
     return age_minutes >= max_age
 
 
@@ -687,7 +695,7 @@ def run_refresh_odds_cache():
     skipped_fresh = 0
     for key in ALL_LEAGUES.keys():
         try:
-            fixtures, _ = fetch_upcoming_fixtures(key, from_date, to_date)
+            fixtures, _ = fetch_upcoming_fixtures(key, from_date, to_date, use_cache=True)
         except Exception:
             continue
         for f in fixtures:
@@ -722,16 +730,32 @@ def run_refresh_injuries_cache():
     виж system_tracker.py), затова просто пропускаме fixture-и с все още
     свеж кеш."""
     from_date = date.today()
-    to_date = from_date + timedelta(days=2)
+    # 22.08.2026: прозорецът за самата обработка си остава 48ч (контузийните
+    # новини са релевантни само близо до мача) - но ЗАЯВКАТА за списъка с
+    # мачове сега пита за същия по-широк прозорец (today..+DAYS_AHEAD) като
+    # run_refresh_odds_cache(), за да падне в СЪЩИЯ кеширан резултат
+    # (fixture_list_cache е ключиран по точния (лига, from, to) диапазон) -
+    # филтрираме до 48ч тук, на Python ниво, вместо да караме API-то да го
+    # прави. Двете задачи тръгват последователно от един и същ cron скрипт
+    # (refresh_odds_cron.sh), значи попадението в кеша е гарантирано, не
+    # състезание между два отделни процеса.
+    injuries_window_to = from_date + timedelta(days=2)
+    to_date = from_date + timedelta(days=DAYS_AHEAD)
     checked = 0
     updated = 0
     for key in ALL_LEAGUES.keys():
         try:
-            fixtures, _ = fetch_upcoming_fixtures(key, from_date, to_date)
+            fixtures, _ = fetch_upcoming_fixtures(key, from_date, to_date, use_cache=True)
         except Exception:
             continue
         for f in fixtures:
             fixture_id = f["fixture"]["id"]
+            try:
+                f_date = datetime.fromisoformat(f["fixture"]["date"][:19])
+            except (ValueError, TypeError, KeyError):
+                continue
+            if f_date > datetime.combine(injuries_window_to, datetime.min.time()):
+                continue
             if st.get_cached_injuries(fixture_id) is not None:
                 continue
             checked += 1
@@ -891,8 +915,13 @@ def _predict_matches_for_league_from_snapshot(league, from_date, to_date):
     return matches, api_error
 
 
-def _predict_matches_for_league_impl(league, from_date, to_date):
-    fixtures, api_error = fetch_upcoming_fixtures(league, from_date, to_date)
+def _predict_matches_for_league_impl(league, from_date, to_date, use_fixture_cache=False):
+    # use_fixture_cache=True само от build_predictions_snapshot.py (фонова
+    # задача на 30 мин, споделя fixture_list_cache с run_refresh_odds_cache/
+    # run_refresh_injuries_cache - виж 22.08.2026 бележката там). Остава
+    # False по подразбиране - тази функция се вика и от /daily?source=live
+    # (рядка ръчна диагностика), където живият статус трябва да е пресен.
+    fixtures, api_error = fetch_upcoming_fixtures(league, from_date, to_date, use_cache=use_fixture_cache)
     (teams, team_idx, ft_model, ht_model, h2_model, corners_model, cards_model,
      offsides_model, recent_model, recent_matches_count, has_injuries) = get_models(league)
     rho_ft = ft_model.get("rho", 0.0)  # Фаза K.1 (20.08.2026)

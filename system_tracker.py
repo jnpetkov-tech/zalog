@@ -73,6 +73,24 @@ def init_db():
             fetched_at TEXT
         )
     """)
+    # 22.08.2026: списъкът с предстоящи мачове за (лига, период) се теглеше
+    # поотделно от три различни 30-минутни фонови задачи (опресняване на
+    # коефициенти, опресняване на контузии, предизчисляване на прогнозите)
+    # за едни и същи 17 лиги - тройно едно и също запитване към API-Football
+    # на всеки цикъл. Кратък TTL кеш тук, ползван само от фоновите задачи
+    # (виж use_cache в api_football.fetch_upcoming_fixtures) - НЕ и от
+    # страниците, които потребителят реално гледа (/daily, /live), за да не
+    # закъснява живия статус/резултат там.
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS fixture_list_cache (
+            league TEXT,
+            from_date TEXT,
+            to_date TEXT,
+            fetched_at TEXT,
+            data TEXT,
+            PRIMARY KEY (league, from_date, to_date)
+        )
+    """)
     # Партида 3, Стъпка 1 (21.08.2026, ARCHITECTURE.md, Граница 2): празна
     # засега таблица. ЦЕЛ (следващи стъпки, поетапно): фонова задача по
     # график смята прогнозите за 7 дни напред за всички лиги и пълни тази
@@ -639,6 +657,37 @@ def get_cached_injuries(fixture_id, max_age_hours=6):
     if datetime.now() - fetched > timedelta(hours=max_age_hours):
         return None
     return row["home_injuries"], row["away_injuries"], bool(row["ok"])
+
+
+def get_cached_fixture_list(league, from_date, to_date, max_age_minutes=20):
+    conn = get_conn()
+    conn.row_factory = sqlite3.Row
+    row = conn.execute(
+        "SELECT * FROM fixture_list_cache WHERE league=? AND from_date=? AND to_date=?",
+        (league, from_date, to_date)
+    ).fetchone()
+    conn.close()
+    if not row:
+        return None
+    try:
+        fetched = datetime.fromisoformat(row["fetched_at"])
+    except (ValueError, TypeError):
+        return None
+    if datetime.now() - fetched > timedelta(minutes=max_age_minutes):
+        return None
+    return json.loads(row["data"])
+
+
+def set_cached_fixture_list(league, from_date, to_date, fixtures):
+    conn = get_conn()
+    conn.execute("""
+        INSERT INTO fixture_list_cache (league, from_date, to_date, fetched_at, data)
+        VALUES (?,?,?,?,?)
+        ON CONFLICT(league, from_date, to_date) DO UPDATE SET
+            fetched_at=excluded.fetched_at, data=excluded.data
+    """, (league, from_date, to_date, datetime.now().isoformat(), json.dumps(fixtures)))
+    conn.commit()
+    conn.close()
 
 
 init_db()

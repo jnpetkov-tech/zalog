@@ -55,7 +55,7 @@ def build():
     t0 = time.time()
     for league in leagues:
         t_lg = time.time()
-        matches, api_error = mpa._predict_matches_for_league_impl(league, None, None)
+        matches, api_error = mpa._predict_matches_for_league_impl(league, None, None, use_fixture_cache=True)
         rows = []
         for m in matches:
             if m.get("pct") is None or not m.get("picks"):
