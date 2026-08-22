@@ -1821,7 +1821,7 @@ for _lg in ALL_LEAGUES.keys():
         print(f"  ГРЕШКА при зареждане на {_lg}: {_e}")
 print("Всички модели са в кеша.", flush=True)
 
-from results_view import register_results_view
+from web.results import register_results_view
 register_results_view(app, {
     "BASE_STYLE": BASE_STYLE, "SIDEBAR_STYLE": SIDEBAR_STYLE, "SIDEBAR_HTML": SIDEBAR_HTML,
     "ALL_LEAGUES": ALL_LEAGUES, "LEAGUE_FLAGS": LEAGUE_FLAGS, "market_label": market_label,

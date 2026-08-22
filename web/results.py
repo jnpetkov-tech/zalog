@@ -3,7 +3,7 @@
 Регистрира се отделно чрез register_results_view(app, ctx), за да няма
 кръгов импорт с match_predictor_app.py.
 """
-from flask import request, render_template
+from flask import Blueprint, request, render_template
 from datetime import datetime, date, timedelta
 import prediction_policy as policy
 import evaluation
@@ -254,7 +254,9 @@ def register_results_view(app, ctx):
     st = ctx["st"]
     bt = ctx["bt"]
 
-    @app.route("/results")
+    results_bp = Blueprint("results", __name__)
+
+    @results_bp.route("/results")
     def results_view():
         args = request.args
         source = args.get("source", "all")
@@ -310,3 +312,5 @@ def register_results_view(app, ctx):
             roi_league=rleague, weekly=weekly, weekly_brier=weekly_brier, market_label=market_label,
             LEAGUE_FLAGS=LEAGUE_FLAGS, cyrillic=to_cyrillic,
         )
+
+    app.register_blueprint(results_bp)
