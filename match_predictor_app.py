@@ -57,7 +57,7 @@ def require_auth():
         return redirect(url_for("login", next=request.path))
 
 
-from api_football import API_KEY, BASE_URL, API_HEADERS, fetch_fixture_predictions, fetch_fixture_odds, fetch_lineups_available, fetch_fixture_injuries
+from api_football import API_KEY, BASE_URL, API_HEADERS, fetch_fixture_predictions, fetch_fixture_odds, fetch_lineups_available, fetch_fixture_injuries, fetch_fixture_lineups_full
 
 # лиги, за които контузиите ДОКАЗАНО НЕ подобряват модела (тествано и отхвърлено)
 NO_INJURY_MODEL_LEAGUES = {"champions_league", "europa_league"}
@@ -299,25 +299,6 @@ def fetch_league_standings_for_teams(league_id, season, home_id, away_id):
 
 
 
-def fetch_fixture_lineups_full(fixture_id):
-    """Връща реалния потвърден състав (стартиращи + резерви) с player_id, или None ако още няма."""
-    try:
-        r = requests.get(f"{BASE_URL}/fixtures/lineups", headers=API_HEADERS,
-                          params={"fixture": fixture_id}, timeout=10)
-        data = r.json()
-        if not data.get("response"):
-            return None
-        result = {}
-        for team_block in data["response"]:
-            team_name = team_block["team"]["name"]
-            starters = [{"player_id": p["player"]["id"], "name": p["player"]["name"],
-                         "pos": p["player"].get("pos")} for p in team_block.get("startXI", [])]
-            subs = [{"player_id": p["player"]["id"], "name": p["player"]["name"],
-                     "pos": p["player"].get("pos")} for p in team_block.get("substitutes", [])]
-            result[team_name] = {"starters": starters, "substitutes": subs}
-        return result
-    except Exception:
-        return None
 
 
 def fair_odds(pct):

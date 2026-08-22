@@ -153,3 +153,24 @@ def fetch_fixture_injuries(fixture_id):
         return home_count, away_count, True
     except Exception:
         return 0, 0, False
+
+
+def fetch_fixture_lineups_full(fixture_id):
+    """Връща реалния потвърден състав (стартиращи + резерви) с player_id, или None ако още няма."""
+    try:
+        r = requests.get(f"{BASE_URL}/fixtures/lineups", headers=API_HEADERS,
+                          params={"fixture": fixture_id}, timeout=10)
+        data = r.json()
+        if not data.get("response"):
+            return None
+        result = {}
+        for team_block in data["response"]:
+            team_name = team_block["team"]["name"]
+            starters = [{"player_id": p["player"]["id"], "name": p["player"]["name"],
+                         "pos": p["player"].get("pos")} for p in team_block.get("startXI", [])]
+            subs = [{"player_id": p["player"]["id"], "name": p["player"]["name"],
+                     "pos": p["player"].get("pos")} for p in team_block.get("substitutes", [])]
+            result[team_name] = {"starters": starters, "substitutes": subs}
+        return result
+    except Exception:
+        return None
