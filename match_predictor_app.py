@@ -57,7 +57,7 @@ def require_auth():
         return redirect(url_for("login", next=request.path))
 
 
-from api_football import API_KEY, BASE_URL, API_HEADERS, FINISHED_STATUSES, fetch_fixture_predictions, fetch_fixture_odds, fetch_lineups_available, fetch_fixture_injuries, fetch_fixture_lineups_full, fetch_team_recent_form, fetch_league_standings_for_teams
+from api_football import API_KEY, BASE_URL, API_HEADERS, FINISHED_STATUSES, fetch_fixture_predictions, fetch_fixture_odds, fetch_lineups_available, fetch_fixture_injuries, fetch_fixture_lineups_full, fetch_team_recent_form, fetch_league_standings_for_teams, DAYS_AHEAD, fetch_upcoming_fixtures
 
 # лиги, за които контузиите ДОКАЗАНО НЕ подобряват модела (тествано и отхвърлено)
 NO_INJURY_MODEL_LEAGUES = {"champions_league", "europa_league"}
@@ -159,7 +159,6 @@ def get_league_ids():
     return {k: v["id"] for k, v in ALL_LEAGUES.items() if k in active}
 
 FORM_WINDOW_DAYS = 90
-DAYS_AHEAD = 7
 
 _model_cache = {}
 
@@ -492,33 +491,6 @@ def compute_grouped_markets(league, home, away, home_inj=0, away_inj=0, real_odd
     return groups, (lam, mu, top_label, top_pct, form_note, value_bets, distrusted_bets)
 
 
-def fetch_upcoming_fixtures(league, from_date=None, to_date=None):
-    today = date.today()
-    if from_date is None:
-        from_date = today
-    if to_date is None:
-        to_date = today + timedelta(days=DAYS_AHEAD)
-    params = {
-        "league": ALL_LEAGUES[league]["id"],
-        "season": from_date.year if from_date.month >= 7 else from_date.year - 1,
-        "from": from_date.isoformat(),
-        "to": to_date.isoformat(),
-        "timezone": "Europe/Sofia",
-    }
-    try:
-        r = requests.get(f"{BASE_URL}/fixtures", headers=API_HEADERS, params=params, timeout=15)
-        data = r.json()
-    except Exception as e:
-        return [], f"Мрежова грешка при връзка с API-то: {e}"
-
-    if data.get("errors"):
-        errors = data["errors"]
-        if isinstance(errors, dict) and "plan" in errors:
-            return [], (f"Ограничение на абонаментния план: {errors['plan']} "
-                         "Провери плана си в dashboard.api-football.com.")
-        return [], f"Грешка от API-то: {errors}"
-
-    return data.get("response", []), None
 
 
 BASE_STYLE = """

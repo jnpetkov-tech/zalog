@@ -7,12 +7,14 @@ api_football.py — API-Football HTTP клиент, изваден от match_pr
 поведението. match_predictor_app.py импортира оттук вместо да дефинира
 локално - вижте validation/ за преди/след доказателство на всяка стъпка.
 """
+from datetime import date, timedelta
 import requests
 
 API_KEY = "ae492089a88c8668057a60b30eee49e0"
 BASE_URL = "https://v3.football.api-sports.io"
 API_HEADERS = {"x-apisports-key": API_KEY}
 FINISHED_STATUSES = {"FT", "AET", "PEN", "AWD", "WO"}
+DAYS_AHEAD = 7
 
 
 def fetch_fixture_predictions(fixture_id):
@@ -243,3 +245,38 @@ def fetch_league_standings_for_teams(league_id, season, home_id, away_id):
         return {"home": pick(home_id), "away": pick(away_id), "total_teams": total}
     except Exception:
         return None
+
+
+def fetch_upcoming_fixtures(league, from_date=None, to_date=None):
+    # ALL_LEAGUES е регистърът на лигите, притежаван от match_predictor_app.py
+    # (референциран и от шаблони/друга бизнес логика там) - НЕ се дублира тук.
+    # Ленив import вътре в тялото (същия идиом като run_refresh_all() ->
+    # `import incremental_refresh`) - изпълнява се само при реално извикване,
+    # когато match_predictor_app вече е напълно зареден, значи без кръгов import.
+    import match_predictor_app as _mpa
+    today = date.today()
+    if from_date is None:
+        from_date = today
+    if to_date is None:
+        to_date = today + timedelta(days=DAYS_AHEAD)
+    params = {
+        "league": _mpa.ALL_LEAGUES[league]["id"],
+        "season": from_date.year if from_date.month >= 7 else from_date.year - 1,
+        "from": from_date.isoformat(),
+        "to": to_date.isoformat(),
+        "timezone": "Europe/Sofia",
+    }
+    try:
+        r = requests.get(f"{BASE_URL}/fixtures", headers=API_HEADERS, params=params, timeout=15)
+        data = r.json()
+    except Exception as e:
+        return [], f"Мрежова грешка при връзка с API-то: {e}"
+
+    if data.get("errors"):
+        errors = data["errors"]
+        if isinstance(errors, dict) and "plan" in errors:
+            return [], (f"Ограничение на абонаментния план: {errors['plan']} "
+                         "Провери плана си в dashboard.api-football.com.")
+        return [], f"Грешка от API-то: {errors}"
+
+    return data.get("response", []), None
