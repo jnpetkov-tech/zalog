@@ -57,9 +57,7 @@ def require_auth():
         return redirect(url_for("login", next=request.path))
 
 
-API_KEY = "ae492089a88c8668057a60b30eee49e0"
-BASE_URL = "https://v3.football.api-sports.io"
-API_HEADERS = {"x-apisports-key": API_KEY}
+from api_football import API_KEY, BASE_URL, API_HEADERS
 
 # лиги, за които контузиите ДОКАЗАНО НЕ подобряват модела (тествано и отхвърлено)
 NO_INJURY_MODEL_LEAGUES = {"champions_league", "europa_league"}
