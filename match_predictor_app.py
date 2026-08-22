@@ -57,7 +57,7 @@ def require_auth():
         return redirect(url_for("login", next=request.path))
 
 
-from api_football import API_KEY, BASE_URL, API_HEADERS, fetch_fixture_predictions, fetch_fixture_odds, fetch_lineups_available, fetch_fixture_injuries, fetch_fixture_lineups_full
+from api_football import API_KEY, BASE_URL, API_HEADERS, FINISHED_STATUSES, fetch_fixture_predictions, fetch_fixture_odds, fetch_lineups_available, fetch_fixture_injuries, fetch_fixture_lineups_full, fetch_team_recent_form
 
 # лиги, за които контузиите ДОКАЗАНО НЕ подобряват модела (тествано и отхвърлено)
 NO_INJURY_MODEL_LEAGUES = {"champions_league", "europa_league"}
@@ -90,7 +90,6 @@ LEAGUE_FLAGS = {
     "england2": "🏴", "germany2": "🇩🇪",
 }
 LIVE_STATUSES = {"1H", "HT", "2H", "ET", "BT", "P", "INT", "LIVE"}
-FINISHED_STATUSES = {"FT", "AET", "PEN", "AWD", "WO"}
 
 MARKET_LABELS = {
     "home_win": "Домакин печели", "draw": "Равен", "away_win": "Гост печели",
@@ -225,44 +224,6 @@ def get_ft_lambdas(ft_model, team_idx, home, away, home_inj=0, away_inj=0):
 
 
 
-def fetch_team_recent_form(team_id, league_id, season, exclude_fixture_id, n=5):
-    """Фаза P.1 (21.08.2026): последните n изиграни мача на отбор В СЪЩАТА
-    лига (не всички турнири на отбора) - чисто информативно на /match_detail,
-    не вход за модела. exclude_fixture_id маха текущия преглеждан мач, ако
-    вече е приключил и се е промъкнал в резултата."""
-    try:
-        r = requests.get(f"{BASE_URL}/fixtures", headers=API_HEADERS,
-                          params={"team": team_id, "league": league_id, "season": season,
-                                   "last": n + 3}, timeout=10)
-        data = r.json()
-        if data.get("errors") or not data.get("response"):
-            return None
-        out = []
-        for f in data["response"]:
-            if f["fixture"]["status"]["short"] not in FINISHED_STATUSES:
-                continue
-            if f["fixture"]["id"] == exclude_fixture_id:
-                continue
-            hg, ag = f["goals"]["home"], f["goals"]["away"]
-            if hg is None or ag is None:
-                continue
-            is_home = f["teams"]["home"]["id"] == team_id
-            gf, ga = (hg, ag) if is_home else (ag, hg)
-            opponent = f["teams"]["away"]["name"] if is_home else f["teams"]["home"]["name"]
-            if gf > ga:
-                result = "W"
-            elif gf < ga:
-                result = "L"
-            else:
-                result = "D"
-            out.append({
-                "date": f["fixture"]["date"][:10], "opponent": opponent,
-                "gf": gf, "ga": ga, "is_home": is_home, "result": result,
-            })
-        out.sort(key=lambda x: x["date"], reverse=True)
-        return out[:n]
-    except Exception:
-        return None
 
 
 def fetch_league_standings_for_teams(league_id, season, home_id, away_id):

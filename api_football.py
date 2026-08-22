@@ -12,6 +12,7 @@ import requests
 API_KEY = "ae492089a88c8668057a60b30eee49e0"
 BASE_URL = "https://v3.football.api-sports.io"
 API_HEADERS = {"x-apisports-key": API_KEY}
+FINISHED_STATUSES = {"FT", "AET", "PEN", "AWD", "WO"}
 
 
 def fetch_fixture_predictions(fixture_id):
@@ -172,5 +173,45 @@ def fetch_fixture_lineups_full(fixture_id):
                      "pos": p["player"].get("pos")} for p in team_block.get("substitutes", [])]
             result[team_name] = {"starters": starters, "substitutes": subs}
         return result
+    except Exception:
+        return None
+
+
+def fetch_team_recent_form(team_id, league_id, season, exclude_fixture_id, n=5):
+    """Фаза P.1 (21.08.2026): последните n изиграни мача на отбор В СЪЩАТА
+    лига (не всички турнири на отбора) - чисто информативно на /match_detail,
+    не вход за модела. exclude_fixture_id маха текущия преглеждан мач, ако
+    вече е приключил и се е промъкнал в резултата."""
+    try:
+        r = requests.get(f"{BASE_URL}/fixtures", headers=API_HEADERS,
+                          params={"team": team_id, "league": league_id, "season": season,
+                                   "last": n + 3}, timeout=10)
+        data = r.json()
+        if data.get("errors") or not data.get("response"):
+            return None
+        out = []
+        for f in data["response"]:
+            if f["fixture"]["status"]["short"] not in FINISHED_STATUSES:
+                continue
+            if f["fixture"]["id"] == exclude_fixture_id:
+                continue
+            hg, ag = f["goals"]["home"], f["goals"]["away"]
+            if hg is None or ag is None:
+                continue
+            is_home = f["teams"]["home"]["id"] == team_id
+            gf, ga = (hg, ag) if is_home else (ag, hg)
+            opponent = f["teams"]["away"]["name"] if is_home else f["teams"]["home"]["name"]
+            if gf > ga:
+                result = "W"
+            elif gf < ga:
+                result = "L"
+            else:
+                result = "D"
+            out.append({
+                "date": f["fixture"]["date"][:10], "opponent": opponent,
+                "gf": gf, "ga": ga, "is_home": is_home, "result": result,
+            })
+        out.sort(key=lambda x: x["date"], reverse=True)
+        return out[:n]
     except Exception:
         return None
