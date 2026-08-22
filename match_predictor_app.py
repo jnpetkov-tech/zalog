@@ -57,7 +57,7 @@ def require_auth():
         return redirect(url_for("login", next=request.path))
 
 
-from api_football import API_KEY, BASE_URL, API_HEADERS, FINISHED_STATUSES, fetch_fixture_predictions, fetch_fixture_odds, fetch_lineups_available, fetch_fixture_injuries, fetch_fixture_lineups_full, fetch_team_recent_form, fetch_league_standings_for_teams, DAYS_AHEAD, fetch_upcoming_fixtures
+from api_football import API_KEY, BASE_URL, API_HEADERS, FINISHED_STATUSES, fetch_fixture_predictions, fetch_fixture_odds, fetch_lineups_available, fetch_fixture_injuries, fetch_fixture_lineups_full, fetch_team_recent_form, fetch_league_standings_for_teams, DAYS_AHEAD, fetch_upcoming_fixtures, fetch_fixture_id_for_today
 
 # лиги, за които контузиите ДОКАЗАНО НЕ подобряват модела (тествано и отхвърлено)
 NO_INJURY_MODEL_LEAGUES = {"champions_league", "europa_league"}
@@ -1450,22 +1450,6 @@ def check_results_route():
 
 
 
-def fetch_fixture_id_for_today(league, home, away):
-    today = date.today()
-    season = today.year if today.month >= 7 else today.year - 1
-    try:
-        r = requests.get(f"{BASE_URL}/fixtures", headers=API_HEADERS,
-                          params={"league": get_league_ids()[league], "date": today.isoformat(),
-                                   "season": season, "timezone": "Europe/Sofia"}, timeout=10)
-        data = r.json()
-        if data.get("errors"):
-            print(f"fetch_fixture_id_for_today грешка: {data['errors']}")
-        for f in data.get("response", []):
-            if f["teams"]["home"]["name"] == home and f["teams"]["away"]["name"] == away:
-                return f["fixture"]["id"]
-    except Exception as e:
-        print(f"fetch_fixture_id_for_today изключение: {e}")
-    return None
 
 @app.route("/live")
 def live():

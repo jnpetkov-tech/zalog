@@ -280,3 +280,25 @@ def fetch_upcoming_fixtures(league, from_date=None, to_date=None):
         return [], f"Грешка от API-то: {errors}"
 
     return data.get("response", []), None
+
+
+def fetch_fixture_id_for_today(league, home, away):
+    # get_league_ids() зависи от Flask request.cookies (кой лиги е активирал
+    # Дака) - живее в match_predictor_app.py. Ленив import вътре в тялото,
+    # виж коментара в fetch_upcoming_fixtures() по-горе за пълната обосновка.
+    import match_predictor_app as _mpa
+    today = date.today()
+    season = today.year if today.month >= 7 else today.year - 1
+    try:
+        r = requests.get(f"{BASE_URL}/fixtures", headers=API_HEADERS,
+                          params={"league": _mpa.get_league_ids()[league], "date": today.isoformat(),
+                                   "season": season, "timezone": "Europe/Sofia"}, timeout=10)
+        data = r.json()
+        if data.get("errors"):
+            print(f"fetch_fixture_id_for_today грешка: {data['errors']}")
+        for f in data.get("response", []):
+            if f["teams"]["home"]["name"] == home and f["teams"]["away"]["name"] == away:
+                return f["fixture"]["id"]
+    except Exception as e:
+        print(f"fetch_fixture_id_for_today изключение: {e}")
+    return None
