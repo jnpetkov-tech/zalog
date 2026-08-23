@@ -48,6 +48,14 @@
   .won { color: var(--green); } .lost { color: var(--red); } .pending { color: var(--sub); }
   .checkbox-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
   .inj-note { font-size: 11px; color: var(--sub); margin-top: 4px; }
+  .collapsible { margin-bottom: 16px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .collapsible-head { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--panel2); cursor: pointer; font-size: 12px; color: var(--sub); text-transform: uppercase; letter-spacing: 0.5px; }
+  .collapsible-head .chev { margin-left: auto; font-size: 12px; transition: transform 0.15s; }
+  .collapsible.collapsed .collapsible-body { display: none; }
+  .collapsible.collapsed .chev { transform: rotate(-90deg); }
+  .collapsible-body { padding: 10px 14px 14px; }
+  .bet-btn-unverified { background: var(--panel); color: var(--sub); border: 1px solid var(--border); }
+  .bet-btn-unverified:hover { background: var(--panel2); }
 
   .sidebar { position: fixed; top:0; left:0; bottom:0; width:220px; background:var(--sidebar-bg); border-right:1px solid var(--border); padding:24px 0; overflow-y:auto; z-index:200; }
   .sidebar-logo { padding:0 20px 20px; font-size:16px; font-weight:600; color:var(--accent); }
@@ -96,9 +104,42 @@ document.addEventListener('DOMContentLoaded', function() {
 {% if inj_note %}<div class="inj-note">🩹 {{inj_note}}</div>{% endif %}
 <div class="form-note">{{extra_info[4]}}</div>
 
+{% if extra_info[5] %}
+<div class="group"><div class="group-title">💎 Value bets (EV & препоръчан залог)</div>
+<table>
+<tr><th>Пазар</th><th>Наша</th><th>Пазарна (коеф.)</th><th>EV</th><th>Залог (Kelly 25%)</th></tr>
+{% for vb in extra_info[5][:5] %}
+<tr style="background:{{ '#0F6E5615' if vb.ev > 5 else '#D9A64B15' }};">
+  <td>{{vb.label}}</td>
+  <td>{{"%.1f"|format(vb.our_pct)}}%</td>
+  <td>{{"%.1f"|format(vb.market_pct)}}% ({{vb.odd}})</td>
+  <td style="color:{{ '#0F6E56' if vb.ev > 5 else '#8A6D1F' }};font-weight:600;">+{{"%.1f"|format(vb.ev)}}%</td>
+  <td>{{"%.1f"|format(vb.kelly_stake)}}% от банката</td>
+</tr>
+{% endfor %}
+</table>
+<div style="font-size:11px;color:#888780;padding:8px 0;">EV = очаквана дългосрочна възвръщаемост. Залогът е с дробен Kelly (25% от пълния) заради несигурност на модела - не залагай пълния изчислен размер.</div>
+</div>
+{% else %}
+<div class="top-pick"><div class="top-pick-label">Топ прогноза</div>
+<div class="top-pick-row"><span class="top-pick-name">{{extra_info[2]}}</span><span class="top-pick-pct">{{"%.1f"|format(extra_info[3])}}%</span></div></div>
+{% endif %}
+
+{% if extra_info[6] %}
+<div class="group" style="border-left:3px solid #D9A64B;">
+<div class="group-title">⚠️ Пренебрегнати оценки (твърде високо разминаване с пазара)</div>
+{% for db in extra_info[6][:5] %}
+<div style="font-size:13px;color:#8A6D1F;padding:6px 0;">
+<b>{{db.label}}</b>: моделът дава {{"%.1f"|format(db.our_pct)}}% при пазарни {{"%.1f"|format(db.market_pct)}}% (очаквана печалба +{{"%.1f"|format(db.ev)}}%). Разлика от този порядък обикновено значи грешка в модела, а не пропусната от пазара стойност. Не се препоръчва залог.
+</div>
+{% endfor %}
+</div>
+{% endif %}
+
 {% if form_standings and (form_standings.home_last5 or form_standings.away_last5 or form_standings.home_standing or form_standings.away_standing) %}
-<div class="group">
-<div class="group-title">📊 Форма и класиране</div>
+<div class="collapsible collapsed">
+<div class="collapsible-head" onclick="this.parentElement.classList.toggle('collapsed')">📊 Форма и класиране<span class="chev">▾</span></div>
+<div class="collapsible-body">
 <div style="display:flex;gap:20px;flex-wrap:wrap;">
   {% for side_name, standing, last5 in [(home_cy, form_standings.home_standing, form_standings.home_last5), (away_cy, form_standings.away_standing, form_standings.away_last5)] %}
   <div style="flex:1;min-width:230px;">
@@ -134,60 +175,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </div>
 <div style="font-size:11px;color:var(--sub);padding-top:10px;">Последни 5 в тази лига (не всички турнири на отбора) + текуща позиция в таблицата - чисто информативно, не влияе на прогнозата по-долу.</div>
 </div>
-{% endif %}
-
-<div class="group" style="border-left:3px solid var(--accent);">
-<div class="group-title">📝 Твоя бележка за мача</div>
-{% if match_note and match_note.skip %}
-<div style="font-size:12.5px;color:var(--live);padding:4px 0 10px;">🚫 Отбелязан е като пропуснат - не се показва в основния списък на /daily.</div>
-{% endif %}
-<form method="post" action="/save_match_note">
-  <input type="hidden" name="league" value="{{selected_league}}">
-  <input type="hidden" name="fixture_id" value="{{fixture_id}}">
-  <input type="hidden" name="home" value="{{home}}">
-  <input type="hidden" name="away" value="{{away}}">
-  <input type="hidden" name="date" value="{{date}}">
-  <textarea name="note" rows="2" placeholder="напр. чух, че титулярен играч е контузен - без да пипа прогнозата, само за твоя справка"
-    style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--text);font-family:inherit;font-size:13px;resize:vertical;">{{match_note.note or ''}}</textarea>
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
-    <label style="font-size:13px;color:var(--sub);display:flex;align-items:center;gap:6px;">
-      <input type="checkbox" name="skip" {% if match_note and match_note.skip %}checked{% endif %}> Пропусни мача (извади от /daily списъка)
-    </label>
-    <button type="submit" class="small">Запази</button>
-  </div>
-</form>
-<div style="font-size:11px;color:var(--sub);padding-top:8px;">Само информативно - никога не променя прогнозата или процента по-долу.</div>
-</div>
-
-{% if extra_info[5] %}
-<div class="group"><div class="group-title">💎 Value bets (EV & препоръчан залог)</div>
-<table>
-<tr><th>Пазар</th><th>Наша</th><th>Пазарна (коеф.)</th><th>EV</th><th>Залог (Kelly 25%)</th></tr>
-{% for vb in extra_info[5][:5] %}
-<tr style="background:{{ '#0F6E5615' if vb.ev > 5 else '#D9A64B15' }};">
-  <td>{{vb.label}}</td>
-  <td>{{"%.1f"|format(vb.our_pct)}}%</td>
-  <td>{{"%.1f"|format(vb.market_pct)}}% ({{vb.odd}})</td>
-  <td style="color:{{ '#0F6E56' if vb.ev > 5 else '#8A6D1F' }};font-weight:600;">+{{"%.1f"|format(vb.ev)}}%</td>
-  <td>{{"%.1f"|format(vb.kelly_stake)}}% от банката</td>
-</tr>
-{% endfor %}
-</table>
-<div style="font-size:11px;color:#888780;padding:8px 0;">EV = очаквана дългосрочна възвръщаемост. Залогът е с дробен Kelly (25% от пълния) заради несигурност на модела - не залагай пълния изчислен размер.</div>
-</div>
-{% else %}
-<div class="top-pick"><div class="top-pick-label">Топ прогноза</div>
-<div class="top-pick-row"><span class="top-pick-name">{{extra_info[2]}}</span><span class="top-pick-pct">{{"%.1f"|format(extra_info[3])}}%</span></div></div>
-{% endif %}
-
-{% if extra_info[6] %}
-<div class="group" style="border-left:3px solid #D9A64B;">
-<div class="group-title">⚠️ Пренебрегнати оценки (твърде високо разминаване с пазара)</div>
-{% for db in extra_info[6][:5] %}
-<div style="font-size:13px;color:#8A6D1F;padding:6px 0;">
-<b>{{db.label}}</b>: моделът дава {{"%.1f"|format(db.our_pct)}}% при пазарни {{"%.1f"|format(db.market_pct)}}% (очаквана печалба +{{"%.1f"|format(db.ev)}}%). Разлика от този порядък обикновено значи грешка в модела, а не пропусната от пазара стойност. Не се препоръчва залог.
-</div>
-{% endfor %}
 </div>
 {% endif %}
 
@@ -233,7 +220,11 @@ document.addEventListener('DOMContentLoaded', function() {
 {% endif %}
 
 {% for title, items, has_form in groups %}
-<div class="group"><div class="group-title">{{title}}</div><table>
+{% set unverified = '⚠️' in title %}
+<div class="{{ 'collapsible collapsed' if unverified else 'group' }}">
+<div class="{{ 'collapsible-head' if unverified else 'group-title' }}" {% if unverified %}onclick="this.parentElement.classList.toggle('collapsed')"{% endif %}>{{title}}{% if unverified %}<span class="chev">▾</span>{% endif %}</div>
+<div class="{{ 'collapsible-body' if unverified else '' }}">
+<table>
 <tr><th>Пазар</th><th>%</th><th>Коеф.</th><th></th></tr>
 {% for row in items %}
 <tr>
@@ -251,12 +242,38 @@ document.addEventListener('DOMContentLoaded', function() {
     <input type="hidden" name="market_code" value="{{row[3]}}">
     <input type="hidden" name="pick_label" value="{{row[0]}}">
     <input type="hidden" name="pick_pct" value="{{row[1]}}">
-    <button type="submit" class="small green">Залог</button>
+    <button type="submit" class="small {{ 'bet-btn-unverified' if unverified else 'green' }}">Залог</button>
   </form>
   {% endif %}
   </td>
 </tr>
 {% endfor %}
-</table></div>
+</table>
+</div>
+</div>
 {% endfor %}
+
+<div class="group" style="border-left:3px solid var(--accent);">
+<div class="group-title">📝 Твоя бележка за мача</div>
+{% if match_note and match_note.skip %}
+<div style="font-size:12.5px;color:var(--live);padding:4px 0 10px;">🚫 Отбелязан е като пропуснат - не се показва в основния списък на /daily.</div>
+{% endif %}
+<form method="post" action="/save_match_note">
+  <input type="hidden" name="league" value="{{selected_league}}">
+  <input type="hidden" name="fixture_id" value="{{fixture_id}}">
+  <input type="hidden" name="home" value="{{home}}">
+  <input type="hidden" name="away" value="{{away}}">
+  <input type="hidden" name="date" value="{{date}}">
+  <textarea name="note" rows="2" placeholder="напр. чух, че титулярен играч е контузен - без да пипа прогнозата, само за твоя справка"
+    style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--panel2);color:var(--text);font-family:inherit;font-size:13px;resize:vertical;">{{match_note.note or ''}}</textarea>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;">
+    <label style="font-size:13px;color:var(--sub);display:flex;align-items:center;gap:6px;">
+      <input type="checkbox" name="skip" {% if match_note and match_note.skip %}checked{% endif %}> Пропусни мача (извади от /daily списъка)
+    </label>
+    <button type="submit" class="small">Запази</button>
+  </div>
+</form>
+<div style="font-size:11px;color:var(--sub);padding-top:8px;">Само информативно - никога не променя прогнозата или процента по-долу.</div>
+</div>
+
 </div></body></html>
