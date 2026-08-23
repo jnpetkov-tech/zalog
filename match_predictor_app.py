@@ -771,6 +771,70 @@ def run_refresh_injuries_cache():
                      f"с намерени данни {updated}\n")
 
 
+# Партида 8 (23.08.2026, rate limit на минута): преди тази промяна
+# /refresh_all и /refresh_odds_cache_manual (бутоните на началната
+# страница) стартираха нов threading.Thread при ВСЯКО натискане, без
+# никаква проверка дали вече тече друго опресняване - ако неколцина души
+# натиснат бутона по няколко пъти, се получаваха паралелни копия на
+# run_refresh_all()/run_refresh_odds_cache(), всяко изстрелващо десетки
+# некеширани заявки без пауза помежду им - точно това, комбинирано с
+# 30-минутните фонови задачи, пробиваше лимита от 300 заявки/минута на
+# API-Football (виж диагнозата в CLAUDE_HANDOFF.md).
+#
+# Заключването е ПО ВИД задача (all/odds/injuries), не общо за всичко:
+# odds и injuries тръгват последователно от един и същ cron скрипт
+# (refresh_odds_cron.sh) и вече разчитат, че могат да вървят едновременно
+# - общ единствен флаг би блокирал injuries всеки път, докато odds още
+# тече. Само ВТОРО извикване на СЪЩИЯ вид, докато първото не е приключило,
+# се блокира. gunicorn тук е --workers 1 (виж CLAUDE_HANDOFF.md) - процесът
+# е един, значи обикновен threading.Lock е достатъчен, не е нужна
+# междупроцесна брава.
+_REFRESH_KIND_LABELS = {
+    "all": "всички лиги (нови мачове + модели)",
+    "odds": "пазарни коефициенти",
+    "injuries": "контузии",
+}
+_refresh_state = {
+    "all": {"running": False, "started_at": None},
+    "odds": {"running": False, "started_at": None},
+    "injuries": {"running": False, "started_at": None},
+}
+_refresh_state_lock = threading.Lock()
+
+
+def _try_start_refresh(kind, target):
+    """Стартира target() във фонов thread, освен ако задача от СЪЩИЯ kind
+    вече тече - тогава връща None и не прави нищо. Вика се от маршрутите в
+    web/admin.py (двата бутона + двата cron endpoint-а)."""
+    with _refresh_state_lock:
+        if _refresh_state[kind]["running"]:
+            return None
+        _refresh_state[kind]["running"] = True
+        _refresh_state[kind]["started_at"] = datetime.now().isoformat()
+
+    def _wrapped():
+        try:
+            target()
+        finally:
+            with _refresh_state_lock:
+                _refresh_state[kind]["running"] = False
+                _refresh_state[kind]["started_at"] = None
+
+    thread = threading.Thread(target=_wrapped, daemon=True)
+    thread.start()
+    return thread
+
+
+def get_refresh_state():
+    """За показване в интерфейса (index.html/leagues_admin.html) - кой вид
+    опресняване тече в момента, ако изобщо тече."""
+    with _refresh_state_lock:
+        running_kinds = [k for k, v in _refresh_state.items() if v["running"]]
+    if not running_kinds:
+        return {"running": False, "label": None}
+    return {"running": True, "label": ", ".join(_REFRESH_KIND_LABELS[k] for k in running_kinds)}
+
+
 # Партида 3, довършване (21.08.2026, ARCHITECTURE.md): TTL кешът от И.3
 # (300 сек, обвиваше сглобения резултат за лига+период - виж git история,
 # commit-и de42ed4/4ee07c5, за пълния оригинален коментар) е премахнат.
@@ -1173,6 +1237,7 @@ register_admin_routes(app, {
     "load_active_leagues": load_active_leagues, "ACTIVE_LEAGUES_COOKIE": ACTIVE_LEAGUES_COOKIE,
     "run_refresh_all": run_refresh_all, "run_refresh_odds_cache": run_refresh_odds_cache,
     "run_refresh_injuries_cache": run_refresh_injuries_cache, "run_diagnostics": run_diagnostics,
+    "_try_start_refresh": _try_start_refresh, "get_refresh_state": get_refresh_state,
     "BASE_STYLE": BASE_STYLE, "st": st, "market_label": market_label, "policy": policy,
     "to_cyrillic": to_cyrillic, "API_KEY": API_KEY, "BASE_URL": BASE_URL, "requests": requests,
 })
@@ -1183,7 +1248,7 @@ register_daily_routes(app, {
     "st": st, "evaluation": evaluation, "ps": ps, "policy": policy, "to_cyrillic": to_cyrillic, "fl": fl,
     "get_models": get_models, "get_leagues": get_leagues, "compute_grouped_markets": compute_grouped_markets,
     "_daily_use_snapshot": _daily_use_snapshot, "_predict_matches_for_league": _predict_matches_for_league,
-    "fetch_fixture_id_for_today": fetch_fixture_id_for_today,
+    "fetch_fixture_id_for_today": fetch_fixture_id_for_today, "get_refresh_state": get_refresh_state,
 })
 from web.match import register_match_routes
 register_match_routes(app, {

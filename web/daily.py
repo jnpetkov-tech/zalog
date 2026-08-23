@@ -49,6 +49,7 @@ def register_daily_routes(app, ctx):
     _daily_use_snapshot = ctx["_daily_use_snapshot"]
     _predict_matches_for_league = ctx["_predict_matches_for_league"]
     fetch_fixture_id_for_today = ctx["fetch_fixture_id_for_today"]
+    get_refresh_state = ctx["get_refresh_state"]
 
     daily_bp = Blueprint("daily", __name__)
 
@@ -83,7 +84,8 @@ def register_daily_routes(app, ctx):
                                         top_matches=top_matches, cyrillic=to_cyrillic,
                                         promised_avg=eval_summary["promised_avg"],
                                         actual_pct=eval_summary["actual_pct"],
-                                        n_settled=eval_summary["n_settled"])
+                                        n_settled=eval_summary["n_settled"],
+                                        refresh_state=get_refresh_state())
 
     @daily_bp.route("/manual")
     def index():

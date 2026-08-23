@@ -16,7 +16,6 @@ import os
 import glob
 import io
 import tarfile
-import threading
 from datetime import datetime
 
 
@@ -29,6 +28,8 @@ def register_admin_routes(app, ctx):
     run_refresh_odds_cache = ctx["run_refresh_odds_cache"]
     run_refresh_injuries_cache = ctx["run_refresh_injuries_cache"]
     run_diagnostics = ctx["run_diagnostics"]
+    _try_start_refresh = ctx["_try_start_refresh"]
+    get_refresh_state = ctx["get_refresh_state"]
     BASE_STYLE = ctx["BASE_STYLE"]
     st = ctx["st"]
     market_label = ctx["market_label"]
@@ -43,6 +44,13 @@ def register_admin_routes(app, ctx):
     def render_refresh_confirmation(done, label):
         message = f"✅ {label}" if done else "🔄 Стартирано, продължава на фон"
         return render_template("refresh_confirmation.html", BASE_STYLE=BASE_STYLE, message=message)
+
+    def render_refresh_busy():
+        # Партида 8 (23.08.2026): втори клик върху /refresh_all или
+        # /refresh_odds_cache_manual, докато същият вид опресняване вече
+        # тече - вижте _try_start_refresh в match_predictor_app.py.
+        return render_template("refresh_confirmation.html", BASE_STYLE=BASE_STYLE,
+                                message="⏳ Вече тече друго опресняване – изчакай да приключи, преди да пуснеш ново.")
 
     def _group_matches_by_league(matches):
         groups = {}
@@ -70,31 +78,32 @@ def register_admin_routes(app, ctx):
             return resp
         active = load_active_leagues()
         saved = request.args.get("saved") == "1"
-        return render_template("leagues_admin.html", all_leagues=ALL_LEAGUES, active=active, saved=saved, active_page='leagues_admin')
+        return render_template("leagues_admin.html", all_leagues=ALL_LEAGUES, active=active, saved=saved,
+                                        active_page='leagues_admin', refresh_state=get_refresh_state())
 
     @admin_bp.route("/refresh_all", methods=["POST"])
     def refresh_all_route():
-        thread = threading.Thread(target=run_refresh_all, daemon=True)
-        thread.start()
+        thread = _try_start_refresh("all", run_refresh_all)
+        if thread is None:
+            return render_refresh_busy()
         thread.join(timeout=6)
         return render_refresh_confirmation(not thread.is_alive(), "Опреснени всички лиги")
 
     @admin_bp.route("/refresh_odds_cache", methods=["POST"])
     def refresh_odds_cache_route():
-        thread = threading.Thread(target=run_refresh_odds_cache, daemon=True)
-        thread.start()
-        return "OK", 200
+        thread = _try_start_refresh("odds", run_refresh_odds_cache)
+        return ("BUSY", 200) if thread is None else ("OK", 200)
 
     @admin_bp.route("/refresh_injuries_cache", methods=["POST"])
     def refresh_injuries_cache_route():
-        thread = threading.Thread(target=run_refresh_injuries_cache, daemon=True)
-        thread.start()
-        return "OK", 200
+        thread = _try_start_refresh("injuries", run_refresh_injuries_cache)
+        return ("BUSY", 200) if thread is None else ("OK", 200)
 
     @admin_bp.route("/refresh_odds_cache_manual", methods=["POST"])
     def refresh_odds_cache_manual_route():
-        thread = threading.Thread(target=run_refresh_odds_cache, daemon=True)
-        thread.start()
+        thread = _try_start_refresh("odds", run_refresh_odds_cache)
+        if thread is None:
+            return render_refresh_busy()
         thread.join(timeout=6)
         return render_refresh_confirmation(not thread.is_alive(), "Готово")
 

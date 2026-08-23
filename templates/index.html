@@ -118,6 +118,11 @@
 {% endif %}
 
 <div class="group-title" style="margin-top:24px;">Данни</div>
+{% if refresh_state.running %}
+<div style="background:#F5A62315;border:1px solid #F5A62340;border-radius:12px;padding:10px 16px;margin-bottom:10px;color:#B8860B;font-size:13px;">
+  🔄 В момента тече опресняване ({{refresh_state.label}}) – изчакай да приключи.
+</div>
+{% endif %}
 <div class="home-refresh-row">
   <form method="post" action="/refresh_all" style="margin:0;">
     <button type="submit" class="home-refresh-btn">🔄 Опресни всички данни</button>
