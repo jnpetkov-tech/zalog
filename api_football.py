@@ -8,6 +8,9 @@ api_football.py — API-Football HTTP клиент, изваден от match_pr
 локално - вижте validation/ за преди/след доказателство на всяка стъпка.
 """
 from datetime import date, timedelta
+from collections import deque
+import threading
+import time
 import requests
 
 API_KEY = "ae492089a88c8668057a60b30eee49e0"
@@ -17,11 +20,57 @@ FINISHED_STATUSES = {"FT", "AET", "PEN", "AWD", "WO"}
 DAYS_AHEAD = 7
 
 
+class _RateLimiter:
+    """Споделен sliding-window rate limiter за API-Football (23.08.2026,
+    rate limit на минута, стъпка 2/4). Абонаментът е Pro план, лимит 300
+    заявки/минута - потвърдено на живо от `/status` header
+    `x-ratelimit-limit` (виж диагнозата в разговора/CLAUDE_HANDOFF.md).
+    max_per_minute=280, не 300 - запас за няколкото случая извън тази
+    брава (update_injuries_for_league()/run_diagnostics() в
+    match_predictor_app.py правят собствени, нечести `requests.get`, не
+    минават през fetch_*).
+
+    При НОРМАЛНА употреба (под прага) acquire() не добавя никакво
+    закъснение - връща се веднага. Само при доближаване на 280 в
+    последните 60 секунди изчаква точно колкото трябва, вместо да остави
+    API-то да върне 429 ('Too many requests... limit of requests per
+    minute of your subscription' - виж refresh_log.txt за реални случаи
+    отпреди тази промяна)."""
+
+    def __init__(self, max_per_minute=280, window_seconds=60):
+        self.max_per_minute = max_per_minute
+        self.window_seconds = window_seconds
+        self._timestamps = deque()
+        self._lock = threading.Lock()
+
+    def acquire(self):
+        while True:
+            with self._lock:
+                now = time.monotonic()
+                cutoff = now - self.window_seconds
+                while self._timestamps and self._timestamps[0] < cutoff:
+                    self._timestamps.popleft()
+                if len(self._timestamps) < self.max_per_minute:
+                    self._timestamps.append(now)
+                    return
+                sleep_for = self._timestamps[0] + self.window_seconds - now + 0.05
+            time.sleep(max(sleep_for, 0.05))
+
+
+_rate_limiter = _RateLimiter()
+
+
+def _api_get(path, params=None, timeout=10):
+    """Единствената точка, през която минават всички fetch_* по-долу към
+    API-Football - гарантира, че rate limiter-ът вижда всяка заявка."""
+    _rate_limiter.acquire()
+    return requests.get(f"{BASE_URL}{path}", headers=API_HEADERS, params=params, timeout=timeout)
+
+
 def fetch_fixture_predictions(fixture_id):
     """Тегли вградената прогноза на API-Football - само за информативно сравнение"""
     try:
-        r = requests.get(f"{BASE_URL}/predictions", headers=API_HEADERS,
-                          params={"fixture": fixture_id}, timeout=10)
+        r = _api_get("/predictions", params={"fixture": fixture_id}, timeout=10)
         data = r.json()
         if data.get("errors") or not data.get("response"):
             return None
@@ -53,8 +102,7 @@ def fetch_fixture_odds(fixture_id):
     # "HT/FT Double". Corners/cards/BTTS НЕ се парсват тук - вече REJECTED
     # tier в prediction_policy.py, коефициент за тях няма практическа стойност.
     try:
-        r = requests.get(f"{BASE_URL}/odds", headers=API_HEADERS,
-                          params={"fixture": fixture_id}, timeout=10)
+        r = _api_get("/odds", params={"fixture": fixture_id}, timeout=10)
         data = r.json()
         if data.get("errors") or not data.get("response"):
             return None
@@ -128,8 +176,7 @@ def fetch_fixture_odds(fixture_id):
 
 def fetch_lineups_available(fixture_id):
     try:
-        r = requests.get(f"{BASE_URL}/fixtures/lineups", headers=API_HEADERS,
-                          params={"fixture": fixture_id}, timeout=10)
+        r = _api_get("/fixtures/lineups", params={"fixture": fixture_id}, timeout=10)
         data = r.json()
         return bool(data.get("response"))
     except Exception:
@@ -138,8 +185,7 @@ def fetch_lineups_available(fixture_id):
 
 def fetch_fixture_injuries(fixture_id):
     try:
-        r = requests.get(f"{BASE_URL}/injuries", headers=API_HEADERS,
-                          params={"fixture": fixture_id}, timeout=10)
+        r = _api_get("/injuries", params={"fixture": fixture_id}, timeout=10)
         data = r.json()
         if data.get("errors") or not data.get("response"):
             return 0, 0, False
@@ -161,8 +207,7 @@ def fetch_fixture_injuries(fixture_id):
 def fetch_fixture_lineups_full(fixture_id):
     """Връща реалния потвърден състав (стартиращи + резерви) с player_id, или None ако още няма."""
     try:
-        r = requests.get(f"{BASE_URL}/fixtures/lineups", headers=API_HEADERS,
-                          params={"fixture": fixture_id}, timeout=10)
+        r = _api_get("/fixtures/lineups", params={"fixture": fixture_id}, timeout=10)
         data = r.json()
         if not data.get("response"):
             return None
@@ -185,9 +230,8 @@ def fetch_team_recent_form(team_id, league_id, season, exclude_fixture_id, n=5):
     не вход за модела. exclude_fixture_id маха текущия преглеждан мач, ако
     вече е приключил и се е промъкнал в резултата."""
     try:
-        r = requests.get(f"{BASE_URL}/fixtures", headers=API_HEADERS,
-                          params={"team": team_id, "league": league_id, "season": season,
-                                   "last": n + 3}, timeout=10)
+        r = _api_get("/fixtures", params={"team": team_id, "league": league_id, "season": season,
+                                            "last": n + 3}, timeout=10)
         data = r.json()
         if data.get("errors") or not data.get("response"):
             return None
@@ -225,8 +269,7 @@ def fetch_league_standings_for_teams(league_id, season, home_id, away_id):
     в едно - връща None за отбор, който не е намерен (напр. чист knockout
     турнир без класическа таблица), не гърми."""
     try:
-        r = requests.get(f"{BASE_URL}/standings", headers=API_HEADERS,
-                          params={"league": league_id, "season": season}, timeout=10)
+        r = _api_get("/standings", params={"league": league_id, "season": season}, timeout=10)
         data = r.json()
         if data.get("errors") or not data.get("response"):
             return None
@@ -282,7 +325,7 @@ def fetch_upcoming_fixtures(league, from_date=None, to_date=None, use_cache=Fals
         "timezone": "Europe/Sofia",
     }
     try:
-        r = requests.get(f"{BASE_URL}/fixtures", headers=API_HEADERS, params=params, timeout=15)
+        r = _api_get("/fixtures", params=params, timeout=15)
         data = r.json()
     except Exception as e:
         return [], f"Мрежова грешка при връзка с API-то: {e}"
@@ -309,9 +352,8 @@ def fetch_fixture_id_for_today(league, home, away):
     today = date.today()
     season = today.year if today.month >= 7 else today.year - 1
     try:
-        r = requests.get(f"{BASE_URL}/fixtures", headers=API_HEADERS,
-                          params={"league": _mpa.get_league_ids()[league], "date": today.isoformat(),
-                                   "season": season, "timezone": "Europe/Sofia"}, timeout=10)
+        r = _api_get("/fixtures", params={"league": _mpa.get_league_ids()[league], "date": today.isoformat(),
+                                            "season": season, "timezone": "Europe/Sofia"}, timeout=10)
         data = r.json()
         if data.get("errors"):
             print(f"fetch_fixture_id_for_today грешка: {data['errors']}")
