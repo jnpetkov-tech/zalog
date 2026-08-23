@@ -336,6 +336,83 @@ def top_picks_with_code(lam, mu, home, away, ht_ft_probs, league, market_odds=No
     return ranked, used_market
 
 
+def _market_info_for_pick(code, market_odds):
+    """Обезвигована пазарна вероятност + коефициент за market_code, ако
+    market_odds има пълна двойка/тройка за него - иначе None (пазарът не
+    покрива този код, напр. home_over15/htft:*, или липсва данни за мача)."""
+    if not market_odds:
+        return None
+    try:
+        if code in ("home_win", "draw", "away_win") and market_odds.get("home_win") and market_odds.get("draw") and market_odds.get("away_win"):
+            mh, md, ma = devig_1x2(market_odds["home_win"], market_odds["draw"], market_odds["away_win"])
+            return {"home_win": (mh, market_odds["home_win"]), "draw": (md, market_odds["draw"]),
+                    "away_win": (ma, market_odds["away_win"])}.get(code)
+        if code in ("over25", "under25") and market_odds.get("over25") and market_odds.get("under25"):
+            mo, mund = devig_ou(market_odds["over25"], market_odds["under25"])
+            return {"over25": (mo, market_odds["over25"]), "under25": (mund, market_odds["under25"])}.get(code)
+    except (ZeroDivisionError, TypeError):
+        return None
+    return None
+
+
+def build_pick_card(picks, market_odds):
+    """Задача 5 (нощна сесия 24.08.2026): картата на /daily - най-много два
+    реда вместо предишните до три чипа. `picks` е списъкът вече ДОВЕРЕНИ
+    (policy-eligible, минали през pick_selection.rank_candidates) кандидати
+    за мача - label/pct/code/odds, идентична структура и в живия, и в
+    snapshot пътя. `market_odds` са кешираните пазарни коефициенти (или
+    None/непълни).
+
+    'Стойностен' = най-висок EV сред кандидатите, за които изобщо има
+    пазарна цена (home_win/draw/away_win/over25/under25 - единствените с
+    market_odds), със СЪЩИТЕ прагове като value_bets в
+    compute_grouped_markets (MIN_VALUE_BET_PROB/MAX_VALUE_BET_ODDS/
+    MAX_TRUSTWORTHY_EV) - непроменени тук, само преизползвани.
+    'Сигурен' = най-висока вероятност сред ВСИЧКИ доверени кандидати
+    (включително пазари без пазарна цена - идентично на старата top pick).
+    Ако съвпадат - `same=True`, показва се само един ред. Ако никой доверен
+    кандидат няма положителен EV - `value=None`. `has_market_odds=False`
+    означава че за мача изобщо няма кеширан пазарен коефициент."""
+    if not picks:
+        return None
+
+    def make_row(p):
+        info = _market_info_for_pick(p["code"], market_odds)
+        if not info:
+            return {"label": p["label"], "our_pct": p["pct"], "market_pct": None, "odd": None, "ev": None}
+        market_p, odd = info
+        ev = (p["pct"] / 100 * odd - 1) * 100
+        return {"label": p["label"], "our_pct": p["pct"], "market_pct": market_p * 100, "odd": odd, "ev": ev}
+
+    confident = max(picks, key=lambda p: p["pct"])
+    has_market_odds = bool(market_odds and (
+        (market_odds.get("home_win") and market_odds.get("draw") and market_odds.get("away_win")) or
+        (market_odds.get("over25") and market_odds.get("under25"))
+    ))
+
+    best_value, best_ev = None, None
+    for p in picks:
+        info = _market_info_for_pick(p["code"], market_odds)
+        if not info:
+            continue
+        market_p, odd = info
+        our_p = p["pct"] / 100
+        if our_p <= market_p or our_p < MIN_VALUE_BET_PROB or odd > MAX_VALUE_BET_ODDS:
+            continue
+        ev = our_p * odd - 1
+        if ev > MAX_TRUSTWORTHY_EV:
+            continue
+        if best_ev is None or ev > best_ev:
+            best_value, best_ev = p, ev
+
+    confident_row = make_row(confident)
+    if best_value is None:
+        return {"confident": confident_row, "value": None, "same": False, "has_market_odds": has_market_odds}
+    value_row = make_row(best_value)
+    return {"confident": confident_row, "value": value_row,
+            "same": best_value["code"] == confident["code"], "has_market_odds": has_market_odds}
+
+
 def compute_grouped_markets(league, home, away, home_inj=0, away_inj=0, real_odds=None):
     (teams, team_idx, ft_model, ht_model, h2_model,
      corners_model, cards_model, offsides_model,
@@ -955,14 +1032,14 @@ def _predict_matches_for_league_from_snapshot(league, from_date, to_date):
 
         if home not in team_idx or away not in team_idx:
             matches.append({**base, "pick": "Няма прогноза (нов отбор)", "pct": None, "code": None,
-                             "odds": None, "picks": [], "inj_note": None, "lineups_confirmed": False,
+                             "odds": None, "picks": [], "card": None, "inj_note": None, "lineups_confirmed": False,
                              "used_market": None, "odds_updated_at": None, "live_result": None})
             continue
 
         picks_rows = snapshot_by_fixture.get(fixture_id)
         if not picks_rows:
             matches.append({**base, "pick": "Изчаква следващо изчисление (до 30 мин)", "pct": None,
-                             "code": None, "odds": None, "picks": [], "inj_note": None,
+                             "code": None, "odds": None, "picks": [], "card": None, "inj_note": None,
                              "lineups_confirmed": False, "used_market": None, "odds_updated_at": None,
                              "live_result": None})
             continue
@@ -1009,8 +1086,9 @@ def _predict_matches_for_league_from_snapshot(league, from_date, to_date):
         if 0 <= minutes_to_kickoff <= 60:
             lineups_confirmed = fetch_lineups_available(fixture_id)
 
+        card = build_pick_card(picks_list, cached_odds)
         matches.append({**base, "pick": top["pick_label"], "pct": top["pick_pct"], "code": top["market_code"],
-                         "odds": top["fair_odds"], "picks": picks_list, "inj_note": inj_note,
+                         "odds": top["fair_odds"], "picks": picks_list, "card": card, "inj_note": inj_note,
                          "lineups_confirmed": lineups_confirmed, "used_market": used_market,
                          "odds_updated_at": (cached_odds.get("fetched_at") if cached_odds else None),
                          "live_result": live_result})
@@ -1087,12 +1165,18 @@ def _predict_matches_for_league_impl(league, from_date, to_date, use_fixture_cac
         # (доказано локално с 300 случайни случая преди деплой), затова
         # комбинираната колонка/залог логиката по-долу (която разчита на
         # единичните pick/pct/code) остава непроменена.
-        picks_raw, used_market = top_picks_with_code(lam, mu, home, away, ht_ft_probs, league, market_odds=cached_odds, n=3, rho=rho_ft)
+        # Задача 5 (нощна сесия 24.08.2026): n вдигнато от 3 на 8 (максималният
+        # брой сурови кандидати - виж _raw_candidates) - build_pick_card() по-долу
+        # трябва да вижда ВСИЧКИ доверени кандидати, за да намери реално
+        # най-стойностния по EV, не само измежду топ 3 по вероятност. picks_raw[0]
+        # остава идентичен на преди (сортирано низходящо, независимо от n).
+        picks_raw, used_market = top_picks_with_code(lam, mu, home, away, ht_ft_probs, league, market_odds=cached_odds, n=8, rho=rho_ft)
         pick, pct, code = picks_raw[0]
         picks_list = [
             {"label": p_label, "pct": p_pct, "code": p_code, "odds": fair_odds(p_pct)}
             for p_label, p_pct, p_code in picks_raw
         ]
+        card = build_pick_card(picks_list, cached_odds)
         # Фаза И.3 (21.08.2026): проверяваме already_logged() ПРЕДИ да смятаме
         # compute_grouped_markets() - преди тук се смяташе за ВСЕКИ мач на
         # ВСЯКО зареждане на /daily, само за да се провери после дали изобщо
@@ -1134,7 +1218,7 @@ def _predict_matches_for_league_impl(league, from_date, to_date, use_fixture_cac
             "date": match_date, "home": home, "away": away,
             "home_cy": to_cyrillic(home, league), "away_cy": to_cyrillic(away, league),
             "home_logo": f["teams"]["home"].get("logo"), "away_logo": f["teams"]["away"].get("logo"),
-            "pick": pick, "pct": pct, "code": code, "odds": fair_odds(pct), "picks": picks_list,
+            "pick": pick, "pct": pct, "code": code, "odds": fair_odds(pct), "picks": picks_list, "card": card,
             "fixture_id": fixture_id, "inj_note": inj_note,
             "lineups_confirmed": lineups_confirmed,
             "league": league, "league_name": ALL_LEAGUES[league]["name"],

@@ -224,11 +224,30 @@ function dtShowTab(name) {
     </div>
     <div class="match-pick-row" style="display:block;">
       {% if m.pct is not none %}
-      <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px;">
-        {% for p in m.picks %}
-        <span style="background:var(--panel2);border:1px solid {% if loop.first %}var(--accent){% else %}var(--border){% endif %};border-radius:8px;padding:5px 10px;font-size:13px;">{{p.label}} <b>{{"%.1f"|format(p.pct)}}%</b>{% if p.odds %} <span style="color:var(--sub);font-size:11px;" title="Наша изчислена честна цена по вероятността - НЕ котировка на букмейкър">оценка ≈{{p.odds}}</span>{% endif %}</span>
-        {% endfor %}
-        {% if m.used_market %}<span style="font-size:11px;background:var(--green-bg);color:var(--green);padding:2px 6px;border-radius:6px;">🎯 с пазарни коеф.</span>{% else %}<span style="font-size:11px;background:var(--panel2);color:var(--sub);padding:2px 6px;border-radius:6px;">⏳ чисто моделна</span>{% endif %}
+      <div style="margin-bottom:8px;">
+        {% if m.card and m.card.value and not m.card.same %}
+        <div style="background:var(--green-bg);border:1px solid rgba(34,197,94,0.35);border-radius:8px;padding:6px 10px;margin-bottom:5px;">
+          <div style="font-size:10.5px;color:var(--green);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:2px;">💎 Най-стойностен</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;font-size:13px;">
+            <span>{{m.card.value.label}} <b>{{"%.1f"|format(m.card.value.our_pct)}}%</b></span>
+            <span style="color:var(--sub);font-size:11.5px;">пазар {{"%.1f"|format(m.card.value.market_pct)}}% ({{m.card.value.odd}}) &middot; EV +{{"%.1f"|format(m.card.value.ev)}}%</span>
+          </div>
+        </div>
+        {% endif %}
+        <div style="background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;">
+          <div style="font-size:10.5px;color:var(--sub);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:2px;">{% if m.card and m.card.value and m.card.same %}💎 Най-стойностен и най-сигурен{% else %}🎯 Най-сигурен{% endif %}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;font-size:13px;">
+            <span>{{m.card.confident.label if m.card else m.pick}} <b>{{"%.1f"|format((m.card.confident.our_pct if m.card else m.pct))}}%</b></span>
+            {% if m.card and m.card.confident.market_pct is not none %}
+            <span style="color:var(--sub);font-size:11.5px;">пазар {{"%.1f"|format(m.card.confident.market_pct)}}% ({{m.card.confident.odd}})</span>
+            {% endif %}
+          </div>
+        </div>
+        {% if m.card and not m.card.has_market_odds %}
+        <div style="font-size:11px;color:var(--sub);margin-top:4px;">Няма пазарни коефициенти за този мач.</div>
+        {% elif m.card and not m.card.value %}
+        <div style="font-size:11px;color:var(--sub);margin-top:4px;">Няма стойност при тези коефициенти.</div>
+        {% endif %}
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <a href="/match_detail?league={{m.league}}&fixture_id={{m.fixture_id}}&home={{m.home}}&away={{m.away}}&date={{m.date}}" style="font-size:12px;color:var(--accent);text-decoration:none;">Влез в мача →</a>
