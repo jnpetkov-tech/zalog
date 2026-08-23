@@ -223,7 +223,14 @@ def fair_odds(pct):
     return round(100 / pct, 2)
 
 
-BLEND_WEIGHT = 0.5  # доказано с бектест на 6 лиги, ~18 сезон-лиги комбинации: подобрява 1X2 и O/U точността
+BLEND_WEIGHT = 0.5  # Нощна сесия 24.08.2026: старият коментар тук ("бектест на 6 лиги")
+# нямаше файл зад себе си (виж CLAUDE_HANDOFF.md) - подменен с реален, committed бектест:
+# validation/blend_vs_raw_backtest_20260824.py/csv (475 уредени наблюдения) +
+# validation/blend_vs_raw_significance_20260824.py/txt (paired bootstrap значимост).
+# Извод: за 1X2+O/У 2.5 (пазарите, за които изобщо има market_odds) смесеното число
+# е статистически значимо по-точно от чистия модел (95% CI изключва нулата, и в Brier,
+# и в log-loss) - не само точкова оценка. Затова смесеното е авторитетното число
+# НАВСЯКЪДЕ по сайта за тези пазари (виж _blend_with_market по-долу), не само на /daily.
 
 MIN_VALUE_BET_PROB = 0.35  # филтър: не показвай value bet под тази наша вероятност
 MAX_VALUE_BET_ODDS = 5.0   # филтър: не показвай value bet над този коефициент
@@ -248,6 +255,30 @@ def devig_ou(over_odds, under_odds):
     return io / total, iu / total
 
 
+def _blend_with_market(home_win, draw, away_win, ou_p, market_odds):
+    """Смесва чист модел с обезвигован пазар (BLEND_WEIGHT), само за
+    home_win/draw/away_win/over25/under25 - точно пазарите, за които
+    /daily вече прилага същото смесване (_raw_candidates по-долу) и за
+    които бектестът (validation/blend_vs_raw_*_20260824.*) показва
+    статистически значимо подобрение. Без пазарен коефициент за дадена
+    група - връща стойностите непроменени (чист модел)."""
+    if market_odds and market_odds.get("home_win") and market_odds.get("draw") and market_odds.get("away_win"):
+        try:
+            mh, md, ma = devig_1x2(market_odds["home_win"], market_odds["draw"], market_odds["away_win"])
+            home_win = BLEND_WEIGHT * mh + (1 - BLEND_WEIGHT) * home_win
+            draw = BLEND_WEIGHT * md + (1 - BLEND_WEIGHT) * draw
+            away_win = BLEND_WEIGHT * ma + (1 - BLEND_WEIGHT) * away_win
+        except (ZeroDivisionError, TypeError):
+            pass
+    if market_odds and market_odds.get("over25") and market_odds.get("under25"):
+        try:
+            mo, mund = devig_ou(market_odds["over25"], market_odds["under25"])
+            ou_p = BLEND_WEIGHT * mo + (1 - BLEND_WEIGHT) * ou_p
+        except (ZeroDivisionError, TypeError):
+            pass
+    return home_win, draw, away_win, ou_p
+
+
 def _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds=None, rho=0.0):
     """Суровите candidates (label, prob_0_1, code) от Poisson + пазарен
     blend - БЕЗ policy филтриране/дедупликация/класиране. Тази логика вече
@@ -268,23 +299,11 @@ def _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds=None, rho=0.0)
     extra = fl.extra_markets_probs(lam, mu, rho=rho)
     best_htft = max(ht_ft_probs.items(), key=lambda x: x[1])
 
-    used_market = False
-    if market_odds and market_odds.get("home_win") and market_odds.get("draw") and market_odds.get("away_win"):
-        try:
-            mh, md, ma = devig_1x2(market_odds["home_win"], market_odds["draw"], market_odds["away_win"])
-            home_win = BLEND_WEIGHT * mh + (1 - BLEND_WEIGHT) * home_win
-            draw = BLEND_WEIGHT * md + (1 - BLEND_WEIGHT) * draw
-            away_win = BLEND_WEIGHT * ma + (1 - BLEND_WEIGHT) * away_win
-            used_market = True
-        except (ZeroDivisionError, TypeError):
-            pass
-    if market_odds and market_odds.get("over25") and market_odds.get("under25"):
-        try:
-            mo, mund = devig_ou(market_odds["over25"], market_odds["under25"])
-            ou_p = BLEND_WEIGHT * mo + (1 - BLEND_WEIGHT) * ou_p
-            used_market = True
-        except (ZeroDivisionError, TypeError):
-            pass
+    home_win, draw, away_win, ou_p = _blend_with_market(home_win, draw, away_win, ou_p, market_odds)
+    used_market = bool(market_odds and (
+        (market_odds.get("home_win") and market_odds.get("draw") and market_odds.get("away_win")) or
+        (market_odds.get("over25") and market_odds.get("under25"))
+    ))
 
     home_cy, away_cy = to_cyrillic(home), to_cyrillic(away)
     candidates = [
@@ -346,6 +365,13 @@ def compute_grouped_markets(league, home, away, home_inj=0, away_inj=0, real_odd
         return hw, dr, aw, btts_p, ou_p
 
     home_win, draw, away_win, btts_p, ou_p = probs_1x2_ou(lam, mu, rho=rho_ft)
+    # Задача 2 (нощна сесия 24.08.2026): смесеното число (модел+пазар) е
+    # статистически значимо по-точно за home_win/draw/away_win/over25/under25
+    # (validation/blend_vs_raw_significance_20260824.txt) - огледално на /daily,
+    # прилага се тук на главната таблица И на value_bets/EV/Kelly по-долу
+    # (и двете четат същите home_win/draw/away_win/ou_p променливи). Без
+    # real_odds за дадена група - непроменено, чист модел.
+    home_win, draw, away_win, ou_p = _blend_with_market(home_win, draw, away_win, ou_p, real_odds)
     extra = fl.extra_markets_probs(lam, mu, rho=rho_ft)
     ht_ft_probs = predict_ht_ft(lam_ht, mu_ht, lam_2h, mu_2h)
 
@@ -1078,7 +1104,12 @@ def _predict_matches_for_league_impl(league, from_date, to_date, use_fixture_cac
         # ненужната сметка, логването е побитово идентично (доказано локално
         # преди деплой).
         if not st.already_logged(fixture_id):
-            groups_for_log, _ = compute_grouped_markets(league, home, away, home_inj, away_inj)
+            # Задача 3 (нощна сесия 24.08.2026): real_odds=cached_odds подадено тук,
+            # за да се логне СЪЩОТО (смесено, за 1X2/O-U 2.5) pick_pct, което вече
+            # показва /daily - иначе predictions_log.pick_pct винаги оставаше чист
+            # модел (виж validation/blend_vs_raw_audit_20260824.md, т.2), а /value
+            # и началната страница четат точно pick_pct от лога за класирането си.
+            groups_for_log, _ = compute_grouped_markets(league, home, away, home_inj, away_inj, real_odds=cached_odds)
             if groups_for_log:
                 # Хотфикс 12.08.2026: премахнато живо API извикване тук - точно
                 # това причиняваше rate limit/524 при /daily?league=all (до 8
