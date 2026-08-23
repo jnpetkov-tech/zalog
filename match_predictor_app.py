@@ -49,10 +49,22 @@ def require_auth():
     from flask import session
     if request.endpoint == "login" or request.path.startswith("/static"):
         return
-    if request.path in ("/refresh_odds_cache", "/refresh_injuries_cache"):
+    # 23.08.2026, rate limit стъпка 3/4: /refresh_all влиза в същия списък,
+    # за да може новата нощна задача (incremental-refresh.timer, 04:00,
+    # виж CLAUDE_HANDOFF.md) да го вика през curl+токен, по образец на
+    # refresh-odds.timer - вика ЖИВИЯ Flask процес (не отделен скрипт,
+    # който да пресъздава _refresh_state в нов процес), значи минава през
+    # СЪЩОТО заключване (_try_start_refresh) като ръчния бутон.
+    #
+    # Хотфикс в СЪЩОТО изменение: старият код тук правеше БЕЗУСЛОВЕН
+    # redirect към /login, ако токенът липсва/не съвпада - това щеше да
+    # счупи истинските бутони в интерфейса (/refresh_all се вика директно
+    # от index.html/leagues_admin.html с реална сесийна бисквитка, БЕЗ
+    # токен). Сега: без токен просто пада през към обичайната сесийна
+    # проверка по-долу, вместо да пресича достъпа предварително.
+    if request.path in ("/refresh_odds_cache", "/refresh_injuries_cache", "/refresh_all"):
         if request.headers.get("X-Refresh-Token") == REFRESH_TOKEN:
             return
-        return redirect(url_for("login", next=request.path))
     if not session.get("authed"):
         return redirect(url_for("login", next=request.path))
 
