@@ -7,6 +7,7 @@ from flask import Blueprint, request, render_template
 from datetime import datetime, date, timedelta
 import prediction_policy as policy
 import evaluation
+import brier_vs_market as bm
 
 ROI_MARKETS = {"home_win", "draw", "away_win", "over25", "under25"}
 CALIBRATION_BINS = [(50, 60), (60, 70), (70, 80), (80, 90), (90, 101)]
@@ -231,6 +232,25 @@ def weekly_roi(rows):
     return out[-8:]
 
 
+def brier_vs_market_table(rows, ALL_LEAGUES, LEAGUE_FLAGS, market_label):
+    """Точка 1 (разговор с Дака, 24.08.2026): "Бием ли пазара". Обвивка над
+    brier_vs_market.py (чист модул, без БД - виж докстринга там за пълната
+    методология: raw/blend/market Brier, basis raw/blended, split-half,
+    брой тествани комбинации срещу очаквани фалшиви положителни). Тук само
+    добавяме имена за показване - самото изчисление е идентично на
+    validation/vs_market_brier.py, за да не се разминат числата между
+    записания бектест и живата страница."""
+    detail = bm.build_detail_rows(rows)
+    combos = bm.summarize_by_league_market(detail)
+    for c in combos:
+        c["league_name"] = ALL_LEAGUES.get(c["league"], {}).get("name", c["league"])
+        c["league_flag"] = LEAGUE_FLAGS.get(c["league"], "⚽")
+        c["market_name"] = market_label(c["market_code"])
+    combos.sort(key=lambda c: (c["league_name"], c["market_name"]))
+    mc = bm.multiple_comparisons_summary(combos)
+    return combos, mc
+
+
 def build_qs(args, **overrides):
     merged = {k: v for k, v in args.items() if v}
     merged.update({k: v for k, v in overrides.items() if v not in (None, "")})
@@ -302,6 +322,14 @@ def register_results_view(app, ctx):
         weekly = weekly_roi(filtered)
         weekly_brier = evaluation.weekly_brier(filtered, policy)
 
+        # Точка 1 (24.08.2026): винаги от predictions_log (не bt.list_bets()) -
+        # "бием ли пазара" е въпрос за самия модел, не за личните залози на
+        # Дака, затова НЕ следва избора "Само моите залози" по-горе. Другите
+        # филтри (период/лига/пазар/статус/търсене) важат както навсякъде
+        # другаде на страницата.
+        brier_source_rows = apply_filters(st.list_predictions(), args, to_cyrillic) if source == "mybets" else filtered
+        brier_combos, brier_mc = brier_vs_market_table(brier_source_rows, ALL_LEAGUES, LEAGUE_FLAGS, market_label)
+
         return render_template(
             "results.html",
             active_page="results", tab=tab, view_source=source, sort=sort,
@@ -310,6 +338,7 @@ def register_results_view(app, ctx):
             league_options=league_options, market_options=market_options,
             overall=overall, eval_summary=eval_summary, roi_market=rmarket,
             roi_league=rleague, weekly=weekly, weekly_brier=weekly_brier, market_label=market_label,
+            brier_combos=brier_combos, brier_mc=brier_mc, brier_min_n=bm.MIN_N,
             LEAGUE_FLAGS=LEAGUE_FLAGS, cyrillic=to_cyrillic,
         )
 

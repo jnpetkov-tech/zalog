@@ -408,6 +408,57 @@
 </div>
 {% endif %}
 
+<div class="rv-sec">Бием ли пазара? <span class="rv-note" style="margin:0;">(Brier score, по-нисък = по-точна вероятност)</span></div>
+<p class="rv-note">
+  Сравнява нашата вероятност с обезвиговата пазарна, върху едни и същи уредени изходи, по лига и пазар -
+  само за 1X2 и Над/Под 2.5 (единствените с пазарна двойка/тройка за обезвиговане). Три числа: чист модел,
+  смесено 50/50 с пазара, и самият пазар. Под {{brier_min_n}} наблюдения = "недостатъчно данни", не резултат -
+  не се смята значимост за тях. "Доказано" изисква разликата да е статистически значима (bootstrap 95% CI) И
+  да се повтаря поотделно във всяка от двете хронологични половини на данните - "кандидат" означава значимо
+  общо, но не (все още) потвърдено в двете половини поотделно.
+</p>
+<p class="rv-note">
+  Тествани комбинации с достатъчно данни: {{brier_mc.tested}} &middot; очаквани "значими" по чиста случайност
+  (alpha=5%): ~{{brier_mc.expected_false_positives}} &middot; реално флагнати като доказано/кандидат: {{brier_mc.actual_flagged}}.
+  Пълен детайл: <code>validation/vs_market_brier_combos_20260824.csv</code>.
+</p>
+<div class="rv-tblwrap">
+<table>
+  <thead><tr>
+    <th>Лига</th><th>Пазар</th><th class="rv-num">n</th>
+    <th class="rv-num">Brier (наш, чист)</th><th class="rv-num">Brier (наш, смесен)</th><th class="rv-num">Brier (пазар)</th>
+    <th class="rv-num">Разлика (чист)</th><th class="rv-num">Разлика (смесен)</th><th>Статус</th>
+  </tr></thead>
+  <tbody>
+  {% for c in brier_combos %}
+    <tr>
+      <td class="rv-lg">{{c.league_flag}} {{c.league_name}}</td>
+      <td>{{c.market_name}}</td>
+      <td class="rv-num">{{c.n}}{% if c.n_basis_blended %} <span class="rv-dim">({{c.n_basis_blended}} см.)</span>{% endif %}</td>
+      <td class="rv-num">{{"%.4f"|format(c.raw_brier)}}</td>
+      <td class="rv-num">{{"%.4f"|format(c.blend_brier)}}</td>
+      <td class="rv-num rv-dim">{{"%.4f"|format(c.market_brier)}}</td>
+      <td class="rv-num {% if c.diff_raw>0 %}rv-pos{% elif c.diff_raw<0 %}rv-neg{% else %}rv-dim{% endif %}">
+        {% if c.status != 'недостатъчно данни' %}{{"%+.4f"|format(c.diff_raw)}}{% else %}<span class="rv-dim">{{"%+.4f"|format(c.diff_raw)}}</span>{% endif %}
+      </td>
+      <td class="rv-num {% if c.diff_blend>0 %}rv-pos{% elif c.diff_blend<0 %}rv-neg{% else %}rv-dim{% endif %}">
+        {% if c.status != 'недостатъчно данни' %}{{"%+.4f"|format(c.diff_blend)}}{% else %}<span class="rv-dim">{{"%+.4f"|format(c.diff_blend)}}</span>{% endif %}
+      </td>
+      <td>
+        {% if c.status == 'доказано' %}<span class="rv-pill w">✓ доказано</span>
+        {% elif c.status == 'кандидат' %}<span class="rv-pill p" style="background:rgba(234,179,8,0.15);color:var(--yellow);">кандидат</span>
+        {% elif c.status == 'по-зле от пазара' %}<span class="rv-pill l">✗ по-зле</span>
+        {% elif c.status == 'шум' %}<span class="rv-pill p">шум</span>
+        {% else %}<span class="rv-pill p">недостатъчно данни</span>{% endif %}
+      </td>
+    </tr>
+  {% else %}
+    <tr><td colspan="9" style="text-align:center;color:var(--sub);padding:16px;">Няма уредени наблюдения с пълен пазарен коефициент за 1X2/Над-Под 2.5 в избрания период.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+
 {% endif %}
 
 </div>
