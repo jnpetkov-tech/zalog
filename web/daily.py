@@ -152,7 +152,14 @@ def register_daily_routes(app, ctx):
 
     @daily_bp.route("/daily")
     def daily():
-        league = request.args.get("league", "bulgaria")
+        # Смяна на подразбирането (разговор с Дака, 24.08.2026): при
+        # отваряне БЕЗ параметри вече показва всички лиги + само днешния
+        # ден, вместо "България, 7 дни напред". Изрично зададени league/
+        # from_date/to_date през заявката (падащото меню, полетата за дати,
+        # или споделената форма по-долу, която ги препраща всичките при
+        # всяко подаване) винаги имат предимство - никаква памет (бисквитка)
+        # не намесва старо предпочитание в началния изглед.
+        league = request.args.get("league", "all")
         from_str = request.args.get("from_date", "")
         to_str = request.args.get("to_date", "")
 
@@ -176,7 +183,7 @@ def register_daily_routes(app, ctx):
                 pass
 
         default_from = date.today()
-        default_to = date.today() + timedelta(days=DAYS_AHEAD)
+        default_to = date.today()
 
         use_snapshot = _daily_use_snapshot(request)
 
@@ -204,12 +211,18 @@ def register_daily_routes(app, ctx):
                 except (ValueError, TypeError):
                     pass
 
+        # Явно подадени дати, иначе точно default_from/default_to (днес..
+        # днес) - НЕ None, за да не пропадне обратно към вътрешния 7-дневен
+        # прозорец по подразбиране на fetch_upcoming_fixtures().
+        query_from = from_date or default_from
+        query_to = to_date or default_to
+
         matches = []
         api_error = None
         if league == "all":
             league_keys = list(get_leagues().keys())
             with ThreadPoolExecutor(max_workers=min(8, len(league_keys) or 1)) as executor:
-                futures = [executor.submit(_predict_matches_for_league, lg, from_date, to_date, use_snapshot)
+                futures = [executor.submit(_predict_matches_for_league, lg, query_from, query_to, use_snapshot)
                            for lg in league_keys]
                 for fut in futures:
                     lg_matches, lg_api_error = fut.result()
@@ -218,7 +231,7 @@ def register_daily_routes(app, ctx):
                         api_error = lg_api_error
             league_name = "Всички лиги"
         else:
-            matches, api_error = _predict_matches_for_league(league, from_date, to_date, use_snapshot)
+            matches, api_error = _predict_matches_for_league(league, query_from, query_to, use_snapshot)
             league_name = get_leagues()[league]
 
         matches.sort(key=lambda m: m["date"])
