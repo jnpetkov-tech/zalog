@@ -233,6 +233,7 @@ function dtShowTab(name) {
             <span>{{m.card.value.label}} <b>{{"%.1f"|format(m.card.value.our_pct)}}%</b></span>
             <span style="color:var(--sub);font-size:11.5px;">пазар {{"%.1f"|format(m.card.value.market_pct)}}% ({{m.card.value.odd}}) &middot; EV {{ "+" if m.card.value.ev >= 0 else "" }}{{"%.1f"|format(m.card.value.ev)}}%</span>
           </div>
+          <div style="font-size:11px;color:var(--green);margin-top:3px;">за 100 лв. &rarr; {{"%.0f"|format(100 + m.card.value.ev)}} лв. очаквано в дългосрочен план</div>
         </div>
         {% endif %}
         <div style="background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;">
@@ -297,6 +298,11 @@ function dtShowTab(name) {
 {% endif %}
 {% else %}
 {% if upcoming_flat %}
+{% if upcoming_sort == "confident" %}
+<div style="background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:var(--sub);">
+  Подредено по вероятност, не по печалба &mdash; най-вероятният залог рядко е най-печелившият. За печалба виж подредбата по стойност.
+</div>
+{% endif %}
 <form method="post" action="/place_combo">
 <input type="hidden" name="total" value="{{total_upcoming}}">
 {% for m in upcoming_flat %}{{ upcoming_match_card(m) }}{% endfor %}
