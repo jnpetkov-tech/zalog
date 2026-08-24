@@ -83,7 +83,7 @@
   <a href="/" class="{% if active_page=='home' %}active{% endif %}">🏠 Начало</a>
   <div class="sidebar-section">Прогнози</div>
   <a href="/daily" class="{% if active_page=='daily' %}active{% endif %}">📅 Предстоящи</a>
-  <a href="/value" class="{% if active_page=='value' %}active{% endif %}">💰 Стойност</a>
+  <a href="/value" class="{% if active_page=='value' %}active{% endif %}">💰 Разлики с пазара</a>
   <a href="/results" class="{% if active_page=='results' %}active{% endif %}">📋 Резултати и ефективност</a>
   <div class="sidebar-section">Инструменти</div>
   <a href="/manual" class="{% if active_page=='manual' %}active{% endif %}">🔍 Търсене</a>
@@ -127,7 +127,7 @@ function dtShowTab(name) {
     <label style="font-size:11px;color:var(--sub);">Подредба (Предстоящи)</label>
     <select name="sort" onchange="this.form.submit()" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);box-sizing:border-box;background:var(--panel2);color:var(--text);">
       <option value="date" {% if upcoming_sort=="date" %}selected{% endif %}>По дата (по лиги)</option>
-      <option value="value" {% if upcoming_sort=="value" %}selected{% endif %}>По стойност (най-висок EV)</option>
+      <option value="value" {% if upcoming_sort=="value" %}selected{% endif %}>По разлика с пазара (най-висок EV)</option>
       <option value="confident" {% if upcoming_sort=="confident" %}selected{% endif %}>По сигурност (най-висок %)</option>
     </select>
   </div>
@@ -228,16 +228,16 @@ function dtShowTab(name) {
       <div style="margin-bottom:8px;">
         {% if m.card and m.card.value and not m.card.same %}
         <div style="background:var(--green-bg);border:1px solid rgba(34,197,94,0.35);border-radius:8px;padding:6px 10px;margin-bottom:5px;">
-          <div style="font-size:10.5px;color:var(--green);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:2px;">💎 Най-стойностен</div>
+          <div style="font-size:10.5px;color:var(--green);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:2px;">💎 Най-голяма разлика с пазара</div>
           <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;font-size:13px;">
             <span>{{m.card.value.label}} <b>{{"%.1f"|format(m.card.value.our_pct)}}%</b></span>
             <span style="color:var(--sub);font-size:11.5px;">пазар {{"%.1f"|format(m.card.value.market_pct)}}% ({{m.card.value.odd}}) &middot; EV {{ "+" if m.card.value.ev >= 0 else "" }}{{"%.1f"|format(m.card.value.ev)}}%</span>
           </div>
-          <div style="font-size:11px;color:var(--green);margin-top:3px;">за 100 лв. &rarr; {{"%.0f"|format(100 + m.card.value.ev)}} лв. очаквано в дългосрочен план</div>
+          <div style="font-size:11px;color:var(--green);margin-top:3px;">ако нашата оценка е вярна: за 100 лв. &rarr; {{"%.0f"|format(100 + m.card.value.ev)}} лв.</div>
         </div>
         {% endif %}
         <div style="background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;">
-          <div style="font-size:10.5px;color:var(--sub);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:2px;">{% if m.card and m.card.value and m.card.same %}💎 Най-стойностен и най-сигурен{% else %}🎯 Най-сигурен{% endif %}</div>
+          <div style="font-size:10.5px;color:var(--sub);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:2px;">{% if m.card and m.card.value and m.card.same %}💎 Най-голяма разлика с пазара и най-сигурен{% else %}🎯 Най-сигурен{% endif %}</div>
           <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;font-size:13px;">
             <span>{{m.card.confident.label if m.card else m.pick}} <b>{{"%.1f"|format((m.card.confident.our_pct if m.card else m.pct))}}%</b></span>
             {% if m.card and m.card.confident.market_pct is not none %}
@@ -248,7 +248,7 @@ function dtShowTab(name) {
         {% if m.card and not m.card.has_market_odds %}
         <div style="font-size:11px;color:var(--sub);margin-top:4px;">Няма пазарни коефициенти за този мач.</div>
         {% elif m.card and not m.card.value %}
-        <div style="font-size:11px;color:var(--sub);margin-top:4px;">Няма стойност при тези коефициенти.</div>
+        <div style="font-size:11px;color:var(--sub);margin-top:4px;">Няма разлика с пазара.</div>
         {% endif %}
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;">
@@ -300,7 +300,7 @@ function dtShowTab(name) {
 {% if upcoming_flat %}
 {% if upcoming_sort == "confident" %}
 <div style="background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:12px;color:var(--sub);">
-  Подредено по вероятност, не по печалба &mdash; най-вероятният залог рядко е най-печелившият. За печалба виж подредбата по стойност.
+  Подредено по вероятност, не по разлика с пазара &mdash; най-вероятният залог рядко е този с най-голяма разлика с пазара. За разлика с пазара виж подредбата "По разлика с пазара".
 </div>
 {% endif %}
 <form method="post" action="/place_combo">

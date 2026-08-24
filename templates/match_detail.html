@@ -77,7 +77,7 @@
   <a href="/" class="{% if active_page=='home' %}active{% endif %}">🏠 Начало</a>
   <div class="sidebar-section">Прогнози</div>
   <a href="/daily" class="{% if active_page=='daily' %}active{% endif %}">📅 Предстоящи</a>
-  <a href="/value" class="{% if active_page=='value' %}active{% endif %}">💰 Стойност</a>
+  <a href="/value" class="{% if active_page=='value' %}active{% endif %}">💰 Разлики с пазара</a>
   <a href="/results" class="{% if active_page=='results' %}active{% endif %}">📋 Резултати и ефективност</a>
   <div class="sidebar-section">Инструменти</div>
   <a href="/manual" class="{% if active_page=='manual' %}active{% endif %}">🔍 Търсене</a>
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="form-note">{{extra_info[4]}}</div>
 
 {% if extra_info[5] %}
-<div class="group"><div class="group-title">💎 Value bets (EV & препоръчан залог)</div>
+<div class="group"><div class="group-title">💎 Разлики с пазара</div>
 <table>
 <tr><th>Пазар</th><th>Наша</th><th>Пазарна (коеф.)</th><th>EV</th><th>Залог (Kelly 25%)</th></tr>
 {% for vb in extra_info[5][:5] %}
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="group-title">⚠️ Пренебрегнати оценки (твърде високо разминаване с пазара)</div>
 {% for db in extra_info[6][:5] %}
 <div style="font-size:13px;color:#8A6D1F;padding:6px 0;">
-<b>{{db.label}}</b>: моделът дава {{"%.1f"|format(db.our_pct)}}% при пазарни {{"%.1f"|format(db.market_pct)}}% (очаквана печалба +{{"%.1f"|format(db.ev)}}%). Разлика от този порядък обикновено значи грешка в модела, а не пропусната от пазара стойност. Не се препоръчва залог.
+<b>{{db.label}}</b>: моделът дава {{"%.1f"|format(db.our_pct)}}% при пазарни {{"%.1f"|format(db.market_pct)}}% (очаквана печалба +{{"%.1f"|format(db.ev)}}%). Разлика от този порядък обикновено значи грешка в модела, а не пропусната от пазара възможност. Не се препоръчва залог.
 </div>
 {% endfor %}
 </div>

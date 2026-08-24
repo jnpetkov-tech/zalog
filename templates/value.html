@@ -1,6 +1,6 @@
 
 <!DOCTYPE html><html lang="bg"><head><meta charset="UTF-8">
-<title>Стойност</title>
+<title>Разлики с пазара</title>
 <style>
   :root {
     --bg:#0f1115; --panel:#171a21; --panel2:#1d212b; --sidebar-bg:#12141a; --border:#2a2f3a;
@@ -92,7 +92,7 @@
   <a href="/" class="{% if active_page=='home' %}active{% endif %}">🏠 Начало</a>
   <div class="sidebar-section">Прогнози</div>
   <a href="/daily" class="{% if active_page=='daily' %}active{% endif %}">📅 Предстоящи</a>
-  <a href="/value" class="{% if active_page=='value' %}active{% endif %}">💰 Стойност</a>
+  <a href="/value" class="{% if active_page=='value' %}active{% endif %}">💰 Разлики с пазара</a>
   <a href="/results" class="{% if active_page=='results' %}active{% endif %}">📋 Резултати и ефективност</a>
   <div class="sidebar-section">Инструменти</div>
   <a href="/manual" class="{% if active_page=='manual' %}active{% endif %}">🔍 Търсене</a>
@@ -102,7 +102,7 @@
 </div>
 
 <div class="container" style="max-width:1180px;">
-<h1>Стойност</h1>
+<h1>Разлики с пазара</h1>
 <div class="vv-warn">
   ⚠️ Експериментален борд, не доказан инструмент. Нашите backtest-и мерят дали моделът бие наивен baseline
   (винаги домакин, винаги над 2.5 и т.н.), не дали бие затварящата пазарна линия на букмейкъра - това е
