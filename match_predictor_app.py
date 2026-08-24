@@ -363,11 +363,15 @@ def build_pick_card(picks, market_odds):
     snapshot пътя. `market_odds` са кешираните пазарни коефициенти (или
     None/непълни).
 
-    'Стойностен' = най-висок EV сред кандидатите, за които изобщо има
-    пазарна цена (home_win/draw/away_win/over25/under25 - единствените с
-    market_odds), със СЪЩИТЕ прагове като value_bets в
+    'Стойностен' = най-висок ПОЛОЖИТЕЛЕН EV сред кандидатите, за които
+    изобщо има пазарна цена (home_win/draw/away_win/over25/under25 -
+    единствените с market_odds), със СЪЩИТЕ прагове като value_bets в
     compute_grouped_markets (MIN_VALUE_BET_PROB/MAX_VALUE_BET_ODDS/
-    MAX_TRUSTWORTHY_EV) - непроменени тук, само преизползвани.
+    MAX_TRUSTWORTHY_EV) - непроменени тук, само преизползвани. Филтърът е
+    директно по EV<=0, не по "edge" (our_p<=market_p) - edge>0 не
+    гарантира EV>0, защото market_p е обезвигован (по-малък от суровата
+    имплицирана 1/odd), затова edge-базиран филтър пропускаше кандидати
+    с малък положителен edge, но отрицателен EV (бъг, намерен 24.08.2026).
     'Сигурен' = най-висока вероятност сред ВСИЧКИ доверени кандидати
     (включително пазари без пазарна цена - идентично на старата top pick).
     Ако съвпадат - `same=True`, показва се само един ред. Ако никой доверен
@@ -397,10 +401,10 @@ def build_pick_card(picks, market_odds):
             continue
         market_p, odd = info
         our_p = p["pct"] / 100
-        if our_p <= market_p or our_p < MIN_VALUE_BET_PROB or odd > MAX_VALUE_BET_ODDS:
+        if our_p < MIN_VALUE_BET_PROB or odd > MAX_VALUE_BET_ODDS:
             continue
         ev = our_p * odd - 1
-        if ev > MAX_TRUSTWORTHY_EV:
+        if ev <= 0 or ev > MAX_TRUSTWORTHY_EV:
             continue
         if best_ev is None or ev > best_ev:
             best_value, best_ev = p, ev

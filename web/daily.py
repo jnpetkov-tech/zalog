@@ -10,11 +10,30 @@ compute_grouped_markets, _predict_matches_for_league и т.н.) остава в
 match_predictor_app.py, подадена през ctx - виж CLAUDE_HANDOFF.md за
 пълната обосновка на тази граница.
 """
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request, render_template, make_response
 from datetime import date, timedelta, datetime
 from concurrent.futures import ThreadPoolExecutor
 
 BG_WEEKDAYS = ["Понеделник", "Вторник", "Сряда", "Четвъртък", "Петък", "Събота", "Неделя"]
+
+DAILY_SORT_OPTIONS = ("date", "value", "confident")
+
+
+def _daily_sort_key(sort):
+    """Ключ за сортиране на upcoming_matches при sort='value'/'confident' -
+    мачове без картичка/прогноза (нов отбор, чака следващо изчисление) или
+    без положителен EV (build_pick_card връща card['value']=None) отиват
+    най-долу, не най-горе, затова -inf вместо 0 при липса."""
+    if sort == "value":
+        def key(m):
+            card = m.get("card")
+            ev = card.get("value", {}).get("ev") if card and card.get("value") else None
+            return ev if ev is not None else float("-inf")
+        return key
+    def key(m):
+        pct = m.get("pct")
+        return pct if pct is not None else float("-inf")
+    return key
 
 
 def date_group_label(date_str):
@@ -108,6 +127,12 @@ def register_daily_routes(app, ctx):
         league = request.args.get("league", "bulgaria")
         from_str = request.args.get("from_date", "")
         to_str = request.args.get("to_date", "")
+
+        sort = request.args.get("sort")
+        if sort not in DAILY_SORT_OPTIONS:
+            sort = request.cookies.get("daily_sort")
+        if sort not in DAILY_SORT_OPTIONS:
+            sort = "date"
 
         from_date = None
         to_date = None
@@ -214,19 +239,32 @@ def register_daily_routes(app, ctx):
             return result
 
         live_groups = _group_by_league(live_matches)
-        upcoming_groups = _group_by_league(upcoming_matches)
         finished_groups = _group_by_league(finished_matches)
         skipped_groups = _group_by_league(skipped_matches)
 
-        return render_template("daily.html", leagues=get_leagues(), selected_league=league,
+        # Подредба по стойност/сигурност смесва мачовете от всички лиги в
+        # един общ списък (groupирането по лига отпада) - само за
+        # "Предстоящи", виж искането на Дака 24.08.2026. По дата си остава
+        # групирано по лига, както преди.
+        if sort == "date":
+            upcoming_groups = _group_by_league(upcoming_matches)
+            upcoming_flat = None
+        else:
+            upcoming_groups = None
+            upcoming_flat = sorted(upcoming_matches, key=_daily_sort_key(sort), reverse=True)
+
+        resp = make_response(render_template("daily.html", leagues=get_leagues(), selected_league=league,
                                         league_name=league_name, days_ahead=DAYS_AHEAD,
                                         api_error=api_error, snapshot_stale_warning=snapshot_stale_warning,
-                                        live_groups=live_groups, upcoming_groups=upcoming_groups, finished_groups=finished_groups,
+                                        live_groups=live_groups, upcoming_groups=upcoming_groups,
+                                        upcoming_flat=upcoming_flat, upcoming_sort=sort, finished_groups=finished_groups,
                                         skipped_groups=skipped_groups, skipped_count=len(skipped_matches),
                                         live_count=len(live_matches), upcoming_count=len(upcoming_matches), finished_count=len(finished_matches),
                                         total_upcoming=len(upcoming_matches),
                                         from_value=(from_date or default_from).isoformat(),
-                                        to_value=(to_date or default_to).isoformat(), active_page='daily')
+                                        to_value=(to_date or default_to).isoformat(), active_page='daily'))
+        resp.set_cookie("daily_sort", sort, max_age=31536000, samesite="Lax")
+        return resp
 
     @daily_bp.route("/live")
     def live():
