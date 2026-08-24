@@ -71,6 +71,9 @@
 .top-pred-teams{font-size:13px;color:var(--text);}
 .top-pred-league{font-size:11px;color:var(--sub);margin-top:2px;}
 .top-pred-pick{font-size:12px;color:var(--sub);text-align:right;white-space:nowrap;}
+.tp-badge{font-size:10px;font-weight:600;margin-left:6px;}
+.tp-badge.value{color:var(--green);}
+.tp-badge.confident{color:var(--sub);}
 </style></head><body>
 <div class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</div>
 <div class="sidebar">
@@ -103,14 +106,21 @@
 {% endif %}
 
 <div class="group-title" style="margin-top:24px;">Топ прогнози за деня</div>
+<p style="color:var(--sub);font-size:11.5px;margin:-4px 0 12px;line-height:1.5;">
+  Стойностните (💎) излизат първи, допълнени със сигурни (🎯) до пет. Прагът за "стойностен" е най-добра
+  налична преценка засега, не доказана находка - виж <a href="/value" style="color:var(--accent);">/value</a>.
+</p>
 {% if top_matches %}
 {% for m in top_matches %}
 <div class="top-pred-row">
   <div>
     <div class="top-pred-teams">{{cyrillic(m.home)}} - {{cyrillic(m.away)}}</div>
-    <div class="top-pred-league">{{m.league}}</div>
+    <div class="top-pred-league">{{m.league}}{% if m.kind == 'value' %}<span class="tp-badge value">💎 стойностен</span>{% else %}<span class="tp-badge confident">🎯 сигурен</span>{% endif %}</div>
   </div>
-  <div class="top-pred-pick">{{m.top_pred.pick_label}}<br>{{"%.1f"|format(m.top_pred.pick_pct)}}%</div>
+  <div class="top-pred-pick">
+    {{m.top_pred.pick_label}}<br>
+    {{"%.1f"|format(m.top_pred.pick_pct)}}%{% if m.kind == 'value' %} &middot; edge +{{m.edge_pct}}%{% endif %}
+  </div>
 </div>
 {% endfor %}
 {% else %}

@@ -31,6 +31,7 @@ our_fair_odds, pick_pct, status) - бъдещ diag_value_edge.py повторе�
 """
 from flask import Blueprint, render_template
 from datetime import datetime
+import brier_vs_market as bm
 
 MIN_PCT = 25
 MAX_PCT = 85
@@ -55,7 +56,7 @@ def get_value_opportunities(get_conn, is_eligible, hours_ahead=None):
     conn.row_factory = __import__("sqlite3").Row
     rows = conn.execute("""
         SELECT id, league, fixture_id, match_date, home_team, away_team,
-               market_code, pick_label, pick_pct, market_odds, our_fair_odds,
+               market_code, pick_label, pick_pct, market_odds, our_fair_odds, logged_at,
                ROUND((market_odds*1.0/our_fair_odds - 1)*100, 1) AS edge_pct
         FROM predictions_log
         WHERE market_odds IS NOT NULL AND our_fair_odds IS NOT NULL AND our_fair_odds > 0
@@ -71,7 +72,19 @@ def get_value_opportunities(get_conn, is_eligible, hours_ahead=None):
     for r in rows:
         if not is_eligible(r["league"], r["market_code"]):
             continue
-        out.append(dict(r))
+        row = dict(r)
+        # Точка 2 (разговор с Дака, 24.08.2026): pick_pct тук е "raw" (чист
+        # модел) за редове, логнати ПРЕДИ commit 3d52ef5, и "blended"
+        # (смесено с пазара) за редове, логнати след това - append-only лог,
+        # не се преизчислява ретроактивно. Смесването свива EV към нулата,
+        # затова СТАРИТЕ (raw) редове систематично имат по-високо EV -
+        # сортирано по edge_pct DESC, върхът на страницата е временно
+        # доминиран от по-старото, по-неточно измерване, докато старите
+        # чакащи редове не се уредят. Маркираме basis тук изрично, за да се
+        # вижда на страницата, не да се крие зад едно сортирано число.
+        row["basis"] = "blended" if (row["market_code"] in bm.ALL_CODES
+                                      and (row.get("logged_at") or "") >= bm.BLEND_CUTOFF) else "raw"
+        out.append(row)
     return out
 
 

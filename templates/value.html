@@ -83,6 +83,9 @@
       .vv-edge { color:var(--green); font-weight:600; font-variant-numeric:tabular-nums; }
       .vv-empty { color:var(--sub); font-size:14px; padding:30px; text-align:center; background:var(--panel);
         border:1px solid var(--border); border-radius:10px; }
+      .vv-basis { display:inline-block; padding:1px 7px; border-radius:5px; font-size:10.5px; font-weight:600; white-space:nowrap; }
+      .vv-basis.raw { background:rgba(139,145,157,0.14); color:var(--sub); }
+      .vv-basis.blended { background:rgba(59,130,246,0.14); color:var(--accent); }
     </style></head><body>
 <div class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</div>
 <div class="sidebar">
@@ -109,6 +112,12 @@
   Следим резултатите с времето, за да видим дали хипотезата се потвърждава. Показват се само пазари с ниво
   <b>PROVEN</b> (доказано бият baseline при backtest) - недостатъчно тествани (WEAK) пазари не влизат тук, дори
   ако изглеждат с висок edge.
+  <br><br>
+  ⚠️ <b>Две различни мерки в момента, сортирани заедно.</b> Смесването модел+пазар (от 23.08.2026) свива edge%
+  към нулата - редовете с етикет <span class="vv-basis raw">чист</span> по-долу са логнати преди тази промяна и
+  систематично показват по-високо edge от новите <span class="vv-basis blended">смесен</span> редове, не защото
+  са по-добра възможност, а защото са смятани по друга формула. Списъкът е сортиран по едно число, все едно
+  двете са едно и също - не са, докато старите чакащи редове не се уредят.
 </div>
 <div class="vv-kpis">
   <div class="vv-kpi"><div class="k">Възможности</div><div class="v">{{total}}</div></div>
@@ -120,7 +129,7 @@
 <table>
 <thead><tr>
   <th>Лига</th><th>Мач</th><th>Начало</th><th>Пазар</th><th>Прогноза</th>
-  <th class="vv-num">Увереност</th><th class="vv-num">Коефициент</th><th class="vv-num">Edge</th>
+  <th class="vv-num">Увереност</th><th class="vv-num">Коефициент</th><th class="vv-num">Edge</th><th>Базис</th>
 </tr></thead>
 <tbody>
 {% for o in opps %}
@@ -133,6 +142,7 @@
   <td class="vv-num">{{"%.1f"|format(o.pick_pct)}}%</td>
   <td class="vv-num">{{o.market_odds}}</td>
   <td class="vv-num vv-edge">+{{o.edge_pct}}%</td>
+  <td>{% if o.basis == 'blended' %}<span class="vv-basis blended">смесен</span>{% else %}<span class="vv-basis raw">чист</span>{% endif %}</td>
 </tr>
 {% endfor %}
 </tbody>

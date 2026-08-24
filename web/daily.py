@@ -13,6 +13,7 @@ match_predictor_app.py, подадена през ctx - виж CLAUDE_HANDOFF.md
 from flask import Blueprint, request, render_template, make_response
 from datetime import date, timedelta, datetime
 from concurrent.futures import ThreadPoolExecutor
+from web.value import get_value_opportunities
 
 BG_WEEKDAYS = ["Понеделник", "Вторник", "Сряда", "Четвъртък", "Петък", "Събота", "Неделя"]
 
@@ -85,20 +86,47 @@ def register_daily_routes(app, ctx):
         # evaluation.py, Фаза I.2) - връща плочката, скрита в Фаза H.2.
         eval_summary = evaluation.summary(predictions, policy)
         today_str = date.today().isoformat()
+
+        # Точка 3 (разговор с Дака, 24.08.2026): началната страница вече минава
+        # през СЪЩИЯ механизъм като /value (get_value_opportunities), за да
+        # няма трето място в приложението, което твърди "стойност" с отделна
+        # логика. Прагът (3-15% edge) не е статистически доказан (виж
+        # validation/ev_threshold_backtest_20260824.csv) - представяме това
+        # като най-добра налична преценка, не като находка (виж disclaimer
+        # текста в templates/index.html).
+        value_opps = get_value_opportunities(st.get_conn, policy.is_proven)
+        seen_fixtures = set()
+        value_matches = []
+        for o in value_opps:
+            if str(o["match_date"])[:10] != today_str or o["fixture_id"] in seen_fixtures:
+                continue
+            seen_fixtures.add(o["fixture_id"])
+            value_matches.append({
+                "date": o["match_date"], "home": o["home_team"], "away": o["away_team"],
+                "league": o["league"], "fixture_id": o["fixture_id"], "kind": "value",
+                "edge_pct": o["edge_pct"],
+                "top_pred": {"pick_label": o["pick_label"], "pick_pct": o["pick_pct"]},
+            })
+        value_matches = value_matches[:5]
+
         today_preds = [p for p in predictions if p["status"] == "pending" and str(p["match_date"])[:10] == today_str]
         match_groups = {}
         for p in today_preds:
             key = (p["match_date"], p["home_team"], p["away_team"], p["league"])
             match_groups.setdefault(key, []).append(p)
-        top_matches = []
+        confident_matches = []
         for (mdate, home, away, league), preds in match_groups.items():
             ranked = ps.rank_logged_rows(preds, league, policy, n=1)
             if not ranked:
                 continue
-            top_pred = ranked[0]
-            top_matches.append({"date": mdate, "home": home, "away": away, "league": league, "top_pred": top_pred})
-        top_matches.sort(key=lambda m: -m["top_pred"]["pick_pct"])
-        top_matches = top_matches[:5]
+            confident_matches.append({
+                "date": mdate, "home": home, "away": away, "league": league,
+                "fixture_id": preds[0].get("fixture_id"), "kind": "confident",
+                "top_pred": ranked[0],
+            })
+        confident_matches.sort(key=lambda m: -m["top_pred"]["pick_pct"])
+        confident_matches = [m for m in confident_matches if m["fixture_id"] not in seen_fixtures]
+        top_matches = value_matches + confident_matches[:max(0, 5 - len(value_matches))]
         return render_template("index.html", active_page='home', overall=overall,
                                         top_matches=top_matches, cyrillic=to_cyrillic,
                                         promised_avg=eval_summary["promised_avg"],
