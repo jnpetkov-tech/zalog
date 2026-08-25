@@ -66,7 +66,18 @@ def require_auth():
     # от index.html/leagues_admin.html с реална сесийна бисквитка, БЕЗ
     # токен). Сега: без токен просто пада през към обичайната сесийна
     # проверка по-долу, вместо да пресича достъпа предварително.
-    if request.path in ("/refresh_odds_cache", "/refresh_injuries_cache", "/refresh_all"):
+    #
+    # 25.08.2026: /system_check_results и /check_results добавени по
+    # СЪЩИЯ образец (commit 5bc64a8) - check_results_cron.sh (на всеки 3
+    # часа) използваше HTTP Basic auth (-u sportbg:...), който никога не
+    # се е проверявал тук - двете заявки винаги са получавали 302 вместо
+    # реално да проверят резултатите (открито и докладвано на Дака,
+    # виж CLAUDE_HANDOFF.md). Скриптът вече праща X-Refresh-Token вместо
+    # -u. Истинските бутони (system_check.html/my_bets.html) продължават
+    # да работят непроменени - викат тези пътища със сесийна бисквитка,
+    # без токен, значи падат през към обичайната проверка по-долу.
+    if request.path in ("/refresh_odds_cache", "/refresh_injuries_cache", "/refresh_all",
+                          "/system_check_results", "/check_results"):
         if request.headers.get("X-Refresh-Token") == REFRESH_TOKEN:
             return
     if not session.get("authed"):
