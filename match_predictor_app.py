@@ -399,17 +399,24 @@ def build_diff_row(picks, market_odds):
     Ако никой доверен кандидат няма пазарна цена, връща топ доверения
     кандидат по вероятност, с market_pct/diff=None - никога None цялостно,
     освен ако `picks` е празно (тогава мачът няма никаква доверена
-    прогноза, вижте pick_selection.top_pick_for_match за същия принцип)."""
+    прогноза, вижте pick_selection.top_pick_for_match за същия принцип).
+
+    Връща и "code" (market_code на избрания пазар) - 25.08.2026, Дака:
+    залог-бутонът на /daily трябва да залага на ТОЗИ пазар, не на
+    отделен "най-вероятен" избор (виж CLAUDE_HANDOFF.md за инцидента,
+    открит преди тази поправка - картата показваше едно, бутонът
+    залагаше друго)."""
     if not picks:
         return None
 
     def make_row(p):
         info = _market_info_for_pick(p["code"], market_odds)
         if not info:
-            return {"label": p["label"], "our_pct": p["pct"], "market_pct": None, "diff": None}
+            return {"label": p["label"], "our_pct": p["pct"], "market_pct": None, "diff": None, "code": p["code"]}
         market_p, _odd = info
         market_pct = market_p * 100
-        return {"label": p["label"], "our_pct": p["pct"], "market_pct": market_pct, "diff": p["pct"] - market_pct}
+        return {"label": p["label"], "our_pct": p["pct"], "market_pct": market_pct,
+                "diff": p["pct"] - market_pct, "code": p["code"]}
 
     priced = [make_row(p) for p in picks]
     with_market = [r for r in priced if r["market_pct"] is not None]

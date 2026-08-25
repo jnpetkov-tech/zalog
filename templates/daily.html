@@ -241,7 +241,7 @@ function dtShowTab(name) {
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <a href="/match_detail?league={{m.league}}&fixture_id={{m.fixture_id}}&home={{m.home}}&away={{m.away}}&date={{m.date}}" style="font-size:12px;color:var(--accent);text-decoration:none;">Влез в мача →</a>
-        <button type="submit" formaction="/place_bet_single/{{m.idx}}" class="small" style="background:transparent;border:1px solid var(--border);color:var(--sub);font-weight:400;">Заложи на най-вероятния пазар</button>
+        <button type="submit" formaction="/place_bet_single/{{m.idx}}" class="small" style="background:transparent;border:1px solid var(--border);color:var(--sub);font-weight:400;">Заложи на този пазар</button>
       </div>
       {% else %}
       <span style="color:var(--sub);">{{m.pick}}</span>
@@ -260,9 +260,9 @@ function dtShowTab(name) {
       <input type="hidden" name="date_{{m.idx}}" value="{{m.date}}">
       <input type="hidden" name="home_{{m.idx}}" value="{{m.home}}">
       <input type="hidden" name="away_{{m.idx}}" value="{{m.away}}">
-      <input type="hidden" name="code_{{m.idx}}" value="{{m.code}}">
-      <input type="hidden" name="pick_{{m.idx}}" value="{{m.pick}}">
-      <input type="hidden" name="pct_{{m.idx}}" value="{{m.pct}}">
+      <input type="hidden" name="code_{{m.idx}}" value="{{m.card.code}}">
+      <input type="hidden" name="pick_{{m.idx}}" value="{{m.card.label}}">
+      <input type="hidden" name="pct_{{m.idx}}" value="{{m.card.our_pct}}">
     </div>
     {% endif %}
   </div>
