@@ -362,66 +362,40 @@ def _market_info_for_pick(code, market_odds):
     return None
 
 
-def build_pick_card(picks, market_odds):
-    """Задача 5 (нощна сесия 24.08.2026): картата на /daily - най-много два
-    реда вместо предишните до три чипа. `picks` е списъкът вече ДОВЕРЕНИ
-    (policy-eligible, минали през pick_selection.rank_candidates) кандидати
-    за мача - label/pct/code/odds, идентична структура и в живия, и в
-    snapshot пътя. `market_odds` са кешираните пазарни коефициенти (или
-    None/непълни).
+def build_diff_row(picks, market_odds):
+    """Стъпка 4 (PREUSTROYSTVO.md, 25.08.2026): "Днес" в окончателен вид -
+    ЕДИН ред на мач вместо предишните "сигурен"+"стойностен" два чипа
+    (Задача 5, 24.08.2026 - заменено тук). Замества `build_pick_card()`:
+    старата версия избираше "най-стойностен" по ПОЛОЖИТЕЛЕН EV с прагове
+    MIN_VALUE_BET_PROB/MAX_VALUE_BET_ODDS без цитирано доказателство зад
+    тях (одит 25.08.2026, Находка 5) - точно двойната дефиниция на
+    "стойност", която Находка 4 отбеляза като несъгласувана с /value.
 
-    'Стойностен' = най-висок ПОЛОЖИТЕЛЕН EV сред кандидатите, за които
-    изобщо има пазарна цена (home_win/draw/away_win/over25/under25 -
-    единствените с market_odds), със СЪЩИТЕ прагове като value_bets в
-    compute_grouped_markets (MIN_VALUE_BET_PROB/MAX_VALUE_BET_ODDS/
-    MAX_TRUSTWORTHY_EV) - непроменени тук, само преизползвани. Филтърът е
-    директно по EV<=0, не по "edge" (our_p<=market_p) - edge>0 не
-    гарантира EV>0, защото market_p е обезвигован (по-малък от суровата
-    имплицирана 1/odd), затова edge-базиран филтър пропускаше кандидати
-    с малък положителен edge, но отрицателен EV (бъг, намерен 24.08.2026).
-    'Сигурен' = най-висока вероятност сред ВСИЧКИ доверени кандидати
-    (включително пазари без пазарна цена - идентично на старата top pick).
-    Ако съвпадат - `same=True`, показва се само един ред. Ако никой доверен
-    кандидат няма положителен EV - `value=None`. `has_market_odds=False`
-    означава че за мача изобщо няма кеширан пазарен коефициент."""
+    `picks` е списъкът вече ДОВЕРЕНИ (policy-eligible, минали през
+    pick_selection.rank_candidates) кандидати за мача. Избира пазара с
+    НАЙ-ГОЛЯМА АБСОЛЮТНА разлика спрямо пазарната цена (само сред
+    home_win/draw/away_win/over25/under25 - единствените с кеширан
+    market_odds) - чисто сравнение, без препоръка накъде да е разликата.
+    Ако никой доверен кандидат няма пазарна цена, връща топ доверения
+    кандидат по вероятност, с market_pct/diff=None - никога None цялостно,
+    освен ако `picks` е празно (тогава мачът няма никаква доверена
+    прогноза, вижте pick_selection.top_pick_for_match за същия принцип)."""
     if not picks:
         return None
 
     def make_row(p):
         info = _market_info_for_pick(p["code"], market_odds)
         if not info:
-            return {"label": p["label"], "our_pct": p["pct"], "market_pct": None, "odd": None, "ev": None}
-        market_p, odd = info
-        ev = (p["pct"] / 100 * odd - 1) * 100
-        return {"label": p["label"], "our_pct": p["pct"], "market_pct": market_p * 100, "odd": odd, "ev": ev}
+            return {"label": p["label"], "our_pct": p["pct"], "market_pct": None, "diff": None}
+        market_p, _odd = info
+        market_pct = market_p * 100
+        return {"label": p["label"], "our_pct": p["pct"], "market_pct": market_pct, "diff": p["pct"] - market_pct}
 
-    confident = max(picks, key=lambda p: p["pct"])
-    has_market_odds = bool(market_odds and (
-        (market_odds.get("home_win") and market_odds.get("draw") and market_odds.get("away_win")) or
-        (market_odds.get("over25") and market_odds.get("under25"))
-    ))
-
-    best_value, best_ev = None, None
-    for p in picks:
-        info = _market_info_for_pick(p["code"], market_odds)
-        if not info:
-            continue
-        market_p, odd = info
-        our_p = p["pct"] / 100
-        if our_p < MIN_VALUE_BET_PROB or odd > MAX_VALUE_BET_ODDS:
-            continue
-        ev = our_p * odd - 1
-        if ev <= 0 or ev > MAX_TRUSTWORTHY_EV:
-            continue
-        if best_ev is None or ev > best_ev:
-            best_value, best_ev = p, ev
-
-    confident_row = make_row(confident)
-    if best_value is None:
-        return {"confident": confident_row, "value": None, "same": False, "has_market_odds": has_market_odds}
-    value_row = make_row(best_value)
-    return {"confident": confident_row, "value": value_row,
-            "same": best_value["code"] == confident["code"], "has_market_odds": has_market_odds}
+    priced = [make_row(p) for p in picks]
+    with_market = [r for r in priced if r["market_pct"] is not None]
+    if with_market:
+        return max(with_market, key=lambda r: abs(r["diff"]))
+    return make_row(max(picks, key=lambda p: p["pct"]))
 
 
 def compute_grouped_markets(league, home, away, home_inj=0, away_inj=0, real_odds=None):
@@ -1097,7 +1071,7 @@ def _predict_matches_for_league_from_snapshot(league, from_date, to_date):
         if 0 <= minutes_to_kickoff <= 60:
             lineups_confirmed = fetch_lineups_available(fixture_id)
 
-        card = build_pick_card(picks_list, cached_odds)
+        card = build_diff_row(picks_list, cached_odds)
         matches.append({**base, "pick": top["pick_label"], "pct": top["pick_pct"], "code": top["market_code"],
                          "odds": top["fair_odds"], "picks": picks_list, "card": card, "inj_note": inj_note,
                          "lineups_confirmed": lineups_confirmed, "used_market": used_market,
@@ -1177,7 +1151,7 @@ def _predict_matches_for_league_impl(league, from_date, to_date, use_fixture_cac
         # комбинираната колонка/залог логиката по-долу (която разчита на
         # единичните pick/pct/code) остава непроменена.
         # Задача 5 (нощна сесия 24.08.2026): n вдигнато от 3 на 8 (максималният
-        # брой сурови кандидати - виж _raw_candidates) - build_pick_card() по-долу
+        # брой сурови кандидати - виж _raw_candidates) - build_diff_row() по-долу
         # трябва да вижда ВСИЧКИ доверени кандидати, за да намери реално
         # най-стойностния по EV, не само измежду топ 3 по вероятност. picks_raw[0]
         # остава идентичен на преди (сортирано низходящо, независимо от n).
@@ -1187,7 +1161,7 @@ def _predict_matches_for_league_impl(league, from_date, to_date, use_fixture_cac
             {"label": p_label, "pct": p_pct, "code": p_code, "odds": fair_odds(p_pct)}
             for p_label, p_pct, p_code in picks_raw
         ]
-        card = build_pick_card(picks_list, cached_odds)
+        card = build_diff_row(picks_list, cached_odds)
         # Фаза И.3 (21.08.2026): проверяваме already_logged() ПРЕДИ да смятаме
         # compute_grouped_markets() - преди тук се смяташе за ВСЕКИ мач на
         # ВСЯКО зареждане на /daily, само за да се провери после дали изобщо

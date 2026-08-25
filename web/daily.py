@@ -22,14 +22,17 @@ DAILY_SORT_OPTIONS = ("date", "value", "confident")
 
 def _daily_sort_key(sort):
     """Ключ за сортиране на upcoming_matches при sort='value'/'confident' -
-    мачове без картичка/прогноза (нов отбор, чака следващо изчисление) или
-    без положителен EV (build_pick_card връща card['value']=None) отиват
-    най-долу, не най-горе, затова -inf вместо 0 при липса."""
+    Стъпка 4 (PREUSTROYSTVO.md, 25.08.2026): 'value' вече сортира по
+    АБСОЛЮТНАТА разлика с пазара (build_diff_row()'s 'diff'), не по EV -
+    единна дефиниция с новия ред на всеки мач (Находка 4 от одита - вече
+    само едно място смята "разлика с пазара" за /daily). Мачове без
+    картичка/прогноза (нов отбор) или без пазарна цена изобщо (diff=None)
+    отиват най-долу, не най-горе, затова -inf вместо 0 при липса."""
     if sort == "value":
         def key(m):
             card = m.get("card")
-            ev = card.get("value", {}).get("ev") if card and card.get("value") else None
-            return ev if ev is not None else float("-inf")
+            diff = card.get("diff") if card else None
+            return abs(diff) if diff is not None else float("-inf")
         return key
     def key(m):
         pct = m.get("pct")
@@ -169,6 +172,13 @@ def register_daily_routes(app, ctx):
         if sort not in DAILY_SORT_OPTIONS:
             sort = "date"
 
+        # Стъпка 4 (PREUSTROYSTVO.md, 25.08.2026): "Разлики с пазара" (старата
+        # отделна /value страница) става филтър тук, вместо отделно меню -
+        # СЪЩАТА функция/прагове като /value (get_value_opportunities, PROVEN-
+        # само, edge 3-15%, вероятност 25-85% - виж web/value.py) - едно място
+        # за дефиницията на "разминаваме се с пазара" (Находка 4), не второ.
+        diff_only = request.args.get("diff_only") == "1"
+
         from_date = None
         to_date = None
         if from_str:
@@ -261,6 +271,14 @@ def register_daily_routes(app, ctx):
         live_matches = [m for m in matches if _classify(m) == "live"]
         upcoming_matches = [m for m in matches if _classify(m) == "upcoming"]
         finished_matches = [m for m in matches if _classify(m) == "finished"]
+
+        if diff_only:
+            # get_value_opportunities() изключва вече започнали мачове
+            # (match_date >= сега) - затова филтърът важи само за
+            # upcoming_matches, не за live/finished/skipped по-долу.
+            value_fixture_ids = {o["fixture_id"] for o in get_value_opportunities(st.get_conn, policy.is_proven)}
+            upcoming_matches = [m for m in upcoming_matches if m["fixture_id"] in value_fixture_ids]
+
         for _i, _m in enumerate(upcoming_matches):
             _m["idx"] = _i
 
@@ -298,7 +316,7 @@ def register_daily_routes(app, ctx):
                                         league_name=league_name, days_ahead=DAYS_AHEAD,
                                         api_error=api_error, snapshot_stale_warning=snapshot_stale_warning,
                                         live_groups=live_groups, upcoming_groups=upcoming_groups,
-                                        upcoming_flat=upcoming_flat, upcoming_sort=sort, finished_groups=finished_groups,
+                                        upcoming_flat=upcoming_flat, upcoming_sort=sort, diff_only=diff_only, finished_groups=finished_groups,
                                         skipped_groups=skipped_groups, skipped_count=len(skipped_matches),
                                         live_count=len(live_matches), upcoming_count=len(upcoming_matches), finished_count=len(finished_matches),
                                         total_upcoming=len(upcoming_matches),

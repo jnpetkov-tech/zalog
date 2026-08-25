@@ -121,10 +121,14 @@ function dtShowTab(name) {
   <div style="flex:1;min-width:150px;">
     <label style="font-size:11px;color:var(--sub);">Подредба (Предстоящи)</label>
     <select name="sort" onchange="this.form.submit()" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--border);box-sizing:border-box;background:var(--panel2);color:var(--text);">
-      <option value="date" {% if upcoming_sort=="date" %}selected{% endif %}>По дата (по лиги)</option>
-      <option value="value" {% if upcoming_sort=="value" %}selected{% endif %}>По разлика с пазара (най-висок EV)</option>
-      <option value="confident" {% if upcoming_sort=="confident" %}selected{% endif %}>По сигурност (най-висок %)</option>
+      <option value="date" {% if upcoming_sort=="date" %}selected{% endif %}>По час (по лиги)</option>
+      <option value="value" {% if upcoming_sort=="value" %}selected{% endif %}>По разлика с пазара (най-голямо разминаване)</option>
+      <option value="confident" {% if upcoming_sort=="confident" %}selected{% endif %}>По вероятност (най-висок %)</option>
     </select>
+  </div>
+  <div style="flex:0 0 auto;display:flex;align-items:center;gap:6px;padding-bottom:10px;">
+    <input type="checkbox" name="diff_only" value="1" id="diff_only" {% if diff_only %}checked{% endif %} onchange="this.form.submit()">
+    <label for="diff_only" style="font-size:12px;color:var(--sub);">Само където се разминаваме с пазара</label>
   </div>
   <button type="submit" style="flex:0 0 auto;">Покажи</button>
 </form>
@@ -221,29 +225,18 @@ function dtShowTab(name) {
     <div class="match-pick-row" style="display:block;">
       {% if m.pct is not none %}
       <div style="margin-bottom:8px;">
-        {% if m.card and m.card.value and not m.card.same %}
-        <div style="background:var(--green-bg);border:1px solid rgba(34,197,94,0.35);border-radius:8px;padding:6px 10px;margin-bottom:5px;">
-          <div style="font-size:10.5px;color:var(--green);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:2px;">💎 Най-голяма разлика с пазара</div>
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;font-size:13px;">
-            <span>{{m.card.value.label}} <b>{{"%.1f"|format(m.card.value.our_pct)}}%</b></span>
-            <span style="color:var(--sub);font-size:11.5px;">пазар {{"%.1f"|format(m.card.value.market_pct)}}% ({{m.card.value.odd}}) &middot; EV {{ "+" if m.card.value.ev >= 0 else "" }}{{"%.1f"|format(m.card.value.ev)}}%</span>
-          </div>
-          <div style="font-size:11px;color:var(--green);margin-top:3px;">ако нашата оценка е вярна: за 100 лв. &rarr; {{"%.0f"|format(100 + m.card.value.ev)}} лв.</div>
-        </div>
-        {% endif %}
+        {% if m.card %}
         <div style="background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;">
-          <div style="font-size:10.5px;color:var(--sub);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:2px;">{% if m.card and m.card.value and m.card.same %}💎 Най-голяма разлика с пазара и най-сигурен{% else %}🎯 Най-сигурен{% endif %}</div>
           <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;font-size:13px;">
-            <span>{{m.card.confident.label if m.card else m.pick}} <b>{{"%.1f"|format((m.card.confident.our_pct if m.card else m.pct))}}%</b></span>
-            {% if m.card and m.card.confident.market_pct is not none %}
-            <span style="color:var(--sub);font-size:11.5px;">пазар {{"%.1f"|format(m.card.confident.market_pct)}}% ({{m.card.confident.odd}})</span>
+            <span>{{m.card.label}} <b>{{"%.1f"|format(m.card.our_pct)}}%</b></span>
+            {% if m.card.market_pct is not none %}
+            <span style="color:var(--sub);font-size:11.5px;">пазар {{"%.1f"|format(m.card.market_pct)}}% &middot; разлика {{ "+" if m.card.diff >= 0 else "" }}{{"%.1f"|format(m.card.diff)}}%</span>
             {% endif %}
           </div>
         </div>
-        {% if m.card and not m.card.has_market_odds %}
+        {% if m.card.market_pct is none %}
         <div style="font-size:11px;color:var(--sub);margin-top:4px;">Няма пазарни коефициенти за този мач.</div>
-        {% elif m.card and not m.card.value %}
-        <div style="font-size:11px;color:var(--sub);margin-top:4px;">Няма разлика с пазара.</div>
+        {% endif %}
         {% endif %}
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;">
