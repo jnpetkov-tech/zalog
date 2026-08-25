@@ -1,0 +1,51 @@
+league,market_code,wins,share_pct
+(всички лиги),home_win,123,28.81
+(всички лиги),under25,98,22.95
+(всички лиги),home_under15,92,21.55
+(всички лиги),over25,56,13.11
+(всички лиги),away_win,33,7.73
+(всички лиги),home_over15,23,5.39
+(всички лиги),draw,2,0.47
+bulgaria,home_under15,14,50.0
+bulgaria,home_win,12,42.86
+bulgaria,under25,2,7.14
+bulgaria2,home_win,22,68.75
+bulgaria2,away_win,9,28.12
+bulgaria2,draw,1,3.12
+champions_league,home_win,15,62.5
+champions_league,away_win,8,33.33
+champions_league,draw,1,4.17
+conference_league,home_under15,39,39.0
+conference_league,over25,24,24.0
+conference_league,under25,19,19.0
+conference_league,home_over15,18,18.0
+england,home_under15,10,55.56
+england,over25,5,27.78
+england,home_win,3,16.67
+europa_league,home_win,33,89.19
+europa_league,away_win,4,10.81
+france,home_under15,8,47.06
+france,over25,5,29.41
+france,home_win,2,11.76
+france,under25,1,5.88
+france,home_over15,1,5.88
+france2,under25,25,69.44
+france2,over25,6,16.67
+france2,home_win,5,13.89
+germany,home_over15,4,44.44
+germany,home_under15,3,33.33
+germany,home_win,2,22.22
+italy,home_win,13,65.0
+italy,away_win,7,35.0
+italy2,under25,13,76.47
+italy2,over25,3,17.65
+italy2,home_win,1,5.88
+portugal,under25,16,48.48
+portugal,home_win,8,24.24
+portugal,away_win,5,15.15
+portugal,over25,4,12.12
+spain,home_under15,18,66.67
+spain,home_win,7,25.93
+spain,over25,2,7.41
+spain2,under25,22,75.86
+spain2,over25,7,24.14

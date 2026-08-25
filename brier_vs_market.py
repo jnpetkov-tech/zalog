@@ -52,6 +52,22 @@ MARKET_GROUPS = {
 }
 ALL_CODES = [c for codes in MARKET_GROUPS.values() for c in codes]
 
+# 25.08.2026: разширение за пазарите "отбор над/под 1.5 гола" (Дака залага
+# основно тях - вижте разговора). За разлика от MARKET_GROUPS по-горе, тези
+# пазари НИКОГА не са минавали през _blend_with_market() (виж
+# CLAUDE_HANDOFF.md, раздел 10, Задача 2+3: "другите пазари (голове по
+# отбор...) остават чист модел - никога не са имали пазарен коефициент" в
+# смисъл на смесване; market_odds ЗА тях реално се кешира и логва -
+# api_football.py/system_tracker.py MARKET_ODDS_MAP - само не участва в
+# самата prediction, а само в сравнението "ние срещу пазара" по-долу).
+# Затова basis тук е винаги "raw", без BLEND_CUTOFF реконструкция:
+# blend_p == raw_p буквално (нищо не е смесено с пазара).
+TEAM_GOALS_GROUPS = {
+    "team_home_15": ["home_over15", "home_under15"],
+    "team_away_15": ["away_over15", "away_under15"],
+}
+TEAM_GOALS_CODES = [c for codes in TEAM_GOALS_GROUPS.values() for c in codes]
+
 MIN_N = 30
 N_BOOT = 5000
 SEED = 42
@@ -113,6 +129,49 @@ def build_detail_rows(rows):
                 "raw_p": raw_p, "blend_p": blend_p, "market_p": market_p,
                 "raw_brier": (raw_p - outcome) ** 2,
                 "blend_brier": (blend_p - outcome) ** 2,
+                "market_brier": (market_p - outcome) ** 2,
+            })
+    return detail
+
+
+def build_detail_rows_team_goals(rows):
+    """Аналог на build_detail_rows(), но за TEAM_GOALS_GROUPS (отбор
+    над/под 1.5 гола). Без blend реконструкция - тези пазари винаги са
+    чист модел (виж бележката при TEAM_GOALS_GROUPS по-горе), затова
+    raw_p == blend_p == pick_pct/100 директно, basis винаги "raw"."""
+    by_group = {}
+    for r in rows:
+        code = r.get("market_code")
+        if code not in TEAM_GOALS_CODES or r.get("status") not in ("won", "lost") or not r.get("market_odds"):
+            continue
+        for group, codes in TEAM_GOALS_GROUPS.items():
+            if code in codes:
+                by_group.setdefault((r["fixture_id"], group), {})[code] = r
+                break
+
+    detail = []
+    for (fixture_id, group), by_code in by_group.items():
+        codes = TEAM_GOALS_GROUPS[group]
+        if not all(c in by_code for c in codes):
+            continue
+        try:
+            market_probs = devig([by_code[c]["market_odds"] for c in codes])
+        except (ZeroDivisionError, TypeError):
+            continue
+        for code, market_p in zip(codes, market_probs):
+            row = by_code[code]
+            pick_pct = row.get("pick_pct")
+            if pick_pct is None:
+                continue
+            raw_p = pick_pct / 100.0
+            outcome = 1 if row["status"] == "won" else 0
+            detail.append({
+                "league": row["league"], "fixture_id": fixture_id, "market_group": group,
+                "market_code": code, "match_date": row.get("match_date"), "basis": "raw",
+                "outcome": outcome,
+                "raw_p": raw_p, "blend_p": raw_p, "market_p": market_p,
+                "raw_brier": (raw_p - outcome) ** 2,
+                "blend_brier": (raw_p - outcome) ** 2,
                 "market_brier": (market_p - outcome) ** 2,
             })
     return detail
