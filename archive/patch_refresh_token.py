@@ -6,12 +6,12 @@ with open(PATH, encoding="utf-8") as f:
     content = f.read()
 
 old_secret_block = '''app.permanent_session_lifetime = timedelta(days=30)
-LOGIN_PASSWORD = "anton20"'''
+LOGIN_PASSWORD = os.environ.get("LOGIN_PASSWORD", "")'''
 assert content.count(old_secret_block) == 1, "secret block anchor not found or not unique"
 
 new_secret_block = '''app.permanent_session_lifetime = timedelta(days=30)
-LOGIN_PASSWORD = "anton20"
-REFRESH_TOKEN = "f6d2a9c7e1b84a3f9c05e2d7a1b6f4e8"'''
+LOGIN_PASSWORD = os.environ.get("LOGIN_PASSWORD", "")
+REFRESH_TOKEN = os.environ.get("REFRESH_TOKEN", "")'''
 
 content = content.replace(old_secret_block, new_secret_block)
 

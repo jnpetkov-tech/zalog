@@ -6,7 +6,7 @@ from scipy.stats import poisson
 import football_lib as fl
 from production_pipeline import fit_ht_2h_models, predict_ht_ft
 
-API_KEY = "ae492089a88c8668057a60b30eee49e0"
+API_KEY = os.environ.get("API_FOOTBALL_KEY", "")
 BASE_URL = "https://v3.football.api-sports.io"
 headers = {"x-apisports-key": API_KEY}
 

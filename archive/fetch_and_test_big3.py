@@ -6,7 +6,7 @@ import pandas as pd
 from scipy.optimize import minimize
 from scipy.stats import poisson
 
-API_KEY = "ae492089a88c8668057a60b30eee49e0"
+API_KEY = os.environ.get("API_FOOTBALL_KEY", "")
 BASE_URL = "https://v3.football.api-sports.io"
 headers = {"x-apisports-key": API_KEY}
 

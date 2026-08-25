@@ -3,12 +3,12 @@ with open("match_predictor_app.py", encoding="utf-8") as f:
 
 old = '''app = Flask(__name__)
 
-API_KEY = "ae492089a88c8668057a60b30eee49e0"'''
+API_KEY = os.environ.get("API_FOOTBALL_KEY", "")'''
 
 new = '''app = Flask(__name__)
 
 BASIC_AUTH_USERNAME = "sportbg"
-BASIC_AUTH_PASSWORD = "anton20"
+BASIC_AUTH_PASSWORD = os.environ.get("LOGIN_PASSWORD", "")
 
 
 def check_auth(username, password):
@@ -26,7 +26,7 @@ def require_auth():
         )
 
 
-API_KEY = "ae492089a88c8668057a60b30eee49e0"'''
+API_KEY = os.environ.get("API_FOOTBALL_KEY", "")'''
 
 if old not in content:
     print("ГРЕШКА: не намерих реда.")

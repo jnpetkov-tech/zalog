@@ -8,7 +8,7 @@ from datetime import date, timedelta
 import requests
 import system_tracker as st
 
-API_KEY = "ae492089a88c8668057a60b30eee49e0"
+API_KEY = os.environ.get("API_FOOTBALL_KEY", "")
 BASE_URL = "https://v3.football.api-sports.io"
 API_HEADERS = {"x-apisports-key": API_KEY}
 DAYS_AHEAD = 7
