@@ -27,7 +27,7 @@ logged_at (не предположено): към 24.08.2026 ВСИЧКИ 430 у
 лигата; league eligibility е отделна ос, не се смесва тук.
 
 Употреба: python3 validation/ev_threshold_backtest.py
-Пише validation/ev_threshold_backtest_20260824.csv (детайл по ред) и
+Пише validation/ev_threshold_backtest_20260825.csv (детайл по ред) и
 принтира резюме по кофа с bootstrap 95% CI на ROI.
 """
 import csv
@@ -105,7 +105,7 @@ def main():
         print("Няма уредени редове с коефициент+our_fair_odds за анализ.")
         return
 
-    out_path = "validation/ev_threshold_backtest_20260824.csv"
+    out_path = "validation/ev_threshold_backtest_20260825.csv"
     with open(out_path, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(detail[0].keys()))
         w.writeheader()

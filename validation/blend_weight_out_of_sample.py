@@ -1,6 +1,6 @@
 """
 validation/blend_weight_out_of_sample.py - продължение на т.1 (24.08.2026):
-validation/blend_weight_sweep_20260824.csv показа кое тегло минимизира Brier
+validation/blend_weight_sweep_20260825.csv показа кое тегло минимизира Brier
 на ЦЯЛАТА извадка - но не казва дали това е реален ефект, или нагаждане към
 95-те налични наблюдения на пазар (overfitting). Тук: хронологично
 разполовяване по match_date (същия метод като brier_vs_market.
@@ -14,7 +14,7 @@ split_half_check) - намираме оптималното W на ПЪРВАТ�
 в match_predictor_app.py не се пипа.
 
 Употреба: python3 validation/blend_weight_out_of_sample.py
-Пише validation/blend_weight_out_of_sample_20260824.csv и принтира таблица.
+Пише validation/blend_weight_out_of_sample_20260825.csv и принтира таблица.
 """
 import csv
 import sys
@@ -80,7 +80,7 @@ def main():
             "holds_out_of_sample": holds,
         })
 
-    out_path = "validation/blend_weight_out_of_sample_20260824.csv"
+    out_path = "validation/blend_weight_out_of_sample_20260825.csv"
     with open(out_path, "w", newline="", encoding="utf-8") as f:
         w_csv = csv.DictWriter(f, fieldnames=list(results[0].keys()))
         w_csv.writeheader()

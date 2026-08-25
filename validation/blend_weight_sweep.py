@@ -18,7 +18,7 @@ raw_p/market_p извод от basis raw/blended - виж докстринга �
 Само измерване - не сменя нищо в живия код.
 
 Употреба: python3 validation/blend_weight_sweep.py
-Пише validation/blend_weight_sweep_20260824.csv (ред на тегло x пазар) и
+Пише validation/blend_weight_sweep_20260825.csv (ред на тегло x пазар) и
 принтира таблица тегло x пазар + обща (всички пазари агрегирано).
 """
 import csv
@@ -59,7 +59,7 @@ def main():
             csv_rows.append({"weight": w, "market_code": c, "n": n_by_code[c], "brier": round(mean_b, 5)})
         csv_rows.append({"weight": w, "market_code": "ALL", "n": len(detail), "brier": round(overall_brier[w], 5)})
 
-    out_path = "validation/blend_weight_sweep_20260824.csv"
+    out_path = "validation/blend_weight_sweep_20260825.csv"
     with open(out_path, "w", newline="", encoding="utf-8") as f:
         w_csv = csv.DictWriter(f, fieldnames=["weight", "market_code", "n", "brier"])
         w_csv.writeheader()

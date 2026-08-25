@@ -8,8 +8,8 @@ validation/vs_market_brier.py - Точка 1 от разговора с Дака
 
 Употреба: python3 validation/vs_market_brier.py
 Пише:
-  - validation/vs_market_brier_detail_20260824.csv (ред на кандидат-изход)
-  - validation/vs_market_brier_combos_20260824.csv (ред на лига x пазар)
+  - validation/vs_market_brier_detail_20260825.csv (ред на кандидат-изход)
+  - validation/vs_market_brier_combos_20260825.csv (ред на лига x пазар)
 и принтира пълния доклад в конзолата (никакво общо число без разбивката по-
 долу - виж правилото на Дака).
 """
@@ -28,14 +28,14 @@ def main():
         print("Няма уредени кандидати с пълна пазарна група за анализ.")
         return
 
-    detail_path = "validation/vs_market_brier_detail_20260824.csv"
+    detail_path = "validation/vs_market_brier_detail_20260825.csv"
     with open(detail_path, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(detail[0].keys()))
         w.writeheader()
         w.writerows(detail)
 
     combos = bm.summarize_by_league_market(detail)
-    combos_path = "validation/vs_market_brier_combos_20260824.csv"
+    combos_path = "validation/vs_market_brier_combos_20260825.csv"
     combo_fields = ["league", "market_code", "n", "n_basis_raw", "n_basis_blended",
                      "raw_brier", "blend_brier", "market_brier", "diff_raw", "diff_blend",
                      "diff_control", "status", "ci_raw", "ci_blend", "verdict_raw", "verdict_blend"]
