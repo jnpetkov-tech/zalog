@@ -10,7 +10,10 @@
 # вместо нула). Виж CLAUDE_HANDOFF.md, раздел 9, за пълния контекст.
 MAX_ATTEMPTS=3
 RETRY_DELAY=60
-TOKEN="f6d2a9c7e1b84a3f9c05e2d7a1b6f4e8"
+# Сигурност, 25.08.2026: токенът вече идва от .env (абсолютен път - unit-ът
+# няма WorkingDirectory).
+source /home/inkas/sportbg-predictor/.env
+TOKEN="$REFRESH_TOKEN"
 URL="http://127.0.0.1:8001/refresh_all"
 
 attempt=1

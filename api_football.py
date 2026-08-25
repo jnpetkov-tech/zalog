@@ -12,8 +12,12 @@ from collections import deque
 import threading
 import time
 import requests
+import config
 
-API_KEY = "ae492089a88c8668057a60b30eee49e0"
+# Сигурност, 25.08.2026: ключът вече идва от .env (виж config.py) - НЕ е
+# сменен, само мястото му. По искане на Дака: "стойностите остават същите,
+# само мястото им се променя" - завъртане на ключа е отделно, бъдещо решение.
+API_KEY = config.API_KEY
 BASE_URL = "https://v3.football.api-sports.io"
 API_HEADERS = {"x-apisports-key": API_KEY}
 FINISHED_STATUSES = {"FT", "AET", "PEN", "AWD", "WO"}

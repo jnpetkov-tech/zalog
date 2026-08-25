@@ -1,3 +1,6 @@
+# тайни (API ключ, парола за вход, refresh token) - виж config.py и .env.example
+.env
+
 # виртуална среда
 venv/
 

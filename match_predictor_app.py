@@ -23,13 +23,17 @@ import system_tracker as st
 import prediction_policy as policy
 import pick_selection as ps
 import evaluation
+import config
 
 app = Flask(__name__)
 
-app.secret_key = "a83f19d7c2b04e6f9a1d5c8b3e7f2a90c4d61be0f51273a9"
+# Сигурност, 25.08.2026: и четирите вече идват от .env (config.py) - НЕ са
+# сменени, само мястото им. Дака: "стойностите остават същите, само
+# мястото им се променя".
+app.secret_key = config.FLASK_SECRET_KEY
 app.permanent_session_lifetime = timedelta(days=30)
-LOGIN_PASSWORD = "anton20"
-REFRESH_TOKEN = "f6d2a9c7e1b84a3f9c05e2d7a1b6f4e8"
+LOGIN_PASSWORD = config.LOGIN_PASSWORD
+REFRESH_TOKEN = config.REFRESH_TOKEN
 
 @app.route("/login", methods=["GET", "POST"])
 def login():

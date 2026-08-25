@@ -3,8 +3,12 @@ import pandas as pd
 import sys
 import time
 from datetime import date
+import config
 
-API_KEY = "ae492089a88c8668057a60b30eee49e0"
+# Сигурност, 25.08.2026: този файл дублираше собствено копие на ключа
+# вместо да чете от api_football.py - вече през СЪЩОТО общо място
+# (config.py) като всичко останало, не собствено копие.
+API_KEY = config.API_KEY
 BASE_URL = "https://v3.football.api-sports.io"
 headers = {"x-apisports-key": API_KEY}
 
