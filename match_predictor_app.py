@@ -615,40 +615,6 @@ BASE_STYLE = """
   .inj-note { font-size: 11px; color: var(--sub); margin-top: 4px; }
 """
 
-SIDEBAR_STYLE = """
-  .sidebar { position: fixed; top:0; left:0; bottom:0; width:220px; background:var(--sidebar-bg); border-right:1px solid var(--border); padding:24px 0; overflow-y:auto; z-index:200; }
-  .sidebar-logo { padding:0 20px 20px; font-size:16px; font-weight:600; color:var(--accent); }
-  .sidebar-section { padding:16px 20px 6px; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:#525a68; font-weight:700; }
-  .sidebar a { display:flex; align-items:center; gap:10px; padding:10px 20px; color:var(--sub); text-decoration:none; font-size:13px; }
-  .sidebar a.active { background:rgba(59,130,246,0.15); color:var(--accent); font-weight:500; border-right:3px solid var(--accent); }
-  .sidebar a:hover { background:var(--panel2); }
-  .sidebar-toggle { display:none; position:fixed; top:16px; left:16px; z-index:300; background:var(--panel2); color:var(--text); border:1px solid var(--border); border-radius:8px; width:40px; height:40px; align-items:center; justify-content:center; font-size:18px; cursor:pointer; }
-  body { padding-left:244px; }
-  @media (max-width: 860px) {
-    .sidebar { transform:translateX(-100%); transition:transform 0.2s ease; box-shadow:4px 0 12px rgba(0,0,0,0.4); }
-    .sidebar.open { transform:translateX(0); }
-    .sidebar-toggle { display:flex; }
-    body { padding-left:24px; padding-top:70px; }
-  }
-"""
-
-SIDEBAR_HTML = """
-<div class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</div>
-<div class="sidebar">
-  <a href="/" class="{% if active_page=='home' %}active{% endif %}">🏠 Начало</a>
-  <div class="sidebar-section">Прогнози</div>
-  <a href="/daily" class="{% if active_page=='daily' %}active{% endif %}">📅 Предстоящи</a>
-  <a href="/value" class="{% if active_page=='value' %}active{% endif %}">💰 Стойност</a>
-  <a href="/results" class="{% if active_page=='results' %}active{% endif %}">📋 Резултати и ефективност</a>
-  <div class="sidebar-section">Инструменти</div>
-  <a href="/manual" class="{% if active_page=='manual' %}active{% endif %}">🔍 Търсене</a>
-  <div class="sidebar-section">Настройки</div>
-  <a href="/leagues_admin" class="{% if active_page=='leagues_admin' %}active{% endif %}">⚙️ Лиги</a>
-  <a href="/diagnostics" class="{% if active_page=='diagnostics' %}active{% endif %}">🔧 Диагностика</a>
-</div>
-"""
-
-
 INJURY_LEAGUES = {"england", "germany", "spain", "france"}
 
 
@@ -1337,13 +1303,13 @@ print("Всички модели са в кеша.", flush=True)
 
 from web.results import register_results_view
 register_results_view(app, {
-    "BASE_STYLE": BASE_STYLE, "SIDEBAR_STYLE": SIDEBAR_STYLE, "SIDEBAR_HTML": SIDEBAR_HTML,
+    "BASE_STYLE": BASE_STYLE,
     "ALL_LEAGUES": ALL_LEAGUES, "LEAGUE_FLAGS": LEAGUE_FLAGS, "market_label": market_label,
     "to_cyrillic": to_cyrillic, "st": st, "bt": bt,
 })
 from web.value import register_value_view
 register_value_view(app, {
-    "BASE_STYLE": BASE_STYLE, "SIDEBAR_STYLE": SIDEBAR_STYLE, "SIDEBAR_HTML": SIDEBAR_HTML,
+    "BASE_STYLE": BASE_STYLE,
     "ALL_LEAGUES": ALL_LEAGUES, "LEAGUE_FLAGS": LEAGUE_FLAGS, "market_label": market_label,
     "to_cyrillic": to_cyrillic, "st": st, "policy": policy,
 })

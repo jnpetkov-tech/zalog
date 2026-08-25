@@ -89,9 +89,6 @@ def get_value_opportunities(get_conn, is_eligible, hours_ahead=None):
 
 
 def register_value_view(app, ctx):
-    BASE_STYLE = ctx["BASE_STYLE"]
-    SIDEBAR_STYLE = ctx["SIDEBAR_STYLE"]
-    SIDEBAR_HTML = ctx["SIDEBAR_HTML"]
     ALL_LEAGUES = ctx["ALL_LEAGUES"]
     LEAGUE_FLAGS = ctx["LEAGUE_FLAGS"]
     market_label = ctx["market_label"]
