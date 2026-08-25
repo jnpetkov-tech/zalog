@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
   <button type="submit">Изчисли всички прогнози</button>
 </form>
 {% if groups %}
-<div class="top-pick"><div class="top-pick-label">Топ прогноза</div>
+<div class="top-pick"><div class="top-pick-label">Най-висока вероятност</div>
 <div class="top-pick-row"><span class="top-pick-name">{{extra_info[2]}}</span><span class="top-pick-pct">{{"%.1f"|format(extra_info[3])}}%</span></div></div>
 <div class="lambdas">Очаквани голове: {{cyrillic[home]}} ~{{"%.2f"|format(extra_info[0])}} | {{cyrillic[away]}} ~{{"%.2f"|format(extra_info[1])}}</div>
 <div class="form-note">{{extra_info[4]}}</div>
