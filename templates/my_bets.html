@@ -87,16 +87,11 @@
 </style></head><body>
 <div class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</div>
 <div class="sidebar">
-  <a href="/" class="{% if active_page=='home' %}active{% endif %}">🏠 Начало</a>
-  <div class="sidebar-section">Прогнози</div>
-  <a href="/daily" class="{% if active_page=='daily' %}active{% endif %}">📅 Предстоящи</a>
-  <a href="/value" class="{% if active_page=='value' %}active{% endif %}">💰 Разлики с пазара</a>
-  <a href="/results" class="{% if active_page=='results' %}active{% endif %}">📋 Резултати и ефективност</a>
-  <div class="sidebar-section">Инструменти</div>
-  <a href="/manual" class="{% if active_page=='manual' %}active{% endif %}">🔍 Търсене</a>
-  <div class="sidebar-section">Настройки</div>
-  <a href="/leagues_admin" class="{% if active_page=='leagues_admin' %}active{% endif %}">⚙️ Лиги</a>
-  <a href="/diagnostics" class="{% if active_page=='diagnostics' %}active{% endif %}">🔧 Диагностика</a>
+  <a href="/daily" class="{% if active_page=='daily' %}active{% endif %}">📅 Днес</a>
+  <a href="/results" class="{% if active_page=='results' %}active{% endif %}">📋 Как се справяме</a>
+  <a href="/my_bets" class="{% if active_page=='my_bets' %}active{% endif %}">🎯 Моите залози</a>
+  <div class="sidebar-section">Система</div>
+  <a href="/system" class="{% if active_page=='system_hub' %}active{% endif %}">⚙️ Система</a>
 </div>
 
 <div id="loadingOverlay" style="display:none;position:fixed;inset:0;background:rgba(15,17,21,0.92);z-index:9999;align-items:center;justify-content:center;font-size:16px;color:var(--accent);font-weight:500;">⏳ Зареждане...</div>

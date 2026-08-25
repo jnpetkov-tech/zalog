@@ -68,6 +68,15 @@ def register_admin_routes(app, ctx):
         result.sort(key=lambda g: g["name"])
         return result
 
+    @admin_bp.route("/system")
+    def system_hub():
+        # Стъпка 3 (PREUSTROYSTVO.md, 25.08.2026): скрита страница "Система",
+        # извън главното меню - Лиги/Диагностика/Търсене вече не са отделни
+        # sidebar връзки, а достъпни оттук. Не дублира логика от /diagnostics
+        # (напр. живо API /status повикване) - само линкове, за да не добавя
+        # нов консуматор на дневната квота (виж CLAUDE_HANDOFF.md, раздел 8).
+        return render_template("system_hub.html", active_page='system_hub', refresh_state=get_refresh_state())
+
     @admin_bp.route("/leagues_admin", methods=["GET", "POST"])
     def leagues_admin():
         if request.method == "POST":
