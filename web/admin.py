@@ -127,30 +127,26 @@ def register_admin_routes(app, ctx):
 
     @admin_bp.route("/system_check")
     def system_check():
+        # Стъпка 2 (PREUSTROYSTVO.md, 25.08.2026): "Успеваемост"/"Най-добри
+        # пазари"/"Най-слаби пазари" изтрити оттук - структурен артефакт
+        # (различните пазари имат различна базова вероятност за успех, дори
+        # при идентично умение на модела, смесването им в едно число
+        # подвежда - виж validation/audit_misleading_selection_20260825.md,
+        # Находка 1, и evaluation.py докстринга, който описва точно същия
+        # проблем). Честната версия е /results (eval_summary, evaluation.summary()).
         predictions = st.list_predictions()
 
         won = sum(1 for p in predictions if p["status"] == "won")
         lost = sum(1 for p in predictions if p["status"] == "lost")
         pending = sum(1 for p in predictions if p["status"] == "pending")
-        total_settled = won + lost
-        win_rate = (won / total_settled * 100) if total_settled else None
-        overall = {"won": won, "lost": lost, "pending": pending, "win_rate": win_rate}
+        overall = {"won": won, "lost": lost, "pending": pending}
 
-        by_market = st.get_stats_by_market()
-        by_market.sort(key=lambda m: (m["win_rate"] is None, -(m["win_rate"] or 0)))
-        by_league = st.get_stats_by_league()
-        by_league.sort(key=lambda l: (l["win_rate"] is None, -(l["win_rate"] or 0)))
-        for m in by_market:
-            m["label"] = market_label(m["market_code"])
-        for l in by_league:
-            l["display_name"] = ALL_LEAGUES.get(l["league"], {}).get("name", l["league"])
-
-        market_min_sample = [m for m in by_market if (m["won"] + m["lost"]) >= 10]
-        best_markets = market_min_sample[:5]
-        worst_markets = list(reversed(market_min_sample[-5:])) if len(market_min_sample) > 5 else []
-
-        league_options = sorted({(l["league"], l["display_name"]) for l in by_league}, key=lambda x: x[1])
-        market_options = sorted({(m["market_code"], m["label"]) for m in by_market}, key=lambda x: x[1])
+        league_options = sorted(
+            {(p["league"], ALL_LEAGUES.get(p["league"], {}).get("name", p["league"])) for p in predictions},
+            key=lambda x: x[1])
+        market_options = sorted(
+            {(p["market_code"], market_label(p["market_code"])) for p in predictions},
+            key=lambda x: x[1])
 
         filter_league = request.args.get("f_league", "")
         filter_market = request.args.get("f_market", "")
@@ -219,15 +215,15 @@ def register_admin_routes(app, ctx):
 
         pending_groups = _group_matches_by_league(pending_matches)
         completed_groups = _group_matches_by_league(completed_matches)
-        return render_template("system_check.html", overall=overall, by_market=by_market,
-                                        by_league=by_league, pending_matches=pending_matches,
+        return render_template("system_check.html", overall=overall,
+                                        pending_matches=pending_matches,
                                         completed_matches=completed_matches, cyrillic=to_cyrillic,
                                         pending_groups=pending_groups, completed_groups=completed_groups,
                                         filter_league=filter_league, filter_market=filter_market, filter_status=filter_status,
                                         league_options=league_options, market_options=market_options,
                                         page=page, total_pages=total_pages, total_completed=total_completed,
                                         ppage=ppage, total_pending_pages=total_pending_pages, total_pending=total_pending,
-                                        best_markets=best_markets, worst_markets=worst_markets, search_q=search_q, active_page='system_check')
+                                        search_q=search_q, active_page='system_check')
 
     @admin_bp.route("/system_check_results", methods=["POST"])
     def system_check_results_route():

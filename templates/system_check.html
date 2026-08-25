@@ -96,7 +96,6 @@
 <div class="tabs">
   <button type="button" class="tab-btn" data-tab="overview" onclick="scShowTab('overview')">🏠 Преглед</button>
   <button type="button" class="tab-btn active" data-tab="matches" onclick="scShowTab('matches')">⚽ Мачове</button>
-  <button type="button" class="tab-btn" data-tab="markets" onclick="scShowTab('markets')">📊 Пазари</button>
 </div>
 
 <script>
@@ -113,12 +112,12 @@ function scShowTab(name) {
     <div class="stat-box"><div class="stat-value">{{overall.won}}</div><div class="stat-label">Печеливши</div></div>
     <div class="stat-box"><div class="stat-value">{{overall.lost}}</div><div class="stat-label">Губещи</div></div>
     <div class="stat-box"><div class="stat-value">{{overall.pending}}</div><div class="stat-label">Чакащи</div></div>
-    <div class="stat-box"><div class="stat-value">{{ "%.1f%%"|format(overall.win_rate) if overall.win_rate is not none else "—" }}</div><div class="stat-label">Успеваемост</div></div>
   </div>
   <p style="font-size:14px;color:#5F5E5A;line-height:1.6;">
-    От {{overall.won + overall.lost}} приключени прогнози печелим
-    {% if overall.win_rate is not none %}<b>{{ "%.1f%%"|format(overall.win_rate) }}</b>{% else %}—{% endif %}.
-    Още <b>{{overall.pending}}</b> чакат резултат.
+    Суров брой печеливши/губещи прогнози по всички логнати пазари - НЕ мярка за качество (Стъпка 2,
+    преустройство 25.08.2026: "Успеваемост"/"Най-добри пазари"/"Най-слаби пазари" отпаднаха, защото
+    смесват пазари с различна базова вероятност - вижте validation/audit_misleading_selection_20260825.md,
+    Находка 1). Честните метрики са на /results ("Как се справяме").
   </p>
   <form method="post" action="/system_check_results" style="margin-top:16px;">
     <button type="submit" class="green">Провери резултатите сега</button>
@@ -217,48 +216,6 @@ function scShowTab(name) {
   {% if page < total_pages %}<a href="?f_league={{filter_league}}&f_market={{filter_market}}&f_status={{filter_status}}&q={{search_q}}&page={{page+1}}&ppage={{ppage}}&tab=matches" style="color:var(--accent);">Следваща →</a>{% endif %}
 </div>
 
-</div>
-
-<div id="tab-markets" class="tab-content">
-  <div class="group-title">Най-добри пазари</div>
-  <table>
-  <tr><th>Пазар</th><th>Печ.</th><th>Губ.</th><th>%</th></tr>
-  {% for m in best_markets %}
-  <tr><td>{{m.label}}</td><td>{{m.won}}</td><td>{{m.lost}}</td>
-  <td>{{ "%.1f%%"|format(m.win_rate) if m.win_rate is not none else "—" }}</td></tr>
-  {% endfor %}
-  {% if not best_markets %}<tr><td colspan="4" style="color:var(--sub);">Все още няма достатъчно данни.</td></tr>{% endif %}
-  </table>
-
-  <div class="group-title" style="margin-top:20px;">Най-слаби пазари</div>
-  <table>
-  <tr><th>Пазар</th><th>Печ.</th><th>Губ.</th><th>%</th></tr>
-  {% for m in worst_markets %}
-  <tr><td>{{m.label}}</td><td>{{m.won}}</td><td>{{m.lost}}</td>
-  <td>{{ "%.1f%%"|format(m.win_rate) if m.win_rate is not none else "—" }}</td></tr>
-  {% endfor %}
-  {% if not worst_markets %}<tr><td colspan="4" style="color:var(--sub);">—</td></tr>{% endif %}
-  </table>
-
-  <details style="margin-top:12px;">
-    <summary style="font-size:12px;color:var(--accent);cursor:pointer;">Виж всички пазари →</summary>
-    <table style="margin-top:8px;">
-    <tr><th>Пазар</th><th>Печ.</th><th>Губ.</th><th>Чак.</th><th>%</th></tr>
-    {% for m in by_market %}
-    <tr><td>{{m.label}}</td><td>{{m.won}}</td><td>{{m.lost}}</td><td>{{m.pending}}</td>
-    <td>{{ "%.1f%%"|format(m.win_rate) if m.win_rate is not none else "—" }}</td></tr>
-    {% endfor %}
-    </table>
-  </details>
-
-  <div class="group-title" style="margin-top:24px;">По лига</div>
-  <table>
-  <tr><th>Лига</th><th>Печ.</th><th>Губ.</th><th>Чак.</th><th>%</th></tr>
-  {% for l in by_league %}
-  <tr><td>{{l.display_name}}</td><td>{{l.won}}</td><td>{{l.lost}}</td><td>{{l.pending}}</td>
-  <td>{{ "%.1f%%"|format(l.win_rate) if l.win_rate is not none else "—" }}</td></tr>
-  {% endfor %}
-  </table>
 </div>
 
 </div></body></html>

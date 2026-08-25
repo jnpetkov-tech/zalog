@@ -11,7 +11,6 @@ import evaluation
 import brier_vs_market as bm
 
 ROI_MARKETS = {"home_win", "draw", "away_win", "over25", "under25"}
-CALIBRATION_BINS = [(50, 60), (60, 70), (70, 80), (80, 90), (90, 101)]
 PAGE_SIZE = 30
 
 
@@ -123,39 +122,14 @@ def group_by_match(rows, to_cyrillic):
 
 
 def overall_stats(rows):
+    # Находка 8 (одит 25.08.2026): само settled/pending се показват някъде
+    # (templates/results.html) - win_rate/roi/profit/avg_odds тук бяха
+    # смятани върху суровия predictions_log, точно артефактът от Находка 1
+    # (evaluation.summary() е честната версия, виж eval_summary по-долу).
+    # Никога не бяха рендирани, но стояха готови за "преоткриване" - изтрити.
     settled = [r for r in rows if r["status"] in ("won", "lost")]
     pending_n = sum(1 for r in rows if r["status"] in ("pending", "no_data"))
-    won = sum(1 for r in settled if r["status"] == "won")
-    win_rate = (won / len(settled) * 100.0) if settled else None
-    roi_items = [r for r in settled if r["market_odds"]]
-    roi = None
-    profit = 0.0
-    avg_odds = None
-    if roi_items:
-        profit = sum(_profit(r["status"], r["market_odds"]) for r in roi_items)
-        roi = profit / len(roi_items) * 100.0
-        avg_odds = sum(r["market_odds"] for r in roi_items) / len(roi_items)
-    return {
-        "settled": len(settled), "pending": pending_n, "win_rate": win_rate,
-        "roi": roi, "roi_n": len(roi_items), "profit": profit, "avg_odds": avg_odds,
-    }
-
-
-def calibration_table(rows):
-    out = []
-    for lo, hi in CALIBRATION_BINS:
-        items = [r for r in rows if r["status"] in ("won", "lost") and lo <= (r["pick_pct"] or 0) < hi]
-        n = len(items)
-        if n == 0:
-            continue
-        predicted = sum(r["pick_pct"] for r in items) / n
-        won = sum(1 for r in items if r["status"] == "won")
-        actual = won / n * 100.0
-        out.append({
-            "label": f"{lo}–{min(hi, 100)}%", "n": n,
-            "predicted": predicted, "actual": actual, "diff": actual - predicted,
-        })
-    return out
+    return {"settled": len(settled), "pending": pending_n}
 
 
 def roi_by_market(rows, market_label):
