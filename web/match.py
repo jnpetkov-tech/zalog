@@ -28,6 +28,7 @@ def register_match_routes(app, ctx):
     fetch_fixture_lineups_full = ctx["fetch_fixture_lineups_full"]
     to_cyrillic = ctx["to_cyrillic"]
     ALL_LEAGUES = ctx["ALL_LEAGUES"]
+    market_label = ctx["market_label"]
     compute_grouped_markets = ctx["compute_grouped_markets"]
     fair_odds = ctx["fair_odds"]
     pp = ctx["pp"]
@@ -122,13 +123,31 @@ def register_match_routes(app, ctx):
         # Фаза N.4, етап 1 (20.08.2026): виж st.get_match_note() - ръчна бележка
         # + флаг "пропусни", редактирани направо тук, на страницата на мача.
         match_note = st.get_match_note(int(fixture_id)) if fixture_id else None
+
+        # Довършване на преустройството (25.08.2026): /match_result се влива
+        # тук - "един мач, една страница" (Дака). Ако мачът вече е приключил
+        # (има логнати прогнози с краен резултат), показваме го + пълния
+        # списък от логнати прогнози със статус, точно каквото показваше
+        # match_result.html - същата заявка (st.get_predictions_for_fixture),
+        # само мястото е друго.
+        logged_predictions = st.get_predictions_for_fixture(int(fixture_id)) if fixture_id else []
+        actual_hg = next((p["actual_home_goals"] for p in logged_predictions if p["actual_home_goals"] is not None), None)
+        actual_ag = next((p["actual_away_goals"] for p in logged_predictions if p["actual_away_goals"] is not None), None)
+        for p in logged_predictions:
+            p["label"] = market_label(p["market_code"])
+        won_count = sum(1 for p in logged_predictions if p["status"] == "won")
+        lost_count = sum(1 for p in logged_predictions if p["status"] == "lost")
+
         return render_template("match_detail.html", groups=groups, extra_info=extra_info,
                                         home=home, away=away, home_cy=home_cy, away_cy=away_cy,
                                         date=match_date, fixture_id=fixture_id, selected_league=league,
                                         real_odds=real_odds, lineups_confirmed=lineups_confirmed, inj_note=inj_note,
                                         match_note=match_note,
                                         api_predictions=api_predictions, player_props=player_props_data,
-                                        form_standings=form_standings, active_page='daily')
+                                        form_standings=form_standings, active_page='daily',
+                                        actual_hg=actual_hg, actual_ag=actual_ag,
+                                        logged_predictions=logged_predictions,
+                                        won_count=won_count, lost_count=lost_count)
 
     @match_bp.route("/save_match_note", methods=["POST"])
     def save_match_note_route():

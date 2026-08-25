@@ -1341,6 +1341,7 @@ register_match_routes(app, {
     "fetch_fixture_lineups_full": fetch_fixture_lineups_full,
     "to_cyrillic": to_cyrillic, "ALL_LEAGUES": ALL_LEAGUES, "compute_grouped_markets": compute_grouped_markets,
     "fair_odds": fair_odds, "pp": pp, "bt": bt, "API_KEY": API_KEY, "BASE_URL": BASE_URL, "requests": requests,
+    "market_label": market_label,
 })
 
 if __name__ == "__main__":

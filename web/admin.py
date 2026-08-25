@@ -241,6 +241,12 @@ def register_admin_routes(app, ctx):
 
     @admin_bp.route("/match_result")
     def match_result():
+        # Довършване на преустройството (25.08.2026): "един мач, една
+        # страница" (Дака) - /match_detail вече умее да покаже краен
+        # резултат + всички логнати прогнози (виж web/match.py), затова
+        # този маршрут вече само пренасочва натам със СЪЩИТЕ параметри,
+        # извлечени по същия начин както преди. Старите връзки (напр.
+        # system_check.html картите) продължават да работят непроменени.
         fixture_id = request.args.get("fixture_id")
         if not fixture_id:
             return redirect(url_for("admin.system_check"))
@@ -248,20 +254,8 @@ def register_admin_routes(app, ctx):
         if not predictions:
             return redirect(url_for("admin.system_check"))
         first = predictions[0]
-        league = first["league"]
-        home_cy = to_cyrillic(first["home_team"], league)
-        away_cy = to_cyrillic(first["away_team"], league)
-        actual_hg = next((p["actual_home_goals"] for p in predictions if p["actual_home_goals"] is not None), None)
-        actual_ag = next((p["actual_away_goals"] for p in predictions if p["actual_away_goals"] is not None), None)
-        for p in predictions:
-            p["label"] = market_label(p["market_code"])
-        won_count = sum(1 for p in predictions if p["status"] == "won")
-        lost_count = sum(1 for p in predictions if p["status"] == "lost")
-        league_name = ALL_LEAGUES.get(league, {}).get("name", league)
-        return render_template("match_result.html", predictions=predictions, home_cy=home_cy, away_cy=away_cy,
-                                        league_name=league_name, match_date=first["match_date"],
-                                        actual_hg=actual_hg, actual_ag=actual_ag, won_count=won_count, lost_count=lost_count,
-                                        active_page='system_check')
+        return redirect(url_for("match.match_detail", league=first["league"], fixture_id=fixture_id,
+                                  home=first["home_team"], away=first["away_team"], date=first["match_date"]))
 
     @admin_bp.route("/diagnostics")
     def diagnostics():
