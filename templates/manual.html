@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
 {% for title, items, has_form in groups %}
 <div class="group"><div class="group-title">{{title}}</div><table>
 {% if has_form %}<tr><th>Пазар</th><th>Пълна история</th><th class="form-col">Посл. 3 мес.</th></tr>{% else %}<tr><th>Пазар</th><th>%</th></tr>{% endif %}
-{% for row in items %}<tr><td>{{row[0]}}</td><td>{{"%.1f"|format(row[1])}}%</td>{% if has_form %}<td class="form-col">{{ "%.1f%%"|format(row[2]) if row[2] is not none else "—" }}</td>{% endif %}</tr>{% endfor %}
+{% for row in items %}<tr><td>{{row[0]}}{% if row[3] in extra_info[7] %} <span style="color:var(--yellow);font-size:11px;">⚠️ пазарна оценка</span>{% endif %}</td><td>{{"%.1f"|format(row[1])}}%</td>{% if has_form %}<td class="form-col">{{ "%.1f%%"|format(row[2]) if row[2] is not none else "—" }}</td>{% endif %}</tr>{% endfor %}
 </table></div>{% endfor %}
 {% endif %}
 </div></body></html>

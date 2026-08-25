@@ -238,14 +238,27 @@ def fair_odds(pct):
     return round(100 / pct, 2)
 
 
-BLEND_WEIGHT = 0.5  # Нощна сесия 24.08.2026: старият коментар тук ("бектест на 6 лиги")
-# нямаше файл зад себе си (виж CLAUDE_HANDOFF.md) - подменен с реален, committed бектест:
-# validation/blend_vs_raw_backtest_20260824.py/csv (475 уредени наблюдения) +
-# validation/blend_vs_raw_significance_20260824.py/txt (paired bootstrap значимост).
-# Извод: за 1X2+O/У 2.5 (пазарите, за които изобщо има market_odds) смесеното число
-# е статистически значимо по-точно от чистия модел (95% CI изключва нулата, и в Brier,
-# и в log-loss) - не само точкова оценка. Затова смесеното е авторитетното число
-# НАВСЯКЪДЕ по сайта за тези пазари (виж _blend_with_market по-долу), не само на /daily.
+# Тегло по пазар, не едно общо - 25.08.2026, след validation/repeat_measurements_20260825.md
+# (blend_weight_out_of_sample, извън-извадкова проверка): home_win издържа при W=1.0 и на двете
+# независими измервания (24.08 и 25.08 - виж CLAUDE_HANDOFF.md, раздели 11 и 22); away_win/draw
+# издържаха само на 25.08, с по-голяма извадка (n≈91/92 на половина) - W=0.7 за двете; over25/
+# under25 НЕ издържат извън извадката в нито едно измерване - остават на 0.5, без промяна.
+# Заменя старото симетрично BLEND_WEIGHT=0.5 (доказано на 24.08.2026 с
+# validation/blend_vs_raw_backtest_20260824.py/csv - самото смесване > чист модел за тези 5 пазара
+# си остава доказано, само конкретното тегло вече е специфично за пазара).
+BLEND_WEIGHTS = {
+    "home_win": 1.0,
+    "draw": 0.7,
+    "away_win": 0.7,
+    "over25": 0.5,
+    "under25": 0.5,
+}
+# Пазари, при които тегло=1.0 означава, че показваното число Е пазарната оценка, буквално -
+# моделът не допринася нищо. Честно разкрито на потребителя (Дака, 25.08.2026: "мълчаливото
+# преповтаряне на букмейкъра е точно нечестността, която чистим") - виж MARKET_COPY_NOTE по-долу
+# и употребата му в build_diff_row()/compute_grouped_markets()/шаблоните.
+MARKET_COPY_CODES = {code for code, w in BLEND_WEIGHTS.items() if w >= 1.0}
+MARKET_COPY_NOTE = "Показваме пазарната оценка — нашият модел не добавя нищо тук (виж /results)."
 
 # MIN_VALUE_BET_PROB/MAX_VALUE_BET_ODDS: неизползвани от 25.08.2026 (Находка 5 - без цитирано
 # доказателство, за разлика от MAX_TRUSTWORTHY_EV по-долу). compute_grouped_markets()'s "разлика"
@@ -283,24 +296,30 @@ def devig_ou(over_odds, under_odds):
 
 
 def _blend_with_market(home_win, draw, away_win, ou_p, market_odds):
-    """Смесва чист модел с обезвигован пазар (BLEND_WEIGHT), само за
+    """Смесва чист модел с обезвигован пазар, тегло ПО ПАЗАР (BLEND_WEIGHTS,
+    25.08.2026 - виж validation/repeat_measurements_20260825.md), само за
     home_win/draw/away_win/over25/under25 - точно пазарите, за които
-    /daily вече прилага същото смесване (_raw_candidates по-долу) и за
-    които бектестът (validation/blend_vs_raw_*_20260824.*) показва
-    статистически значимо подобрение. Без пазарен коефициент за дадена
-    група - връща стойностите непроменени (чист модел)."""
+    /daily вече прилага същото смесване (_raw_candidates по-долу). Без
+    пазарен коефициент за дадена група - връща стойностите непроменени
+    (чист модел). home_win тегло=1.0 -> резултатът Е пазарната цена
+    буквално (виж MARKET_COPY_CODES/MARKET_COPY_NOTE по-горе, честно
+    разкрито на потребителя, не тихо преповторено като "наша" прогноза)."""
     if market_odds and market_odds.get("home_win") and market_odds.get("draw") and market_odds.get("away_win"):
         try:
             mh, md, ma = devig_1x2(market_odds["home_win"], market_odds["draw"], market_odds["away_win"])
-            home_win = BLEND_WEIGHT * mh + (1 - BLEND_WEIGHT) * home_win
-            draw = BLEND_WEIGHT * md + (1 - BLEND_WEIGHT) * draw
-            away_win = BLEND_WEIGHT * ma + (1 - BLEND_WEIGHT) * away_win
+            w = BLEND_WEIGHTS["home_win"]
+            home_win = w * mh + (1 - w) * home_win
+            w = BLEND_WEIGHTS["draw"]
+            draw = w * md + (1 - w) * draw
+            w = BLEND_WEIGHTS["away_win"]
+            away_win = w * ma + (1 - w) * away_win
         except (ZeroDivisionError, TypeError):
             pass
     if market_odds and market_odds.get("over25") and market_odds.get("under25"):
         try:
             mo, mund = devig_ou(market_odds["over25"], market_odds["under25"])
-            ou_p = BLEND_WEIGHT * mo + (1 - BLEND_WEIGHT) * ou_p
+            w = BLEND_WEIGHTS["over25"]
+            ou_p = w * mo + (1 - w) * ou_p
         except (ZeroDivisionError, TypeError):
             pass
     return home_win, draw, away_win, ou_p
@@ -405,18 +424,25 @@ def build_diff_row(picks, market_odds):
     залог-бутонът на /daily трябва да залага на ТОЗИ пазар, не на
     отделен "най-вероятен" избор (виж CLAUDE_HANDOFF.md за инцидента,
     открит преди тази поправка - картата показваше едно, бутонът
-    залагаше друго)."""
+    залагаше друго).
+
+    Връща и "market_copy" (bool) - вярно само ако този пазар реално е
+    смесен с пазарна цена И теглото му е 1.0 (виж MARKET_COPY_CODES) -
+    в такъв случай "нашето число" Е пазарната цена, честно разкрито,
+    не тихо представено като собствена прогноза."""
     if not picks:
         return None
 
     def make_row(p):
         info = _market_info_for_pick(p["code"], market_odds)
         if not info:
-            return {"label": p["label"], "our_pct": p["pct"], "market_pct": None, "diff": None, "code": p["code"]}
+            return {"label": p["label"], "our_pct": p["pct"], "market_pct": None, "diff": None,
+                    "code": p["code"], "market_copy": False}
         market_p, _odd = info
         market_pct = market_p * 100
         return {"label": p["label"], "our_pct": p["pct"], "market_pct": market_pct,
-                "diff": p["pct"] - market_pct, "code": p["code"]}
+                "diff": p["pct"] - market_pct, "code": p["code"],
+                "market_copy": p["code"] in MARKET_COPY_CODES}
 
     priced = [make_row(p) for p in picks]
     with_market = [r for r in priced if r["market_pct"] is not None]
@@ -461,6 +487,16 @@ def compute_grouped_markets(league, home, away, home_inj=0, away_inj=0, real_odd
     # (и двете четат същите home_win/draw/away_win/ou_p променливи). Без
     # real_odds за дадена група - непроменено, чист модел.
     home_win, draw, away_win, ou_p = _blend_with_market(home_win, draw, away_win, ou_p, real_odds)
+    # 25.08.2026: кои кодове реално са "пазарна оценка" ЗА ТОЗИ мач - само ако
+    # 1X2 триото беше налично (условието, при което _blend_with_market()
+    # реално смеси home_win, не само ако home_win е в MARKET_COPY_CODES по
+    # принцип). Подадено на шаблоните (extra_info[7]) за честното "показваме
+    # пазарната оценка" предупреждение на главната таблица.
+    market_copy_codes_used = (
+        MARKET_COPY_CODES
+        if (real_odds and real_odds.get("home_win") and real_odds.get("draw") and real_odds.get("away_win"))
+        else set()
+    )
     extra = fl.extra_markets_probs(lam, mu, rho=rho_ft)
     ht_ft_probs = predict_ht_ft(lam_ht, mu_ht, lam_2h, mu_2h)
 
@@ -582,10 +618,11 @@ def compute_grouped_markets(league, home, away, home_inj=0, away_inj=0, real_odd
                                          "market_pct": market_p * 100, "ev": ev * 100})
                 continue
             value_bets.append({"label": label, "our_pct": our_p * 100, "market_pct": market_p * 100,
-                                 "odd": odd, "code": code, "diff": (our_p - market_p) * 100})
+                                 "odd": odd, "code": code, "diff": (our_p - market_p) * 100,
+                                 "market_copy": code in MARKET_COPY_CODES})
         value_bets.sort(key=lambda x: -abs(x["diff"]))
 
-    return groups, (lam, mu, top_label, top_pct, form_note, value_bets, distrusted_bets)
+    return groups, (lam, mu, top_label, top_pct, form_note, value_bets, distrusted_bets, market_copy_codes_used)
 
 
 BASE_STYLE = """

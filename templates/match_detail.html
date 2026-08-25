@@ -132,15 +132,16 @@ document.addEventListener('DOMContentLoaded', function() {
 <table>
 <tr><th>Пазар</th><th>Наша</th><th>Пазарна (коеф.)</th><th>Разлика</th></tr>
 {% for vb in extra_info[5][:5] %}
-<tr style="background:{{ '#0F6E5615' if vb.diff >= 0 else '#B23B3B15' }};">
-  <td>{{vb.label}}</td>
+<tr style="background:{{ '#D9A64B15' if vb.market_copy else ('#0F6E5615' if vb.diff >= 0 else '#B23B3B15') }};">
+  <td>{{vb.label}}{% if vb.market_copy %} <span style="color:#8A6D1F;font-size:11px;">⚠️ пазарна оценка</span>{% endif %}</td>
   <td>{{"%.1f"|format(vb.our_pct)}}%</td>
   <td>{{"%.1f"|format(vb.market_pct)}}% ({{vb.odd}})</td>
-  <td style="color:{{ '#0F6E56' if vb.diff >= 0 else '#B23B3B' }};font-weight:600;">{{ "+" if vb.diff >= 0 else "" }}{{"%.1f"|format(vb.diff)}}%</td>
+  <td style="color:{{ '#8A6D1F' if vb.market_copy else ('#0F6E56' if vb.diff >= 0 else '#B23B3B') }};font-weight:600;">{% if vb.market_copy %}=пазар{% else %}{{ "+" if vb.diff >= 0 else "" }}{{"%.1f"|format(vb.diff)}}%{% endif %}</td>
 </tr>
 {% endfor %}
 </table>
-<div style="font-size:11px;color:#888780;padding:8px 0;">Разлика = нашата оценка минус обезвигованата пазарна - сравнение, не препоръка. Недоказано спрямо пазара, виж /results.</div>
+<div style="font-size:11px;color:#888780;padding:8px 0;">Разлика = нашата оценка минус обезвигованата пазарна - сравнение, не препоръка. Недоказано спрямо пазара, виж /results.
+{% if extra_info[5][:5]|selectattr('market_copy')|list %}<br>⚠️ Пазарите, маркирани "пазарна оценка", показват директно пазарната цена — измерено по-слаби от нея (виж /results), моделът не добавя нищо там.{% endif %}</div>
 </div>
 {% else %}
 <div class="top-pick"><div class="top-pick-label">Най-висока вероятност</div>
@@ -250,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <tr><th>Пазар</th><th>%</th><th>Коеф.</th><th></th></tr>
 {% for row in items %}
 <tr>
-  <td>{{row[0]}}</td>
+  <td>{{row[0]}}{% if row[3] in extra_info[7] %} <span style="color:var(--yellow);font-size:11px;" title="Показваме пазарната оценка - моделът не добавя нищо тук">⚠️ пазарна оценка</span>{% endif %}</td>
   <td>{{"%.1f"|format(row[1])}}%</td>
   <td>{{ row[4] if row[4] else "—" }}</td>
   <td>

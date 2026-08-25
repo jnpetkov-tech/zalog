@@ -229,7 +229,9 @@ function dtShowTab(name) {
         <div style="background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;">
           <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px;font-size:13px;">
             <span>{{m.card.label}} <b>{{"%.1f"|format(m.card.our_pct)}}%</b></span>
-            {% if m.card.market_pct is not none %}
+            {% if m.card.market_copy %}
+            <span style="color:var(--yellow);font-size:11.5px;">⚠️ пазарна оценка — моделът не добавя нищо тук</span>
+            {% elif m.card.market_pct is not none %}
             <span style="color:var(--sub);font-size:11.5px;">пазар {{"%.1f"|format(m.card.market_pct)}}% &middot; разлика {{ "+" if m.card.diff >= 0 else "" }}{{"%.1f"|format(m.card.diff)}}%</span>
             {% endif %}
           </div>
