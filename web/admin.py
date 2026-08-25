@@ -17,6 +17,7 @@ import glob
 import io
 import tarfile
 from datetime import datetime
+import pick_selection as ps
 
 
 def register_admin_routes(app, ctx):
@@ -174,10 +175,13 @@ def register_admin_routes(app, ctx):
         all_matches = list(match_groups.values())
         for m in all_matches:
             m["pending_count"] = sum(1 for p in m["predictions"] if p["status"] == "pending")
-            publishable_preds = [p for p in m["predictions"] if policy.is_publishable(m["league"], p["market_code"])]
-            safe_preds = [p for p in publishable_preds if policy.is_top_pick_eligible(m["league"], p["market_code"], allow_weak=True)]
-            m["top_pred"] = max(safe_preds or publishable_preds or m["predictions"], key=lambda p: p["pick_pct"])
-            m["other_count"] = len(m["predictions"]) - 1
+            # Стъпка 1 (PREUSTROYSTVO.md, 25.08.2026): единствената функция за
+            # "коя е прогнозата за мача" - виж pick_selection.top_pick_for_match()
+            # докстринга. Може да върне None, ако нищо публикуемо е логнато за
+            # мача (напр. само corners/cards - виж Находка 3 от одита) -
+            # преди това пропадаше до тях мълчаливо.
+            m["top_pred"] = ps.top_pick_for_match(m["predictions"], m["league"], policy)
+            m["other_count"] = len(m["predictions"]) - (1 if m["top_pred"] else 0)
             m["home_cy"] = to_cyrillic(m["home"], m["league"])
             m["away_cy"] = to_cyrillic(m["away"], m["league"])
             m["actual_hg"] = next((p["actual_home_goals"] for p in m["predictions"] if p["actual_home_goals"] is not None), None)

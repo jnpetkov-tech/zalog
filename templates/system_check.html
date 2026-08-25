@@ -136,6 +136,7 @@ function scShowTab(name) {
   {% if m.pending_count == 0 and m.actual_hg is not none %}
   <div style="font-size:15px;font-weight:600;color:var(--text);padding:2px 0;">Резултат: {{m.actual_hg}}:{{m.actual_ag}}</div>
   {% endif %}
+  {% if m.top_pred %}
   <div style="font-size:13px;padding:4px 0;display:flex;justify-content:space-between;align-items:center;">
     <span>{{m.top_pred.pick_label}} <span style="color:var(--sub);">({{"%.1f"|format(m.top_pred.pick_pct)}}%)</span></span>
     <span style="font-size:11px;color:var(--sub);">
@@ -144,6 +145,9 @@ function scShowTab(name) {
     </span>
     <span class="{{m.top_pred.status}}">{{ {'won':'✅','lost':'❌','pending':'⏳','no_data':'❓'}[m.top_pred.status] }}</span>
   </div>
+  {% else %}
+  <div style="font-size:13px;padding:4px 0;color:var(--sub);">Няма доверена прогноза за този мач.</div>
+  {% endif %}
   {% if m.pending_count == 0 %}
   <a href="/match_result?fixture_id={{m.fixture_id}}" style="font-size:11px;color:var(--accent);">Виж пълния резултат →</a>
   {% elif m.other_count > 0 %}

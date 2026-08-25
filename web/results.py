@@ -6,6 +6,7 @@
 from flask import Blueprint, request, render_template
 from datetime import datetime, date, timedelta
 import prediction_policy as policy
+import pick_selection as ps
 import evaluation
 import brier_vs_market as bm
 
@@ -109,9 +110,12 @@ def group_by_match(rows, to_cyrillic):
         m["home_cy"] = to_cyrillic(m["home"], m["league"])
         m["away_cy"] = to_cyrillic(m["away"], m["league"])
         m["pending_count"] = sum(1 for p in m["predictions"] if p["status"] in ("pending", "no_data"))
+        # Стъпка 1 (PREUSTROYSTVO.md, 25.08.2026): единствената функция за
+        # "коя е прогнозата за мача" - виж pick_selection.top_pick_for_match()
+        # докстринга защо старият ръчен max() тук отпадна (можеше да падне
+        # до REJECTED пазар, въпреки текста на страницата - Находка 3).
+        m["top_pred"] = ps.top_pick_for_match(m["predictions"], m["league"], policy)
         publishable = [p for p in m["predictions"] if policy.is_publishable(m["league"], p["market_code"])]
-        safe = [p for p in publishable if policy.is_top_pick_eligible(m["league"], p["market_code"], allow_weak=True)]
-        m["top_pred"] = max(safe or publishable or m["predictions"], key=lambda p: p["pick_pct"] or 0)
         m["other_preds"] = [p for p in publishable if p is not m["top_pred"]]
         m["actual_hg"] = next((p["actual_home_goals"] for p in m["predictions"] if p["actual_home_goals"] is not None), None)
         m["actual_ag"] = next((p["actual_away_goals"] for p in m["predictions"] if p["actual_away_goals"] is not None), None)
@@ -251,6 +255,14 @@ def brier_vs_market_table(rows, ALL_LEAGUES, LEAGUE_FLAGS, market_label):
     return combos, mc
 
 
+def _edge_sort_key(m):
+    tp = m["top_pred"]
+    if tp is None:
+        return (True, True, 999.0)
+    edge = tp.get("edge")
+    return (False, edge is None, -(edge if edge is not None else -999.0))
+
+
 def build_qs(args, **overrides):
     merged = {k: v for k, v in args.items() if v}
     merged.update({k: v for k, v in overrides.items() if v not in (None, "")})
@@ -295,7 +307,7 @@ def register_results_view(app, ctx):
 
         matches = group_by_match(filtered, to_cyrillic)
         if sort == "edge":
-            matches.sort(key=lambda m: (m["top_pred"]["edge"] is None, -(m["top_pred"]["edge"] or -999)))
+            matches.sort(key=_edge_sort_key)
         elif sort == "date_asc":
             matches.sort(key=lambda m: m["date"] or "")
         else:

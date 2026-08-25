@@ -97,3 +97,21 @@ def rank_logged_rows(rows, league, policy, n=3):
         get_code=lambda r: r["market_code"],
         n=n, full_fallback=False,
     )
+
+
+def top_pick_for_match(rows, league, policy):
+    """rows: predictions_log dict-ове за ЕДИН мач (pick_pct 0-100 скала,
+    market_code ключ). Единствената функция за "коя е прогнозата за този
+    мач" - Стъпка 1 от PREUSTROYSTVO.md (25.08.2026), обединява /daily
+    (rank_candidates), началната страница (rank_logged_rows) и /results +
+    /system_check в едно място. Преди това /results и /system_check имаха
+    трета, отделна имплементация: ръчен max() с fallback до буквално всеки
+    логнат пазар за мача, включително REJECTED, без policy филтър изобщо -
+    виж validation/audit_misleading_selection_20260825.md, Находка 2+3.
+
+    Същата PROVEN -> WEAK семантика като rank_logged_rows(): връща None,
+    ако нищо публикуемо съществува за мача, вместо да пада до недоверен
+    пазар - викащият трябва да покаже това изрично ("няма доверена
+    прогноза"), не да измисля една."""
+    ranked = rank_logged_rows(rows, league, policy, n=1)
+    return ranked[0] if ranked else None

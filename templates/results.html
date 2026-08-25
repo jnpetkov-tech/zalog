@@ -226,6 +226,7 @@
           <td style="width:70px;border:none;" class="rv-dim">{{m.date[5:10] if m.date else '—'}}</td>
           <td class="rv-lg" style="width:70px;border:none;">{{LEAGUE_FLAGS.get(m.league,'⚽')}} {{m.league}}</td>
           <td class="rv-teams" style="border:none;">{{m.home_cy}} – {{m.away_cy}}</td>
+          {% if m.top_pred %}
           <td style="width:180px;border:none;">{{market_label(m.top_pred.market_code)}}</td>
           <td class="rv-num" style="width:60px;border:none;">{{"%.1f"|format(m.top_pred.pick_pct)}}%</td>
           <td class="rv-num rv-dim" style="width:55px;border:none;">{% if m.top_pred.our_fair_odds %}{{"%.2f"|format(m.top_pred.our_fair_odds)}}{% else %}—{% endif %}</td>
@@ -240,6 +241,11 @@
             {% elif m.top_pred.status == 'no_data' %}<span class="rv-pill p">няма данни</span>
             {% else %}<span class="rv-pill p">чака</span>{% endif %}
           </td>
+          {% else %}
+          <td colspan="5" style="border:none;" class="rv-dim">Няма доверена прогноза за този мач.</td>
+          <td class="rv-num rv-score" style="width:60px;border:none;">{% if m.actual_hg is not none %}{{m.actual_hg}}:{{m.actual_ag}}{% else %}—{% endif %}</td>
+          <td style="width:90px;border:none;"><span class="rv-pill p">—</span></td>
+          {% endif %}
         </tr>
         </table>
         </summary>
