@@ -11,7 +11,7 @@
 1. Дака (собственикът) е нетехнически — обяснявай простичко, не крий грешки.
 2. Никога не променяй `match_predictor_app.py`, `system_tracker.py` или `football_lib.py` директно "на око". Тествай промяната локално (напр. в `/tmp/`) преди да пипнеш живия файл.
 3. След всяка логическа промяна: `sudo systemctl restart match-predictor-app`, после провери `journalctl -u match-predictor-app -n 50 | grep -iE "error|traceback"`.
-4. Commit-вай в git след всяка успешна, потвърдена промяна (кратко съобщение какво и защо).
+4. Commit-вай в git след всяка успешна, потвърдена промяна (кратко съобщение какво и защо). **След всеки commit — `git push`.** Хранилището има remote `origin` (GitHub, `git@github.com:jnpetkov-tech/zalog.git`, частно засега) — push веднага след всеки commit, не изчаквай края на сесията.
 5. Не давай финансови/залагателни съвети — само факти и изчисления, без "заложи"/"не залагай".
 6. API ключът на API-Football е хардкоднат в кода — известен проблем, изисква действие от Дака (завъртане на ключа), виж раздел 5 в `CLAUDE_HANDOFF.md`.
 7. **Промяна в `football_lib.py` или `prediction_policy.py` не влиза в живия код без записан преди/след във `validation/`** (walk-forward backtest, CSV с дата в името, committed в git — виж `validation/README.md` за метода и `validation/runner.py`). Едноразовите скриптове за backtest/диагностика отиват в `archive/`, не в корена.
