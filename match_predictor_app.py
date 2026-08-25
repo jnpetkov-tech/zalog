@@ -236,9 +236,14 @@ BLEND_WEIGHT = 0.5  # Нощна сесия 24.08.2026: старият коме�
 # и в log-loss) - не само точкова оценка. Затова смесеното е авторитетното число
 # НАВСЯКЪДЕ по сайта за тези пазари (виж _blend_with_market по-долу), не само на /daily.
 
-MIN_VALUE_BET_PROB = 0.35  # филтър: не показвай value bet под тази наша вероятност
-MAX_VALUE_BET_ODDS = 5.0   # филтър: не показвай value bet над този коефициент
-KELLY_FRACTION = 0.25      # дробен Kelly (25% от пълния, за защита срещу несигурност на модела)
+# MIN_VALUE_BET_PROB/MAX_VALUE_BET_ODDS: неизползвани от 25.08.2026 (Находка 5 - без цитирано
+# доказателство, за разлика от MAX_TRUSTWORTHY_EV по-долу). compute_grouped_markets()'s "разлика"
+# таблица вече минава през build_diff_row()'s дефиниция (абсолютна разлика, без тези прагове) -
+# едно място за "разлика" на целия сайт, не две. Оставени тук непипнати (не се изтриват), в случай
+# че бъдат преразгледани с реален бектест зад тях в бъдеще.
+MIN_VALUE_BET_PROB = 0.35
+MAX_VALUE_BET_ODDS = 5.0
+KELLY_FRACTION = 0.25      # дробен Kelly (25% от пълния, за защита срещу несигурност на модела) - неизползван от Стъпка 2 (25.08.2026), виж CLAUDE_HANDOFF.md
 # Фаза N.1 (11.08.2026): числото 40% тръгна от едно живо наблюдение (моделът
 # даде 44.7% на ЦСКА 1948 срещу пазарни 21.8%, EV +90%, докато вградената
 # прогноза на API-Football даваше 10%) - това само мотивира ХИПОТЕЗАТА, не я
@@ -540,27 +545,27 @@ def compute_grouped_markets(league, home, away, home_inj=0, away_inj=0, real_odd
                 candidates.append(("Под 2.5 гола", 1 - ou_p, mund, real_odds["under25"], "under25"))
             except (ZeroDivisionError, TypeError):
                 pass
+        # Довършване на преустройството (25.08.2026): същата дефиниция за
+        # "разлика" като build_diff_row() (/daily, Стъпка 4) - най-голямата
+        # АБСОЛЮТНА разлика спрямо пазарната цена, без посока, без
+        # MIN_VALUE_BET_PROB/MAX_VALUE_BET_ODDS прагове (Находка 5 - тези
+        # два нямаха цитирано доказателство, за разлика от MAX_TRUSTWORTHY_EV
+        # по-долу, което си остава - отделна, доказана проверка за модел-
+        # артефакт, не дефиниция за "разлика"). Единствената сега останала
+        # такава дефиниция е ТУК = build_diff_row's - едно място, не две.
         for label, our_p, market_p, odd, code in candidates:
-            edge = (our_p - market_p) * 100
-            if edge <= 0:
-                continue
-            if our_p < MIN_VALUE_BET_PROB:
-                continue
-            if odd > MAX_VALUE_BET_ODDS:
-                continue
             ev = (our_p * odd) - 1
             # Фаза N.1 (11.08.2026): EV над прага не се доверяваме на модела -
-            # вместо препоръка за залог, показваме предупреждение (виж
-            # distrusted_bets по-долу и MAX_TRUSTWORTHY_EV константата).
+            # вместо да участва в "разлика" таблицата, показваме предупреждение
+            # (distrusted_bets по-долу, MAX_TRUSTWORTHY_EV константата -
+            # непроменена, има собствен бектест зад себе си).
             if ev > MAX_TRUSTWORTHY_EV:
                 distrusted_bets.append({"label": label, "our_pct": our_p * 100,
                                          "market_pct": market_p * 100, "ev": ev * 100})
                 continue
-            kelly_full = (our_p * odd - 1) / (odd - 1) if odd > 1 else 0
-            kelly_stake = max(0, kelly_full) * KELLY_FRACTION * 100
             value_bets.append({"label": label, "our_pct": our_p * 100, "market_pct": market_p * 100,
-                                 "edge": edge, "odd": odd, "code": code, "ev": ev * 100, "kelly_stake": kelly_stake})
-        value_bets.sort(key=lambda x: -x["ev"])
+                                 "odd": odd, "code": code, "diff": (our_p - market_p) * 100})
+        value_bets.sort(key=lambda x: -abs(x["diff"]))
 
     return groups, (lam, mu, top_label, top_pct, form_note, value_bets, distrusted_bets)
 

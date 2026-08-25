@@ -130,17 +130,17 @@ document.addEventListener('DOMContentLoaded', function() {
 {% if extra_info[5] %}
 <div class="group"><div class="group-title">💎 Разлики с пазара</div>
 <table>
-<tr><th>Пазар</th><th>Наша</th><th>Пазарна (коеф.)</th><th>EV</th></tr>
+<tr><th>Пазар</th><th>Наша</th><th>Пазарна (коеф.)</th><th>Разлика</th></tr>
 {% for vb in extra_info[5][:5] %}
-<tr style="background:{{ '#0F6E5615' if vb.ev > 5 else '#D9A64B15' }};">
+<tr style="background:{{ '#0F6E5615' if vb.diff >= 0 else '#B23B3B15' }};">
   <td>{{vb.label}}</td>
   <td>{{"%.1f"|format(vb.our_pct)}}%</td>
   <td>{{"%.1f"|format(vb.market_pct)}}% ({{vb.odd}})</td>
-  <td style="color:{{ '#0F6E56' if vb.ev > 5 else '#8A6D1F' }};font-weight:600;">+{{"%.1f"|format(vb.ev)}}%</td>
+  <td style="color:{{ '#0F6E56' if vb.diff >= 0 else '#B23B3B' }};font-weight:600;">{{ "+" if vb.diff >= 0 else "" }}{{"%.1f"|format(vb.diff)}}%</td>
 </tr>
 {% endfor %}
 </table>
-<div style="font-size:11px;color:#888780;padding:8px 0;">EV = очаквана дългосрочна възвръщаемост, ако нашата оценка е вярна - недоказано спрямо пазара, виж /results.</div>
+<div style="font-size:11px;color:#888780;padding:8px 0;">Разлика = нашата оценка минус обезвигованата пазарна - сравнение, не препоръка. Недоказано спрямо пазара, виж /results.</div>
 </div>
 {% else %}
 <div class="top-pick"><div class="top-pick-label">Топ прогноза</div>
