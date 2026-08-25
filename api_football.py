@@ -103,8 +103,17 @@ def fetch_fixture_odds(fixture_id):
     # от СЪЩИЯ вече викан /odds отговор - нула допълнителни API заявки.
     # Bet имената потвърдени на живо срещу реален отговор преди този патч
     # (diag_odds_response.py) - "Double Chance", "Total - Home"/"Total - Away",
-    # "HT/FT Double". Corners/cards/BTTS НЕ се парсват тук - вече REJECTED
-    # tier в prediction_policy.py, коефициент за тях няма практическа стойност.
+    # "HT/FT Double".
+    #
+    # 25.08.2026: добавен "Both Teams Score" (BTTS) - живи проверки
+    # (validation/coverage_diagnosis_20260825.md) показаха широко букмейкърско
+    # покритие (73-79% от букмейкърите за проверените мачове, сравнимо с team
+    # totals), за разлика от предишния коментар тук ("коефициент за тях няма
+    # практическа стойност") - грешен поне за BTTS, вече поправен. Corners/
+    # cards/offsides остават непарсвани тук - cards/offsides премахнати от
+    # системата изцяло (25.08.2026, Дака: "прогнози, които не подлежат на
+    # сравнение, нямат място"), corners остава на частично покритие по
+    # изрично решение на Дака, без коефициент в предсказанието.
     try:
         r = _api_get("/odds", params={"fixture": fixture_id}, timeout=10)
         data = r.json()
@@ -115,6 +124,7 @@ def fetch_fixture_odds(fixture_id):
         odds_ou = {"over": [], "under": []}
         odds_team_total = {"home_over15": [], "home_under15": [], "away_over15": [], "away_under15": []}
         odds_dc = {"dc_1x": [], "dc_x2": [], "dc_12": []}
+        odds_btts = {"yes": [], "no": []}
         odds_htft = {}
         HTFT_SIDE = {"Home": "1", "Draw": "X", "Away": "2"}
 
@@ -154,6 +164,12 @@ def fetch_fixture_odds(fixture_id):
                             odds_dc["dc_x2"].append(float(v["odd"]))
                         elif v["value"] == "Home/Away":
                             odds_dc["dc_12"].append(float(v["odd"]))
+                elif bet["name"] == "Both Teams Score":
+                    for v in bet["values"]:
+                        if v["value"] == "Yes":
+                            odds_btts["yes"].append(float(v["odd"]))
+                        elif v["value"] == "No":
+                            odds_btts["no"].append(float(v["odd"]))
                 elif bet["name"] == "HT/FT Double":
                     for v in bet["values"]:
                         parts = v["value"].split("/")
@@ -170,6 +186,7 @@ def fetch_fixture_odds(fixture_id):
             "home_over15": avg(odds_team_total["home_over15"]), "home_under15": avg(odds_team_total["home_under15"]),
             "away_over15": avg(odds_team_total["away_over15"]), "away_under15": avg(odds_team_total["away_under15"]),
             "dc_1x": avg(odds_dc["dc_1x"]), "dc_x2": avg(odds_dc["dc_x2"]), "dc_12": avg(odds_dc["dc_12"]),
+            "btts_yes": avg(odds_btts["yes"]), "btts_no": avg(odds_btts["no"]),
         }
         for key, lst in odds_htft.items():
             result[key] = avg(lst)

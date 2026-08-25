@@ -206,12 +206,16 @@ def get_models(league):
         recent_df = df[df["date"] >= recent_cutoff]
         recent_matches_count = len(recent_df)
         recent_model = fl.fit_goals_model(recent_df, ref_date, team_idx, n, xi=league_xi) if recent_matches_count >= 20 else None
-        if "home_yellow" in df.columns:
-            df["home_cards_total"] = df["home_yellow"].fillna(0) + df.get("home_red", pd.Series(0, index=df.index)).fillna(0)
-            df["away_cards_total"] = df["away_yellow"].fillna(0) + df.get("away_red", pd.Series(0, index=df.index)).fillna(0)
         corners_model = fl.fit_total_model(df, ref_date, team_idx, n, "home_corners", "away_corners", xi=league_xi) if "home_corners" in df.columns else None
-        cards_model = fl.fit_total_model(df, ref_date, team_idx, n, "home_cards_total", "away_cards_total", xi=league_xi) if "home_yellow" in df.columns else None
-        offsides_model = fl.fit_total_model(df, ref_date, team_idx, n, "home_offsides", "away_offsides", xi=league_xi) if "home_offsides" in df.columns else None
+        # Картони/засади премахнати от системата (25.08.2026, Дака): "прогнози, които не подлежат на
+        # сравнение, нямат място в система за сравнение" - 0% покритие с коефициент във вторите
+        # дивизии, 21-36% дори в топ лигите (validation/coverage_diagnosis_20260825.md), никога не
+        # може да се измери реално срещу пазара. Моделите вече никога не се фитват - винаги None ->
+        # "Картони ⚠️"/"Засади ⚠️" групите никога не се добавят (виж if cards_model:/if
+        # offsides_model: по-долу в compute_grouped_markets()). Корнери остават непипнати - частично,
+        # но не нулево покритие, изрично решение на Дака да останат.
+        cards_model = None
+        offsides_model = None
         _model_cache[league] = (teams, team_idx, ft_model, ht_model, h2_model,
                                   corners_model, cards_model, offsides_model,
                                   recent_model, recent_matches_count, has_injuries)

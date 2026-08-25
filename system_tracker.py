@@ -262,6 +262,11 @@ MARKET_ODDS_MAP = {
     "home_over15": "home_over15", "home_under15": "home_under15",
     "away_over15": "away_over15", "away_under15": "away_under15",
     "dc_1x": "dc_1x", "dc_x2": "dc_x2", "dc_12": "dc_12",
+    # 25.08.2026: BTTS вече сравним - fetch_fixture_odds() парсва "Both Teams
+    # Score" (виж api_football.py). Само за записване на market_odds/бъдещо
+    # измерване (validation/vs_market_brier.py и подобни) - НЕ е включен в
+    # _blend_with_market()/BLEND_WEIGHTS, живата прогноза остава чист модел.
+    "btts_yes": "btts_yes", "btts_no": "btts_no",
 }
 for _a in ("1", "X", "2"):
     for _b in ("1", "X", "2"):
