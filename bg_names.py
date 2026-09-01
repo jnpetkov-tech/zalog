@@ -37,7 +37,18 @@ def simple_transliterate(name):
     return " ".join(w.capitalize() for w in result.split())
 
 
+# Преглед на Дака (01.09.2026), т.4: /prognozi показваше "Hebar 1918 —
+# Fratria" на латиница за bulgaria2, макар "Hebar 1918" вече да е в
+# BULGARIA_NAMES ("Хебър 1918") - условието по-долу проверяваше буквално
+# league == "bulgaria", никога "bulgaria2". BULGARIA_NAMES вече обслужва И
+# двете деления (нямат конфликт по имена) - проверено срещу реалния ростер
+# на bulgaria/bulgaria2 (get_models()), 32 отбора (6 bulgaria + 26
+# bulgaria2) остават без превод и чакат потвърждение на Дака за точния
+# изписан вариант, вместо налучкани транскрипции - виж CLAUDE_HANDOFF.md.
+BULGARIA_LEAGUES = {"bulgaria", "bulgaria2"}
+
+
 def to_cyrillic(name, league="bulgaria"):
-    if league == "bulgaria" and name in BULGARIA_NAMES:
+    if league in BULGARIA_LEAGUES and name in BULGARIA_NAMES:
         return BULGARIA_NAMES[name]
     return name
