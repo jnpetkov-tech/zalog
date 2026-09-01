@@ -151,6 +151,18 @@ def init_db():
             UNIQUE(league, market_group)
         )
     """)
+    # Партида 1, т.1.2 (01.09.2026): fetch_lineups_available() не се кешираше
+    # никъде - всеки мач до 60 мин преди начало питаше API-то на ВСЯКО
+    # зареждане на /daily, докато не потвърдеше състав. По образец на
+    # injuries_cache: True се пази трайно (веднъж потвърден състав не се
+    # разпотвърждава), False има кратък TTL (виж get_cached_lineups_available).
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS lineups_cache (
+            fixture_id INTEGER PRIMARY KEY,
+            available INTEGER,
+            fetched_at TEXT
+        )
+    """)
     conn.commit()
     conn.close()
 
@@ -691,6 +703,41 @@ def set_cached_fixture_list(league, from_date, to_date, fixtures):
         ON CONFLICT(league, from_date, to_date) DO UPDATE SET
             fetched_at=excluded.fetched_at, data=excluded.data
     """, (league, from_date, to_date, datetime.now().isoformat(), json.dumps(fixtures)))
+    conn.commit()
+    conn.close()
+
+
+def get_cached_lineups_available(fixture_id, max_age_minutes_false=10):
+    """Партида 1, т.1.2 (01.09.2026). Връща True/False, ако кешът е валиден,
+    None ако трябва да се пита API-то. True се пази без изтичане - веднъж
+    потвърден състав не изчезва обратно. False изтича след
+    max_age_minutes_false (по подразбиране 10 мин, per заданието) - съставът
+    все още може да се обяви междувременно."""
+    conn = get_conn()
+    conn.row_factory = sqlite3.Row
+    row = conn.execute("SELECT * FROM lineups_cache WHERE fixture_id=?", (fixture_id,)).fetchone()
+    conn.close()
+    if not row:
+        return None
+    if row["available"]:
+        return True
+    try:
+        fetched = datetime.fromisoformat(row["fetched_at"])
+    except (ValueError, TypeError):
+        return None
+    if datetime.now() - fetched > timedelta(minutes=max_age_minutes_false):
+        return None
+    return False
+
+
+def set_cached_lineups_available(fixture_id, available):
+    conn = get_conn()
+    conn.execute("""
+        INSERT INTO lineups_cache (fixture_id, available, fetched_at)
+        VALUES (?,?,?)
+        ON CONFLICT(fixture_id) DO UPDATE SET
+            available=excluded.available, fetched_at=excluded.fetched_at
+    """, (fixture_id, int(available), datetime.now().isoformat()))
     conn.commit()
     conn.close()
 

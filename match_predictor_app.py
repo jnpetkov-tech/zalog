@@ -1022,8 +1022,20 @@ def _predict_matches_for_league_from_snapshot(league, from_date, to_date):
     като в _raw_candidates) вместо да се пази в снимката - козметичен
     бедж„🎯 с пазарни коеф." срещу „⏳ чисто моделна", не самата прогноза;
     евентуално разминаване от няколко минути е приемливо и за старата, и
-    за новата логика."""
-    fixtures, api_error = fetch_upcoming_fixtures(league, from_date, to_date)
+    за новата логика.
+
+    Партида 1, т.1.1 (01.09.2026): use_cache=True, cache_minutes=3 - живият
+    статус на мача (започнал ли е, резултат, приключил ли е) остава пресен в
+    рамките на 3 мин, изрично прието от Дака като приемливо закъснение
+    (виж задачата), докато срязва до нула повтарящите се заявки при
+    последователни зареждания на /daily от същия (лига, период) - точно
+    сценарият, който правеше едно зареждане на /daily?league=all скъпо
+    (виж CLAUDE_HANDOFF.md раздел 8/9). Коментарът по-горе в
+    api_football.fetch_upcoming_fixtures() ("НИКОГА не се включва от
+    страниците, които потребителят реално гледа") важеше, докато нямаше
+    начин мачове с приключващ живо статус да закъснеят - вече е овладяно с
+    изричен 3-мин праг, не с пълна забрана."""
+    fixtures, api_error = fetch_upcoming_fixtures(league, from_date, to_date, use_cache=True, cache_minutes=3)
     (teams, team_idx, ft_model, ht_model, h2_model, corners_model, cards_model,
      offsides_model, recent_model, recent_matches_count, has_injuries) = get_models(league)
 
@@ -1101,9 +1113,19 @@ def _predict_matches_for_league_from_snapshot(league, from_date, to_date):
             minutes_to_kickoff = (kickoff - datetime.now(kickoff.tzinfo)).total_seconds() / 60
         except Exception:
             minutes_to_kickoff = 9999
-        lineups_confirmed = False
-        if 0 <= minutes_to_kickoff <= 60:
+        # Партида 1, т.1.2 (01.09.2026): кеширано в базата (lineups_cache) -
+        # веднъж потвърден състав (True) не се пита повече за този мач; False
+        # има TTL 10 мин (виж system_tracker.get/set_cached_lineups_available).
+        # Преди тази промяна всяко зареждане на /daily правеше собствена
+        # некеширана заявка за всеки мач в 60-мин прозореца преди начало.
+        cached_lineups = st.get_cached_lineups_available(fixture_id)
+        if cached_lineups is not None:
+            lineups_confirmed = cached_lineups
+        elif 0 <= minutes_to_kickoff <= 60:
             lineups_confirmed = fetch_lineups_available(fixture_id)
+            st.set_cached_lineups_available(fixture_id, lineups_confirmed)
+        else:
+            lineups_confirmed = False
 
         card = build_diff_row(picks_list, cached_odds)
         matches.append({**base, "pick": top["pick_label"], "pct": top["pick_pct"], "code": top["market_code"],
@@ -1230,9 +1252,19 @@ def _predict_matches_for_league_impl(league, from_date, to_date, use_fixture_cac
         except Exception:
             minutes_to_kickoff = 9999
 
-        lineups_confirmed = False
-        if 0 <= minutes_to_kickoff <= 60:
+        # Партида 1, т.1.2 (01.09.2026): кеширано в базата (lineups_cache) -
+        # веднъж потвърден състав (True) не се пита повече за този мач; False
+        # има TTL 10 мин (виж system_tracker.get/set_cached_lineups_available).
+        # Преди тази промяна всяко зареждане на /daily правеше собствена
+        # некеширана заявка за всеки мач в 60-мин прозореца преди начало.
+        cached_lineups = st.get_cached_lineups_available(fixture_id)
+        if cached_lineups is not None:
+            lineups_confirmed = cached_lineups
+        elif 0 <= minutes_to_kickoff <= 60:
             lineups_confirmed = fetch_lineups_available(fixture_id)
+            st.set_cached_lineups_available(fixture_id, lineups_confirmed)
+        else:
+            lineups_confirmed = False
         matches.append({
             "date": match_date, "home": home, "away": away,
             "home_cy": to_cyrillic(home, league), "away_cy": to_cyrillic(away, league),

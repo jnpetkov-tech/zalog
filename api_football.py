@@ -63,11 +63,33 @@ class _RateLimiter:
 
 _rate_limiter = _RateLimiter()
 
+# Партида 1, проверка (01.09.2026): брояч на реални HTTP заявки към
+# API-Football, за да се измери "колко заявки прави едно зареждане на
+# /daily?league=all" с реални числа, не на око (виж
+# validation/api_calls_per_pageload_20260901.md). Не е rate limiting -
+# само преброяване, четено/нулирано с get_call_count()/reset_call_count().
+_call_count_lock = threading.Lock()
+_call_count = 0
+
+
+def get_call_count():
+    with _call_count_lock:
+        return _call_count
+
+
+def reset_call_count():
+    global _call_count
+    with _call_count_lock:
+        _call_count = 0
+
 
 def _api_get(path, params=None, timeout=10):
     """Единствената точка, през която минават всички fetch_* по-долу към
     API-Football - гарантира, че rate limiter-ът вижда всяка заявка."""
+    global _call_count
     _rate_limiter.acquire()
+    with _call_count_lock:
+        _call_count += 1
     return requests.get(f"{BASE_URL}{path}", headers=API_HEADERS, params=params, timeout=timeout)
 
 
@@ -324,16 +346,22 @@ def fetch_upcoming_fixtures(league, from_date=None, to_date=None, use_cache=Fals
     if to_date is None:
         to_date = today + timedelta(days=DAYS_AHEAD)
 
-    # 22.08.2026: use_cache=True се подава САМО от фоновите задачи (виж
-    # run_refresh_odds_cache/run_refresh_injuries_cache/
-    # build_predictions_snapshot.py) - те и трите питат за практически
-    # същия списък мачове на всеки 30 мин, независимо една от друга. Кратък
-    # TTL кеш споделен между тях среже трикратното повторение. НИКОГА не се
-    # включва от страниците, които потребителят реално гледа (/daily,
-    # _predict_matches_for_league_from_snapshot) - там живия статус/резултат
-    # на мача трябва да е пресен към момента на зареждане, не до 20 мин стар.
+    # 22.08.2026: use_cache=True първоначално се подаваше САМО от фоновите
+    # задачи (run_refresh_odds_cache/run_refresh_injuries_cache/
+    # build_predictions_snapshot.py, 20-мин TTL) - те и трите питат за
+    # практически същия списък мачове на всеки 30 мин, независимо една от
+    # друга. Партида 1, т.1.1 (01.09.2026): /daily
+    # (_predict_matches_for_league_from_snapshot) също вече подава
+    # use_cache=True, но със собствен, много по-кратък cache_minutes=3 - живо
+    # статус/резултат остава пресен в рамките на 3 мин (изрично прието
+    # закъснение, виж match_predictor_app.py за обосновката), докато среже
+    # повтарящите се заявки при последователни зареждания на същия (лига,
+    # период). Живата диагностика (/daily?source=live) продължава да минава
+    # без кеш изобщо (use_cache=False по подразбиране в
+    # _predict_matches_for_league_impl).
+    import system_tracker as _st
+
     if use_cache:
-        import system_tracker as _st
         cached = _st.get_cached_fixture_list(league, from_date.isoformat(), to_date.isoformat(), cache_minutes)
         if cached is not None:
             return cached, None
@@ -345,23 +373,39 @@ def fetch_upcoming_fixtures(league, from_date=None, to_date=None, use_cache=Fals
         "to": to_date.isoformat(),
         "timezone": "Europe/Sofia",
     }
+    # Партида 1, т.1.3 (01.09.2026): "Червената лента да не лъже" - ако тази
+    # заявка се провали (мрежа, грешка от API-то), но имаме КАКЪВТО И ДА Е
+    # кеширан списък за (лига, from, to) - дори остарял отвъд обичайния TTL -
+    # показваме него вместо празна страница с червена грешка. Грешка се връща
+    # само когато няма абсолютно нищо кеширано за показване.
     try:
         r = _api_get("/fixtures", params=params, timeout=15)
         data = r.json()
     except Exception as e:
+        stale = _st.get_cached_fixture_list(league, from_date.isoformat(), to_date.isoformat(), max_age_minutes=10**9)
+        if stale is not None:
+            return stale, None
         return [], f"Мрежова грешка при връзка с API-то: {e}"
 
     if data.get("errors"):
         errors = data["errors"]
         if isinstance(errors, dict) and "plan" in errors:
-            return [], (f"Ограничение на абонаментния план: {errors['plan']} "
-                         "Провери плана си в dashboard.api-football.com.")
-        return [], f"Грешка от API-то: {errors}"
+            msg = (f"Ограничение на абонаментния план: {errors['plan']} "
+                   "Провери плана си в dashboard.api-football.com.")
+        else:
+            msg = f"Грешка от API-то: {errors}"
+        stale = _st.get_cached_fixture_list(league, from_date.isoformat(), to_date.isoformat(), max_age_minutes=10**9)
+        if stale is not None:
+            return stale, None
+        return [], msg
 
     fixtures = data.get("response", [])
-    if use_cache:
-        import system_tracker as _st
-        _st.set_cached_fixture_list(league, from_date.isoformat(), to_date.isoformat(), fixtures)
+    # Кешираме УСПЕШЕН резултат винаги (не само при use_cache=True) - това е
+    # именно данните, върху които се гради stale fallback-ът по-горе. Преди
+    # тази промяна само фоновите задачи пишеха тук; сега и /daily (Партида 1,
+    # т.1.1, use_cache=True за _predict_matches_for_league_from_snapshot) -
+    # затова кешът вече реално се пълни от истинско потребителско зареждане.
+    _st.set_cached_fixture_list(league, from_date.isoformat(), to_date.isoformat(), fixtures)
     return fixtures, None
 
 
