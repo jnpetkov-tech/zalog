@@ -357,6 +357,29 @@ def get_snapshot_picks_for_fixtures(fixture_ids):
     return result
 
 
+def get_snapshot_rows_for_date_range(from_date, to_date):
+    """Партида 2 (01.09.2026, /prognozi): всички редове от
+    predictions_snapshot с match_date в диапазона [from_date, to_date]
+    (ISO YYYY-MM-DD, включително двата края) - за публичната страница,
+    която НЕ прави никаква заявка към API-Football (задачата, т.2.10) -
+    четем директно снимката, никога fetch_upcoming_fixtures(). Връща
+    суров списък редове (dict-ове), викащият групира по fixture_id (по
+    образец на get_snapshot_picks_for_fixtures, само за диапазон дати
+    вместо конкретни fixture_id-та - тук нямаме предварителен списък
+    мачове от API, за да го подадем)."""
+    conn = get_conn()
+    conn.row_factory = sqlite3.Row
+    rows = conn.execute("""
+        SELECT fixture_id, league, match_date, home_team, away_team, market_code,
+               pick_label, pick_pct, fair_odds, ev, computed_at, model_version
+        FROM predictions_snapshot
+        WHERE substr(match_date,1,10) BETWEEN ? AND ?
+        ORDER BY match_date, fixture_id, pick_pct DESC
+    """, (from_date, to_date)).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+
 def get_snapshot_freshness():
     """Партида 3, довършване (21.08.2026): най-новият computed_at в цялата
     predictions_snapshot таблица - ISO низ, или None ако таблицата е

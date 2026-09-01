@@ -1431,6 +1431,12 @@ register_daily_routes(app, {
     "_daily_use_snapshot": _daily_use_snapshot, "_predict_matches_for_league": _predict_matches_for_league,
     "fetch_fixture_id_for_today": fetch_fixture_id_for_today, "get_refresh_state": get_refresh_state,
 })
+from web.prognozi import register_prognozi_routes
+register_prognozi_routes(app, {
+    "ALL_LEAGUES": ALL_LEAGUES, "LEAGUE_FLAGS": LEAGUE_FLAGS,
+    "st": st, "evaluation": evaluation, "ps": ps, "policy": policy,
+    "to_cyrillic": to_cyrillic, "_market_info_for_pick": _market_info_for_pick,
+})
 from web.match import register_match_routes
 register_match_routes(app, {
     "get_models": get_models, "st": st,

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SportBG — Прогнози</title>
+{% include "_tokens.html" %}
+<style>
+  /* Оформление/структура: design_mockup_prognozi.html (Дака) - имената на
+     CSS променливите тук са преведени към общите токени в _tokens.html
+     (т.2.1: "макетът печели, обнови токените" - вече едни и същи
+     стойности, само различни имена заради вече съществуващите templates). */
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-font-smoothing:antialiased;}
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.5;
+    font-variant-numeric: tabular-nums;
+  }
+  a{color:inherit;text-decoration:none;}
+  button, select, input{font-family:inherit;}
+
+  .shell{max-width:1120px; margin:0 auto; padding: 36px 32px 72px;}
+
+  .heading-row{
+    display:flex; align-items:flex-end; justify-content:space-between;
+    margin-bottom:36px; flex-wrap:wrap; gap:12px;
+  }
+  h1{font-size:30px; font-weight:800; letter-spacing:-0.5px;}
+  .heading-sub{font-size:14px; color:var(--sub); margin-top:6px; max-width:48ch;}
+
+  .metrics{
+    display:flex; margin-bottom:34px; border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+  }
+  .metric{ flex:1; padding:22px 28px; border-right:1px solid var(--border); }
+  .metric:last-child{border-right:none;}
+  .metric .num{font-size:40px; font-weight:800; letter-spacing:-1px; line-height:1;}
+  .metric .num.up{color:var(--accent);}
+  .metric .num.down{color:var(--red);}
+  .metric .label{font-size:13px; color:var(--text-faint); margin-top:8px;}
+  .metric .caveat{font-size:11px; color:var(--text-faint); margin-top:4px;}
+
+  .daystrip{
+    display:flex; gap:28px; margin-bottom:28px; overflow-x:auto;
+    border-bottom:1px solid var(--border);
+  }
+  .daystrip a{
+    background:none; border:none; color:var(--sub);
+    padding:0 0 14px; font-size:14px; cursor:pointer; white-space:nowrap;
+    border-bottom:2px solid transparent; display:flex; gap:6px; align-items:baseline;
+  }
+  .daystrip a span{color:var(--text-faint); font-size:12.5px;}
+  .daystrip a.active{color:var(--text); border-bottom-color:var(--accent); font-weight:600;}
+  .daystrip a.active span{color:var(--accent);}
+
+  .controls{ display:flex; gap:10px; align-items:center; margin-bottom:26px; flex-wrap:wrap; }
+  .chip-select{
+    background:var(--panel2); border:1px solid var(--border); border-radius:8px;
+    color:var(--text); font-size:13.5px; padding:9px 14px; appearance:none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--text-faint) 50%), linear-gradient(135deg, var(--text-faint) 50%, transparent 50%);
+    background-position: calc(100% - 16px) 55%, calc(100% - 11px) 55%;
+    background-size: 5px 5px, 5px 5px; background-repeat:no-repeat;
+    padding-right:30px;
+  }
+
+  .statustabs{ display:flex; gap:26px; border-bottom:1px solid var(--border); margin-bottom:6px; }
+  .statustabs a{
+    background:none; border:none; color:var(--sub); font-size:14px;
+    padding:0 0 13px; cursor:pointer; border-bottom:2px solid transparent;
+    display:flex; align-items:center; gap:7px;
+  }
+  .statustabs a.active{color:var(--text); border-bottom-color:var(--accent); font-weight:600;}
+  .statustabs a .count{color:var(--text-faint); font-weight:400;}
+
+  .colheader{
+    display:grid; grid-template-columns: 88px 1fr 160px 96px; gap:18px;
+    padding:14px 18px 10px; font-size:12px; color:var(--text-faint);
+  }
+  .colheader .r{text-align:right;}
+
+  .predlist{display:flex; flex-direction:column; gap:1px; background:var(--border); border:1px solid var(--border); border-radius:10px; overflow:hidden;}
+  .predrow{
+    display:grid; grid-template-columns: 88px 1fr 160px 96px; align-items:center;
+    gap:18px; background:var(--panel2); padding:16px 18px;
+  }
+  .predrow:hover{background:var(--panel);}
+  .pred-time{font-size:13.5px; color:var(--sub); font-weight:600;}
+  .pred-league{font-size:12px; color:var(--text-faint); margin-top:2px; font-weight:400;}
+  .pred-match{font-size:14.5px; font-weight:600;}
+  .pred-pick{font-size:14.5px; font-weight:700; color:var(--accent); text-align:right;}
+  .pred-pick .badge{display:block; font-size:11px; font-weight:600; margin-top:2px;}
+  .pred-pick .badge.won{color:var(--accent);}
+  .pred-pick .badge.lost{color:var(--red);}
+  .pred-edge{font-size:13.5px; font-weight:700; text-align:right; color:var(--accent);}
+  .pred-edge.down{color:var(--red);}
+  .pred-edge.none{color:var(--text-faint); font-weight:600; font-size:12px;}
+
+  .empty-note{ padding:28px 18px; text-align:center; color:var(--sub); font-size:13.5px;
+    background:var(--panel2); border:1px solid var(--border); border-radius:10px; }
+
+  .howto{ margin-top:34px; border:1px solid var(--border); border-radius:12px; padding:0; overflow:hidden; }
+  .howto summary{ cursor:pointer; padding:16px 20px; font-size:14px; font-weight:600; list-style:none; }
+  .howto summary::-webkit-details-marker{display:none;}
+  .howto summary::before{content:"▸ "; color:var(--accent);}
+  .howto[open] summary::before{content:"▾ "; }
+  .howto-body{ padding:4px 20px 20px; }
+  .howto-body h2{ font-size:14px; font-weight:600; margin:20px 0 8px; color:var(--text); }
+  .howto-body h2:first-child{margin-top:0;}
+  .howto-body p{ font-size:13.5px; line-height:1.65; color:var(--text); margin:0 0 10px; }
+  .howto-body .box{ background:var(--panel2); border:1px solid var(--border); border-radius:10px; padding:14px 18px; margin:16px 0; }
+  .howto-body .box.warn{ border-color:rgba(234,179,8,0.35); }
+  .howto-body .box.warn h2{ color:var(--yellow); }
+  .howto-body .box.age{ border-color:rgba(239,91,82,0.35); }
+  .howto-body .box.age h2{ color:var(--red); }
+
+  .foot-note{ margin-top:32px; font-size:12px; color:var(--text-faint); line-height:1.7; max-width:70ch; }
+
+  @media (max-width: 720px){
+    .shell{padding:24px 18px 56px;}
+    .metrics{flex-wrap:wrap;}
+    .metric{flex:0 0 50%; border-bottom:1px solid var(--border);}
+    .metric:nth-child(2n){border-right:none;}
+    .colheader{display:none;}
+    .predrow{grid-template-columns: 1fr; gap:6px; text-align:left;}
+    .pred-pick, .pred-edge{text-align:left;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="shell">
+
+    <div class="heading-row">
+      <div>
+        <h1>Прогнози</h1>
+        <div class="heading-sub">Модел, кръстосан с пазарните коефициенти — преизчислява се на всеки {{ snapshot_interval_minutes }} минути.</div>
+      </div>
+    </div>
+
+    <div class="metrics">
+      <div class="metric">
+        <div class="num">{{ scorecard.n_settled }}</div>
+        <div class="label">уредени прогнози до момента</div>
+      </div>
+      <div class="metric">
+        {% if scorecard.roi is none %}
+        <div class="num">—</div>
+        {% else %}
+        <div class="num {{ 'up' if scorecard.roi >= 0 else 'down' }}">{{ "+" if scorecard.roi >= 0 else "" }}{{ "%.1f"|format(scorecard.roi) }}%</div>
+        {% endif %}
+        <div class="label">ROI (n={{ scorecard.roi_n }})</div>
+        {% if scorecard.roi_n and scorecard.roi_n < 50 %}<div class="caveat">малка извадка</div>{% endif %}
+      </div>
+      <div class="metric">
+        {% if scorecard.profit is none %}
+        <div class="num">—</div>
+        {% else %}
+        <div class="num {{ 'up' if scorecard.profit >= 0 else 'down' }}">{{ "+" if scorecard.profit >= 0 else "" }}{{ "%.1f"|format(scorecard.profit) }}</div>
+        {% endif %}
+        <div class="label">единици печалба/загуба</div>
+        {% if scorecard.roi_n and scorecard.roi_n < 50 %}<div class="caveat">малка извадка (n={{ scorecard.roi_n }})</div>{% endif %}
+      </div>
+    </div>
+
+    <div class="daystrip">
+      {% for d in day_tabs %}
+      <a href="/prognozi?day={{ d.offset }}&status={{ status_tab }}&league={{ league_filter }}" class="{{ 'active' if d.offset == day_offset else '' }}">{{ d.label }} <span>{{ d.short }}</span></a>
+      {% endfor %}
+    </div>
+
+    {% if league_options %}
+    <div class="controls">
+      <form method="get" action="/prognozi" style="display:contents;">
+        <input type="hidden" name="day" value="{{ day_offset }}">
+        <input type="hidden" name="status" value="{{ status_tab }}">
+        <select class="chip-select" name="league" onchange="this.form.submit()">
+          <option value="all" {% if league_filter=="all" %}selected{% endif %}>Всички лиги</option>
+          {% for key, name in league_options %}
+          <option value="{{ key }}" {% if key==league_filter %}selected{% endif %}>{{ name }}</option>
+          {% endfor %}
+        </select>
+      </form>
+    </div>
+    {% endif %}
+
+    <div class="statustabs">
+      <a href="/prognozi?day={{ day_offset }}&status=upcoming&league={{ league_filter }}" class="{{ 'active' if status_tab=='upcoming' else '' }}">Предстоящи <span class="count">{{ upcoming_rows|length }}</span></a>
+      <a href="/prognozi?day={{ day_offset }}&status=finished&league={{ league_filter }}" class="{{ 'active' if status_tab=='finished' else '' }}">Приключили <span class="count">{{ finished_rows|length }}</span></a>
+      <a href="/prognozi?day={{ day_offset }}&status=skipped&league={{ league_filter }}" class="{{ 'active' if status_tab=='skipped' else '' }}">Пропуснати <span class="count">{{ skipped_rows|length }}</span></a>
+    </div>
+
+    {% if status_tab == 'upcoming' %}
+      {% if snapshot_empty %}
+      <div class="empty-note">Изчаква следващо изчисление — прогнозите се смятат на фон, на всеки {{ snapshot_interval_minutes }} минути. Тази страница не тегли данни на живо.</div>
+      {% elif not upcoming_rows %}
+      <div class="empty-note">Няма изчислени прогнози за този ден все още.</div>
+      {% else %}
+      <div class="colheader"><div>Час</div><div>Мач</div><div class="r">Прогноза</div><div class="r">Разлика с пазара</div></div>
+      <div class="predlist">
+        {% for m in upcoming_rows %}
+        <div class="predrow">
+          <div><div class="pred-time">{{ m.date[-5:] }}</div><div class="pred-league">{{ m.flag }} {{ m.league_name }}</div></div>
+          <div class="pred-match">{{ m.home_cy }} — {{ m.away_cy }}</div>
+          <div class="pred-pick">{{ m.pick_label }} · {{ "%.0f"|format(m.pick_pct) }}%</div>
+          {% if m.diff is none %}
+          <div class="pred-edge none">—</div>
+          {% else %}
+          <div class="pred-edge {{ 'down' if m.diff < 0 else '' }}">{{ "+" if m.diff >= 0 else "" }}{{ "%.1f"|format(m.diff) }}%</div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% elif status_tab == 'finished' %}
+      {% if not finished_rows %}
+      <div class="empty-note">Няма уредени мачове за този ден.</div>
+      {% else %}
+      <div class="colheader"><div>Час</div><div>Мач</div><div class="r">Прогноза</div><div class="r">Разлика с пазара</div></div>
+      <div class="predlist">
+        {% for m in finished_rows %}
+        <div class="predrow">
+          <div><div class="pred-time">{{ m.date[-5:] }}</div><div class="pred-league">{{ m.flag }} {{ m.league_name }}</div></div>
+          <div class="pred-match">{{ m.home_cy }} — {{ m.away_cy }}</div>
+          <div class="pred-pick">{{ m.pick_label }} · {{ "%.0f"|format(m.pick_pct) }}%<span class="badge {{ m.status }}">{{ "✓ позна" if m.status=="won" else "✗ не позна" }}</span></div>
+          {% if m.diff is none %}
+          <div class="pred-edge none">—</div>
+          {% else %}
+          <div class="pred-edge {{ 'down' if m.diff < 0 else '' }}">{{ "+" if m.diff >= 0 else "" }}{{ "%.1f"|format(m.diff) }}%</div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% else %}
+      {% if not skipped_rows %}
+      <div class="empty-note">Няма пропуснати мачове за този ден.</div>
+      {% else %}
+      <div class="colheader"><div>Час</div><div>Мач</div><div class="r"></div><div class="r"></div></div>
+      <div class="predlist">
+        {% for m in skipped_rows %}
+        <div class="predrow">
+          <div><div class="pred-time">{{ m.date[-5:] }}</div><div class="pred-league">{{ m.flag }} {{ m.league_name }}</div></div>
+          <div class="pred-match">{{ m.home_cy }} — {{ m.away_cy }}</div>
+          <div class="pred-pick" style="color:var(--text-faint);font-weight:400;">Изключен от прогнозите</div>
+          <div class="pred-edge none">—</div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% endif %}
+
+    <details class="howto">
+      <summary>Как да чета тези числа</summary>
+      <div class="howto-body">
+        <h2>Какво значи нашето число?</h2>
+        <p>Когато видиш например <b>62%</b> до даден изход, това е оценка на компютърна програма (модел), която гледа резултати от предишни мачове на двата отбора и смята статистическа вероятност.</p>
+        <p><b>62% не означава „сигурно“.</b> Означава: ако имаше 100 мача точно като този, очакваме приблизително в 62 от тях да се случи посоченото — а в около 38 да не се случи. Второто е също толкова реален изход, колкото и първото.</p>
+
+        <h2>Какво значи пазарното число?</h2>
+        <p>До нашата оценка показваме и число, изчислено от коефициентите на букмейкърите за същия мач. Коефициентът е обратна величина на вероятност — колкото по-нисък е коефициентът, толкова букмейкърът смята изхода за по-вероятен. Ние просто превръщаме коефициента обратно в проценти, за да може да се сравнява директно с нашето число.</p>
+        <p>Пазарната оценка е резултат от парите на хиляди хора, залагащи едновременно на един и същи мач — затова по правило е трудна за победа.</p>
+
+        <h2>Защо показваме и двете?</h2>
+        <p>За да можеш да сравниш сам, вместо да вярваш на думата ни. Ако нашето число и пазарното са близки, двете страни „мислят“ по сходен начин за мача. Ако има голяма разлика между тях, показваме я — без да казваме кое от двете е правилното.</p>
+
+        <h2>Какво сме измерили за себе си</h2>
+        <p>Всеки ден записваме коя прогноза сме дали и после сравняваме с реалния резултат от мача. Пазим всичко — както познатите, така и непознатите прогнози — не подбираме само добрите примери.</p>
+
+        <div class="box warn">
+          <h2 style="margin-top:0;">⚠️ Честно казано засега</h2>
+          <p>Системата няма доказано предимство пред пазарните коефициенти. Когато сме проверили внимателно, като сме сравнили хиляди минали прогнози с реалните резултати: в единствената лига с достатъчно данни за сериозна проверка се оказахме мъничко по-зле от пазара, не по-добре; а смесването на нашата оценка с пазарната обикновено дава по-точна прогноза, отколкото само нашата сама — което показва, че пазарът носи информация, която ние (засега) нямаме сами.</p>
+          <p style="margin-bottom:0;">Затова числата тук са <b>описателни</b> — показват какво сме измерили до момента. Не са съвет какво да правиш.</p>
+        </div>
+
+        <div class="box age">
+          <h2 style="margin-top:0;">🔞 Отговорна игра</h2>
+          <p>Съдържанието в тази секция е информационно и статистическо. То не е съвет за залагане и не гарантира резултат — никой модел не може да гарантира изхода на спортно събитие.</p>
+          <p style="margin-bottom:0;">Хазартът е забранен за лица под 18 години. Залагането носи финансов риск и може да доведе до пристрастяване — играй отговорно, само с пари, които можеш да си позволиш да загубиш.</p>
+        </div>
+      </div>
+    </details>
+
+    <div class="foot-note">
+      Прогнозите се основават на статистически модел и не представляват съвет за залагане. Хазартът е забранен за лица под 18 години. Резултатите от миналото не гарантират бъдещи резултати.
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -1,12 +1,21 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css?family=Inter:300,400,500,700&display=swap&subset=cyrillic-ext" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap&subset=cyrillic-ext" rel="stylesheet">
 <style>
 :root {
+  /* Партида 2 (01.09.2026): стойностите обновени да съвпадат с
+     design_mockup_prognozi.html (Дака) - едно място за палитрата, вместо
+     макетът и тук да разминават (виж задачата: "макетът печели, обнови
+     токените"). Имената на променливите непипнати - използват се от
+     всичките templates/*.html, само стойностите се сменят. */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --bg:#000000; --panel:#171717; --panel2:#202020; --sidebar-bg:#1c1b1f; --border:#333333;
-  --text:#ffffff; --sub:#a0a0a0; --accent:#1fae8c; --accent-hover:#10c298;
-  --green:#1fae8c; --green-bg:#0f2a23; --yellow:#eab308; --yellow-bg:#332a10;
-  --grey:#5b6473; --live:#f44848; --red:#f44848;
+  --bg:#0d0e10; --panel:#18191c; --panel2:#1b1c20; --sidebar-bg:#18191c; --border:#28292d;
+  --text:#f3f4f5; --sub:#94979d; --accent:#18b98a; --accent-hover:#20cc9a;
+  --green:#18b98a; --green-bg:#0f2a23; --yellow:#eab308; --yellow-bg:#332a10;
+  --grey:#5b6473; --live:#ff5c5c; --red:#ef5b52;
+  /* Нови, само от макета - за /prognozi и бъдеща употреба, не заменят
+     горните, добавени са. */
+  --text-faint:#626468; --line-soft:#202124;
+  --accent-soft:rgba(24,185,138,0.12); --danger-soft:rgba(239,91,82,0.1);
 }
 </style>
