@@ -94,6 +94,7 @@
   .pred-pick .badge{display:block; font-size:11px; font-weight:600; margin-top:2px;}
   .pred-pick .badge.won{color:var(--accent);}
   .pred-pick .badge.lost{color:var(--red);}
+  .pred-pick .badge.inprogress{color:var(--text-faint); font-weight:400;}
   .pred-edge{font-size:13.5px; font-weight:700; text-align:right; color:var(--accent);}
   .pred-edge.down{color:var(--red);}
   .pred-edge.none{color:var(--text-faint); font-weight:600; font-size:12px;}
@@ -212,7 +213,7 @@
       {% if snapshot_empty %}
       <div class="empty-note">Изчаква следващо изчисление — прогнозите се смятат на фон, на всеки {{ snapshot_interval_minutes }} минути. Тази страница не тегли данни на живо.</div>
       {% else %}
-        {% if not upcoming_rows and not no_pick_rows %}
+        {% if not upcoming_rows and not no_pick_rows and not in_progress_rows %}
         <div class="empty-note">Няма изчислени прогнози за този ден все още.</div>
         {% endif %}
         {% if upcoming_rows %}
@@ -223,6 +224,24 @@
             <div><div class="pred-time">{{ m.date[-5:] }}</div><div class="pred-league">{{ m.flag }} {{ m.league_name }}</div></div>
             <div class="pred-match">{{ m.home_cy }} — {{ m.away_cy }}</div>
             <div class="pred-pick">{{ m.pick_label }} · {{ "%.0f"|format(m.pick_pct) }}%</div>
+            {% if m.diff is none %}
+            <div class="pred-edge none">—</div>
+            {% else %}
+            <div class="pred-edge {{ 'down' if m.diff < 0 else '' }}">{{ "+" if m.diff >= 0 else "" }}{{ "%.1f"|format(m.diff) }}%</div>
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if in_progress_rows %}
+        <div class="tab-note" style="margin-top:20px;">Мачове в ход ({{ in_progress_rows|length }}) — прогнозата е тази отпреди началото на мача, не се преизчислява на живо.</div>
+        <div class="predlist">
+          {% for m in in_progress_rows %}
+          <div class="predrow">
+            <div><div class="pred-time">{{ m.date[-5:] }}</div><div class="pred-league">{{ m.flag }} {{ m.league_name }}</div></div>
+            <div class="pred-match">{{ m.home_cy }} — {{ m.away_cy }}</div>
+            <div class="pred-pick">{{ m.pick_label }} · {{ "%.0f"|format(m.pick_pct) }}%<span class="badge inprogress">резултатът се проверява</span></div>
             {% if m.diff is none %}
             <div class="pred-edge none">—</div>
             {% else %}

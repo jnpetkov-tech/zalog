@@ -18,6 +18,37 @@ BULGARIA_NAMES = {
     "Pirin Blagoevgrad": "Пирин Благоевград",
     "Etar Veliko Tarnovo": "Етър Велико Търново",
     "Levski Krumovgrad": "Левски Крумовград",
+    # Допълнени 01.09.2026, изписването потвърдено от Дака - НЕ
+    # транскрибирано наново, не пипай без ново изрично потвърждение.
+    # Конвенция: резервните отбори са с арабска "2", не с "II".
+    "Dobrudzha": "Добруджа",
+    "Marek": "Марек",
+    "Montana": "Монтана",
+    "Tsarsko Selo": "Царско село",
+    "Vereya Stara Zagora": "Верея Стара Загора",
+    "Vitosha Bistritsa": "Витоша Бистрица",
+    "Bdin": "Бдин",
+    "Belasitsa": "Беласица",
+    "Botev Plovdiv II": "Ботев Пловдив 2",
+    "CSKA 1948 Sofia II": "ЦСКА 1948 София 2",
+    "CSKA Sofia II": "ЦСКА София 2",
+    "Chernomorets 1919 Burgas": "Черноморец 1919 Бургас",
+    "Chernomorets Balchik": "Черноморец Балчик",
+    "FK Minyor Pernik": "Миньор Перник",
+    "Fratria": "Фратрия",
+    "Litex": "Литекс",
+    "Lokomotiv G. Oryahovitsa": "Локомотив Г. Оряховица",
+    "Ludogorets II": "Лудогорец 2",
+    "Maritsa Plovdiv": "Марица Пловдив",
+    "Nesebar": "Несебър",
+    "Rilski Sportist": "Рилски спортист",
+    "Sevlievo": "Севлиево",
+    "Sozopol": "Созопол",
+    "Spartak Pleven": "Спартак Плевен",
+    "Sportist Svoge": "Спортист Своге",
+    "Strumska Slava": "Струмска слава",
+    "Vihren": "Вихрен",
+    "Yantra 2019": "Янтра 2019",
 }
 
 _translit_map = [

@@ -131,14 +131,23 @@ def register_prognozi_routes(app, ctx):
         for r in snap_rows:
             snap_by_fixture.setdefault(r["fixture_id"], []).append(r)
 
-        # Преглед на Дака (01.09.2026), т.2: top_pick_for_match() връща None
-        # за мач без публикуема прогноза (напр. цял кръг от england2 тази
-        # вечер) - преди тази поправка такъв мач просто изчезваше от
-        # страницата, без следа. Вместо да го мълчим напълно, събираме го в
-        # no_pick_rows - отделна, сгъната по подразбиране секция ("Мачове
-        # без доверена прогноза"), същият принцип като /results ("не крием
-        # липсата, показваме я").
-        upcoming_rows, skipped_rows, no_pick_rows = [], [], []
+        # Преглед на Дака (01.09.2026), т.2 от предишната поправка:
+        # top_pick_for_match() връща None за мач без публикуема прогноза -
+        # такъв мач вече отива в no_pick_rows, сгъната секция, вместо да
+        # изчезва без следа.
+        #
+        # Преглед на Дака (01.09.2026), нова т.2 ("мачовете в ход изчезват"):
+        # часовият филтър от предишната поправка (само бъдещи в
+        # "Предстоящи") остави дупка - мач, започнал, но още неуреден
+        # (check_results върви на 3 часа), не е нито в "Предстоящи" (вече в
+        # миналото), нито в "Приключили" (не е settled) - изчезваше напълно.
+        # settled_fixture_ids - същият published списък, който вече дефинира
+        # "Приключили" по-долу (т.3 от предишната поправка) - едно
+        # определение за "уреден", не второ.
+        settled_fixture_ids = {p["fixture_id"] for p in published if p["status"] in ("won", "lost")}
+        now_sofia_str = _now_sofia_str()
+
+        upcoming_rows, skipped_rows, no_pick_rows, in_progress_rows = [], [], [], []
         for fixture_id, rows in snap_by_fixture.items():
             league = rows[0]["league"]
             base = {
@@ -151,29 +160,36 @@ def register_prognozi_routes(app, ctx):
             note = notes_map.get(fixture_id)
             if note and note["skip"]:
                 # Пропуснат от Дака - приоритетно пред "без доверена
-                # прогноза" (мачът може реално да няма прогноза И да е
-                # пропуснат - показва се като пропуснат, не дублиран).
+                # прогноза"/"в ход" (мачът може реално да няма прогноза И да
+                # е пропуснат - показва се като пропуснат, не дублиран).
                 skipped_rows.append(base)
                 continue
 
             top = ps.top_pick_for_match(rows, league, policy)
             if not top:
-                no_pick_rows.append(base)
+                # "Без доверена прогноза" - само бъдещи (т.3 от предишната
+                # поправка); ако вече е започнал и няма прогноза, просто
+                # няма какво честно да се покаже - извън обявения обхват.
+                if base["date"] > now_sofia_str:
+                    no_pick_rows.append(base)
                 continue
 
             market_pct, diff = _row_diff(fixture_id, top["market_code"], top["pick_pct"])
-            upcoming_rows.append({**base, "pick_label": top["pick_label"], "pick_pct": top["pick_pct"],
-                                   "market_pct": market_pct, "diff": diff, "status": None})
+            card = {**base, "pick_label": top["pick_label"], "pick_pct": top["pick_pct"],
+                    "market_pct": market_pct, "diff": diff, "status": None}
 
-        # Преглед на Дака (01.09.2026), т.3: "Предстоящи" (и секцията "без
-        # доверена прогноза", същия таб) показва само мачове с начален час В
-        # БЪДЕЩЕТО - започнали/приключили днес мачове излизат оттук (уредените
-        # вече са в "Приключили" през evaluation.published_picks() по-долу;
-        # неуредени-но-започнали просто не се показват никъде на тази
-        # страница засега - извън обявения обхват на тази поправка).
-        now_sofia_str = _now_sofia_str()
-        upcoming_rows = [r for r in upcoming_rows if r["date"] > now_sofia_str]
-        no_pick_rows = [r for r in no_pick_rows if r["date"] > now_sofia_str]
+            if base["date"] > now_sofia_str:
+                upcoming_rows.append(card)
+            elif fixture_id not in settled_fixture_ids:
+                # "Мачове в ход": започнал, не е в published_picks() като
+                # won/lost - показва СЪЩАТА прогноза, изчислена преди мача
+                # (predictions_snapshot не се преизчислява живо за мачове в
+                # ход), без резултат/минута/live преизчисление. Излиза
+                # оттук автоматично, щом published_picks() го покаже
+                # settled - никаква отделна логика за премахване.
+                in_progress_rows.append(card)
+            # else: започнал И уреден -> вече е в "Приключили" по-долу,
+            # пропускаме тук напълно (без дублиране).
 
         # ---- Приключили: т.3, преглед на Дака (01.09.2026) - "два филтъра,
         # една таблица". Преди тази поправка тук се групираше predictions_log
@@ -224,7 +240,8 @@ def register_prognozi_routes(app, ctx):
         elif status_tab == "skipped":
             tab_leagues = {r["league"] for r in skipped_rows}
         else:
-            tab_leagues = {r["league"] for r in upcoming_rows} | {r["league"] for r in no_pick_rows}
+            tab_leagues = ({r["league"] for r in upcoming_rows} | {r["league"] for r in no_pick_rows}
+                            | {r["league"] for r in in_progress_rows})
         active_leagues = sorted(tab_leagues, key=lambda k: ALL_LEAGUES.get(k, {}).get("name", k))
         league_options = [(k, ALL_LEAGUES.get(k, {}).get("name", k)) for k in active_leagues]
 
@@ -233,6 +250,7 @@ def register_prognozi_routes(app, ctx):
             finished_rows = [r for r in finished_rows if r["league"] == league_filter]
             skipped_rows = [r for r in skipped_rows if r["league"] == league_filter]
             no_pick_rows = [r for r in no_pick_rows if r["league"] == league_filter]
+            in_progress_rows = [r for r in in_progress_rows if r["league"] == league_filter]
         else:
             league_filter = "all"
 
@@ -240,6 +258,7 @@ def register_prognozi_routes(app, ctx):
         finished_rows.sort(key=lambda r: r["date"], reverse=True)  # най-скоро уредените отгоре
         skipped_rows.sort(key=lambda r: r["date"])
         no_pick_rows.sort(key=lambda r: r["date"])
+        in_progress_rows.sort(key=lambda r: r["date"])
 
         snapshot_freshness = st.get_snapshot_freshness()
         # т.2.10: ако снимката е изцяло празна (фоновата задача никога не е
@@ -270,7 +289,7 @@ def register_prognozi_routes(app, ctx):
             league_filter=league_filter, league_options=league_options,
             status_tab=status_tab,
             upcoming_rows=upcoming_rows, finished_rows=finished_rows, skipped_rows=skipped_rows,
-            no_pick_rows=no_pick_rows,
+            no_pick_rows=no_pick_rows, in_progress_rows=in_progress_rows,
             snapshot_empty=snapshot_empty, snapshot_stale_note=snapshot_stale_note,
         )
 
