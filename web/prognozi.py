@@ -19,7 +19,7 @@ committed като спецификация) - числата в макета с
 Регистрира се по същия модел като web/daily.py и др. - register_X(app, ctx),
 за да няма кръгов импорт с match_predictor_app.py.
 """
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from flask import Blueprint, request, render_template
 
 # т.2.5: build-predictions-snapshot.timer (systemd, /etc/systemd/system/) -
@@ -27,6 +27,12 @@ from flask import Blueprint, request, render_template
 # промени, тази стойност трябва да се обнови ръчно заедно с него (чисто
 # козметичен текст в подзаглавието, не логика).
 SNAPSHOT_INTERVAL_MINUTES = 30
+
+# Преглед на Дака (01.09.2026), т.1: ако build-predictions-snapshot.timer
+# спре (същия клас проблем като incremental_refresh.py, архивиран по грешка
+# - виж CLAUDE_HANDOFF.md, раздел 3), страницата не бива тихо да сервира
+# вчерашни прогнози с уверен тон. 90 мин = 3 пропуснати 30-мин пускания.
+SNAPSHOT_STALE_AFTER_MINUTES = 90
 
 DAY_TAB_COUNT = 7  # съвпада с DAYS_AHEAD прозореца, проверено т.2.6
 BG_WEEKDAYS_SHORT = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"]
@@ -89,9 +95,12 @@ def register_prognozi_routes(app, ctx):
             status_tab = "upcoming"
 
         # т.2.3: трите числа горе - САМО от evaluation.summary(), нищо друго.
-        # Единен fetch на predictions_log - и за отчета, и за "Приключили" по-долу.
+        # Единен fetch на predictions_log - за отчета И за "Приключили" по-долу
+        # (т.3, преглед на Дака 01.09.2026: и двете вече минават през
+        # evaluation.published_picks() - виж бележката там).
         predictions = st.list_predictions()
         scorecard = evaluation.summary(predictions, policy)
+        published = evaluation.published_picks(predictions, policy)
 
         notes_map = st.get_all_match_notes()
 
@@ -120,33 +129,40 @@ def register_prognozi_routes(app, ctx):
             note = notes_map.get(fixture_id)
             (skipped_rows if (note and note["skip"]) else upcoming_rows).append(card)
 
-        # ---- Приключили: от predictions_log, реално уредени резултати -
-        # НЕ API извикване, същата таблица, която вече чете evaluation.summary()
-        # за отчета отгоре (т.2.3) - не втори източник, само друга употреба
-        # на едни и същи вече закачени данни. ----
-        finished_by_fixture = {}
-        for r in predictions:
-            if str(r["match_date"])[:10] != selected_date_str:
-                continue
-            if r["status"] not in ("won", "lost"):
-                continue
-            finished_by_fixture.setdefault(r["fixture_id"], []).append(r)
-
+        # ---- Приключили: т.3, преглед на Дака (01.09.2026) - "два филтъра,
+        # една таблица". Преди тази поправка тук се групираше predictions_log
+        # ПРЕДВАРИТЕЛНО филтриран до won/lost редове, после се пускаше
+        # top_pick_for_match върху ТОЗИ подмножество - различен избор от
+        # evaluation.published_picks() (което избира каноничния топ пазар
+        # върху ВСИЧКИ логнати редове за мача, включително pending, после
+        # едва след избора проверява дали точно ТОЗИ избран ред е settled).
+        # За мач с частично уредени пазари двата пътя могат да изберат
+        # различен пазар - разминаване, което директно противоречи на
+        # "Приключили" отговарящо на n_settled горе. Сега: буквално същият
+        # `published` списък като scorecard - никакъв втори подбор.
+        #
+        # НЕ филтрирано по избрания ден (нарочно, за разлика от Предстоящи/
+        # Пропуснати по-долу): деновете в daystrip-а са бъдещи (0..+6, т.2.6),
+        # а уредените мачове са почти изцяло в миналото - ден-по-ден филтър
+        # тук би направил "Приключили" практически недостижимо (сумата по
+        # достъпните дни никога не би стигнала n_settled). Затова таб-броячът
+        # и списъкът показват ЦЯЛАТА история на публикуваните уредени
+        # прогнози (само с league филтъра по-долу) - винаги точно n_settled.
         finished_rows = []
-        for fixture_id, rows in finished_by_fixture.items():
-            league = rows[0]["league"]
-            top = ps.top_pick_for_match(rows, league, policy)
-            if not top:
+        for p in published:
+            if p["status"] not in ("won", "lost"):
                 continue
-            market_pct, diff = _row_diff(fixture_id, top["market_code"], top["pick_pct"])
+            league = p["league"]
+            fixture_id = p["fixture_id"]
+            market_pct, diff = _row_diff(fixture_id, p["market_code"], p["pick_pct"])
             finished_rows.append({
                 "fixture_id": fixture_id, "league": league,
                 "league_name": ALL_LEAGUES.get(league, {}).get("name", league),
                 "flag": LEAGUE_FLAGS.get(league, "⚽"),
-                "date": top["match_date"], "home": top["home_team"], "away": top["away_team"],
-                "home_cy": to_cyrillic(top["home_team"], league), "away_cy": to_cyrillic(top["away_team"], league),
-                "pick_label": top["pick_label"], "pick_pct": top["pick_pct"],
-                "market_pct": market_pct, "diff": diff, "status": top["status"],
+                "date": p["match_date"], "home": p["home_team"], "away": p["away_team"],
+                "home_cy": to_cyrillic(p["home_team"], league), "away_cy": to_cyrillic(p["away_team"], league),
+                "pick_label": p["pick_label"], "pick_pct": p["pick_pct"],
+                "market_pct": market_pct, "diff": diff, "status": p["status"],
             })
 
         if league_filter != "all" and league_filter in ALL_LEAGUES:
@@ -157,7 +173,7 @@ def register_prognozi_routes(app, ctx):
             league_filter = "all"
 
         upcoming_rows.sort(key=lambda r: r["date"])
-        finished_rows.sort(key=lambda r: r["date"])
+        finished_rows.sort(key=lambda r: r["date"], reverse=True)  # най-скоро уредените отгоре
         skipped_rows.sort(key=lambda r: r["date"])
 
         # Кои лиги реално имат нещо в снимката за избрания ден - падащото
@@ -173,7 +189,20 @@ def register_prognozi_routes(app, ctx):
         # извън прозореца), също казваме честно, не скриваме с празна
         # страница без обяснение.
         snapshot_empty = snapshot_freshness is None
-        day_empty = not (upcoming_rows or finished_rows or skipped_rows)
+
+        # Преглед на Дака (01.09.2026), т.1: видима лента, ако снимката е
+        # по-стара от SNAPSHOT_STALE_AFTER_MINUTES - не крие прогнозите,
+        # само казва честно кога са смятани за последно. Отделно от
+        # snapshot_empty (там таблицата е изцяло празна, тук е само остаряла).
+        snapshot_stale_note = None
+        if snapshot_freshness:
+            try:
+                computed_dt = datetime.fromisoformat(snapshot_freshness)
+                age_minutes = (datetime.now() - computed_dt).total_seconds() / 60
+                if age_minutes > SNAPSHOT_STALE_AFTER_MINUTES:
+                    snapshot_stale_note = f"Последно изчислено в {computed_dt.strftime('%H:%M')}"
+            except (ValueError, TypeError):
+                pass
 
         return render_template(
             "prognozi.html", active_page="prognozi",
@@ -182,7 +211,7 @@ def register_prognozi_routes(app, ctx):
             league_filter=league_filter, league_options=league_options,
             status_tab=status_tab,
             upcoming_rows=upcoming_rows, finished_rows=finished_rows, skipped_rows=skipped_rows,
-            snapshot_empty=snapshot_empty, day_empty=day_empty,
+            snapshot_empty=snapshot_empty, snapshot_stale_note=snapshot_stale_note,
         )
 
     app.register_blueprint(prognozi_bp)

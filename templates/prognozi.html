@@ -101,6 +101,11 @@
   .empty-note{ padding:28px 18px; text-align:center; color:var(--sub); font-size:13.5px;
     background:var(--panel2); border:1px solid var(--border); border-radius:10px; }
 
+  .stale-banner{ margin-bottom:20px; padding:12px 16px; font-size:13px; color:var(--yellow);
+    background:rgba(234,179,8,0.1); border:1px solid rgba(234,179,8,0.35); border-radius:10px; }
+
+  .tab-note{ margin-bottom:14px; font-size:12px; color:var(--text-faint); }
+
   .howto{ margin-top:34px; border:1px solid var(--border); border-radius:12px; padding:0; overflow:hidden; }
   .howto summary{ cursor:pointer; padding:16px 20px; font-size:14px; font-weight:600; list-style:none; }
   .howto summary::-webkit-details-marker{display:none;}
@@ -165,6 +170,10 @@
       </div>
     </div>
 
+    {% if snapshot_stale_note %}
+    <div class="stale-banner">⚠️ {{ snapshot_stale_note }} — по-старо от обичайното (преизчислява се на {{ snapshot_interval_minutes }} мин). Прогнозите по-долу може да не са най-новите.</div>
+    {% endif %}
+
     <div class="daystrip">
       {% for d in day_tabs %}
       <a href="/prognozi?day={{ d.offset }}&status={{ status_tab }}&league={{ league_filter }}" class="{{ 'active' if d.offset == day_offset else '' }}">{{ d.label }} <span>{{ d.short }}</span></a>
@@ -216,13 +225,14 @@
       {% endif %}
     {% elif status_tab == 'finished' %}
       {% if not finished_rows %}
-      <div class="empty-note">Няма уредени мачове за този ден.</div>
+      <div class="empty-note">Няма уредени мачове все още.</div>
       {% else %}
-      <div class="colheader"><div>Час</div><div>Мач</div><div class="r">Прогноза</div><div class="r">Разлика с пазара</div></div>
+      <div class="tab-note">Пълна история на уредените публикувани прогнози (n={{ finished_rows|length }}) — не е ограничена до избрания ден по-горе, дните горе показват само предстоящи.</div>
+      <div class="colheader"><div>Дата</div><div>Мач</div><div class="r">Прогноза</div><div class="r">Разлика с пазара</div></div>
       <div class="predlist">
         {% for m in finished_rows %}
         <div class="predrow">
-          <div><div class="pred-time">{{ m.date[-5:] }}</div><div class="pred-league">{{ m.flag }} {{ m.league_name }}</div></div>
+          <div><div class="pred-time">{{ m.date[8:10] }}.{{ m.date[5:7] }} {{ m.date[-5:] }}</div><div class="pred-league">{{ m.flag }} {{ m.league_name }}</div></div>
           <div class="pred-match">{{ m.home_cy }} — {{ m.away_cy }}</div>
           <div class="pred-pick">{{ m.pick_label }} · {{ "%.0f"|format(m.pick_pct) }}%<span class="badge {{ m.status }}">{{ "✓ позна" if m.status=="won" else "✗ не позна" }}</span></div>
           {% if m.diff is none %}
