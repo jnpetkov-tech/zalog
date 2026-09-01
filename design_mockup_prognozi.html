@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SportBG — Прогнози</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0d0e10;
+    --bg-raised: #18191c;
+    --card: #1b1c20;
+    --line: #28292d;
+    --line-soft: #202124;
+    --text: #f3f4f5;
+    --text-dim: #94979d;
+    --text-faint: #626468;
+    --accent: #18b98a;
+    --accent-ink: #ffffff;
+    --accent-soft: rgba(24,185,138,0.12);
+    --danger: #ef5b52;
+    --danger-soft: rgba(239,91,82,0.1);
+    --live: #ff5c5c;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-font-smoothing:antialiased;}
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Inter", -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    font-variant-numeric: tabular-nums;
+  }
+  a{color:inherit;text-decoration:none;}
+  button, select, input{font-family:inherit;}
+
+  /* ---------- shell ---------- */
+  .shell{max-width:1120px; margin:0 auto; padding: 36px 32px 72px;}
+
+  .heading-row{
+    display:flex; align-items:flex-end; justify-content:space-between;
+    margin-bottom:36px; flex-wrap:wrap; gap:12px;
+  }
+  h1{font-size:30px; font-weight:800; letter-spacing:-0.5px;}
+  .heading-sub{font-size:14px; color:var(--text-dim); margin-top:6px; max-width:44ch;}
+
+  /* ---------- hero metrics ---------- */
+  .metrics{
+    display:flex; margin-bottom:34px; border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  }
+  .metric{
+    flex:1; padding:22px 28px; border-right:1px solid var(--line);
+  }
+  .metric:last-child{border-right:none;}
+  .metric .num{font-size:40px; font-weight:800; letter-spacing:-1px; line-height:1;}
+  .metric .num.up{color:var(--accent);}
+  .metric .num.down{color:var(--danger);}
+  .metric .label{font-size:13px; color:var(--text-faint); margin-top:8px;}
+
+  /* ---------- day strip ---------- */
+  .daystrip{
+    display:flex; gap:28px; margin-bottom:28px; overflow-x:auto;
+    border-bottom:1px solid var(--line);
+  }
+  .daystrip button{
+    background:none; border:none; color:var(--text-dim);
+    padding:0 0 14px; font-size:14px; cursor:pointer; white-space:nowrap;
+    border-bottom:2px solid transparent; display:flex; gap:6px; align-items:baseline;
+  }
+  .daystrip button span{color:var(--text-faint); font-size:12.5px;}
+  .daystrip button.active{color:var(--text); border-bottom-color:var(--accent); font-weight:600;}
+  .daystrip button.active span{color:var(--accent);}
+
+  /* ---------- controls ---------- */
+  .controls{
+    display:flex; gap:10px; align-items:center; margin-bottom:26px; flex-wrap:wrap;
+  }
+  .chip-select{
+    background:var(--card); border:1px solid var(--line); border-radius:8px;
+    color:var(--text); font-size:13.5px; padding:9px 14px; appearance:none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--text-faint) 50%), linear-gradient(135deg, var(--text-faint) 50%, transparent 50%);
+    background-position: calc(100% - 16px) 55%, calc(100% - 11px) 55%;
+    background-size: 5px 5px, 5px 5px; background-repeat:no-repeat;
+    padding-right:30px;
+  }
+  .toggle{
+    display:flex; align-items:center; gap:9px; font-size:13.5px; color:var(--text-dim);
+    cursor:pointer; margin-left:4px;
+  }
+  .toggle .switch{
+    width:34px; height:20px; border-radius:10px; background:var(--card);
+    border:1px solid var(--line); position:relative; flex-shrink:0;
+  }
+  .toggle .switch::after{
+    content:''; position:absolute; top:2px; left:2px; width:14px; height:14px;
+    border-radius:50%; background:var(--text-faint);
+  }
+  .toggle input{display:none;}
+  .toggle input:checked + .switch{background:var(--accent-soft); border-color:var(--accent);}
+  .toggle input:checked + .switch::after{background:var(--accent); left:16px;}
+
+  /* ---------- status tabs ---------- */
+  .statustabs{
+    display:flex; gap:26px; border-bottom:1px solid var(--line); margin-bottom:6px;
+  }
+  .statustabs button{
+    background:none; border:none; color:var(--text-dim); font-size:14px;
+    padding:0 0 13px; cursor:pointer; border-bottom:2px solid transparent;
+    display:flex; align-items:center; gap:7px;
+  }
+  .statustabs button .swatch{width:6px;height:6px;border-radius:50%;}
+  .statustabs button.active{color:var(--text); border-bottom-color:var(--accent); font-weight:600;}
+  .statustabs button .count{color:var(--text-faint); font-weight:400;}
+
+  /* ---------- column header ---------- */
+  .colheader{
+    display:grid; grid-template-columns: 96px 1fr 140px 96px; gap:18px;
+    padding:14px 18px 10px; font-size:12px; color:var(--text-faint);
+  }
+  .colheader .r{text-align:right;}
+
+  /* ---------- prediction rows ---------- */
+  .predlist{display:flex; flex-direction:column; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:10px; overflow:hidden;}
+  .predrow{
+    display:grid; grid-template-columns: 96px 1fr 140px 96px; align-items:center;
+    gap:18px; background:var(--card); padding:16px 18px;
+  }
+  .predrow:hover{background:var(--bg-raised);}
+  .pred-time{font-size:13.5px; color:var(--text-dim); font-weight:600;}
+  .pred-league{font-size:12px; color:var(--text-faint); margin-top:2px; font-weight:400;}
+  .pred-match{font-size:14.5px; font-weight:600;}
+  .pred-pick{font-size:14.5px; font-weight:700; color:var(--accent); text-align:right;}
+  .pred-edge{font-size:13.5px; font-weight:700; text-align:right; color:var(--accent);}
+  .pred-edge.low{color:var(--text-faint); font-weight:600;}
+
+  .foot-note{
+    margin-top:32px; font-size:12px; color:var(--text-faint); line-height:1.7; max-width:70ch;
+  }
+
+  @media (max-width: 720px){
+    .shell{padding:24px 18px 56px;}
+    .metrics{flex-wrap:wrap;}
+    .metric{flex:0 0 50%; border-bottom:1px solid var(--line);}
+    .metric:nth-child(2n){border-right:none;}
+    .colheader{display:none;}
+    .predrow{grid-template-columns: 1fr; gap:6px; text-align:left;}
+    .pred-pick, .pred-edge{text-align:left;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="shell">
+
+    <div class="heading-row">
+      <div>
+        <h1>Прогнози</h1>
+        <div class="heading-sub">Модел, кръстосан с пазарните коефициенти — обновява се на всеки няколко минути.</div>
+      </div>
+    </div>
+
+    <div class="metrics">
+      <div class="metric"><div class="num">345</div><div class="label">прогнози до момента</div></div>
+      <div class="metric"><div class="num up">+4.7%</div><div class="label">ROI</div></div>
+      <div class="metric"><div class="num up">+14.2</div><div class="label">единици</div></div>
+    </div>
+
+    <div class="daystrip">
+      <button>Днес <span>1 сеп</span></button>
+      <button class="active">Утре <span>2 сеп</span></button>
+      <button>Ср <span>3 сеп</span></button>
+      <button>Чт <span>4 сеп</span></button>
+      <button>Пт <span>5 сеп</span></button>
+      <button>Сб <span>6 сеп</span></button>
+      <button>Нд <span>7 сеп</span></button>
+    </div>
+
+    <div class="controls">
+      <select class="chip-select"><option>Всички лиги</option></select>
+      <select class="chip-select"><option>По вероятност</option></select>
+      <label class="toggle">
+        <input type="checkbox" id="edgeonly">
+        <span class="switch"></span>
+        Само с разминаване от пазара
+      </label>
+    </div>
+
+    <div class="statustabs">
+      <button class="active"><span class="swatch" style="background:var(--live)"></span>На живо <span class="count">2</span></button>
+      <button>Предстоящи <span class="count">9</span></button>
+      <button>Приключили <span class="count">345</span></button>
+      <button>Пропуснати <span class="count">0</span></button>
+    </div>
+
+    <div class="colheader">
+      <div>Час</div>
+      <div>Мач</div>
+      <div class="r">Прогноза</div>
+      <div class="r">Edge</div>
+    </div>
+
+    <div class="predlist">
+      <div class="predrow">
+        <div><div class="pred-time">18:00</div><div class="pred-league">Ла Лига</div></div>
+        <div class="pred-match">Реал Сосиедад — Валенсия</div>
+        <div class="pred-pick">1 · 61%</div>
+        <div class="pred-edge">+6.1%</div>
+      </div>
+      <div class="predrow">
+        <div><div class="pred-time">19:30</div><div class="pred-league">Серия А</div></div>
+        <div class="pred-match">Аталанта — Торино</div>
+        <div class="pred-pick">Над 2.5 · 58%</div>
+        <div class="pred-edge">+3.4%</div>
+      </div>
+      <div class="predrow">
+        <div><div class="pred-time">21:00</div><div class="pred-league">Бундеслига</div></div>
+        <div class="pred-match">Волфсбург — Майнц</div>
+        <div class="pred-pick">X · 34%</div>
+        <div class="pred-edge low">+0.8%</div>
+      </div>
+    </div>
+
+    <div class="foot-note">
+      Прогнозите се основават на статистически модел и не представляват съвет за залагане. Хазартът е забранен за лица под 18 години. Резултатите от миналото не гарантират бъдещи резултати.
+    </div>
+
+  </div>
+
+</body>
+</html>
