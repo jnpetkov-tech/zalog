@@ -150,6 +150,33 @@ def roi(picks):
     return (ret - stake) / stake * 100.0, len(eligible)
 
 
+def roi_confidence_interval(eligible):
+    """Спешна поправка (01.09.2026, преглед на Дака): ROI без интервал на
+    несигурност е подвеждащ - +4.7% при n=308 звучи като находка, но е в
+    рамките на шума. `eligible`: същият списък settled публикувани редове
+    С market_odds, който вече строи `roi()`/`summary()` (не пресмятаме
+    отделен набор - едно определение за "кои залози броим").
+
+    Печалба на залог: (market_odds - 1) при won, -1 при lost (същата
+    формула като `roi()`, само по едно число на залог вместо сумарно).
+    Wald 95% интервал: mean ± 1.96 * SE, SE = извадкова стандартна грешка
+    на средното (sample sd / sqrt(n), n-1 знаменател - обичайната
+    несмесена оценка). Връща None ако n < 2 (няма как да се смята
+    отклонение от една точка)."""
+    n = len(eligible)
+    if n < 2:
+        return None
+    profits = [(p["market_odds"] - 1.0) if p["status"] == "won" else -1.0 for p in eligible]
+    mean = sum(profits) / n
+    var = sum((x - mean) ** 2 for x in profits) / (n - 1)
+    se = (var / n) ** 0.5
+    return {
+        "mean_pct": mean * 100.0, "se_pct": se * 100.0,
+        "ci_lo_pct": (mean - 1.96 * se) * 100.0, "ci_hi_pct": (mean + 1.96 * se) * 100.0,
+        "n": n, "contains_zero": (mean - 1.96 * se) <= 0 <= (mean + 1.96 * se),
+    }
+
+
 def summary(rows, policy, bands=None):
     """Всичко наведнъж - за витрините (началната страница, /results).
     n е винаги видим до всяко число - никога скрит зад проценти без
@@ -175,6 +202,7 @@ def summary(rows, policy, bands=None):
               if roi_eligible else None)
     avg_odds = (sum(p["market_odds"] for p in roi_eligible) / len(roi_eligible)
                 if roi_eligible else None)
+    roi_ci = roi_confidence_interval(roi_eligible)
 
     return {
         "n_published": len(picks),
@@ -187,5 +215,5 @@ def summary(rows, policy, bands=None):
         "brier": brier, "brier_n": brier_n,
         "log_loss": ll, "log_loss_n": ll_n,
         "roi": roi_pct, "roi_n": roi_n,
-        "profit": profit, "avg_odds": avg_odds,
+        "profit": profit, "avg_odds": avg_odds, "roi_ci": roi_ci,
     }
