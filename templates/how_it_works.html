@@ -1,0 +1,77 @@
+
+<!DOCTYPE html><html lang="bg"><head><meta charset="UTF-8">
+<title>Как работи това</title>
+{% include "_tokens.html" %}
+<style>
+  body { font-family: var(--font-sans); background: var(--bg); color: var(--text); margin: 0; padding: 24px; }
+  .container { max-width: 680px; margin: 0 auto; }
+  h1 { font-size: 20px; font-weight: 500; margin-bottom: 12px; color: var(--text); }
+  h2 { font-size: 15px; font-weight: 600; margin: 26px 0 8px; color: var(--text); }
+  p { font-size: 14px; line-height: 1.65; color: var(--text); margin: 0 0 10px; }
+  .lead { color: var(--sub); font-size: 13.5px; margin-bottom: 18px; }
+  .box { background: var(--panel2); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; margin-bottom: 18px; }
+  .box.warn { border-color: rgba(234,179,8,0.35); }
+  .box.warn h2 { color: var(--yellow); }
+  .box.age { border-color: rgba(244,72,72,0.35); }
+  .box.age h2 { color: var(--live); }
+
+  .sidebar { position: fixed; top:0; left:0; bottom:0; width:220px; background:var(--sidebar-bg); border-right:1px solid var(--border); padding:24px 0; overflow-y:auto; z-index:200; }
+  .sidebar-logo { padding:0 20px 20px; font-size:16px; font-weight:600; color:var(--accent); }
+  .sidebar-section { padding:16px 20px 6px; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:#525a68; font-weight:700; }
+  .sidebar a { display:flex; align-items:center; gap:10px; padding:10px 20px; color:var(--sub); text-decoration:none; font-size:13px; }
+  .sidebar a.active { background:rgba(31,174,140,0.15); color:var(--accent); font-weight:500; border-right:3px solid var(--accent); }
+  .sidebar a:hover { background:var(--panel2); }
+  .sidebar-toggle { display:none; position:fixed; top:16px; left:16px; z-index:300; background:var(--panel2); color:var(--text); border:1px solid var(--border); border-radius:8px; width:40px; height:40px; align-items:center; justify-content:center; font-size:18px; cursor:pointer; }
+  body { padding-left:244px; }
+  @media (max-width: 860px) {
+    .sidebar { transform:translateX(-100%); transition:transform 0.2s ease; box-shadow:4px 0 12px rgba(0,0,0,0.4); }
+    .sidebar.open { transform:translateX(0); }
+    .sidebar-toggle { display:flex; }
+    body { padding-left:24px; padding-top:70px; }
+  }
+</style></head><body>
+<div class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</div>
+<div class="sidebar">
+  <a href="/daily" class="{% if active_page=='daily' %}active{% endif %}">📅 Днес</a>
+  <a href="/results" class="{% if active_page=='results' %}active{% endif %}">📋 Как се справяме</a>
+  <a href="/my_bets" class="{% if active_page=='my_bets' %}active{% endif %}">🎯 Моите залози</a>
+  <a href="/how_it_works" class="{% if active_page=='how_it_works' %}active{% endif %}">❓ Как работи това</a>
+  <div class="sidebar-section">Система</div>
+  <a href="/system" class="{% if active_page=='system_hub' %}active{% endif %}">⚙️ Система</a>
+  <div style="margin-top:18px;padding:12px 20px;font-size:10.5px;line-height:1.5;color:var(--sub);border-top:1px solid var(--border);">
+    🔞 Информационно съдържание, не съвет за залагане. Хазартът е забранен за лица под 18 години и може да пристрасти.
+  </div>
+</div>
+
+<div class="container">
+<h1>Как работи това</h1>
+<p class="lead">Прост отговор на четири въпроса — какво значи нашето число, какво значи пазарното, защо показваме и двете, и какво сме измерили за себе си.</p>
+
+<h2>Какво значи нашето число?</h2>
+<p>Когато видиш например <b>62%</b> до даден изход, това е оценка на компютърна програма (модел), която гледа резултати от предишни мачове на двата отбора и смята статистическа вероятност.</p>
+<p><b>62% не означава „сигурно“.</b> Означава: ако имаше 100 мача точно като този, очакваме приблизително в 62 от тях да се случи посоченото — а в около 38 да не се случи. Второто е също толкова реален изход, колкото и първото.</p>
+
+<h2>Какво значи пазарното число?</h2>
+<p>До нашата оценка показваме и число, изчислено от коефициентите на букмейкърите за същия мач. Коефициентът е обратна величина на вероятност — колкото по-нисък е коефициентът, толкова букмейкърът смята изхода за по-вероятен. Ние просто превръщаме коефициента обратно в проценти, за да може да се сравнява директно с нашето число.</p>
+<p>Пазарната оценка е резултат от парите на хиляди хора, залагащи едновременно на един и същи мач — затова по правило е трудна за победа.</p>
+
+<h2>Защо показваме и двете?</h2>
+<p>За да можеш да сравниш сам, вместо да вярваш на думата ни. Ако нашето число и пазарното са близки, двете страни „мислят“ по сходен начин за мача. Ако има голяма разлика между тях, показваме я — без да казваме кое от двете е правилното.</p>
+
+<h2>Какво сме измерили за себе си</h2>
+<p>Всеки ден записваме коя прогноза сме дали и после сравняваме с реалния резултат от мача. Пазим всичко — както познатите, така и непознатите прогнози — не подбираме само добрите примери. Пълните числа стоят винаги видими на страницата <a href="/results" style="color:var(--accent);">„Как се справяме“</a>, никога скрити.</p>
+
+<div class="box warn">
+<h2 style="margin-top:0;">⚠️ Честно казано засега</h2>
+<p>Системата няма доказано предимство пред пазарните коефициенти. Когато сме проверили внимателно, като сме сравнили хиляди минали прогнози с реалните резултати: в единствената лига с достатъчно данни за сериозна проверка се оказахме мъничко по-зле от пазара, не по-добре; а смесването на нашата оценка с пазарната обикновено дава по-точна прогноза, отколкото само нашата сама — което показва, че пазарът носи информация, която ние (засега) нямаме сами.</p>
+<p style="margin-bottom:0;">Затова числата тук, на „Днес“ и на „Как се справяме“ са <b>описателни</b> — показват какво сме измерили до момента. Не са съвет какво да правиш.</p>
+</div>
+
+<div class="box age">
+<h2 style="margin-top:0;">🔞 Отговорна игра</h2>
+<p>Съдържанието в тази секция е информационно и статистическо. То не е съвет за залагане и не гарантира резултат — никой модел не може да гарантира изхода на спортно събитие.</p>
+<p style="margin-bottom:0;">Хазартът е забранен за лица под 18 години. Залагането носи финансов риск и може да доведе до пристрастяване — играй отговорно, само с пари, които можеш да си позволиш да загубиш.</p>
+</div>
+
+</div>
+</body></html>

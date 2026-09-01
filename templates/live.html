@@ -63,8 +63,12 @@
   <a href="/daily" class="{% if active_page=='daily' %}active{% endif %}">📅 Днес</a>
   <a href="/results" class="{% if active_page=='results' %}active{% endif %}">📋 Как се справяме</a>
   <a href="/my_bets" class="{% if active_page=='my_bets' %}active{% endif %}">🎯 Моите залози</a>
+  <a href="/how_it_works" class="{% if active_page=='how_it_works' %}active{% endif %}">❓ Как работи това</a>
   <div class="sidebar-section">Система</div>
   <a href="/system" class="{% if active_page=='system_hub' %}active{% endif %}">⚙️ Система</a>
+  <div style="margin-top:18px;padding:12px 20px;font-size:10.5px;line-height:1.5;color:var(--sub);border-top:1px solid var(--border);">
+    🔞 Информационно съдържание, не съвет за залагане. Хазартът е забранен за лица под 18 години и може да пристрасти.
+  </div>
 </div>
 
 <div id="loadingOverlay" style="display:none;position:fixed;inset:0;background:rgba(241,239,232,0.92);z-index:9999;align-items:center;justify-content:center;font-size:16px;color:#185FA5;font-weight:500;">⏳ Зареждане...</div>
@@ -117,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <input type="hidden" name="market_code" value="{{code}}">
     <input type="hidden" name="pick_label" value="{{label}} (на живо {{hg}}-{{ag}}, {{minute}}')">
     <input type="hidden" name="pick_pct" value="{{pct*100}}">
-    <button type="submit" class="small green">Залог</button>
+    <button type="submit" class="small green">Добави</button>
   </form>
   {% endif %}
   </td>

@@ -179,6 +179,8 @@ def summary(rows, policy, bands=None):
     return {
         "n_published": len(picks),
         "n_settled": n_settled,
+        "n_won": won,
+        "n_lost": n_settled - won,
         "promised_avg": promised_avg,
         "actual_pct": actual_pct,
         "calibration": calibration_curve(picks, bands),

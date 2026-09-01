@@ -78,8 +78,12 @@
   <a href="/daily" class="{% if active_page=='daily' %}active{% endif %}">📅 Днес</a>
   <a href="/results" class="{% if active_page=='results' %}active{% endif %}">📋 Как се справяме</a>
   <a href="/my_bets" class="{% if active_page=='my_bets' %}active{% endif %}">🎯 Моите залози</a>
+  <a href="/how_it_works" class="{% if active_page=='how_it_works' %}active{% endif %}">❓ Как работи това</a>
   <div class="sidebar-section">Система</div>
   <a href="/system" class="{% if active_page=='system_hub' %}active{% endif %}">⚙️ Система</a>
+  <div style="margin-top:18px;padding:12px 20px;font-size:10.5px;line-height:1.5;color:var(--sub);border-top:1px solid var(--border);">
+    🔞 Информационно съдържание, не съвет за залагане. Хазартът е забранен за лица под 18 години и може да пристрасти.
+  </div>
 </div>
 
 <div id="loadingOverlay" style="display:none;position:fixed;inset:0;background:rgba(15,17,21,0.92);z-index:9999;align-items:center;justify-content:center;font-size:16px;color:var(--accent);font-weight:500;">⏳ Зареждане...</div>
@@ -100,6 +104,28 @@ function dtShowTab(name) {
 </script>
 <div class="container">
 <h1>Прогнози - {{league_name}}</h1>
+
+<div style="background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:20px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px;">
+    <div style="font-size:12px;color:var(--sub);text-transform:uppercase;letter-spacing:0.5px;">Отчет &mdash; честни числа за системата</div>
+    <a href="/how_it_works" style="font-size:12px;color:var(--accent);text-decoration:none;">Как да го чета? →</a>
+  </div>
+  {% if scorecard.n_settled %}
+  <div style="display:flex;gap:22px;flex-wrap:wrap;align-items:baseline;">
+    <div><span style="font-size:20px;font-weight:600;">{{scorecard.n_settled}}</span><br><span style="font-size:11.5px;color:var(--sub);">приключили прогнози</span></div>
+    <div><span style="font-size:20px;font-weight:600;color:var(--green);">{{scorecard.n_won}}</span><br><span style="font-size:11.5px;color:var(--sub);">познати</span></div>
+    <div><span style="font-size:20px;font-weight:600;color:var(--live);">{{scorecard.n_lost}}</span><br><span style="font-size:11.5px;color:var(--sub);">непознати</span></div>
+    <div><span style="font-size:20px;font-weight:600;">{{"%.1f"|format(scorecard.actual_pct)}}%</span><br><span style="font-size:11.5px;color:var(--sub);">реално познати {% if scorecard.promised_avg is not none %}(моделът даваше средно {{"%.1f"|format(scorecard.promised_avg)}}%){% endif %}</span></div>
+    {% if scorecard.roi is not none %}
+    <div><span style="font-size:20px;font-weight:600;{% if scorecard.roi>=0 %}color:var(--green);{% else %}color:var(--live);{% endif %}">{{"%+.1f"|format(scorecard.roi)}}%</span><br><span style="font-size:11.5px;color:var(--sub);">срещу пазарните коефициенти (n={{scorecard.roi_n}})</span></div>
+    {% endif %}
+  </div>
+  <div style="margin-top:10px;font-size:11px;color:var(--sub);">Числата описват миналото, не съвет за бъдещето. Пълна разбивка по лига и пазар: <a href="/results" style="color:var(--accent);text-decoration:none;">Как се справяме →</a></div>
+  {% else %}
+  <div style="font-size:13px;color:var(--sub);">Все още няма достатъчно приключили прогнози за отчет.</div>
+  {% endif %}
+</div>
+
 <form class="filter" method="get" style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:14px;">
   <div style="flex:2;min-width:200px;">
     <label style="font-size:11px;color:var(--sub);">Лига</label>
@@ -130,19 +156,19 @@ function dtShowTab(name) {
 
 {% if selected_league == "conference_league" %}
 <div style="background:var(--yellow-bg);border:1px solid rgba(234,179,8,0.35);border-radius:12px;padding:16px 20px;margin-bottom:20px;color:var(--yellow);font-size:13px;">
-  ⚠️ Експериментална лига - 1X2 прогнозите тук НЕ са потвърдени статистически (334 разнородни отбора, твърде хетерогенна извадка). Публикувай с повишено внимание.
+  ⚠️ Експериментална лига — извадката е малка и разнородна (334 отбора). 1X2 прогнозата тук не е статистически потвърдена.
 </div>
 {% elif selected_league == "portugal2" %}
 <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.35);border-radius:12px;padding:16px 20px;margin-bottom:20px;color:var(--live);font-size:13px;">
-  ❌ Експериментална лига - при backtest НИТО ЕДИН пазар (1X2, Над/Под, BTTS) не би baseline. Прогнозите тук са на собствен риск, следим резултатите за преоценка.
+  ❌ Експериментална лига — при обратното тестване нито един пазар (1X2, Над/Под, BTTS) не надмина пазарната база тук. Резултатите се следят за бъдеща преоценка.
 </div>
 {% elif selected_league == "spain2" %}
 <div style="background:var(--yellow-bg);border:1px solid rgba(234,179,8,0.35);border-radius:12px;padding:16px 20px;margin-bottom:20px;color:var(--yellow);font-size:13px;">
-  ⚠️ 1X2 прогнозата тук е маргинална при backtest (+0.9pp над baseline, вероятно в рамките на шум). Над/Под 2.5 е по-силна (+4.7pp). Залагай на 1X2 с повишено внимание.
+  ⚠️ 1X2 прогнозата тук показва малка разлика при обратното тестване (+0.9pp над база, вероятно в рамките на шум). Над/Под 2.5 показва по-голяма разлика (+4.7pp).
 </div>
 {% elif selected_league in ["france2", "italy2", "bulgaria2"] %}
 <div style="background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:20px;color:var(--sub);font-size:13px;">
-  🆕 Нова лига (базов модел, малка тестова извадка). Backtest показва положителен резултат за 1X2 и Над/Под 2.5, но следим живите резултати за по-сигурна преценка с времето.
+  🆕 Нова лига (базов модел, малка тестова извадка). Обратното тестване показва положителен резултат за 1X2 и Над/Под 2.5 — резултатите се следят с времето.
 </div>
 {% endif %}
 {% if api_error %}
@@ -238,7 +264,7 @@ function dtShowTab(name) {
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <a href="/match_detail?league={{m.league}}&fixture_id={{m.fixture_id}}&home={{m.home}}&away={{m.away}}&date={{m.date}}" style="font-size:12px;color:var(--accent);text-decoration:none;">Влез в мача →</a>
-        <button type="submit" formaction="/place_bet_single/{{m.idx}}" class="small" style="background:transparent;border:1px solid var(--border);color:var(--sub);font-weight:400;">Заложи на този пазар</button>
+        <button type="submit" formaction="/place_bet_single/{{m.idx}}" class="small" style="background:transparent;border:1px solid var(--border);color:var(--sub);font-weight:400;">Добави в моите залози</button>
       </div>
       {% else %}
       <span style="color:var(--sub);">{{m.pick}}</span>

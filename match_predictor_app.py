@@ -1365,6 +1365,9 @@ for _lg in ALL_LEAGUES.keys():
         print(f"  ГРЕШКА при зареждане на {_lg}: {_e}")
 print("Всички модели са в кеша.", flush=True)
 
+from web.about import register_about_routes
+register_about_routes(app, {})
+
 from web.results import register_results_view
 register_results_view(app, {
     "BASE_STYLE": BASE_STYLE,

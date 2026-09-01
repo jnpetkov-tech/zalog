@@ -195,6 +195,12 @@ def register_daily_routes(app, ctx):
         default_from = date.today()
         default_to = date.today()
 
+        # Отчетът винаги видим на "Днес" (искане на Дака, 01.09.2026, за
+        # публичната секция на медиен сайт) - същата честна метрика като
+        # /results (evaluation.summary(), само публикувани прогнози), не
+        # отделна изчисление тук.
+        scorecard = evaluation.summary(st.list_predictions(), policy)
+
         use_snapshot = _daily_use_snapshot(request)
 
         # Партида 3, довършване (21.08.2026): ако build_predictions_snapshot.py
@@ -313,7 +319,7 @@ def register_daily_routes(app, ctx):
             upcoming_flat = sorted(upcoming_matches, key=_daily_sort_key(sort), reverse=True)
 
         resp = make_response(render_template("daily.html", leagues=get_leagues(), selected_league=league,
-                                        league_name=league_name, days_ahead=DAYS_AHEAD,
+                                        league_name=league_name, days_ahead=DAYS_AHEAD, scorecard=scorecard,
                                         api_error=api_error, snapshot_stale_warning=snapshot_stale_warning,
                                         live_groups=live_groups, upcoming_groups=upcoming_groups,
                                         upcoming_flat=upcoming_flat, upcoming_sort=sort, diff_only=diff_only, finished_groups=finished_groups,
