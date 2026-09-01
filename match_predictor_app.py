@@ -48,10 +48,17 @@ def login():
     return render_template("login.html", error=False)
 
 
+# Партида 3, т.3.1 (01.09.2026): ЕДИНСТВЕНИЯТ публичен маршрут, без парола.
+# Изричен бял списък, не обратното ("блокирай тези пътища") - иначе всеки
+# нов route по невнимание излиза публичен по подразбиране. Ако не е тук
+# (или /static, или /login) - иска парола, точка.
+PUBLIC_PATHS = {"/prognozi"}
+
+
 @app.before_request
 def require_auth():
     from flask import session
-    if request.endpoint == "login" or request.path.startswith("/static"):
+    if request.endpoint == "login" or request.path.startswith("/static") or request.path in PUBLIC_PATHS:
         return
     # 23.08.2026, rate limit стъпка 3/4: /refresh_all влиза в същия списък,
     # за да може новата нощна задача (incremental-refresh.timer, 04:00,
