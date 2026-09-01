@@ -76,6 +76,8 @@ def register_prognozi_routes(app, ctx):
     policy = ctx["policy"]
     to_cyrillic = ctx["to_cyrillic"]
     market_info_for_pick = ctx["_market_info_for_pick"]
+    MARKET_COPY_CODES = ctx["MARKET_COPY_CODES"]
+    MARKET_COPY_NOTE = ctx["MARKET_COPY_NOTE"]
 
     prognozi_bp = Blueprint("prognozi", __name__)
 
@@ -175,8 +177,14 @@ def register_prognozi_routes(app, ctx):
                 continue
 
             market_pct, diff = _row_diff(fixture_id, top["market_code"], top["pick_pct"])
+            # Преглед на Дака (01.09.2026), спешно т.1: BLEND_WEIGHTS["home_win"]=1.0
+            # -> home_win е в MARKET_COPY_CODES -> показаното число Е
+            # обезвигованата пазарна оценка буквално, моделът не добавя
+            # нищо - вече честно разкрито тук (преди го нямаше на
+            # /prognozi, само на админските страници през build_diff_row()).
             card = {**base, "pick_label": top["pick_label"], "pick_pct": top["pick_pct"],
-                    "market_pct": market_pct, "diff": diff, "status": None}
+                    "market_pct": market_pct, "diff": diff, "status": None,
+                    "market_copy": top["market_code"] in MARKET_COPY_CODES}
 
             if base["date"] > now_sofia_str:
                 upcoming_rows.append(card)
@@ -225,6 +233,7 @@ def register_prognozi_routes(app, ctx):
                 "home_cy": to_cyrillic(p["home_team"], league), "away_cy": to_cyrillic(p["away_team"], league),
                 "pick_label": p["pick_label"], "pick_pct": p["pick_pct"],
                 "market_pct": market_pct, "diff": diff, "status": p["status"],
+                "market_copy": p["market_code"] in MARKET_COPY_CODES,
             })
 
         # Преглед на Дака (01.09.2026), т.1: падащото меню обещаваше лиги от
@@ -291,6 +300,62 @@ def register_prognozi_routes(app, ctx):
             upcoming_rows=upcoming_rows, finished_rows=finished_rows, skipped_rows=skipped_rows,
             no_pick_rows=no_pick_rows, in_progress_rows=in_progress_rows,
             snapshot_empty=snapshot_empty, snapshot_stale_note=snapshot_stale_note,
+            market_copy_note=MARKET_COPY_NOTE,
+        )
+
+    # Публична страница на мача (01.09.2026, задача от Дака, т.2). Изричен
+    # маршрут ПОД префикс "/prognozi/" - PUBLIC_PATHS е за точно съвпадение,
+    # динамичен път (fixture_id) няма как да съвпадне буквално. Белият
+    # списък в match_predictor_app.py::require_auth() пуска изрична
+    # проверка `request.path.startswith("/prognozi/")` (по образец на
+    # /static), НЕ добавя префикси в самия PUBLIC_PATHS набор (Дака: "не
+    # превръщай PUBLIC_PATHS в списък с префикси"). Префиксът "/prognozi/"
+    # е избран нарочно - не се пресича с никой съществуващ частен маршрут
+    # (за разлика от напр. "/match", което би съвпаднало с /match_detail).
+    @prognozi_bp.route("/prognozi/match/<int:fixture_id>")
+    def prognozi_match(fixture_id):
+        # т.2.10 (нула API заявки): само вече изчислена снимка; ако мачът е
+        # извън 7-дневния прозорец (стар, вече изтрит от predictions_snapshot),
+        # пада към predictions_log (също само база, никакво API извикване).
+        rows = st.get_snapshot_rows_for_fixture(fixture_id)
+        if not rows:
+            rows = st.get_predictions_for_fixture(fixture_id)
+        if not rows:
+            # Тест преди commit: невалиден/несъществуващ fixture_id не бива
+            # да гърми със stack trace пред публика - чиста страница.
+            return render_template("prognozi_match.html", active_page="prognozi",
+                                    found=False), 404
+
+        league = rows[0]["league"]
+        home, away = rows[0]["home_team"], rows[0]["away_team"]
+        match_date = rows[0]["match_date"]
+
+        # СЪЩАТА функция като списъка (ps.rank_logged_rows - top_pick_for_match()
+        # е буквално rank_logged_rows(..., n=1)[0] - тук просто искаме ВСИЧКИ
+        # policy-eligible пазари за мача, не само топ 1, затова n=len(rows) -
+        # не трети път за "коя е прогнозата", същият PROVEN/WEAK филтър +
+        # дедупликация на допълващи двойки.
+        eligible = ps.rank_logged_rows(rows, league, policy, n=len(rows))
+        hidden_count = len(rows) - len(eligible)
+
+        market_rows = []
+        for r in eligible:
+            code = r["market_code"]
+            market_pct, diff = _row_diff(fixture_id, code, r["pick_pct"])
+            market_rows.append({
+                "label": r["pick_label"], "our_pct": r["pick_pct"],
+                "market_pct": market_pct, "diff": diff,
+                "market_copy": code in MARKET_COPY_CODES,
+            })
+
+        return render_template(
+            "prognozi_match.html", active_page="prognozi", found=True,
+            fixture_id=fixture_id, league=league,
+            league_name=ALL_LEAGUES.get(league, {}).get("name", league),
+            flag=LEAGUE_FLAGS.get(league, "⚽"),
+            home_cy=to_cyrillic(home, league), away_cy=to_cyrillic(away, league),
+            date=match_date, market_rows=market_rows, hidden_count=hidden_count,
+            market_copy_note=MARKET_COPY_NOTE,
         )
 
     app.register_blueprint(prognozi_bp)

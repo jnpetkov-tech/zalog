@@ -82,8 +82,18 @@ def require_auth():
     # отделно изключение тук (по образец на /static), не добавен в самия
     # списък, за да не се размива значението му "истинско публично
     # СЪДЪРЖАНИЕ", не "статичен служебен файл".
+    #
+    # Публична страница на мача (01.09.2026, задача от Дака, т.2):
+    # PUBLIC_PATHS е за ТОЧНО СЪВПАДЕНИЕ - "/prognozi/match/<fixture_id>" е
+    # динамичен, никога няма да съвпадне буквално с елемент от него. Изрична
+    # проверка по префикс тук, по образец на /static - НЕ добавяме
+    # PUBLIC_PATHS като списък с префикси (Дака: "един нов маршрут под
+    # същия префикс после би излязъл публичен по невнимание" - затова
+    # префиксът е стеснен до буквално "/prognozi/" И проверката си остава
+    # тук, единствено място, не в самия набор).
     if (request.endpoint == "login" or request.path.startswith("/static")
-            or request.path == "/robots.txt" or request.path in PUBLIC_PATHS):
+            or request.path == "/robots.txt" or request.path.startswith("/prognozi/")
+            or request.path in PUBLIC_PATHS):
         return
     # 23.08.2026, rate limit стъпка 3/4: /refresh_all влиза в същия списък,
     # за да може новата нощна задача (incremental-refresh.timer, 04:00,
@@ -1468,6 +1478,7 @@ register_prognozi_routes(app, {
     "ALL_LEAGUES": ALL_LEAGUES, "LEAGUE_FLAGS": LEAGUE_FLAGS,
     "st": st, "evaluation": evaluation, "ps": ps, "policy": policy,
     "to_cyrillic": to_cyrillic, "_market_info_for_pick": _market_info_for_pick,
+    "MARKET_COPY_CODES": MARKET_COPY_CODES, "MARKET_COPY_NOTE": MARKET_COPY_NOTE,
 })
 from web.match import register_match_routes
 register_match_routes(app, {

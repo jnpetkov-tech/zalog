@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% if found %}{{ home_cy }} — {{ away_cy }}{% else %}Мачът не е намерен{% endif %} — SportBG</title>
+{% include "_tokens.html" %}
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-font-smoothing:antialiased;}
+  body{ background: var(--bg); color: var(--text); font-family: var(--font-sans); font-size: 15px; line-height: 1.5; }
+  a{color:inherit;text-decoration:none;}
+
+  .shell{max-width:760px; margin:0 auto; padding: 36px 32px 72px;}
+
+  .back{ font-size:13px; color:var(--sub); margin-bottom:20px; display:inline-block; }
+  .back:hover{ color:var(--accent); }
+
+  h1{ font-size:26px; font-weight:800; letter-spacing:-0.5px; margin-bottom:6px; }
+  .sub{ font-size:14px; color:var(--sub); margin-bottom:28px; }
+
+  .colheader{
+    display:grid; grid-template-columns: 1fr 84px 84px 96px; gap:14px;
+    padding:10px 16px; font-size:12px; color:var(--text-faint);
+  }
+  .colheader .r{text-align:right;}
+
+  .marketlist{display:flex; flex-direction:column; gap:1px; background:var(--border); border:1px solid var(--border); border-radius:10px; overflow:hidden;}
+  .marketrow{
+    display:grid; grid-template-columns: 1fr 84px 84px 96px; align-items:center;
+    gap:14px; background:var(--panel2); padding:14px 16px;
+  }
+  .marketrow .label{ font-size:14px; font-weight:600; }
+  .marketrow .num{ font-size:14px; font-weight:600; text-align:right; }
+  .marketrow .diff{ font-size:14px; font-weight:700; text-align:right; color:var(--accent); }
+  .marketrow .diff.down{ color:var(--red); }
+  .marketrow .diff.none{ color:var(--text-faint); font-weight:600; font-size:12px; }
+  .marketrow .diff.copy{ color:var(--yellow); font-weight:600; font-size:12.5px; }
+
+  .copy-note{ padding:10px 16px; font-size:12px; color:var(--text-faint); background:var(--panel);
+    border-left:2px solid var(--yellow); margin:-1px 0 0; }
+
+  .hidden-note{ margin-top:18px; font-size:13px; color:var(--text-faint); }
+
+  .empty-note{ padding:40px 18px; text-align:center; color:var(--sub); font-size:14px;
+    background:var(--panel2); border:1px solid var(--border); border-radius:10px; }
+
+  .foot-note{ margin-top:32px; font-size:12px; color:var(--text-faint); line-height:1.7; }
+
+  @media (max-width: 620px){
+    .shell{padding:24px 18px 56px;}
+    .colheader{display:none;}
+    .marketrow{grid-template-columns: 1fr; gap:4px; text-align:left;}
+    .marketrow .num, .marketrow .diff{text-align:left;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="shell">
+    <a class="back" href="/">← Всички прогнози</a>
+
+    {% if not found %}
+    <h1>Мачът не е намерен</h1>
+    <div class="empty-note">Няма изчислена прогноза за този мач - или fixture_id е грешен, или мачът е извън наличния прозорец.</div>
+    {% else %}
+    <h1>{{ home_cy }} — {{ away_cy }}</h1>
+    <div class="sub">{{ flag }} {{ league_name }} · {{ date[8:10] }}.{{ date[5:7] }} {{ date[-5:] }}</div>
+
+    {% if market_rows %}
+    <div class="colheader"><div>Пазар</div><div class="r">Наше</div><div class="r">Пазарно</div><div class="r">Разлика</div></div>
+    <div class="marketlist">
+      {% for m in market_rows %}
+      <div class="marketrow">
+        <div class="label">{{ m.label }}</div>
+        <div class="num">{{ "%.1f"|format(m.our_pct) }}%</div>
+        <div class="num">{% if m.market_pct is none %}—{% else %}{{ "%.1f"|format(m.market_pct) }}%{% endif %}</div>
+        {% if m.market_copy %}
+        <div class="diff copy">= пазар</div>
+        {% elif m.diff is none %}
+        <div class="diff none">—</div>
+        {% else %}
+        <div class="diff {{ 'down' if m.diff < 0 else '' }}">{{ "+" if m.diff >= 0 else "" }}{{ "%.1f"|format(m.diff) }}%</div>
+        {% endif %}
+      </div>
+      {% if m.market_copy %}
+      <div class="copy-note">⚠️ {{ market_copy_note }}</div>
+      {% endif %}
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-note">Няма доверена прогноза за този мач.</div>
+    {% endif %}
+
+    {% if hidden_count %}
+    <div class="hidden-note">Още {{ hidden_count }} пазар{{ "а" if hidden_count != 1 else "" }} са изчислени, но нямат достатъчно доказана история, за да ги публикуваме.</div>
+    {% endif %}
+
+    <div class="foot-note">
+      Прогнозите се основават на статистически модел и не представляват съвет за залагане. Хазартът е забранен за лица под 18 години. Резултатите от миналото не гарантират бъдещи резултати.
+    </div>
+    {% endif %}
+  </div>
+
+</body>
+</html>

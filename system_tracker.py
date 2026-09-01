@@ -380,6 +380,27 @@ def get_snapshot_rows_for_date_range(from_date, to_date):
     return [dict(r) for r in rows]
 
 
+def get_snapshot_rows_for_fixture(fixture_id):
+    """Публична страница на мача (01.09.2026, задача от Дака): всички
+    редове от predictions_snapshot за ЕДИН fixture_id, с всички колони,
+    нужни за показване (league/match_date/home_team/away_team - за разлика
+    от get_snapshot_picks_for_fixtures(), която пази само pick полетата,
+    без мач-контекста). Не е ключирано по дата - самата
+    predictions_snapshot вече пази само текущия прозорец (днес..+7 дни),
+    затова fixture_id е достатъчен, без диапазон дати."""
+    conn = get_conn()
+    conn.row_factory = sqlite3.Row
+    rows = conn.execute("""
+        SELECT fixture_id, league, match_date, home_team, away_team, market_code,
+               pick_label, pick_pct, fair_odds, ev, computed_at, model_version
+        FROM predictions_snapshot
+        WHERE fixture_id = ?
+        ORDER BY pick_pct DESC
+    """, (fixture_id,)).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
+
+
 def get_snapshot_freshness():
     """Партида 3, довършване (21.08.2026): най-новият computed_at в цялата
     predictions_snapshot таблица - ISO низ, или None ако таблицата е

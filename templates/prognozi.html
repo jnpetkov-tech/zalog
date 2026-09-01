@@ -102,6 +102,7 @@
   .pred-edge{font-size:13.5px; font-weight:700; text-align:right; color:var(--accent);}
   .pred-edge.down{color:var(--red);}
   .pred-edge.none{color:var(--text-faint); font-weight:600; font-size:12px;}
+  .pred-edge.copy{color:var(--yellow); font-weight:600; font-size:12.5px;}
 
   .empty-note{ padding:28px 18px; text-align:center; color:var(--sub); font-size:13.5px;
     background:var(--panel2); border:1px solid var(--border); border-radius:10px; }
@@ -237,16 +238,18 @@
         <div class="colheader"><div>Час</div><div>Мач</div><div class="r">Прогноза</div><div class="r">Разлика с пазара</div></div>
         <div class="predlist">
           {% for m in upcoming_rows %}
-          <div class="predrow">
+          <a class="predrow" href="/prognozi/match/{{ m.fixture_id }}">
             <div><div class="pred-time">{{ m.date[-5:] }}</div><div class="pred-league">{{ m.flag }} {{ m.league_name }}</div></div>
             <div class="pred-match">{{ m.home_cy }} — {{ m.away_cy }}</div>
             <div class="pred-pick">{{ m.pick_label }} · {{ "%.0f"|format(m.pick_pct) }}%</div>
-            {% if m.diff is none %}
+            {% if m.market_copy %}
+            <div class="pred-edge copy">= пазар</div>
+            {% elif m.diff is none %}
             <div class="pred-edge none">—</div>
             {% else %}
             <div class="pred-edge {{ 'down' if m.diff < 0 else '' }}">{{ "+" if m.diff >= 0 else "" }}{{ "%.1f"|format(m.diff) }}%</div>
             {% endif %}
-          </div>
+          </a>
           {% endfor %}
         </div>
         {% endif %}
@@ -255,16 +258,18 @@
         <div class="tab-note" style="margin-top:20px;">Мачове в ход ({{ in_progress_rows|length }}) — прогнозата е тази отпреди началото на мача, не се преизчислява на живо.</div>
         <div class="predlist">
           {% for m in in_progress_rows %}
-          <div class="predrow">
+          <a class="predrow" href="/prognozi/match/{{ m.fixture_id }}">
             <div><div class="pred-time">{{ m.date[-5:] }}</div><div class="pred-league">{{ m.flag }} {{ m.league_name }}</div></div>
             <div class="pred-match">{{ m.home_cy }} — {{ m.away_cy }}</div>
             <div class="pred-pick">{{ m.pick_label }} · {{ "%.0f"|format(m.pick_pct) }}%<span class="badge inprogress">резултатът се проверява</span></div>
-            {% if m.diff is none %}
+            {% if m.market_copy %}
+            <div class="pred-edge copy">= пазар</div>
+            {% elif m.diff is none %}
             <div class="pred-edge none">—</div>
             {% else %}
             <div class="pred-edge {{ 'down' if m.diff < 0 else '' }}">{{ "+" if m.diff >= 0 else "" }}{{ "%.1f"|format(m.diff) }}%</div>
             {% endif %}
-          </div>
+          </a>
           {% endfor %}
         </div>
         {% endif %}
@@ -293,16 +298,18 @@
       <div class="colheader"><div>Дата</div><div>Мач</div><div class="r">Прогноза</div><div class="r">Разлика с пазара</div></div>
       <div class="predlist">
         {% for m in finished_rows %}
-        <div class="predrow">
+        <a class="predrow" href="/prognozi/match/{{ m.fixture_id }}">
           <div><div class="pred-time">{{ m.date[8:10] }}.{{ m.date[5:7] }} {{ m.date[-5:] }}</div><div class="pred-league">{{ m.flag }} {{ m.league_name }}</div></div>
           <div class="pred-match">{{ m.home_cy }} — {{ m.away_cy }}</div>
           <div class="pred-pick">{{ m.pick_label }} · {{ "%.0f"|format(m.pick_pct) }}%<span class="badge {{ m.status }}">{{ "✓ позна" if m.status=="won" else "✗ не позна" }}</span></div>
-          {% if m.diff is none %}
+          {% if m.market_copy %}
+          <div class="pred-edge copy">= пазар</div>
+          {% elif m.diff is none %}
           <div class="pred-edge none">—</div>
           {% else %}
           <div class="pred-edge {{ 'down' if m.diff < 0 else '' }}">{{ "+" if m.diff >= 0 else "" }}{{ "%.1f"|format(m.diff) }}%</div>
           {% endif %}
-        </div>
+        </a>
         {% endfor %}
       </div>
       {% endif %}
@@ -337,6 +344,9 @@
 
         <h2>Защо показваме и двете?</h2>
         <p>За да можеш да сравниш сам, вместо да вярваш на думата ни. Ако нашето число и пазарното са близки, двете страни „мислят“ по сходен начин за мача. Ако има голяма разлика между тях, показваме я — без да казваме кое от двете е правилното.</p>
+
+        <h2>Какво значи "= пазар"?</h2>
+        <p>При някои пазари редът показва <b>"= пазар"</b> вместо процент разлика. {{ market_copy_note }}</p>
 
         <h2>Какво сме измерили за себе си</h2>
         <p>Всеки ден записваме коя прогноза сме дали и после сравняваме с реалния резултат от мача. Пазим всичко — както познатите, така и непознатите прогнози — не подбираме само добрите примери.</p>
