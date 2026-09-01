@@ -76,7 +76,13 @@ def register_daily_routes(app, ctx):
 
     daily_bp = Blueprint("daily", __name__)
 
-    @daily_bp.route("/")
+    # Смяна на входните точки (01.09.2026, задача от Дака): публичната
+    # /prognozi се мести на корена "/" - административната начална страница
+    # (тази функция) отстъпва мястото си на "/admin". Endpoint името
+    # ("daily.index_home") остава непроменено - нищо не reference-ва старото
+    # "/" по url_for, само по хардкоднат href (виж templates/
+    # refresh_confirmation.html, поправен отделно в тази задача).
+    @daily_bp.route("/admin")
     def index_home():
         predictions = st.list_predictions()
         won = sum(1 for p in predictions if p["status"] == "won")

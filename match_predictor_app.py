@@ -35,30 +35,55 @@ app.permanent_session_lifetime = timedelta(days=30)
 LOGIN_PASSWORD = config.LOGIN_PASSWORD
 REFRESH_TOKEN = config.REFRESH_TOKEN
 
-@app.route("/login", methods=["GET", "POST"])
+# Смяна на входните точки (01.09.2026, задача от Дака): логин екранът се
+# мести от /login на /1 - само декораторът, endpoint името остава "login"
+# (Flask endpoint = функцията, не пътят) - url_for("login", ...) по-долу и
+# request.endpoint == "login" в require_auth() продължават да работят
+# без промяна, нарочно непипнати.
+@app.route("/1", methods=["GET", "POST"])
 def login():
     from flask import session
     if request.method == "POST":
         if request.form.get("password") == LOGIN_PASSWORD:
             session.permanent = True
             session["authed"] = True
-            next_url = request.args.get("next") or "/"
+            # Смяна на входните точки: влезлият админ каца на /admin, не на
+            # "/" - "/" вече е публичната страница (/prognozi), не
+            # администраторският изглед.
+            next_url = request.args.get("next") or "/admin"
             return redirect(next_url)
         return render_template("login.html", error=True)
     return render_template("login.html", error=False)
 
 
-# Партида 3, т.3.1 (01.09.2026): ЕДИНСТВЕНИЯТ публичен маршрут, без парола.
+# Смяна на входните точки, т.6 (01.09.2026): сайтът вече е публичен - чиста
+# хигиена, не защита (админските пътища и без това искат парола зад
+# require_auth() независимо от robots.txt). Позволява индексиране само на
+# "/" (публичната страница) - "/prognozi" нарочно НЕ е разрешен тук, за да
+# няма дублирано съдържание в индекса (той е само псевдоним на "/").
+@app.route("/robots.txt")
+def robots_txt():
+    body = "User-agent: *\nAllow: /$\nDisallow: /\n"
+    return body, 200, {"Content-Type": "text/plain; charset=utf-8"}
+
+
+# Партида 3, т.3.1 (01.09.2026), обновено при смяната на входните точки
+# (01.09.2026, същия ден): ЕДИНСТВЕНИТЕ публични маршрути, без парола.
 # Изричен бял списък, не обратното ("блокирай тези пътища") - иначе всеки
 # нов route по невнимание излиза публичен по подразбиране. Ако не е тук
-# (или /static, или /login) - иска парола, точка.
-PUBLIC_PATHS = {"/prognozi"}
+# (или /static, или /login-ендпойнта на /1) - иска парола, точка.
+PUBLIC_PATHS = {"/", "/prognozi"}
 
 
 @app.before_request
 def require_auth():
     from flask import session
-    if request.endpoint == "login" or request.path.startswith("/static") or request.path in PUBLIC_PATHS:
+    # т.5: PUBLIC_PATHS остава буквално {"/", "/prognozi"} - /robots.txt е
+    # отделно изключение тук (по образец на /static), не добавен в самия
+    # списък, за да не се размива значението му "истинско публично
+    # СЪДЪРЖАНИЕ", не "статичен служебен файл".
+    if (request.endpoint == "login" or request.path.startswith("/static")
+            or request.path == "/robots.txt" or request.path in PUBLIC_PATHS):
         return
     # 23.08.2026, rate limit стъпка 3/4: /refresh_all влиза в същия списък,
     # за да може новата нощна задача (incremental-refresh.timer, 04:00,

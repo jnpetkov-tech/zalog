@@ -76,6 +76,11 @@ def register_prognozi_routes(app, ctx):
         market_pct = market_p * 100
         return market_pct, our_pct - market_pct
 
+    # Смяна на входните точки (01.09.2026, задача от Дака): "/" вече е
+    # публичната начална страница - СЪЩАТА view функция, два маршрута
+    # (не дублиран код). "/prognozi" остава като псевдоним, за да не се
+    # счупят вече дадени връзки.
+    @prognozi_bp.route("/")
     @prognozi_bp.route("/prognozi")
     def prognozi():
         today = date.today()
