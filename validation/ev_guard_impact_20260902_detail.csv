@@ -1,0 +1,552 @@
+fixture_id,league,match_date,home_team,away_team,current_market,current_pct,current_ev_pct,current_status,guarded_market,guarded_pct,guarded_status,outcome
+1551072,bulgaria,2026-08-07 21:15,Levski Sofia,Lokomotiv Plovdiv,home_win,58.08987446108965,,won,home_win,58.08987446108965,won,unchanged
+1551073,bulgaria,2026-08-08 19:00,Lokomotiv Sofia,CSKA 1948,under25,54.17652320041706,,lost,under25,54.17652320041706,lost,unchanged
+1551071,bulgaria,2026-08-08 21:15,Dunav Ruse,Arda Kardzhali,away_win,59.82064365492001,,won,away_win,59.82064365492001,won,unchanged
+1551070,bulgaria,2026-08-09 19:00,Cherno More Varna,Ludogorets,under25,57.86669174962056,,lost,under25,57.86669174962056,lost,unchanged
+1551074,bulgaria,2026-08-09 21:15,Septemvri Sofia,CSKA Sofia,away_win,74.23230436726533,,won,away_win,74.23230436726533,won,unchanged
+1551069,bulgaria,2026-08-10 19:00,Botev Vratsa,Slavia Sofia,under25,67.46538604584696,,lost,under25,67.46538604584696,lost,unchanged
+1551068,bulgaria,2026-08-10 21:15,Botev Plovdiv,Spartak Varna,home_win,58.2107466324816,,won,home_win,58.2107466324816,won,unchanged
+1607163,champions_league,2026-08-05 19:30,Aarhus,Sabah FA,away_win,84.59090334972473,,lost,away_win,84.59090334972473,lost,unchanged
+1607165,champions_league,2026-08-05 21:00,Fenerbahçe,Sturm Graz,home_win,70.27574745782952,,won,home_win,70.27574745782952,won,unchanged
+1607170,champions_league,2026-08-11 18:00,Kairat Almaty,Levski Sofia,away_win,43.24685878274082,,won,away_win,43.24685878274082,won,unchanged
+1598827,champions_league,2026-08-11 19:00,Bodo/Glimt,Union St. Gilloise,home_win,75.36854862763104,,no_data,home_win,75.36854862763104,no_data,unchanged
+1607172,champions_league,2026-08-11 19:00,Sabah FA,Aarhus,home_win,93.73869116138425,,won,home_win,93.73869116138425,won,unchanged
+1607171,champions_league,2026-08-11 20:00,Kauno Žalgiris,Dinamo Zagreb,away_win,85.52738428364809,,won,away_win,85.52738428364809,won,unchanged
+1598829,champions_league,2026-08-11 20:30,NEC Nijmegen,Olympiakos Piraeus,draw,83.529206479818,,no_data,draw,83.529206479818,no_data,unchanged
+1607169,champions_league,2026-08-11 21:00,FK Crvena Zvezda,Hapoel Beer Sheva,home_win,39.83371529482246,,lost,home_win,39.83371529482246,lost,unchanged
+1607173,champions_league,2026-08-11 21:15,Slovan Bratislava,Mjallby AIF,home_win,57.14467557730802,,won,home_win,57.14467557730802,won,unchanged
+1605371,champions_league,2026-08-11 21:15,Celje,Ararat-Armenia,away_win,42.09575974273873,,lost,away_win,42.09575974273873,lost,unchanged
+1607174,champions_league,2026-08-11 21:30,Sturm Graz,Fenerbahçe,away_win,52.47272642058633,,won,away_win,52.47272642058633,won,unchanged
+1598828,champions_league,2026-08-11 22:00,Lyon,Sparta Praha,away_win,39.14315156131235,,lost,away_win,39.14315156131235,lost,unchanged
+1607578,conference_league,2026-08-05 20:00,Brann,Apollon Limassol,home_under15,86.84343621556204,,won,home_under15,86.84343621556204,won,unchanged
+1607592,conference_league,2026-08-05 21:30,Panathinaikos,CSKA 1948,away_under15,93.7976468578277,,won,away_under15,93.7976468578277,won,unchanged
+1598830,europa_league,2026-08-06 19:00,Jagiellonia,Rangers,home_win,43.42469660419101,27.826086956521756,won,home_win,43.42469660419101,won,unchanged
+1607563,europa_league,2026-08-06 19:00,Maccabi Tel Aviv,CSKA Sofia,home_win,37.336871287873855,-25.74626865671642,lost,home_win,37.336871287873855,lost,unchanged
+1607177,europa_league,2026-08-06 20:00,Lech Poznan,KI Klaksvik,home_win,46.00022585197194,-47.46543778801844,won,home_win,46.00022585197194,won,unchanged
+1607564,europa_league,2026-08-06 20:00,Red Bull Salzburg,Pafos,home_win,60.21692036231082,195.1807228915663,won,draw,21.484794408791114,lost,changed_market
+1607178,europa_league,2026-08-06 20:00,Lincoln Red Imps FC,Omonia Nicosia,away_win,37.36858621164371,-43.28358208955224,lost,away_win,37.36858621164371,lost,unchanged
+1607562,europa_league,2026-08-06 20:00,Hradec Králové,Beşiktaş,home_win,52.25492277844238,99.47643979057592,lost,draw,24.350552688725728,lost,changed_market
+1607565,europa_league,2026-08-06 20:45,PAOK,Anderlecht,home_win,55.42911537487053,-8.333333333333337,lost,home_win,55.42911537487053,lost,unchanged
+1607560,europa_league,2026-08-06 22:00,Benfica,Heart Of Midlothian,home_win,61.17995916388723,-31.90184049079754,won,home_win,61.17995916388723,won,unchanged
+1607587,conference_league,2026-08-06 18:00,Inter Turku,FC Vaduz,away_under15,78.29382609051207,,won,away_under15,78.29382609051207,won,unchanged
+1607586,conference_league,2026-08-06 19:00,HJK Helsinki,Motherwell,away_under15,64.52990554560736,,won,away_under15,64.52990554560736,won,unchanged
+1607588,conference_league,2026-08-06 19:00,FK Jablonec,Rīgas FS,away_under15,65.75422806636786,,won,away_under15,65.75422806636786,won,unchanged
+1607591,conference_league,2026-08-06 19:00,Paide,Rapid Vienna,btts_yes,61.52720652464229,,won,btts_yes,61.52720652464229,won,unchanged
+1607590,conference_league,2026-08-06 19:00,FC Noah,FC Sion,away_under15,63.9549166156951,,lost,away_under15,63.9549166156951,lost,unchanged
+1607579,conference_league,2026-08-06 19:30,CFR 1907 Cluj,Tromso,away_under15,78.17419338675748,,lost,away_under15,78.17419338675748,lost,unchanged
+1607583,conference_league,2026-08-06 20:00,IFK Goteborg,Gent,home_under15,67.18660186581913,,won,home_under15,67.18660186581913,won,unchanged
+1607597,conference_league,2026-08-06 20:00,Sheriff Tiraspol,FC ST. Gallen,away_under15,62.24120093617322,,lost,away_under15,62.24120093617322,lost,unchanged
+1607581,conference_league,2026-08-06 20:00,Dynamo Kyiv,Qarabag,away_under15,75.25191547291823,,won,away_under15,75.25191547291823,won,unchanged
+1607600,conference_league,2026-08-06 20:00,FK Zalgiris Vilnius,HNK Hajduk Split,away_under15,72.72406109428546,,lost,away_under15,72.72406109428546,lost,unchanged
+1607580,conference_league,2026-08-06 20:00,Debreceni VSC,FC Copenhagen,away_under15,77.17004654568319,,lost,away_under15,77.17004654568319,lost,unchanged
+1607582,conference_league,2026-08-06 20:00,Inter Club d'Escaldes,Flora Tallinn,away_under15,69.89685929571586,,won,away_under15,69.89685929571586,won,unchanged
+1607594,conference_league,2026-08-06 20:00,Raków Częstochowa,Hammarby FF,away_under15,91.31075152381692,,won,away_under15,91.31075152381692,won,unchanged
+1607595,conference_league,2026-08-06 20:00,Riga,Gyori ETO FC,btts_yes,63.35038337541455,,lost,btts_yes,63.35038337541455,lost,unchanged
+1607574,conference_league,2026-08-06 20:30,Beitar Jerusalem,Austria Vienna,btts_yes,63.98806363584012,,won,btts_yes,63.98806363584012,won,unchanged
+1607572,conference_league,2026-08-06 21:00,Ajax,Shelbourne,away_under15,75.67534727051799,,won,away_under15,75.67534727051799,won,unchanged
+1607598,conference_league,2026-08-06 21:00,Twente,Dunajska Streda,away_under15,72.36826933313398,,won,away_under15,72.36826933313398,won,unchanged
+1607584,conference_league,2026-08-06 21:00,Hapoel Tel Aviv,GKS Katowice,away_under15,72.74726252408719,,won,away_under15,72.74726252408719,won,unchanged
+1607577,conference_league,2026-08-06 21:30,SC Braga,Dinamo Minsk,away_under15,85.41192939245956,,won,away_under15,85.41192939245956,won,unchanged
+1607599,conference_league,2026-08-06 21:30,Valur Reykjavik,FC Nordsjaelland,home_under15,60.360142783103356,,won,home_under15,60.360142783103356,won,unchanged
+1607589,conference_league,2026-08-06 21:30,FC Lugano,NSI Runavik,away_under15,74.19867802812796,,won,away_under15,74.19867802812796,won,unchanged
+1607576,conference_league,2026-08-06 21:30,Borac Banja Luka,ML Vitebsk,away_under15,67.60782993055119,,won,away_under15,67.60782993055119,won,unchanged
+1607596,conference_league,2026-08-06 21:45,HNK Rijeka,Ilves,away_under15,84.69762358115605,,won,away_under15,84.69762358115605,won,unchanged
+1607575,conference_league,2026-08-06 21:45,Bohemians,FC Midtjylland,away_under15,79.61788556761769,,lost,away_under15,79.61788556761769,lost,unchanged
+1607585,conference_league,2026-08-06 22:00,Hibernian,Shkendija,away_under15,72.12807102114702,,won,away_under15,72.12807102114702,won,unchanged
+1607593,conference_league,2026-08-06 22:00,FK Partizan,FK Tobol Kostanay,away_under15,82.45443585150934,,won,away_under15,82.45443585150934,won,unchanged
+1605372,conference_league,2026-08-06 22:00,Tre Fiori,Drita,away_under15,72.08166564622911,,lost,away_under15,72.08166564622911,lost,unchanged
+1575447,portugal,2026-08-07 22:15,Estoril,Famalicao,under25,51.52859686992714,-3.0927835051546393,won,under25,51.52859686992714,won,unchanged
+1607180,europa_league,2026-08-11 19:00,Saburtalo,Larne,home_win,45.743586101609154,-5.936073059360725,no_data,home_win,45.743586101609154,no_data,unchanged
+1607567,europa_league,2026-08-13 20:00,Beşiktaş,Hradec Králové,home_win,45.85539682846666,-40.36697247706422,won,home_win,45.85539682846666,won,unchanged
+1575451,portugal,2026-08-08 17:30,Maritimo,Casa Pia,under25,58.29351177987232,6.976744186046524,won,under25,58.29351177987232,won,unchanged
+1607601,conference_league,2026-08-11 20:00,Apollon Limassol,Brann,away_under15,75.80162371967212,9.090909090909083,no_data,away_under15,75.80162371967212,no_data,unchanged
+1575454,portugal,2026-08-08 20:00,Guimaraes,Arouca,over25,53.55943541349654,1.0695187165775222,lost,over25,53.55943541349654,lost,unchanged
+1607603,conference_league,2026-08-11 20:30,CSKA 1948,Panathinaikos,away_under15,72.15817217319226,33.09352517985613,no_data,away_under15,72.15817217319226,no_data,unchanged
+1575448,portugal,2026-08-08 22:30,Estrela,Sporting CP,away_win,76.14315803876318,-7.633587786259543,lost,away_win,76.14315803876318,lost,unchanged
+1575449,portugal,2026-08-09 20:00,FC Porto,Alverca,home_win,75.86481629228383,-10.60606060606062,won,home_win,75.86481629228383,won,unchanged
+1607571,europa_league,2026-08-13 20:00,Red Bull Salzburg,Pafos,home_win,60.21692036231082,78.3132530120482,lost,draw,21.484794408791114,won,changed_market
+1607182,europa_league,2026-08-13 20:00,Omonia Nicosia,Lincoln Red Imps FC,home_win,62.31172672363927,-30.625000000000004,won,home_win,62.31172672363927,won,unchanged
+1575452,portugal,2026-08-09 22:30,Moreirense,SC Braga,away_win,51.50833023548918,-11.340206185567014,lost,away_win,51.50833023548918,lost,unchanged
+1575450,portugal,2026-08-09 22:30,GIL Vicente,Rio Ave,under25,55.123332515355436,1.104972375690605,won,under25,55.123332515355436,won,unchanged
+1607181,europa_league,2026-08-13 20:30,KI Klaksvik,Lech Poznan,home_win,53.89267319521238,205.91397849462365,lost,draw,23.20298554352075,lost,changed_market
+1607568,europa_league,2026-08-13 21:00,CSKA Sofia,Maccabi Tel Aviv,home_win,61.147948140691646,40.24390243902438,lost,draw,21.68361437404783,lost,changed_market
+1575453,portugal,2026-08-10 22:15,Santa Clara,Nacional,under25,68.73189491436055,15.172413793103456,lost,under25,68.73189491436055,lost,unchanged
+1598831,europa_league,2026-08-13 21:30,Rangers,Jagiellonia,home_win,53.762415408920994,-16.666666666666675,lost,home_win,53.762415408920994,lost,unchanged
+1607566,europa_league,2026-08-13 21:30,Anderlecht,PAOK,home_win,46.279020269774186,30.09259259259258,won,home_win,46.279020269774186,won,unchanged
+1607570,europa_league,2026-08-13 21:45,Heart Of Midlothian,Benfica,away_win,37.1599885054263,-47.21189591078067,lost,away_win,37.1599885054263,lost,unchanged
+1606353,europa_league,2026-08-13 22:00,Egnatia Rrogozhinë,Shamrock Rovers,home_win,44.572477495366044,-7.589285714285731,won,home_win,44.572477495366044,won,unchanged
+1607607,conference_league,2026-08-12 19:00,FC Copenhagen,Debreceni VSC,away_under15,79.83749171187743,-10.399999999999988,won,away_under15,79.83749171187743,won,unchanged
+1607625,conference_league,2026-08-12 19:00,Rapid Vienna,Paide,away_under15,70.07699676548222,-25.874125874125863,won,away_under15,70.07699676548222,won,unchanged
+1607609,conference_league,2026-08-12 19:00,GKS Katowice,Hapoel Tel Aviv,away_under15,66.25278332582167,-15.2317880794702,won,away_under15,66.25278332582167,won,unchanged
+1607627,conference_league,2026-08-13 18:00,FK Tobol Kostanay,FK Partizan,home_under15,68.05980716029416,7.48299319727892,won,home_under15,68.05980716029416,won,unchanged
+1607620,conference_league,2026-08-13 19:00,Qarabag,Dynamo Kyiv,away_under15,69.34882492098234,-6.249999999999989,won,away_under15,69.34882492098234,won,unchanged
+1607614,conference_league,2026-08-13 19:00,Flora Tallinn,Inter Club d'Escaldes,away_under15,67.36009520905415,-12.16216216216216,lost,away_under15,67.36009520905415,lost,unchanged
+1607613,conference_league,2026-08-13 19:00,Ilves,HNK Rijeka,home_under15,71.62099619557043,-12.857142857142856,won,home_under15,71.62099619557043,won,unchanged
+1607606,conference_league,2026-08-13 19:00,Dunajska Streda,Twente,away_under15,76.98861179602339,87.6923076923077,lost,under25,54.92156014705147,lost,changed_market
+1607621,conference_league,2026-08-13 19:30,Rīgas FS,FK Jablonec,away_under15,71.56702860209192,-6.428571428571416,lost,away_under15,71.56702860209192,lost,unchanged
+1607628,conference_league,2026-08-13 20:00,Tromso,CFR 1907 Cluj,away_under15,73.98666475942395,-9.629629629629633,won,away_under15,73.98666475942395,won,unchanged
+1607612,conference_league,2026-08-13 20:00,Hammarby FF,Raków Częstochowa,home_under15,82.8672145134251,76.03305785123966,won,away_under15,69.47161696747226,won,changed_market
+1607605,conference_league,2026-08-13 20:00,Dinamo Minsk,SC Braga,home_under15,72.77801612674426,-16.058394160583955,won,home_under15,72.77801612674426,won,unchanged
+1607615,conference_league,2026-08-13 20:00,FC Midtjylland,Bohemians,away_under15,73.54124757224966,-15.441176470588246,lost,away_under15,73.54124757224966,lost,unchanged
+1607618,conference_league,2026-08-13 20:00,FC Nordsjaelland,Valur Reykjavik,away_under15,77.33840578051,-17.05426356589147,won,away_under15,77.33840578051,won,unchanged
+1607610,conference_league,2026-08-13 20:00,Gyori ETO FC,Riga,away_under15,67.77225957210516,6.081081081081097,won,away_under15,67.77225957210516,won,unchanged
+1607616,conference_league,2026-08-13 20:00,ML Vitebsk,Borac Banja Luka,away_under15,78.90399385488931,15.748031496062985,no_data,away_under15,78.90399385488931,no_data,unchanged
+1607629,conference_league,2026-08-13 20:30,FC Vaduz,Inter Turku,away_under15,75.33552769106862,2.2556390977443552,lost,away_under15,75.33552769106862,lost,unchanged
+1607619,conference_league,2026-08-13 20:30,NSI Runavik,FC Lugano,away_under15,63.2201862732378,88.60759493670885,lost,btts_yes,56.130051429214745,won,changed_market
+1607623,conference_league,2026-08-13 21:00,Shkendija,Hibernian,away_under15,72.27267914142563,15.942028985507273,won,away_under15,72.27267914142563,won,unchanged
+1607626,conference_league,2026-08-13 21:00,FC ST. Gallen,Sheriff Tiraspol,away_under15,71.39811809813146,-12.857142857142856,won,away_under15,71.39811809813146,won,unchanged
+1605373,conference_league,2026-08-13 21:00,Drita,Tre Fiori,away_under15,77.5750195057607,-17.05426356589147,won,away_under15,77.5750195057607,won,unchanged
+1607624,conference_league,2026-08-13 21:15,FC Sion,FC Noah,away_under15,74.07415128623845,-11.111111111111116,won,away_under15,74.07415128623845,won,unchanged
+1607617,conference_league,2026-08-13 21:30,Motherwell,HJK Helsinki,away_under15,78.23848538298816,1.5625,won,away_under15,78.23848538298816,won,unchanged
+1607602,conference_league,2026-08-13 21:30,Austria Vienna,Beitar Jerusalem,over25,65.66849752645928,11.842105263157897,no_data,over25,65.66849752645928,no_data,unchanged
+1607608,conference_league,2026-08-13 21:30,Gent,IFK Goteborg,away_under15,81.89311468703426,0.0,won,away_under15,81.89311468703426,won,unchanged
+1607622,conference_league,2026-08-13 21:45,Shelbourne,Ajax,away_under15,62.421442663088946,151.87499999999997,lost,home_under15,57.97871053191312,lost,changed_market
+1607611,conference_league,2026-08-13 22:00,HNK Hajduk Split,FK Zalgiris Vilnius,away_under15,68.89697940026764,-18.620689655172416,won,away_under15,68.89697940026764,won,unchanged
+1607604,conference_league,2026-08-13 22:00,Dinamo Tirana,Auda,away_under15,69.41815381517303,-6.249999999999989,won,away_under15,69.41815381517303,won,unchanged
+1607569,europa_league,2026-08-13 20:00,Gornik Zabrze,Ferencvarosi TC,home_win,41.127107969325884,-13.991769547325116,lost,home_win,41.127107969325884,lost,unchanged
+1551076,bulgaria,2026-08-14 21:15,CSKA 1948,Cherno More Varna,under25,61.55209122601142,3.703703703703698,lost,under25,61.55209122601142,lost,unchanged
+1607183,europa_league,2026-08-13 20:00,Universitatea Craiova,KuPS,home_win,54.906844752023964,-18.681318681318682,won,home_win,54.906844752023964,won,unchanged
+1607184,europa_league,2026-08-13 20:30,Vikingur Reykjavik,FC Thun,away_win,42.63080981367675,9.787234042553195,lost,away_win,42.63080981367675,lost,unchanged
+1575463,portugal,2026-08-14 22:15,Sporting CP,Guimaraes,home_win,79.13662719423645,-2.3809523809523836,won,home_win,79.13662719423645,won,unchanged
+1551080,bulgaria,2026-08-15 19:00,Slavia Sofia,Levski Sofia,under25,61.06559567453401,14.024390243902452,no_data,under25,61.06559567453401,no_data,unchanged
+1551079,bulgaria,2026-08-15 21:15,Ludogorets,Botev Plovdiv,home_win,77.57084045871444,20.93023255813953,won,home_win,77.57084045871444,won,unchanged
+1570333,spain,2026-08-15 20:30,Alaves,Getafe,under25,72.03138903976023,-2.877697841726601,lost,under25,72.03138903976023,lost,unchanged
+1570341,spain,2026-08-15 22:30,Sevilla,Rayo Vallecano,under25,60.617269410171424,-0.60606060606061,no_data,under25,60.617269410171424,no_data,unchanged
+1575456,portugal,2026-08-15 17:30,Alverca,Estrela,under25,58.17360523887544,-2.3255813953488413,no_data,under25,58.17360523887544,no_data,unchanged
+1575462,portugal,2026-08-15 22:30,Rio Ave,FC Porto,away_win,63.84697670733706,-10.828025477707016,no_data,away_win,63.84697670733706,no_data,unchanged
+1551077,bulgaria,2026-08-16 19:00,CSKA Sofia,Botev Vratsa,home_win,72.23054590395016,-7.246376811594191,no_data,home_win,72.23054590395016,no_data,unchanged
+1551078,bulgaria,2026-08-16 21:15,Lokomotiv Plovdiv,Dunav Ruse,home_win,65.04814372745145,10.389610389610393,no_data,home_win,65.04814372745145,no_data,unchanged
+1570338,spain,2026-08-16 20:00,Espanyol,Levante,over25,53.23973327115722,18.085106382978733,no_data,over25,53.23973327115722,no_data,unchanged
+1570336,spain,2026-08-16 22:30,Celta Vigo,Osasuna,under25,51.70241644119067,-10.880829015544036,no_data,under25,51.70241644119067,no_data,unchanged
+1575461,portugal,2026-08-16 17:30,Nacional,Estoril,over25,51.77999033883146,-2.590673575129532,no_data,over25,51.77999033883146,no_data,unchanged
+1575457,portugal,2026-08-16 20:00,Arouca,Moreirense,under25,50.206288784867304,-14.572864321608037,no_data,under25,50.206288784867304,no_data,unchanged
+1575458,portugal,2026-08-16 22:30,SC Braga,GIL Vicente,home_win,61.655558998762025,0.0,no_data,home_win,61.655558998762025,no_data,unchanged
+1575460,portugal,2026-08-16 22:30,Famalicao,Maritimo,under25,62.658408854162126,9.999999999999986,no_data,under25,62.658408854162126,no_data,unchanged
+1551081,bulgaria,2026-08-17 19:00,Spartak Varna,Septemvri Sofia,home_win,55.03492441058104,0.0,no_data,home_win,55.03492441058104,no_data,unchanged
+1551075,bulgaria,2026-08-17 21:15,Arda Kardzhali,Lokomotiv Sofia,home_win,59.19026314369532,-0.591715976331364,no_data,home_win,59.19026314369532,no_data,unchanged
+1575455,portugal,2026-08-15 20:00,Academico Viseu,Santa Clara,under25,61.95067756756474,3.105590062111796,no_data,under25,61.95067756756474,no_data,unchanged
+1575459,portugal,2026-08-17 22:15,Casa Pia,Benfica,away_win,68.05011717230815,-17.006802721088434,no_data,away_win,68.05011717230815,no_data,unchanged
+1552433,france2,2026-08-14 21:45,Dijon,PAU,over25,51.186207248436745,7.179487179487176,no_data,over25,51.186207248436745,no_data,unchanged
+1552435,france2,2026-08-14 21:45,Guingamp,Boulogne,under25,54.2430311211179,2.717391304347827,no_data,under25,54.2430311211179,no_data,unchanged
+1571506,bulgaria2,2026-08-10 18:00,Nesebar,Dobrudzha,away_win,64.05318429570035,6.41025641025641,no_data,away_win,64.05318429570035,no_data,unchanged
+1571502,bulgaria2,2026-08-10 20:00,Beroe,Ludogorets II,home_win,40.781462536602305,-21.632653061224495,no_data,home_win,40.781462536602305,no_data,unchanged
+1569881,spain2,2026-08-14 21:30,Real Sociedad II,Castellón,home_under15,58.41833952064316,-16.374269005847953,no_data,home_under15,58.41833952064316,no_data,unchanged
+1569872,spain2,2026-08-15 18:00,FC Andorra,AD Ceuta FC,away_under15,72.17641636540033,-10.79136690647482,no_data,away_under15,72.17641636540033,no_data,unchanged
+1569880,spain2,2026-08-15 20:00,Oviedo,Granada CF,away_under15,77.82305155797712,-3.90625,no_data,away_under15,77.82305155797712,no_data,unchanged
+1569875,spain2,2026-08-16 18:00,Eibar,Tenerife,away_under15,86.5415869511626,4.31034482758621,no_data,away_under15,86.5415869511626,no_data,unchanged
+1569873,spain2,2026-08-16 20:00,Burgos,Cordoba,away_under15,76.84822796917233,3.076923076923088,no_data,away_under15,76.84822796917233,no_data,unchanged
+1569878,spain2,2026-08-16 22:30,Las Palmas,Albacete,away_under15,77.34811804321986,-4.651162790697683,no_data,away_under15,77.34811804321986,no_data,unchanged
+1569871,spain2,2026-08-17 22:30,Almeria,Eldense,away_under15,71.78563882915665,-17.985611510791365,no_data,away_under15,71.78563882915665,no_data,unchanged
+1552439,france2,2026-08-14 21:45,Reims,Dunkerque,under25,50.505513406081846,2.020202020202011,no_data,under25,50.505513406081846,no_data,unchanged
+1552434,france2,2026-08-14 21:45,Grenoble,Metz,under25,55.70926940111107,2.2222222222222143,no_data,under25,55.70926940111107,no_data,unchanged
+1552437,france2,2026-08-14 21:45,Nancy,Montpellier,under25,63.60549902358448,22.92993630573248,no_data,under25,63.60549902358448,no_data,unchanged
+1552438,france2,2026-08-14 21:45,RED Star FC 93,Sochaux,under25,55.12203057698358,-3.8674033149171283,no_data,under25,55.12203057698358,no_data,unchanged
+1552436,france2,2026-08-14 21:45,Laval,Nantes,under25,67.62223857107779,16.891891891891888,no_data,under25,67.62223857107779,no_data,unchanged
+1552440,france2,2026-08-14 21:45,Saint Etienne,Clermont Foot,home_win,59.776854102086894,-6.586826347305386,no_data,home_win,59.776854102086894,no_data,unchanged
+1552432,france2,2026-08-14 21:45,Annecy,Rodez,over25,51.33864657345707,-8.205128205128197,no_data,over25,51.33864657345707,no_data,unchanged
+1571503,bulgaria2,2026-08-11 18:00,CSKA Sofia II,Hebar 1918,home_win,68.80183350176678,22.06896551724138,no_data,home_win,68.80183350176678,no_data,unchanged
+1571510,bulgaria2,2026-08-11 20:00,Yantra 2019,Montana,home_win,39.25800176867141,-11.372549019607847,no_data,home_win,39.25800176867141,no_data,unchanged
+1571514,bulgaria2,2026-08-14 18:45,Fratria,Beroe,home_win,58.607651026308424,-11.111111111111105,no_data,home_win,58.607651026308424,no_data,unchanged
+1571519,bulgaria2,2026-08-16 18:00,Sportist Svoge,Nesebar,home_win,54.23385155427442,-16.30434782608696,no_data,home_win,54.23385155427442,no_data,unchanged
+1571513,bulgaria2,2026-08-16 20:00,Etar Veliko Tarnovo,Rilski Sportist,home_win,56.54808618516909,-24.858757062146886,no_data,home_win,56.54808618516909,no_data,unchanged
+1571518,bulgaria2,2026-08-16 20:00,Spartak Pleven,Lokomotiv G. Oryahovitsa,home_win,53.59125966979795,-9.625668449197866,no_data,home_win,53.59125966979795,no_data,unchanged
+1571516,bulgaria2,2026-08-16 20:00,Montana,Marek,home_win,51.66715685476419,-17.525773195876283,no_data,home_win,51.66715685476419,no_data,unchanged
+1571512,bulgaria2,2026-08-16 20:00,Dobrudzha,Yantra 2019,home_win,51.429394837789566,15.463917525773208,no_data,home_win,51.429394837789566,no_data,unchanged
+1571511,bulgaria2,2026-08-17 18:00,Chernomorets 1919 Burgas,CSKA Sofia II,home_win,35.91941081824194,-9.352517985611508,no_data,home_win,35.91941081824194,no_data,unchanged
+1571517,bulgaria2,2026-08-18 18:30,Pirin Blagoevgrad,Hebar 1918,home_win,51.112185475496396,57.14285714285714,no_data,away_win,25.54053909957811,no_data,changed_market
+1571515,bulgaria2,2026-08-18 20:00,Ludogorets II,Vihren,away_win,39.009917871844266,-12.890625,no_data,away_win,39.009917871844266,no_data,unchanged
+1552427,france2,2026-08-08 21:45,Montpellier,Dijon,under25,68.34987236304875,19.863013698630148,no_data,under25,68.34987236304875,no_data,unchanged
+1552428,france2,2026-08-08 21:45,Nantes,RED Star FC 93,under25,64.6993000947393,16.129032258064523,no_data,under25,64.6993000947393,no_data,unchanged
+1552424,france2,2026-08-08 21:45,Clermont Foot,Reims,under25,60.51378043232805,4.2424242424242475,no_data,under25,60.51378043232805,no_data,unchanged
+1552426,france2,2026-08-08 21:45,Metz,Guingamp,home_win,59.07247522244744,17.159763313609467,no_data,home_win,59.07247522244744,no_data,unchanged
+1552431,france2,2026-08-08 21:45,Sochaux,Saint Etienne,under25,51.74835129791806,-5.181347150259064,no_data,under25,51.74835129791806,no_data,unchanged
+1552429,france2,2026-08-08 21:45,PAU,Annecy,over25,57.13516379742005,5.714285714285716,no_data,over25,57.13516379742005,no_data,unchanged
+1552423,france2,2026-08-08 21:45,Boulogne,Nancy,under25,58.59355912765173,-2.3391812865497075,no_data,under25,58.59355912765173,no_data,unchanged
+1552430,france2,2026-08-08 21:45,Rodez,Laval,home_win,53.284805729164276,6.914893617021267,no_data,home_win,53.284805729164276,no_data,unchanged
+1552425,france2,2026-08-08 21:45,Dunkerque,Grenoble,under25,54.12263658646458,-1.0810810810810811,no_data,under25,54.12263658646458,no_data,unchanged
+1622621,champions_league,2026-08-18 22:00,Fenerbahçe,Lyon,home_win,58.829240656002156,19.41176470588235,no_data,home_win,58.829240656002156,no_data,unchanged
+1622622,champions_league,2026-08-18 22:00,Levski Sofia,AEK Athens FC,home_win,60.351863431683796,72.28915662650604,no_data,draw,23.3790325081102,no_data,changed_market
+1622624,champions_league,2026-08-19 22:00,NEC Nijmegen,Bodo/Glimt,away_win,41.02862399990113,0.8196721311475308,won,away_win,41.02862399990113,won,unchanged
+1622623,champions_league,2026-08-19 22:00,Hapoel Beer Sheva,Sabah FA,home_win,41.37002120337511,-4.132231404958686,won,home_win,41.37002120337511,won,unchanged
+1622625,champions_league,2026-08-19 22:00,Slovan Bratislava,Celje,home_win,53.956462495191026,-8.108108108108114,lost,home_win,53.956462495191026,lost,unchanged
+1570351,spain,2026-08-20 22:00,Rayo Vallecano,Alaves,under25,66.92399969645197,-2.684563758389269,won,under25,66.92399969645197,won,unchanged
+1622632,europa_league,2026-08-20 20:00,FK Crvena Zvezda,Plzen,home_win,37.20871512254076,-37.54646840148699,won,home_win,37.20871512254076,won,unchanged
+1570345,spain,2026-08-21 22:00,Real Betis,Real Sociedad,under25,53.030931637685526,-4.232804232804222,won,under25,53.030931637685526,won,unchanged
+1552733,france,2026-08-21 21:45,Marseille,Strasbourg,away_under15,65.05752057514913,-6.493506493506496,won,away_under15,65.05752057514913,won,unchanged
+1552442,france2,2026-08-21 21:00,Clermont Foot,Dijon,under25,65.25681683788007,14.379084967320255,won,under25,65.25681683788007,won,unchanged
+1552448,france2,2026-08-21 21:00,Sochaux,Guingamp,under25,53.408457620625285,-9.625668449197866,won,under25,53.408457620625285,won,unchanged
+1552446,france2,2026-08-21 21:00,PAU,Nancy,over25,56.44653190159621,5.084745762711873,lost,over25,56.44653190159621,lost,unchanged
+1552441,france2,2026-08-21 21:00,Boulogne,RED Star FC 93,under25,58.67375806280495,-2.352941176470591,won,under25,58.67375806280495,won,unchanged
+1552443,france2,2026-08-21 21:00,Dunkerque,Montpellier,under25,59.44320142212545,13.095238095238093,won,under25,59.44320142212545,won,unchanged
+1623434,europa_league,2026-08-20 20:00,Jagiellonia,Saburtalo,home_win,43.12362372127837,-42.24137931034482,won,home_win,43.12362372127837,won,unchanged
+1623439,europa_league,2026-08-20 20:00,Trabzonspor,Ferencvarosi TC,home_win,45.05605462453852,-27.027027027027028,lost,home_win,45.05605462453852,lost,unchanged
+1623387,conference_league,2026-08-20 20:00,SC Braga,Austria Vienna,away_under15,72.61343547806575,-17.391304347826086,won,away_under15,72.61343547806575,won,unchanged
+1623394,conference_league,2026-08-20 20:00,Heart Of Midlothian,Rapid Vienna,home_under15,62.04871881819572,4.968944099378869,lost,home_under15,62.04871881819572,lost,unchanged
+1623408,conference_league,2026-08-20 20:00,Vikingur Reykjavik,Borac Banja Luka,away_under15,78.59293033404009,3.149606299212593,lost,away_under15,78.59293033404009,lost,unchanged
+1623398,conference_league,2026-08-20 20:00,FC Midtjylland,HNK Rijeka,away_under15,74.75667295334928,-5.97014925373135,won,away_under15,74.75667295334928,won,unchanged
+1623400,conference_league,2026-08-20 20:00,FC Nordsjaelland,FC ST. Gallen,home_over15,81.75129552819719,23.77049180327868,lost,home_over15,81.75129552819719,lost,unchanged
+1623407,conference_league,2026-08-20 20:00,Twente,Qarabag,away_under15,75.65126796451608,-3.7878787878787956,won,away_under15,75.65126796451608,won,unchanged
+1623397,conference_league,2026-08-20 20:00,FC Lugano,Maccabi Tel Aviv,away_under15,63.14962151817106,-13.924050632911388,won,away_under15,63.14962151817106,won,unchanged
+1623393,conference_league,2026-08-20 20:00,HNK Hajduk Split,Raków Częstochowa,away_under15,71.4173733686165,-6.428571428571416,lost,away_under15,71.4173733686165,lost,unchanged
+1623402,conference_league,2026-08-20 20:00,PAOK,Brann,away_under15,71.18182190464871,-7.142857142857128,won,away_under15,71.18182190464871,won,unchanged
+1623405,conference_league,2026-08-20 20:00,FC Sion,Ajax,over25,67.66234895462566,7.432432432432434,won,over25,67.66234895462566,won,unchanged
+1623390,conference_league,2026-08-20 20:00,Gent,Hibernian,away_under15,79.01969442075114,-5.511811023622048,won,away_under15,79.01969442075114,won,unchanged
+1623404,conference_league,2026-08-20 20:00,Shamrock Rovers,KuPS,away_under15,78.88557542413957,5.51181102362206,won,away_under15,78.88557542413957,won,unchanged
+1623396,conference_league,2026-08-20 20:00,Lincoln Red Imps FC,Larne,away_under15,72.74454649151257,-0.7299270072992692,lost,away_under15,72.74454649151257,lost,unchanged
+1623395,conference_league,2026-08-20 20:00,Inter Turku,FC Copenhagen,away_under15,62.79899509274104,54.08805031446542,won,btts_yes,59.08651149089776,lost,changed_market
+1623388,conference_league,2026-08-20 20:00,Dinamo Tirana,Pafos,away_under15,76.69765633136367,29.230769230769216,won,away_under15,76.69765633136367,won,unchanged
+1623389,conference_league,2026-08-20 20:00,Drita,Inter Club d'Escaldes,away_under15,64.59489864480034,-17.419354838709676,lost,away_under15,64.59489864480034,lost,unchanged
+1551083,bulgaria,2026-08-21 21:15,Cherno More Varna,Dunav Ruse,home_win,66.83651935884349,4.666666666666663,won,home_win,66.83651935884349,won,unchanged
+1551087,bulgaria,2026-08-22 19:00,Ludogorets,Slavia Sofia,home_win,73.44002042550214,-2.941176470588236,lost,home_win,73.44002042550214,lost,unchanged
+1551084,bulgaria,2026-08-22 21:15,Levski Sofia,Spartak Varna,home_win,77.69960757280579,-4.651162790697683,won,home_win,77.69960757280579,won,unchanged
+1557369,england,2026-08-22 17:00,Everton,Crystal Palace,away_under15,74.408409533571,5.223880597014907,won,away_under15,74.408409533571,won,unchanged
+1557370,england,2026-08-22 17:00,Ipswich,Sunderland,home_under15,76.14251916451484,15.267175572519086,lost,home_under15,76.14251916451484,lost,unchanged
+1557371,england,2026-08-22 17:00,Nottingham Forest,Leeds,away_under15,67.27460753672901,-4.026845637583898,won,away_under15,67.27460753672901,won,unchanged
+1557372,england,2026-08-22 19:30,Brentford,Tottenham,over25,62.854384875977345,5.031446540880502,won,over25,62.854384875977345,won,unchanged
+1570343,spain,2026-08-22 18:00,Athletic Club,Sevilla,home_win,55.89446292513368,-3.3519553072625774,lost,home_win,55.89446292513368,lost,unchanged
+1570352,spain,2026-08-22 20:30,Valencia,Celta Vigo,under25,53.07032671002673,-11.170212765957444,won,under25,53.07032671002673,won,unchanged
+1570347,spain,2026-08-22 22:30,Espanyol,Real Madrid,away_win,60.43594874457747,-6.666666666666654,won,away_win,60.43594874457747,won,unchanged
+1552732,france,2026-08-22 18:15,Lens,Auxerre,away_under15,82.23372503250408,5.737704918032782,lost,away_under15,82.23372503250408,lost,unchanged
+1552734,france,2026-08-22 21:45,Nice,Lorient,away_under15,70.19943618588738,0.0,won,away_under15,70.19943618588738,won,unchanged
+1552736,france,2026-08-22 21:45,Toulouse,Lyon,home_under15,59.534957534890765,-8.92857142857142,won,home_under15,59.534957534890765,won,unchanged
+1552737,france,2026-08-22 21:45,Estac Troyes,Paris FC,home_under15,63.05789559536914,-2.515723270440251,won,home_under15,63.05789559536914,won,unchanged
+1550095,italy,2026-08-22 19:30,Udinese,Como,away_win,50.289441258216485,-8.542713567839188,lost,away_win,50.289441258216485,lost,unchanged
+1550092,italy,2026-08-22 19:30,Inter,Monza,home_win,82.39402374472311,0.8264462809917328,won,home_win,82.39402374472311,won,unchanged
+1550091,italy,2026-08-22 21:45,Genoa,Napoli,away_win,49.70727112021055,-7.96019900497511,won,away_win,49.70727112021055,won,unchanged
+1550093,italy,2026-08-22 21:45,Parma,Cagliari,home_win,37.60853862696827,-4.135338345864669,lost,home_win,37.60853862696827,lost,unchanged
+1575468,portugal,2026-08-22 17:30,Maritimo,Academico Viseu,under25,56.55721793015491,-4.519774011299438,lost,under25,56.55721793015491,lost,unchanged
+1575464,portugal,2026-08-22 20:00,Estoril,Rio Ave,over25,57.88814629567069,4.046242774566489,lost,over25,57.88814629567069,lost,unchanged
+1575471,portugal,2026-08-22 22:30,Sporting CP,Alverca,home_win,84.03220697066597,1.680672268907557,won,home_win,84.03220697066597,won,unchanged
+1552445,france2,2026-08-22 15:00,Nantes,Rodez,under25,55.152172920369466,9.392265193370154,no_data,under25,55.152172920369466,no_data,unchanged
+1552444,france2,2026-08-22 15:00,Metz,Laval,home_win,62.619806370291165,13.749999999999996,no_data,home_win,62.619806370291165,no_data,unchanged
+1552449,france2,2026-08-22 21:00,Saint Etienne,Grenoble,home_win,57.73807212055955,-19.653179190751445,won,home_win,57.73807212055955,won,unchanged
+1569891,spain2,2026-08-22 18:00,Oviedo,Leganes,away_under15,83.45546686131577,0.0,won,away_under15,83.45546686131577,won,unchanged
+1569882,spain2,2026-08-22 20:00,Albacete,Real Sociedad II,away_under15,72.12195081144546,-5.035971223021574,lost,away_under15,72.12195081144546,lost,unchanged
+1569885,spain2,2026-08-22 20:00,AD Ceuta FC,Las Palmas,home_under15,70.70039567843864,-1.4184397163120588,won,home_under15,70.70039567843864,won,unchanged
+1569888,spain2,2026-08-22 22:30,Eldense,Cadiz,away_under15,70.40057968352701,-4.929577464788726,lost,away_under15,70.40057968352701,lost,unchanged
+1601501,italy2,2026-08-22 20:00,Sudtirol,Virtus Entella,under25,64.30999219801166,-2.580645161290329,won,under25,64.30999219801166,won,unchanged
+1601495,italy2,2026-08-22 20:00,Carrarese,Mantova,over25,50.13031372521449,-1.5075376884422176,won,over25,50.13031372521449,won,unchanged
+1601494,italy2,2026-08-22 22:00,Benevento,Modena,under25,62.65783074455916,13.749999999999996,lost,under25,62.65783074455916,lost,unchanged
+1601497,italy2,2026-08-22 22:00,Empoli,Cremonese,under25,50.96318166366577,-11.734693877551017,won,under25,50.96318166366577,won,unchanged
+1571520,bulgaria2,2026-08-22 18:00,Beroe,Spartak Pleven,home_win,46.07905527675443,-22.580645161290324,won,home_win,46.07905527675443,won,unchanged
+1571525,bulgaria2,2026-08-22 18:00,Nesebar,Pirin Blagoevgrad,away_win,40.0496534252797,76.8,lost,home_win,33.49448525231279,won,changed_market
+1571521,bulgaria2,2026-08-22 18:00,CSKA Sofia II,Ludogorets II,home_win,58.42179480535014,-18.128654970760238,lost,home_win,58.42179480535014,lost,unchanged
+1571523,bulgaria2,2026-08-22 18:00,Lokomotiv G. Oryahovitsa,Etar Veliko Tarnovo,away_win,40.917176877848746,-15.983606557377051,lost,away_win,40.917176877848746,lost,unchanged
+1571522,bulgaria2,2026-08-22 18:00,Hebar 1918,Chernomorets 1919 Burgas,home_win,38.29219828674523,-16.09195402298851,won,home_win,38.29219828674523,won,unchanged
+1571527,bulgaria2,2026-08-22 18:00,Vihren,Fratria,home_win,50.67242970844252,15.228426395939088,lost,home_win,50.67242970844252,lost,unchanged
+1571528,bulgaria2,2026-08-22 18:00,Yantra 2019,Sportist Svoge,home_win,62.424156184878655,-8.125000000000004,won,home_win,62.424156184878655,won,unchanged
+1571524,bulgaria2,2026-08-22 18:00,Marek,Dobrudzha,away_win,35.75846294705222,52.85714285714287,lost,home_win,32.64858300260399,won,changed_market
+1571526,bulgaria2,2026-08-22 18:00,Rilski Sportist,Montana,away_win,43.80902422892028,7.8947368421052655,lost,away_win,43.80902422892028,lost,unchanged
+1627595,europa_league,2026-08-20 20:00,Lech Poznan,FC Thun,home_win,57.11589725894696,-9.142857142857142,no_data,home_win,57.11589725894696,no_data,unchanged
+1627538,conference_league,2026-08-20 20:00,KI Klaksvik,Riga,away_under15,75.20652384979012,51.8796992481203,no_data,home_under15,60.73148105141144,no_data,changed_market
+1551088,bulgaria,2026-08-23 19:00,Septemvri Sofia,CSKA 1948,away_win,66.12333406681917,1.324503311258285,lost,away_win,66.12333406681917,lost,unchanged
+1551085,bulgaria,2026-08-23 21:15,Lokomotiv Plovdiv,Arda Kardzhali,under25,66.72081057433346,1.333333333333342,won,under25,66.72081057433346,won,unchanged
+1557374,england,2026-08-23 16:00,Manchester City,Bournemouth,away_under15,79.13658925805416,7.936507936507953,won,away_under15,79.13658925805416,won,unchanged
+1557373,england,2026-08-23 16:00,Brighton,Aston Villa,away_under15,60.46133400950522,-7.878787878787874,won,away_under15,60.46133400950522,won,unchanged
+1557375,england,2026-08-23 18:30,Newcastle,Liverpool,over25,61.98696551108992,-8.695652173913048,won,over25,61.98696551108992,won,unchanged
+1570344,spain,2026-08-23 18:00,Atletico Madrid,Villarreal,over25,62.306828181012705,18.124999999999993,won,over25,62.306828181012705,won,unchanged
+1570346,spain,2026-08-23 22:30,Elche,Barcelona,away_win,67.14749002712003,-12.751677852348987,won,away_win,67.14749002712003,won,unchanged
+1552729,france,2026-08-23 16:00,Angers,Lille,home_under15,81.83227137232653,0.8196721311475308,won,home_under15,81.83227137232653,won,unchanged
+1552730,france,2026-08-23 18:15,Le Havre,Monaco,home_under15,67.39270255494444,-0.6756756756756799,won,home_under15,67.39270255494444,won,unchanged
+1552735,france,2026-08-23 21:45,Paris Saint Germain,Rennes,home_over15,70.58606792405196,-2.1126760563380254,won,home_over15,70.58606792405196,won,unchanged
+1550090,italy,2026-08-23 19:30,Frosinone,Juventus,away_win,58.855719112988815,-14.70588235294118,won,away_win,58.855719112988815,won,unchanged
+1550096,italy,2026-08-23 19:30,Venezia,Lecce,home_win,40.09186140347028,-6.425702811244982,lost,home_win,40.09186140347028,lost,unchanged
+1550088,italy,2026-08-23 21:45,Atalanta,Sassuolo,home_win,61.989146575031285,-5.590062111801242,won,home_win,61.989146575031285,won,unchanged
+1550094,italy,2026-08-23 21:45,Torino,AC Milan,away_win,49.22474521729037,-12.315270935960577,won,away_win,49.22474521729037,won,unchanged
+1575472,portugal,2026-08-23 17:30,Vitória SC,Nacional,home_win,52.257303321205626,-10.994764397905755,won,home_win,52.257303321205626,won,unchanged
+1575470,portugal,2026-08-23 20:00,Santa Clara,Famalicao,under25,71.11081829656271,7.092198581560294,won,under25,71.11081829656271,won,unchanged
+1575466,portugal,2026-08-23 22:30,FC Porto,Arouca,home_win,74.51260302006084,-10.447761194029859,won,home_win,74.51260302006084,won,unchanged
+1569887,spain2,2026-08-23 18:00,Eibar,Valladolid,away_under15,82.80259886448358,6.6115702479338845,won,away_under15,82.80259886448358,won,unchanged
+1569889,spain2,2026-08-23 20:00,Sporting Gijon,Burgos,away_under15,76.20726612136606,0.0,won,away_under15,76.20726612136606,won,unchanged
+1569892,spain2,2026-08-23 22:30,Tenerife,Almeria,home_under15,67.25960491784218,-7.382550335570482,won,home_under15,67.25960491784218,won,unchanged
+1601500,italy2,2026-08-23 20:00,Pisa,Padova,home_win,57.92465818349839,1.1560693641618602,lost,home_win,57.92465818349839,lost,unchanged
+1601496,italy2,2026-08-23 22:00,Cesena,Sampdoria,under25,60.60414214722938,7.878787878787885,won,under25,60.60414214722938,won,unchanged
+1601499,italy2,2026-08-23 22:00,Palermo,Juve Stabia,under25,56.52874928295424,-0.5649717514124353,won,under25,56.52874928295424,won,unchanged
+1551082,bulgaria,2026-08-24 19:00,Botev Vratsa,Botev Plovdiv,under25,58.7883043056912,2.35294117647058,won,under25,58.7883043056912,won,unchanged
+1551086,bulgaria,2026-08-24 21:15,Lokomotiv Sofia,CSKA Sofia,under25,60.4580257037002,23.636363636363654,no_data,under25,60.4580257037002,no_data,unchanged
+1557376,england,2026-08-24 22:00,Fulham,Chelsea,away_under15,61.570017284804514,27.16049382716048,lost,away_under15,61.570017284804514,lost,unchanged
+1570350,spain,2026-08-24 20:30,Osasuna,Levante,under25,50.45930529603808,-5.5555555555555465,won,under25,50.45930529603808,won,unchanged
+1550089,italy,2026-08-24 19:30,Bologna,Lazio,home_win,40.19674681803227,-13.253012048192769,lost,home_win,40.19674681803227,lost,unchanged
+1550087,italy,2026-08-24 21:45,AS Roma,Fiorentina,home_win,52.63674163070925,-17.894736842105253,won,home_win,52.63674163070925,won,unchanged
+1575467,portugal,2026-08-24 22:15,GIL Vicente,Casa Pia,under25,60.53414068997567,-3.0303030303030165,won,under25,60.53414068997567,won,unchanged
+1552447,france2,2026-08-24 21:45,Reims,Annecy,under25,52.591399588935204,-1.0526315789473717,lost,under25,52.591399588935204,lost,unchanged
+1569884,spain2,2026-08-24 20:00,Celta de Vigo II,FC Andorra,away_under15,73.7340824275719,27.941176470588225,lost,away_under15,73.7340824275719,lost,unchanged
+1569890,spain2,2026-08-24 22:30,Granada CF,Mallorca,away_under15,70.13772442671984,-1.3986013986013957,won,away_under15,70.13772442671984,won,unchanged
+1570348,spain,2026-08-23 20:30,Getafe,Racing Santander,under25,69.69401695232958,-2.7972027972028024,won,under25,69.69401695232958,won,unchanged
+1569886,spain2,2026-08-21 22:00,Cordoba,Girona,away_under15,67.16850789263698,12.751677852348987,won,away_under15,67.16850789263698,won,unchanged
+1570342,spain,2026-08-25 22:00,Valencia,Real Betis,under25,56.30242301932993,1.1235955056179803,won,under25,56.30242301932993,won,unchanged
+1622626,champions_league,2026-08-25 19:45,Sabah FA,Hapoel Beer Sheva,home_win,47.87947532936604,-13.397129186602863,no_data,home_win,47.87947532936604,no_data,unchanged
+1622627,champions_league,2026-08-25 22:00,Bodo/Glimt,NEC Nijmegen,home_win,66.25420553570503,-2.6490066225165587,won,home_win,66.25420553570503,won,unchanged
+1570340,spain,2026-08-26 22:00,Real Madrid,Real Sociedad,home_win,69.25268254604791,-3.472222222222221,won,home_win,69.25268254604791,won,unchanged
+1622630,champions_league,2026-08-26 22:00,Lyon,Fenerbahçe,home_win,41.86101144690486,-16.317991631799167,lost,home_win,41.86101144690486,lost,unchanged
+1622629,champions_league,2026-08-26 22:00,AEK Athens FC,Levski Sofia,away_win,38.08597682882999,134.22053231939165,lost,home_win,32.73466461724499,won,changed_market
+1622628,champions_league,2026-08-26 22:00,Celje,Slovan Bratislava,home_win,52.400810852472205,24.607329842931946,no_data,home_win,52.400810852472205,no_data,unchanged
+1622631,champions_league,2026-08-26 22:00,Viking,Dinamo Zagreb,home_win,45.280017924242,20.814479638009043,won,home_win,45.280017924242,won,unchanged
+1623429,conference_league,2026-08-26 19:45,Rapid Vienna,Heart Of Midlothian,away_under15,78.49704657493932,3.149606299212593,no_data,away_under15,78.49704657493932,no_data,unchanged
+1569883,spain2,2026-08-23 20:00,Castellón,Sabadell,away_under15,76.99703673307529,-4.615384615384621,won,away_under15,76.99703673307529,won,unchanged
+1570349,spain,2026-08-24 22:30,Malaga,Deportivo La Coruna,under25,60.477785156268105,-9.090909090909083,won,under25,60.477785156268105,won,unchanged
+1570335,spain,2026-08-27 22:00,Barcelona,Athletic Club,home_win,68.63284448350703,-4.794520547945213,won,home_win,68.63284448350703,won,unchanged
+1610924,champions_league,2026-08-25 22:00,Lask Linz,Celtic,home_win,36.592264830437635,-0.3663003663003539,no_data,home_win,36.592264830437635,no_data,unchanged
+1623446,europa_league,2026-08-27 19:00,Saburtalo,Jagiellonia,home_win,49.67710556372165,83.08457711442789,lost,draw,27.43543284990895,lost,changed_market
+1622633,europa_league,2026-08-27 20:00,Plzen,FK Crvena Zvezda,home_win,48.16917456137313,-2.4038461538461675,no_data,home_win,48.16917456137313,no_data,unchanged
+1627596,europa_league,2026-08-27 21:00,FC Thun,Lech Poznan,home_win,45.68272785738412,25.114155251141558,lost,home_win,45.68272785738412,lost,unchanged
+1623445,europa_league,2026-08-27 21:30,Ferencvarosi TC,Trabzonspor,home_win,52.38049421195359,54.450261780104725,won,draw,24.680262358989765,lost,changed_market
+1623420,conference_league,2026-08-27 18:00,KuPS,Shamrock Rovers,away_under15,76.78871848401708,-3.8461538461538547,won,away_under15,76.78871848401708,won,unchanged
+1623426,conference_league,2026-08-27 19:00,Qarabag,Twente,away_under15,59.427503337690894,-1.7857142857142905,no_data,away_under15,59.427503337690894,no_data,unchanged
+1623422,conference_league,2026-08-27 19:00,Maccabi Tel Aviv,FC Lugano,away_under15,67.40419844280396,-1.3513513513513487,won,away_under15,67.40419844280396,won,unchanged
+1623412,conference_league,2026-08-27 20:00,Brann,PAOK,away_under15,66.55727870996282,6.000000000000005,lost,away_under15,66.55727870996282,lost,unchanged
+1623414,conference_league,2026-08-27 20:00,FC Copenhagen,Inter Turku,away_under15,69.81505514338299,-20.97902097902098,won,away_under15,69.81505514338299,won,unchanged
+1623418,conference_league,2026-08-27 20:00,Inter Club d'Escaldes,Drita,away_under15,63.31524450374898,-8.860759493670889,no_data,away_under15,63.31524450374898,no_data,unchanged
+1623424,conference_league,2026-08-27 20:00,Pafos,Dinamo Tirana,away_under15,75.94339516531029,-15.151515151515149,no_data,away_under15,75.94339516531029,no_data,unchanged
+1623427,conference_league,2026-08-27 20:00,Raków Częstochowa,HNK Hajduk Split,away_under15,79.9467578107267,8.800000000000008,no_data,away_under15,79.9467578107267,no_data,unchanged
+1627539,conference_league,2026-08-27 20:00,Riga,KI Klaksvik,away_under15,77.59321992090726,-5.4263565891472965,won,away_under15,77.59321992090726,won,unchanged
+1623409,conference_league,2026-08-27 21:00,Ajax,FC Sion,over25,67.66470882316699,-9.459459459459453,won,over25,67.66470882316699,won,unchanged
+1623430,conference_league,2026-08-27 21:00,FC ST. Gallen,FC Nordsjaelland,over25,67.50035206922365,4.729729729729737,won,over25,67.50035206922365,won,unchanged
+1623410,conference_league,2026-08-27 21:30,Austria Vienna,SC Braga,away_under15,75.89335154228422,28.787878787878785,won,away_under15,75.89335154228422,won,unchanged
+1623411,conference_league,2026-08-27 21:30,Borac Banja Luka,Vikingur Reykjavik,away_under15,70.88502437605277,7.092198581560294,won,away_under15,70.88502437605277,won,unchanged
+1623428,conference_league,2026-08-27 21:45,HNK Rijeka,FC Midtjylland,away_under15,78.78166159510646,21.259842519685044,lost,away_under15,78.78166159510646,lost,unchanged
+1623416,conference_league,2026-08-27 22:00,Hibernian,Gent,away_under15,71.52268162778883,2.1428571428571352,lost,away_under15,71.52268162778883,lost,unchanged
+1623421,conference_league,2026-08-27 22:00,Larne,Lincoln Red Imps FC,away_under15,72.13984392280031,-1.4388489208632893,no_data,away_under15,72.13984392280031,no_data,unchanged
+1551094,bulgaria,2026-08-28 19:00,Slavia Sofia,Septemvri Sofia,home_win,63.70362838373035,16.560509554140125,lost,home_win,63.70362838373035,lost,unchanged
+1551091,bulgaria,2026-08-28 21:15,CSKA 1948,Lokomotiv Plovdiv,under25,58.22626558678735,4.069767441860472,won,under25,58.22626558678735,won,unchanged
+1557381,england,2026-08-28 22:00,Crystal Palace,Manchester City,home_under15,76.51534465340757,0.0,won,home_under15,76.51534465340757,won,unchanged
+1575140,germany,2026-08-28 21:30,Bayern München,VfB Stuttgart,home_over15,83.58124905019096,-2.500000000000002,won,home_over15,83.58124905019096,won,unchanged
+1570359,spain,2026-08-28 20:00,Racing Santander,Elche,home_win,53.21106925246352,15.42553191489362,won,home_win,53.21106925246352,won,unchanged
+1570353,spain,2026-08-28 22:30,Alaves,Villarreal,over25,52.694291417838166,-4.210526315789465,lost,over25,52.694291417838166,lost,unchanged
+1552746,france,2026-08-28 21:45,Lille,Paris Saint Germain,home_under15,65.48163527695547,-13.725490196078427,lost,home_under15,65.48163527695547,lost,unchanged
+1550097,italy,2026-08-28 21:45,AC Milan,Venezia,home_win,61.288991741727074,-15.950920245398759,won,home_win,61.288991741727074,won,unchanged
+1575481,portugal,2026-08-28 22:15,Rio Ave,Sporting CP,away_win,73.50631639104495,-3.676470588235292,won,away_win,73.50631639104495,won,unchanged
+1552455,france2,2026-08-28 21:00,Montpellier,Boulogne,under25,65.40203122413334,21.568627450980404,won,under25,65.40203122413334,won,unchanged
+1552451,france2,2026-08-28 21:00,Clermont Foot,Sochaux,under25,64.08162291359999,3.205128205128216,won,under25,64.08162291359999,won,unchanged
+1552456,france2,2026-08-28 21:00,Nancy,Dunkerque,over25,50.54290693496063,-7.07070707070706,lost,over25,50.54290693496063,lost,unchanged
+1552454,france2,2026-08-28 21:00,Laval,Grenoble,under25,64.30217841482668,8.333333333333325,lost,under25,64.30217841482668,lost,unchanged
+1552458,france2,2026-08-28 21:00,Rodez,PAU,over25,63.35648842191206,10.126582278481,won,over25,63.35648842191206,won,unchanged
+1569903,spain2,2026-08-28 22:00,Tenerife,Sporting Gijon,away_under15,71.673453549564,-7.142857142857128,won,away_under15,71.673453549564,won,unchanged
+1601507,italy2,2026-08-28 21:30,Cremonese,Modena,under25,54.92603278359209,-13.186813186813184,lost,under25,54.92603278359209,lost,unchanged
+1623443,europa_league,2026-08-27 19:00,Ararat-Armenia,Universitatea Craiova,home_win,50.42986912950915,99.49494949494951,won,away_win,25.660069534353614,lost,changed_market
+1623448,europa_league,2026-08-27 20:00,Lillestrom,Egnatia Rrogozhinë,home_win,49.048440140310134,-27.450980392156865,no_data,home_win,49.048440140310134,no_data,unchanged
+1623419,conference_league,2026-08-27 19:00,FK Jablonec,Rangers,away_under15,77.85057652764557,24.21875,no_data,away_under15,77.85057652764557,no_data,unchanged
+1623450,europa_league,2026-08-27 20:00,Red Bull Salzburg,Mjallby AIF,home_win,54.39255846025996,-33.69565217391305,won,home_win,54.39255846025996,won,unchanged
+1623423,conference_league,2026-08-27 19:45,Monaco,Gornik Zabrze,away_under15,72.16273859421376,-13.669064748201432,won,away_under15,72.16273859421376,won,unchanged
+1623449,europa_league,2026-08-27 20:00,Omonia Nicosia,St. Truiden,home_win,46.72258409534907,-9.81308411214954,won,home_win,46.72258409534907,won,unchanged
+1623415,conference_league,2026-08-27 19:45,SC Freiburg,Motherwell,away_under15,70.5961728617682,-20.42253521126761,won,away_under15,70.5961728617682,won,unchanged
+1623417,conference_league,2026-08-27 20:00,Hradec Králové,Panathinaikos,away_under15,66.96753422463843,10.067114093959727,no_data,away_under15,66.96753422463843,no_data,unchanged
+1623447,europa_league,2026-08-27 20:00,Kauno Žalgiris,Beşiktaş,home_win,38.119335977831916,180.91603053435114,won,away_win,37.15291331023975,lost,changed_market
+1623441,europa_league,2026-08-27 21:00,Aarhus,Benfica,away_win,41.92861908819343,-38.912133891213394,won,away_win,41.92861908819343,won,unchanged
+1623112,conference_league,2026-08-27 21:00,Hapoel Tel Aviv,Atalanta,away_under15,80.632583474601,78.2258064516129,won,under25,58.926593746204894,won,changed_market
+1623444,europa_league,2026-08-27 21:00,CSKA Sofia,OFI,home_win,48.14638783141865,-21.634615384615397,lost,home_win,48.14638783141865,lost,unchanged
+1623442,europa_league,2026-08-27 21:30,Anderlecht,Kairat Almaty,home_win,67.42418249368988,-2.7027027027027084,won,home_win,67.42418249368988,won,unchanged
+1623413,conference_league,2026-08-27 21:30,Brighton,Tromso,away_under15,71.56910414171335,-21.42857142857142,won,away_under15,71.56910414171335,won,unchanged
+1623425,conference_league,2026-08-27 22:00,FK Partizan,Getafe,away_under15,75.07580844575683,19.548872180451138,won,away_under15,75.07580844575683,won,unchanged
+1551090,bulgaria,2026-08-29 21:15,Botev Plovdiv,Levski Sofia,under25,52.39897155187174,-5.235602094240832,lost,under25,52.39897155187174,lost,unchanged
+1557383,england,2026-08-29 14:30,Liverpool,Nottingham Forest,away_under15,74.26686105658732,-5.185185185185192,lost,away_under15,74.26686105658732,lost,unchanged
+1557378,england,2026-08-29 17:00,Bournemouth,Everton,away_under15,73.35186834924824,2.2058823529411686,won,away_under15,73.35186834924824,won,unchanged
+1557386,england,2026-08-29 19:30,Tottenham,Newcastle,over25,64.22674921918608,5.769230769230771,lost,over25,64.22674921918608,lost,unchanged
+1575146,germany,2026-08-29 16:30,FSV Mainz 05,SC Paderborn 07,away_under15,77.7333254067612,3.875968992248069,won,away_under15,77.7333254067612,won,unchanged
+1575147,germany,2026-08-29 16:30,RB Leipzig,Borussia Mönchengladbach,away_under15,70.08485676455045,-3.4965034965035002,won,away_under15,70.08485676455045,won,unchanged
+1575148,germany,2026-08-29 16:30,Union Berlin,Eintracht Frankfurt,away_under15,58.51339117620997,0.0,lost,away_under15,58.51339117620997,lost,unchanged
+1575144,germany,2026-08-29 16:30,1. FC Köln,1899 Hoffenheim,away_over15,51.78076796071901,-4.663212435233155,won,away_over15,51.78076796071901,won,unchanged
+1575143,germany,2026-08-29 16:30,SV Elversberg,Bayer Leverkusen,home_under15,61.55251803805305,-14.197530864197539,lost,home_under15,61.55251803805305,lost,unchanged
+1575142,germany,2026-08-29 19:30,Borussia Dortmund,Hamburger SV,away_under15,80.50645303220192,-4.032258064516137,won,away_under15,80.50645303220192,won,unchanged
+1570357,spain,2026-08-29 18:00,Levante,Real Betis,over25,52.30368142784027,-6.282722513089,won,over25,52.30368142784027,won,unchanged
+1570361,spain,2026-08-29 20:00,Real Sociedad,Espanyol,home_win,53.39958650138662,0.53475935828875,won,home_win,53.39958650138662,won,unchanged
+1570362,spain,2026-08-29 22:30,Sevilla,Atletico Madrid,over25,51.08844075076801,2.5510204081632626,won,over25,51.08844075076801,won,unchanged
+1552745,france,2026-08-29 18:15,Strasbourg,Lens,home_under15,66.01743063423197,0.0,lost,home_under15,66.01743063423197,lost,unchanged
+1552741,france,2026-08-29 21:45,Lyon,Le Havre,away_under15,76.54052748999209,-9.160305343511455,won,away_under15,76.54052748999209,won,unchanged
+1552740,france,2026-08-29 21:45,Lorient,Estac Troyes,away_under15,66.5553091033319,-15.333333333333332,lost,away_under15,66.5553091033319,lost,unchanged
+1552739,france,2026-08-29 21:45,Stade Brestois 29,Toulouse,away_under15,64.38799637317945,-3.2258064516129115,lost,away_under15,64.38799637317945,lost,unchanged
+1552738,france,2026-08-29 21:45,Auxerre,Angers,away_under15,79.38669544848777,3.1746031746031855,lost,away_under15,79.38669544848777,lost,unchanged
+1550106,italy,2026-08-29 19:30,Sassuolo,Torino,home_win,40.649739997477205,-8.536585365853655,won,home_win,40.649739997477205,won,unchanged
+1550100,italy,2026-08-29 19:30,Fiorentina,Frosinone,home_win,54.04796341137668,-11.891891891891904,lost,home_win,54.04796341137668,lost,unchanged
+1550104,italy,2026-08-29 19:30,Monza,Udinese,away_win,42.85176872857342,2.145922746781115,won,away_win,42.85176872857342,won,unchanged
+1550101,italy,2026-08-29 21:45,Juventus,Parma,home_win,60.59511356627883,-26.060606060606062,won,home_win,60.59511356627883,won,unchanged
+1575475,portugal,2026-08-29 17:30,Arouca,Maritimo,over25,51.23366577542172,7.692307692307709,won,over25,51.23366577542172,won,unchanged
+1575474,portugal,2026-08-29 17:30,Alverca,Santa Clara,under25,65.90584143009144,5.92105263157896,won,under25,65.90584143009144,won,unchanged
+1575473,portugal,2026-08-29 20:00,Academico Viseu,FC Porto,under25,59.70203367343462,28.143712574850312,lost,under25,59.70203367343462,lost,unchanged
+1552457,france2,2026-08-29 15:00,RED Star FC 93,Reims,under25,56.01252145130127,-1.6759776536312887,lost,under25,56.01252145130127,lost,unchanged
+1552450,france2,2026-08-29 15:00,Annecy,Metz,under25,53.94169613535891,-6.486486486486487,won,under25,53.94169613535891,won,unchanged
+1552453,france2,2026-08-29 21:00,Guingamp,Nantes,under25,57.02107271620667,9.142857142857142,lost,under25,57.02107271620667,lost,unchanged
+1569902,spain2,2026-08-29 18:00,Sabadell,Almeria,home_under15,59.52119608937592,-17.261904761904766,won,home_under15,59.52119608937592,won,unchanged
+1569900,spain2,2026-08-29 20:00,Leganes,Eldense,away_under15,79.90997656872925,4.0000000000000036,won,away_under15,79.90997656872925,won,unchanged
+1569893,spain2,2026-08-29 20:00,Albacete,Oviedo,away_under15,70.91921697110976,-7.092198581560272,won,away_under15,70.91921697110976,won,unchanged
+1569899,spain2,2026-08-29 22:30,Girona,Las Palmas,home_under15,72.02392303770102,46.043165467625904,lost,away_under15,69.53789767156755,lost,changed_market
+1601512,italy2,2026-08-29 20:00,Sampdoria,Juve Stabia,under25,66.05325158840168,4.635761589403975,lost,under25,66.05325158840168,lost,unchanged
+1601508,italy2,2026-08-29 20:00,Virtus Entella,Cesena,under25,60.89447863804942,6.0975609756097615,lost,under25,60.89447863804942,lost,unchanged
+1601504,italy2,2026-08-29 22:00,Ascoli,Carrarese,under25,60.65931610252734,-4.242424242424237,won,under25,60.65931610252734,won,unchanged
+1571534,bulgaria2,2026-08-29 18:00,Nesebar,Yantra 2019,away_win,51.43241403438099,-6.70103092783505,lost,away_win,51.43241403438099,lost,unchanged
+1571537,bulgaria2,2026-08-29 18:00,Sportist Svoge,Marek,draw,35.1507017939715,5.633802816901423,won,draw,35.1507017939715,won,unchanged
+1571530,bulgaria2,2026-08-29 18:45,Etar Veliko Tarnovo,Beroe,home_win,49.81206696721953,-12.935323383084562,lost,home_win,49.81206696721953,lost,unchanged
+1571532,bulgaria2,2026-08-29 20:00,Ludogorets II,Hebar 1918,home_win,54.206858827340774,17.934782608695656,lost,home_win,54.206858827340774,lost,unchanged
+1571529,bulgaria2,2026-08-29 20:00,Dobrudzha,Rilski Sportist,home_win,60.206290151802236,34.337349397590366,lost,home_win,60.206290151802236,lost,unchanged
+1571535,bulgaria2,2026-08-29 20:00,Pirin Blagoevgrad,Chernomorets 1919 Burgas,home_win,38.02660889912662,47.908745247148296,lost,away_win,32.85602802317599,won,changed_market
+1571531,bulgaria2,2026-08-29 20:00,Fratria,CSKA Sofia II,home_win,45.82994389016581,-11.009174311926618,won,home_win,45.82994389016581,won,unchanged
+1601505,italy2,2026-08-29 22:00,Avellino,Vicenza Virtus,under25,54.897469327717644,-9.340659340659352,lost,under25,54.897469327717644,lost,unchanged
+1551095,bulgaria,2026-08-30 19:00,Spartak Varna,Ludogorets,away_win,77.16024844776666,19.23076923076923,lost,away_win,77.16024844776666,lost,unchanged
+1551092,bulgaria,2026-08-30 21:15,CSKA Sofia,Cherno More Varna,under25,64.48788498356524,19.999999999999996,lost,under25,64.48788498356524,lost,unchanged
+1557379,england,2026-08-30 16:00,Chelsea,Brighton,away_under15,63.50037072084649,-9.554140127388544,lost,away_under15,63.50037072084649,lost,unchanged
+1557382,england,2026-08-30 16:00,Leeds,Brentford,home_under15,59.04493206694994,-7.100591715976323,won,home_under15,59.04493206694994,won,unchanged
+1557385,england,2026-08-30 16:00,Sunderland,Fulham,away_under15,71.05468374298715,0.7092198581560183,won,away_under15,71.05468374298715,won,unchanged
+1557384,england,2026-08-30 18:30,Manchester United,Ipswich,away_under15,80.53960281250289,-1.6129032258064502,lost,away_under15,80.53960281250289,lost,unchanged
+1575145,germany,2026-08-30 16:30,SC Freiburg,Werder Bremen,away_under15,73.82579852986622,2.962962962962945,won,away_under15,73.82579852986622,won,unchanged
+1575141,germany,2026-08-30 18:30,FC Augsburg,FC Schalke 04,away_under15,66.00914832294275,0.0,won,away_under15,66.00914832294275,won,unchanged
+1570360,spain,2026-08-30 18:00,Real Madrid,Malaga,home_win,75.44827196419713,-15.78947368421052,won,home_win,75.44827196419713,won,unchanged
+1570356,spain,2026-08-30 20:30,Deportivo La Coruna,Valencia,under25,61.588651954461035,0.0,lost,under25,61.588651954461035,lost,unchanged
+1570355,spain,2026-08-30 22:30,Celta Vigo,Athletic Club,under25,53.61407537047529,-8.556149732620334,won,under25,53.61407537047529,won,unchanged
+1552743,france,2026-08-30 16:00,Paris FC,Nice,away_under15,65.08635983212874,-14.28571428571428,won,away_under15,65.08635983212874,won,unchanged
+1552742,france,2026-08-30 21:45,Monaco,Marseille,over25,67.89820237406049,5.442176870748305,lost,over25,67.89820237406049,lost,unchanged
+1550105,italy,2026-08-30 19:30,Napoli,Como,home_win,39.96814098932908,-12.79999999999999,lost,home_win,39.96814098932908,lost,unchanged
+1550102,italy,2026-08-30 21:45,Lazio,Genoa,home_win,47.147918872927484,-13.207547169811317,won,home_win,47.147918872927484,won,unchanged
+1550099,italy,2026-08-30 21:45,Cagliari,Inter,away_win,69.05844257217771,-1.379310344827589,won,away_win,69.05844257217771,won,unchanged
+1575480,portugal,2026-08-30 17:30,Nacional,Estrela,under25,57.92315770539681,5.780346820809257,lost,under25,57.92315770539681,lost,unchanged
+1575478,portugal,2026-08-30 20:00,Casa Pia,Moreirense,under25,59.768188371718686,-7.18562874251496,won,under25,59.768188371718686,won,unchanged
+1575479,portugal,2026-08-30 22:30,Famalicao,GIL Vicente,under25,64.48209410172151,5.161290322580636,won,under25,64.48209410172151,won,unchanged
+1569894,spain2,2026-08-30 18:00,FC Andorra,Eibar,away_under15,71.71993592435085,-2.1582733812949506,won,away_under15,71.71993592435085,won,unchanged
+1569896,spain2,2026-08-30 20:00,Cadiz,Valladolid,away_under15,73.8283973944717,-1.4814814814814836,won,away_under15,73.8283973944717,won,unchanged
+1569901,spain2,2026-08-30 20:00,Mallorca,AD Ceuta FC,away_under15,73.75531727195695,-12.50000000000001,won,away_under15,73.75531727195695,won,unchanged
+1569898,spain2,2026-08-30 22:30,Cordoba,Granada CF,away_under15,62.47914686465321,-19.374999999999996,lost,away_under15,62.47914686465321,lost,unchanged
+1601509,italy2,2026-08-30 20:00,Mantova,Empoli,over25,51.26976903928887,5.641025641025643,won,over25,51.26976903928887,won,unchanged
+1601506,italy2,2026-08-30 22:00,Benevento,Sudtirol,under25,61.41183420875008,-3.0674846625766805,won,under25,61.41183420875008,won,unchanged
+1601511,italy2,2026-08-30 22:00,Pisa,Catanzaro,over25,57.47479943542939,29.31034482758621,won,over25,57.47479943542939,won,unchanged
+1571533,bulgaria2,2026-08-30 18:00,Montana,Lokomotiv G. Oryahovitsa,home_win,65.74659806126493,-9.868421052631572,won,home_win,65.74659806126493,won,unchanged
+1571536,bulgaria2,2026-08-30 20:00,Spartak Pleven,Vihren,away_win,44.49576738624777,3.5555555555555562,won,away_win,44.49576738624777,won,unchanged
+1557380,england,2026-08-29 17:00,Coventry,Hull City,home_under15,76.17562424167373,43.51145038167938,won,away_under15,65.3471079110502,won,changed_market
+1552744,france,2026-08-30 18:15,Rennes,Le Mans,away_under15,69.0634844201,-14.482758620689651,lost,away_under15,69.0634844201,lost,unchanged
+1601503,italy2,2026-08-30 20:00,Arezzo,Palermo,under25,55.7355044481441,-10.05586592178771,lost,under25,55.7355044481441,lost,unchanged
+1551093,bulgaria,2026-08-31 19:00,Dunav Ruse,Lokomotiv Sofia,over25,51.33026887907135,-0.512820512820511,won,over25,51.33026887907135,won,unchanged
+1551089,bulgaria,2026-08-31 21:15,Arda Kardzhali,Botev Vratsa,home_win,64.24505670187554,-8.974358974358987,won,home_win,64.24505670187554,won,unchanged
+1557377,england,2026-08-31 22:00,Aston Villa,Arsenal,home_under15,72.71137211277296,-13.043478260869556,won,home_under15,72.71137211277296,won,unchanged
+1570358,spain,2026-08-31 20:30,Osasuna,Getafe,under25,65.40090013640345,0.6535947712418277,won,under25,65.40090013640345,won,unchanged
+1570354,spain,2026-08-31 22:30,Barcelona,Rayo Vallecano,home_win,76.7345951281676,-6.153846153846154,won,home_win,76.7345951281676,won,unchanged
+1550103,italy,2026-08-31 19:30,Lecce,AS Roma,away_win,56.406372344172254,-2.824858757062154,won,away_win,56.406372344172254,won,unchanged
+1550098,italy,2026-08-31 21:45,Atalanta,Bologna,home_win,51.175127991930104,-6.666666666666665,won,home_win,51.175127991930104,won,unchanged
+1575476,portugal,2026-08-31 22:15,Benfica,Estoril,home_win,81.89871220618244,-4.918032786885251,won,home_win,81.89871220618244,won,unchanged
+1575477,portugal,2026-08-31 22:15,SC Braga,Vitória SC,home_win,61.15047247475304,5.487804878048785,won,home_win,61.15047247475304,won,unchanged
+1552452,france2,2026-08-31 21:45,Dijon,Saint Etienne,under25,58.16487136886552,5.813953488372103,lost,under25,58.16487136886552,lost,unchanged
+1569895,spain2,2026-08-31 20:00,Burgos,Real Sociedad II,away_under15,80.66778356777866,-4.032258064516137,lost,away_under15,80.66778356777866,lost,unchanged
+1569897,spain2,2026-08-31 22:30,Celta de Vigo II,Castellón,away_under15,63.60312473425752,28.6624203821656,lost,away_under15,63.60312473425752,lost,unchanged
+1601510,italy2,2026-08-29 22:00,Padova,Hellas Verona,under25,62.58119510131151,-1.8750000000000044,won,under25,62.58119510131151,won,unchanged
+1571541,bulgaria2,2026-09-01 20:00,Hebar 1918,Fratria,away_win,43.57847529703326,23.14410480349345,lost,away_win,43.57847529703326,lost,unchanged
+1571539,bulgaria2,2026-09-02 17:00,Chernomorets 1919 Burgas,Ludogorets II,home_win,45.107457060365405,-27.027027027027028,pending,home_win,45.107457060365405,pending,unchanged
+1571543,bulgaria2,2026-09-02 17:00,Marek,Nesebar,home_win,54.70303494962175,-11.475409836065575,pending,home_win,54.70303494962175,pending,unchanged
+1571544,bulgaria2,2026-09-02 17:00,Rilski Sportist,Sportist Svoge,home_win,52.4505614462662,-6.282722513089,pending,home_win,52.4505614462662,pending,unchanged
+1571546,bulgaria2,2026-09-02 19:00,Yantra 2019,Pirin Blagoevgrad,home_win,65.0139060054334,-22.077922077922086,pending,home_win,65.0139060054334,pending,unchanged
+1570392,spain,2026-09-03 22:00,Real Sociedad,Celta Vigo,under25,51.05437957724727,-2.5510204081632626,pending,under25,51.05437957724727,pending,unchanged
+1552754,france,2026-09-03 21:45,Toulouse,Lille,home_under15,69.73194456887681,,pending,home_under15,69.73194456887681,pending,unchanged
+1571540,bulgaria2,2026-09-03 17:00,CSKA Sofia II,Spartak Pleven,home_win,62.920117287651834,-9.433962264150953,pending,home_win,62.920117287651834,pending,unchanged
+1571545,bulgaria2,2026-09-03 17:00,Vihren,Etar Veliko Tarnovo,home_win,59.19740869848504,2.9585798816567976,pending,home_win,59.19740869848504,pending,unchanged
+1571542,bulgaria2,2026-09-03 19:00,Lokomotiv G. Oryahovitsa,Dobrudzha,away_win,45.11573938203542,34.234234234234215,pending,away_win,45.11573938203542,pending,unchanged
+1571538,bulgaria2,2026-09-03 20:00,Beroe,Montana,home_win,37.252364421432574,-18.28358208955224,pending,home_win,37.252364421432574,pending,unchanged
+1551101,bulgaria,2026-09-04 19:00,Septemvri Sofia,Botev Vratsa,under25,61.002615998785004,-1.8292682926829174,pending,under25,61.002615998785004,pending,unchanged
+1551096,bulgaria,2026-09-04 21:15,Arda Kardzhali,Botev Plovdiv,under25,56.410742508516606,-2.824858757062154,pending,under25,56.410742508516606,pending,unchanged
+1557393,england,2026-09-04 22:00,Ipswich,Liverpool,home_under15,75.8359373213569,,pending,home_under15,75.8359373213569,pending,unchanged
+1575149,germany,2026-09-04 21:30,VfB Stuttgart,1. FC Köln,home_over15,76.8497303811154,,pending,home_over15,76.8497303811154,pending,unchanged
+1570365,spain,2026-09-04 22:00,Real Betis,Real Madrid,over25,51.92389895753474,,pending,over25,51.92389895753474,pending,unchanged
+1552750,france,2026-09-04 20:00,Lyon,Auxerre,away_under15,74.1497952338115,,pending,away_under15,74.1497952338115,pending,unchanged
+1552753,france,2026-09-04 22:05,Paris Saint Germain,Monaco,over25,72.33155728481539,,pending,over25,72.33155728481539,pending,unchanged
+1550112,italy,2026-09-04 21:45,Genoa,Como,away_win,52.42548347508631,-7.329842931937169,pending,away_win,52.42548347508631,pending,unchanged
+1552461,france2,2026-09-04 21:00,Grenoble,Annecy,under25,59.653966397873944,,pending,under25,59.653966397873944,pending,unchanged
+1552462,france2,2026-09-04 21:00,Laval,RED Star FC 93,under25,61.05490083107492,,pending,under25,61.05490083107492,pending,unchanged
+1552465,france2,2026-09-04 21:00,PAU,Sochaux,under25,53.97065836049097,,pending,under25,53.97065836049097,pending,unchanged
+1552459,france2,2026-09-04 21:00,Boulogne,Dijon,under25,67.67677550650517,,pending,under25,67.67677550650517,pending,unchanged
+1552460,france2,2026-09-04 21:00,Dunkerque,Clermont Foot,home_win,51.34726844853682,,pending,home_win,51.34726844853682,pending,unchanged
+1569910,spain2,2026-09-04 21:30,Las Palmas,Leganes,away_under15,83.77902545885351,,pending,away_under15,83.77902545885351,pending,unchanged
+1551102,bulgaria,2026-09-05 19:00,Spartak Varna,CSKA Sofia,away_win,66.08219523888567,-7.284768211920534,pending,away_win,66.08219523888567,pending,unchanged
+1551098,bulgaria,2026-09-05 21:15,Levski Sofia,CSKA 1948,home_win,56.38775681237603,-7.909604519774016,pending,home_win,56.38775681237603,pending,unchanged
+1557395,england,2026-09-05 14:30,Newcastle,Bournemouth,away_under15,68.61579488513378,,pending,away_under15,68.61579488513378,pending,unchanged
+1557391,england,2026-09-05 17:00,Fulham,Crystal Palace,away_under15,70.92101647596255,,pending,away_under15,70.92101647596255,pending,unchanged
+1557394,england,2026-09-05 17:00,Manchester City,Coventry,away_under15,85.45522474255455,,pending,away_under15,85.45522474255455,pending,unchanged
+1557389,england,2026-09-05 17:00,Brighton,Leeds,away_under15,68.8945908663995,,pending,away_under15,68.8945908663995,pending,unchanged
+1557388,england,2026-09-05 17:00,Brentford,Sunderland,away_under15,73.70792220030032,,pending,away_under15,73.70792220030032,pending,unchanged
+1557396,england,2026-09-05 17:00,Nottingham Forest,Tottenham,away_under15,58.51715900568693,,pending,away_under15,58.51715900568693,pending,unchanged
+1557392,england,2026-09-05 19:30,Hull City,Aston Villa,away_under15,70.85368993442886,,pending,away_under15,70.85368993442886,pending,unchanged
+1575155,germany,2026-09-05 16:30,Werder Bremen,RB Leipzig,home_under15,65.62885257373834,,pending,home_under15,65.62885257373834,pending,unchanged
+1575153,germany,2026-09-05 16:30,Borussia Mönchengladbach,SV Elversberg,away_under15,72.38404955748472,,pending,away_under15,72.38404955748472,pending,unchanged
+1575150,germany,2026-09-05 16:30,1899 Hoffenheim,Borussia Dortmund,home_under15,59.44715791045287,,pending,home_under15,59.44715791045287,pending,unchanged
+1575151,germany,2026-09-05 16:30,Bayer Leverkusen,Union Berlin,away_under15,71.90787809257783,,pending,away_under15,71.90787809257783,pending,unchanged
+1575157,germany,2026-09-05 16:30,SC Paderborn 07,SC Freiburg,away_under15,75.56184505827106,,pending,away_under15,75.56184505827106,pending,unchanged
+1575156,germany,2026-09-05 19:30,FC Schalke 04,Bayern München,away_win,69.38946990240072,-10.416666666666663,pending,away_win,69.38946990240072,pending,unchanged
+1570364,spain,2026-09-05 17:15,Athletic Club,Atletico Madrid,under25,55.249715981679024,,pending,under25,55.249715981679024,pending,unchanged
+1570370,spain,2026-09-05 19:30,Rayo Vallecano,Racing Santander,under25,63.72203264246367,,pending,under25,63.72203264246367,pending,unchanged
+1570372,spain,2026-09-05 22:00,Villarreal,Deportivo La Coruna,home_win,61.808572572141664,,pending,home_win,61.808572572141664,pending,unchanged
+1552749,france,2026-09-05 18:15,Lens,Lorient,away_under15,76.72508418763634,,pending,away_under15,76.72508418763634,pending,unchanged
+1552752,france,2026-09-05 21:45,Nice,Le Mans,away_under15,72.89812287207232,,pending,away_under15,72.89812287207232,pending,unchanged
+1552748,france,2026-09-05 21:45,Le Havre,Stade Brestois 29,home_under15,66.43426482769262,,pending,home_under15,66.43426482769262,pending,unchanged
+1550110,italy,2026-09-05 16:00,Fiorentina,Torino,home_win,50.42488675925579,-5.5555555555555465,pending,home_win,50.42488675925579,pending,unchanged
+1550113,italy,2026-09-05 19:00,Inter,Napoli,home_win,53.73180334745318,-5.913978494623661,pending,home_win,53.73180334745318,pending,unchanged
+1550107,italy,2026-09-05 21:45,AS Roma,Atalanta,home_win,49.30954712536013,-5.9113300492610765,pending,home_win,49.30954712536013,pending,unchanged
+1552466,france2,2026-09-05 15:00,Reims,Guingamp,home_win,53.95589314776036,,pending,home_win,53.95589314776036,pending,unchanged
+1552463,france2,2026-09-05 15:00,Metz,Rodez,over25,54.33871719700992,,pending,over25,54.33871719700992,pending,unchanged
+1552467,france2,2026-09-05 21:00,Saint Etienne,Montpellier,under25,60.947766359909,,pending,under25,60.947766359909,pending,unchanged
+1569912,spain2,2026-09-05 15:00,Real Sociedad II,Tenerife,away_under15,75.58598459690387,,pending,away_under15,75.58598459690387,pending,unchanged
+1569909,spain2,2026-09-05 17:15,Sporting Gijon,Girona,away_under15,74.85520902898828,,pending,away_under15,74.85520902898828,pending,unchanged
+1569914,spain2,2026-09-05 19:30,Valladolid,FC Andorra,home_under15,65.45301016648808,,pending,home_under15,65.45301016648808,pending,unchanged
+1569906,spain2,2026-09-05 19:30,AD Ceuta FC,Celta de Vigo II,home_under15,62.94279171424009,,pending,home_under15,62.94279171424009,pending,unchanged
+1569908,spain2,2026-09-05 22:00,Eldense,Mallorca,away_under15,67.04504300312222,,pending,away_under15,67.04504300312222,pending,unchanged
+1601521,italy2,2026-09-05 16:00,Sudtirol,Catanzaro,under25,51.015751923205976,,pending,under25,51.015751923205976,pending,unchanged
+1601513,italy2,2026-09-05 18:15,Ascoli,Benevento,under25,60.526987156741775,,pending,under25,60.526987156741775,pending,unchanged
+1601514,italy2,2026-09-05 20:30,Carrarese,Empoli,under25,54.092806942932015,,pending,under25,54.092806942932015,pending,unchanged
+1575485,portugal,2026-09-04 22:15,FC Porto,Moreirense,home_win,74.8464488895453,,pending,home_win,74.8464488895453,pending,unchanged
+1575489,portugal,2026-09-04 22:15,Sporting CP,Nacional,home_win,80.67307217351932,,pending,home_win,80.67307217351932,pending,unchanged
+1575484,portugal,2026-09-05 17:30,Estrela,Famalicao,under25,63.14859518097051,,pending,under25,63.14859518097051,pending,unchanged
+1575487,portugal,2026-09-05 20:00,Maritimo,Benfica,away_win,66.5412795453275,,pending,away_win,66.5412795453275,pending,unchanged
+1575482,portugal,2026-09-05 20:00,Alverca,SC Braga,away_win,55.19327271613194,,pending,away_win,55.19327271613194,pending,unchanged
+1551099,bulgaria,2026-09-06 19:00,Lokomotiv Plovdiv,Cherno More Varna,under25,62.41985725813935,,pending,under25,62.41985725813935,pending,unchanged
+1551100,bulgaria,2026-09-06 21:15,Lokomotiv Sofia,Ludogorets,away_win,69.69814270010876,,pending,away_win,69.69814270010876,pending,unchanged
+1557390,england,2026-09-06 16:00,Everton,Manchester United,home_under15,69.36032561460888,,pending,home_under15,69.36032561460888,pending,unchanged
+1557387,england,2026-09-06 18:30,Arsenal,Chelsea,away_under15,79.53873317661217,,pending,away_under15,79.53873317661217,pending,unchanged
+1575154,germany,2026-09-06 16:30,Hamburger SV,FSV Mainz 05,away_under15,67.45073381809313,,pending,away_under15,67.45073381809313,pending,unchanged
+1575152,germany,2026-09-06 18:30,Eintracht Frankfurt,FC Augsburg,away_under15,65.57352938167594,,pending,away_under15,65.57352938167594,pending,unchanged
+1570371,spain,2026-09-06 17:15,Valencia,Barcelona,away_win,60.42816918161507,,pending,away_win,60.42816918161507,pending,unchanged
+1570369,spain,2026-09-06 19:30,Malaga,Levante,under25,56.83535772127952,,pending,under25,56.83535772127952,pending,unchanged
+1570363,spain,2026-09-06 19:30,Alaves,Osasuna,under25,62.193388040973765,,pending,under25,62.193388040973765,pending,unchanged
+1570367,spain,2026-09-06 22:00,Espanyol,Sevilla,over25,50.3008742360021,,pending,over25,50.3008742360021,pending,unchanged
+1552755,france,2026-09-06 16:00,Estac Troyes,Strasbourg,home_under15,64.5076480091167,,pending,home_under15,64.5076480091167,pending,unchanged
+1552747,france,2026-09-06 18:15,Angers,Rennes,home_under15,75.02537277396227,,pending,home_under15,75.02537277396227,pending,unchanged
+1552751,france,2026-09-06 21:45,Marseille,Paris FC,away_under15,70.33214170949992,,pending,away_under15,70.33214170949992,pending,unchanged
+1550111,italy,2026-09-06 16:00,Frosinone,Venezia,home_win,43.73803301751167,,pending,home_win,43.73803301751167,pending,unchanged
+1550115,italy,2026-09-06 16:00,Parma,Monza,home_win,43.328563978041615,,pending,home_win,43.328563978041615,pending,unchanged
+1550108,italy,2026-09-06 19:00,Bologna,Sassuolo,home_win,50.779595796327015,,pending,home_win,50.779595796327015,pending,unchanged
+1550114,italy,2026-09-06 21:45,Juventus,AC Milan,home_win,43.552675276339706,,pending,home_win,43.552675276339706,pending,unchanged
+1575488,portugal,2026-09-06 17:30,Santa Clara,Rio Ave,under25,64.35612672697805,,pending,under25,64.35612672697805,pending,unchanged
+1575490,portugal,2026-09-06 20:00,Vitória SC,Casa Pia,under25,58.056005845506185,,pending,under25,58.056005845506185,pending,unchanged
+1575486,portugal,2026-09-06 22:30,GIL Vicente,Academico Viseu,under25,58.26634655545564,,pending,under25,58.26634655545564,pending,unchanged
+1569907,spain2,2026-09-06 15:00,Eibar,Granada CF,away_under15,76.9124060939399,,pending,away_under15,76.9124060939399,pending,unchanged
+1569911,spain2,2026-09-06 17:15,Oviedo,Burgos,away_under15,83.18103597829382,,pending,away_under15,83.18103597829382,pending,unchanged
+1569905,spain2,2026-09-06 19:30,Castellón,Albacete,away_under15,67.94107861469773,,pending,away_under15,67.94107861469773,pending,unchanged
+1569904,spain2,2026-09-06 22:00,Almeria,Cadiz,away_under15,72.27938245046461,,pending,away_under15,72.27938245046461,pending,unchanged
+1601515,italy2,2026-09-06 16:00,Cesena,Mantova,over25,50.69774789069139,,pending,over25,50.69774789069139,pending,unchanged
+1601517,italy2,2026-09-06 16:00,Virtus Entella,Vicenza Virtus,under25,61.80442929047465,,pending,under25,61.80442929047465,pending,unchanged
+1601518,italy2,2026-09-06 16:00,Juve Stabia,Pisa,under25,59.124592220154845,,pending,under25,59.124592220154845,pending,unchanged
+1601519,italy2,2026-09-06 16:00,Modena,Avellino,under25,55.08082351641579,,pending,under25,55.08082351641579,pending,unchanged
+1601522,italy2,2026-09-06 18:15,Hellas Verona,Arezzo,under25,57.696252096218274,,pending,under25,57.696252096218274,pending,unchanged
+1601516,italy2,2026-09-06 20:30,Cremonese,Padova,under25,58.46765931135278,,pending,under25,58.46765931135278,pending,unchanged
+1571551,bulgaria2,2026-09-06 17:00,Nesebar,Rilski Sportist,home_win,40.70771972680806,,pending,home_win,40.70771972680806,pending,unchanged
+1571548,bulgaria2,2026-09-06 19:00,Etar Veliko Tarnovo,CSKA Sofia II,home_win,38.98366657291143,,pending,home_win,38.98366657291143,pending,unchanged
+1571547,bulgaria2,2026-09-06 19:00,Dobrudzha,Beroe,home_win,52.42528173756068,,pending,home_win,52.42528173756068,pending,unchanged
+1571555,bulgaria2,2026-09-06 19:00,Yantra 2019,Marek,home_win,49.730853820527635,,pending,home_win,49.730853820527635,pending,unchanged
+1551097,bulgaria,2026-09-07 20:30,Dunav Ruse,Slavia Sofia,under25,57.92708493470003,,pending,under25,57.92708493470003,pending,unchanged
+1570368,spain,2026-09-07 20:00,Getafe,Celta Vigo,under25,65.09782574644665,,pending,under25,65.09782574644665,pending,unchanged
+1570366,spain,2026-09-07 22:30,Elche,Real Sociedad,under25,52.61328237702261,,pending,under25,52.61328237702261,pending,unchanged
+1550109,italy,2026-09-07 19:30,Cagliari,Lecce,home_win,43.67013536710185,,pending,home_win,43.67013536710185,pending,unchanged
+1550116,italy,2026-09-07 21:45,Udinese,Lazio,away_win,39.518444680563874,,pending,away_win,39.518444680563874,pending,unchanged
+1575483,portugal,2026-09-07 22:15,Estoril,Arouca,over25,62.72139965577885,,pending,over25,62.72139965577885,pending,unchanged
+1552464,france2,2026-09-07 21:45,Nantes,Nancy,over25,51.50162446943376,,pending,over25,51.50162446943376,pending,unchanged
+1569913,spain2,2026-09-07 21:30,Sabadell,Cordoba,away_under15,76.91860008991931,,pending,away_under15,76.91860008991931,pending,unchanged
+1601520,italy2,2026-09-07 21:30,Palermo,Sampdoria,home_win,57.098306333561425,,pending,home_win,57.098306333561425,pending,unchanged
+1571554,bulgaria2,2026-09-07 17:00,Sportist Svoge,Lokomotiv G. Oryahovitsa,home_win,40.68464758293794,,pending,home_win,40.68464758293794,pending,unchanged
+1571549,bulgaria2,2026-09-07 18:00,Fratria,Chernomorets 1919 Burgas,home_win,52.551622247576425,,pending,home_win,52.551622247576425,pending,unchanged
+1571553,bulgaria2,2026-09-07 19:00,Spartak Pleven,Hebar 1918,home_win,47.28069167430205,,pending,home_win,47.28069167430205,pending,unchanged
+1571552,bulgaria2,2026-09-07 19:00,Pirin Blagoevgrad,Ludogorets II,home_win,36.72747261274334,,pending,home_win,36.72747261274334,pending,unchanged
+1635643,champions_league,2026-09-08 19:45,Club Brugge KV,Aston Villa,home_win,48.12980158807662,,pending,home_win,48.12980158807662,pending,unchanged
+1635609,champions_league,2026-09-08 19:45,AEK Athens FC,Lask Linz,home_win,60.83625046299067,,pending,home_win,60.83625046299067,pending,unchanged
+1635652,champions_league,2026-09-08 22:00,Borussia Dortmund,Villarreal,home_win,76.9264000526862,,pending,home_win,76.9264000526862,pending,unchanged
+1635654,champions_league,2026-09-08 22:00,FC Porto,Manchester City,home_win,42.41640670263476,,pending,home_win,42.41640670263476,pending,unchanged
+1635714,champions_league,2026-09-08 22:00,Real Madrid,Inter,home_win,57.78137546440507,,pending,home_win,57.78137546440507,pending,unchanged
+1571550,bulgaria2,2026-09-08 19:00,Montana,Vihren,home_win,45.03599666430068,,pending,home_win,45.03599666430068,pending,unchanged
+1635741,champions_league,2026-09-09 19:45,VfB Stuttgart,Viking,home_win,46.59333201513803,,pending,home_win,46.59333201513803,pending,unchanged
+1635628,champions_league,2026-09-09 19:45,Barcelona,Feyenoord,home_win,80.71284517813642,,pending,home_win,80.71284517813642,pending,unchanged
+1635686,champions_league,2026-09-09 22:00,Liverpool,Atletico Madrid,home_win,57.3134329438466,,pending,home_win,57.3134329438466,pending,unchanged
+1635705,champions_league,2026-09-09 22:00,Paris Saint Germain,Slovan Bratislava,home_win,79.20442953407873,,pending,home_win,79.20442953407873,pending,unchanged
+1635736,champions_league,2026-09-09 22:00,Sporting CP,Galatasaray,home_win,57.726823435489486,,pending,home_win,57.726823435489486,pending,unchanged
+1635698,champions_league,2026-09-09 22:00,Napoli,Arsenal,away_win,55.79757198254266,,pending,away_win,55.79757198254266,pending,unchanged
+1575469,portugal,2026-09-09 22:45,Moreirense,Benfica,away_win,67.90631686112873,,pending,away_win,67.90631686112873,pending,unchanged
