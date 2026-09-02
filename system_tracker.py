@@ -1,8 +1,28 @@
 import json
 import sqlite3
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 
 DB_PATH = "predictions.db"
+
+# Поправка 01.09.2026 (диагноза от validation/odds_refresh_timezone_
+# diagnosis_20260901.md): match_date навсякъде в predictions_log/
+# predictions_snapshot е Sofia МЕСТНО време (низ, без явен offset - идва от
+# fetch_upcoming_fixtures(timezone="Europe/Sofia"), offset-ът се отрязва
+# при запис). Серверният системен часовник е UTC (потвърдено с journalctl,
+# gunicorn показва "+0000") - наивно datetime.now() тук би било грешно
+# сравнение с 2-3 часа разлика според DST. Същият подход като
+# web/prognozi.py::_now_sofia_str() (не импортирано оттам - system_tracker.py
+# е долен слой, web/ зависи от него, не обратното - локално дублиран малък
+# helper, не кръгов импорт).
+SOFIA_TZ = ZoneInfo("Europe/Sofia")
+
+
+def _now_sofia_naive():
+    """Текущото Sofia време, като наивен datetime (без tzinfo) - директно
+    сравнимо с match_date низовете "YYYY-MM-DD HH:MM", които също са Sofia
+    местно време без offset."""
+    return datetime.now(SOFIA_TZ).replace(tzinfo=None)
 
 
 def get_conn():
@@ -33,7 +53,7 @@ def init_db():
             our_fair_odds REAL
         )
     """)
-    for col_def in ["market_odds REAL", "our_fair_odds REAL"]:
+    for col_def in ["market_odds REAL", "our_fair_odds REAL", "odds_logged_at TEXT"]:
         try:
             conn.execute(f"ALTER TABLE predictions_log ADD COLUMN {col_def}")
         except sqlite3.OperationalError:
@@ -247,13 +267,22 @@ def log_prediction(league, fixture_id, match_date, home, away, market_code, pick
     # дубликат на живо (fixture_id=1551072, dc_1x). Сега, с UNIQUE индекс
     # idx_predictions_fixture_market, race-ът е безопасен - вторият опит
     # просто се игнорира на ниво SQLite, атомарно.
+    # Задача 01.09.2026, т.1.3: odds_logged_at - КОГА е записан market_odds,
+    # за да може занапред да се провери дали коефициентът е дошъл преди или
+    # след началото на мача. Само ако market_odds вече е наличен ТОЧНО СЕГА
+    # (рядко при първо логване - обичайно се допълва по-късно през
+    # update_odds_for_fixture()) - иначе NULL, честно "още нямаме
+    # коефициент", не грешна времева марка. Sofia местно време (_now_sofia_
+    # naive()), НЕ UTC като logged_at - нарочно, за да е директно сравнимо с
+    # match_date (също Sofia местно), без допълнително преобразуване по-късно.
+    odds_logged_at = _now_sofia_naive().isoformat() if market_odds is not None else None
     conn = get_conn()
     cur = conn.execute(
         """INSERT OR IGNORE INTO predictions_log (logged_at, league, fixture_id, match_date, home_team, away_team,
-           market_code, pick_label, pick_pct, market_odds, our_fair_odds)
-           VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
+           market_code, pick_label, pick_pct, market_odds, our_fair_odds, odds_logged_at)
+           VALUES (?,?,?,?,?,?,?,?,?,?,?,?)""",
         (datetime.now().isoformat(), league, fixture_id, match_date, home, away,
-         market_code, pick_label, pick_pct, market_odds, our_fair_odds)
+         market_code, pick_label, pick_pct, market_odds, our_fair_odds, odds_logged_at)
     )
     conn.commit()
     if cur.rowcount == 0:
@@ -458,8 +487,15 @@ def get_fixtures_needing_odds_refresh(hours_ahead=48):
     близките hours_ahead часа - прозорецът, в който букмейкърите обичайно
     вече имат котировки. Използва се от refresh_pending_odds.py, НЕ от
     nightly_snapshot.py - целенасочено, за да не умножава API заявките за
-    целия 7-дневен прозорец всяка нощ."""
-    now = datetime.now()
+    целия 7-дневен прозорец всяка нощ.
+
+    Поправка 01.09.2026: `now` вече е РЕАЛНО Sofia време (_now_sofia_naive()),
+    не наивно сървърно UTC - преди тази поправка мач, започнал до 2-3 часа
+    (според DST) преди истинския момент, все още изглеждаше "в бъдещето" на
+    сравнението и оставаше в списъка за опресняване - риск да се запише
+    коефициент от вече течащ мач като предматчов. Виж
+    validation/odds_timezone_fix_20260901.md за измерването."""
+    now = _now_sofia_naive()
     cutoff = (now + timedelta(hours=hours_ahead)).strftime("%Y-%m-%d %H:%M")
     now_str = now.strftime("%Y-%m-%d %H:%M")
     # ВАЖНО: филтрираме само по пазари, за които изобщо теглим коефициент
@@ -490,6 +526,11 @@ def update_odds_for_fixture(fixture_id, real_odds):
     коефициентът се допълва, когато стане наличен."""
     if not real_odds:
         return 0
+    # т.1.3 (01.09.2026): odds_logged_at - Sofia местно време, момента на
+    # ТОВА обновяване (не когато мачът реално е започнал) - позволява
+    # занапред да се провери "записан ли е коефициентът преди или след
+    # началото на мача" (match_date, също Sofia местно).
+    odds_logged_at = _now_sofia_naive().isoformat()
     conn = get_conn()
     cur = conn.cursor()
     updated = 0
@@ -503,8 +544,8 @@ def update_odds_for_fixture(fixture_id, real_odds):
         if odds_val is None:
             continue
         cur.execute(
-            "UPDATE predictions_log SET market_odds=? WHERE id=? AND market_odds IS NULL",
-            (odds_val, row_id)
+            "UPDATE predictions_log SET market_odds=?, odds_logged_at=? WHERE id=? AND market_odds IS NULL",
+            (odds_val, odds_logged_at, row_id)
         )
         updated += cur.rowcount
     conn.commit()
