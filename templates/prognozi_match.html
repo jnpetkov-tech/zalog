@@ -24,30 +24,24 @@
   .league-logo{ width:16px; height:16px; object-fit:contain; vertical-align:-3px; margin-right:4px; }
 
   .colheader{
-    display:grid; grid-template-columns: 1fr 84px 84px 96px 112px; gap:14px;
+    display:grid; grid-template-columns: 1fr 96px; gap:14px;
     padding:10px 16px; font-size:12px; color:var(--text-faint);
   }
   .colheader .r{text-align:right;}
 
+  .estimate-note{ padding:0 16px 10px; font-size:12px; color:var(--text-faint); }
+
   .marketlist{display:flex; flex-direction:column; gap:1px; background:var(--border); border:1px solid var(--border); border-radius:10px; overflow:hidden;}
   .marketrow{
-    display:grid; grid-template-columns: 1fr 84px 84px 96px 112px; align-items:center;
+    display:grid; grid-template-columns: 1fr 96px; align-items:center;
     gap:14px; background:var(--panel2); padding:14px 16px;
   }
-  .marketrow .trust{ font-size:11.5px; color:var(--text-faint); text-align:right; }
-  .marketrow .trust.good{ color:var(--accent); }
-  .marketrow .trust.weak{ color:var(--yellow); }
   .marketrow .label{ font-size:14px; font-weight:600; }
   .marketrow .num{ font-size:14px; font-weight:600; text-align:right; }
-  .marketrow .diff{ font-size:14px; font-weight:700; text-align:right; color:var(--accent); }
-  .marketrow .diff.down{ color:var(--red); }
-  .marketrow .diff.none{ color:var(--text-faint); font-weight:600; font-size:12px; }
-  .marketrow .diff.copy{ color:var(--yellow); font-weight:600; font-size:12.5px; }
-
-  .copy-note{ padding:10px 16px; font-size:12px; color:var(--text-faint); background:var(--panel);
-    border-left:2px solid var(--yellow); margin:-1px 0 0; }
 
   .hidden-note{ margin-top:18px; font-size:13px; color:var(--text-faint); }
+  .howto-link{ margin-top:10px; font-size:13px; }
+  .howto-link a{ color:var(--accent); }
 
   .empty-note{ padding:40px 18px; text-align:center; color:var(--sub); font-size:14px;
     background:var(--panel2); border:1px solid var(--border); border-radius:10px; }
@@ -56,9 +50,8 @@
 
   @media (max-width: 620px){
     .shell{padding:24px 18px 56px;}
-    .colheader{display:none;}
-    .marketrow{grid-template-columns: 1fr; gap:4px; text-align:left;}
-    .marketrow .num, .marketrow .diff, .marketrow .trust{text-align:left;}
+    .colheader{grid-template-columns: 1fr 72px;}
+    .marketrow{grid-template-columns: 1fr 72px;}
   }
 </style>
 </head>
@@ -82,25 +75,14 @@
     </div>
 
     {% if market_rows %}
-    <div class="colheader"><div>Пазар</div><div class="r">Наше</div><div class="r">Пазарно</div><div class="r">Разлика</div><div class="r">Доверие</div></div>
+    <div class="colheader"><div>Пазар</div><div class="r">Прогноза</div></div>
+    <div class="estimate-note">Процентът е оценка на нашия модел, не гаранция.</div>
     <div class="marketlist">
       {% for m in market_rows %}
       <div class="marketrow">
         <div class="label">{{ m.label }}</div>
         <div class="num">{{ "%.1f"|format(m.our_pct) }}%</div>
-        <div class="num">{% if m.market_pct is none %}—{% else %}{{ "%.1f"|format(m.market_pct) }}%{% endif %}</div>
-        {% if m.market_copy %}
-        <div class="diff copy">= пазар</div>
-        {% elif m.diff is none %}
-        <div class="diff none">—</div>
-        {% else %}
-        <div class="diff {{ 'down' if m.diff < 0 else '' }}">{{ "+" if m.diff >= 0 else "" }}{{ "%.1f"|format(m.diff) }}%</div>
-        {% endif %}
-        <div class="trust {{ 'good' if m.trust_label == 'измерен и добър' else ('weak' if m.trust_label == 'измерен и слаб' else '') }}">{{ m.trust_label }}</div>
       </div>
-      {% if m.market_copy %}
-      <div class="copy-note">⚠️ {{ market_copy_note }}</div>
-      {% endif %}
       {% endfor %}
     </div>
     {% else %}
@@ -108,8 +90,10 @@
     {% endif %}
 
     {% if hidden_count %}
-    <div class="hidden-note">Още {{ hidden_count }} пазар{{ "а" if hidden_count != 1 else "" }} са изчислени, но измерено са по-зле от пазара или числото е твърде екстремно (≥95%), за да го публикуваме.</div>
+    <div class="hidden-note">Още {{ hidden_count }} пазар{{ "а" if hidden_count != 1 else "" }} са изчислени, но измерено са по-зле от пазара, числото е твърде екстремно (≥95%), или не са сред топ 7 за този мач.</div>
     {% endif %}
+
+    <div class="howto-link"><a href="/prognozi#full-report">Искаш повече обяснения? → Как да чета тези числа</a></div>
 
     <div class="foot-note">
       Прогнозите се основават на статистически модел и не представляват съвет за залагане. Хазартът е забранен за лица под 18 години. Резултатите от миналото не гарантират бъдещи резултати.

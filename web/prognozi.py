@@ -415,6 +415,11 @@ def register_prognozi_routes(app, ctx):
                     if r["pick_pct"] is not None and r["pick_pct"] < ps.MAX_PUBLISHABLE_PCT
                     and policy.is_publishable(league, r["market_code"])]
         eligible.sort(key=lambda r: r["pick_pct"], reverse=True)
+        # Задача 3 (NOSHT3.md, 02.09.2026): посетителите виждат само топ 7
+        # прогнози за мача (опростена таблица, без Пазарно/Разлика/Доверие
+        # колоните) - hidden_count вече брои И филтрираните (REJECTED/NO_DATA/
+        # >=95%), И всичко след топ 7, за да остане честно число.
+        eligible = eligible[:7]
         hidden_count = len(rows) - len(eligible)
 
         def _trust_label(code, is_market_copy):
