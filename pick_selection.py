@@ -23,13 +23,40 @@ prediction_policy (за да няма кръгов импорт и за да е 
 
 MAX_PUBLISHABLE_PCT = 95.0  # >= това е модел артефакт, не увереност (opus_review раздел 1)
 
+# Поправка 02.09.2026 (Дака одобри - validation/ev_guard_impact_20260902.md
+# симулира точно тази промяна, validation/ev_guard_applied_20260902.md
+# документира прилагането): implied EV над това не вярваме на модела си -
+# същия праг и същата формула като match_predictor_app.MAX_TRUSTWORTHY_EV
+# (там 0.40 като дроб, тук 40.0 като %). Прилага се само в rank_logged_rows()
+# (top_pick_for_match пътя) - rank_candidates() (живият /daily модел път)
+# няма market_odds/our_fair_odds в кандидатите си (label, prob, code) и
+# остава непипнат.
+MAX_TRUSTWORTHY_EV = 40.0
+
 _COMPLEMENTARY_PAIRS = [("over25", "under25"), ("home_over15", "home_under15")]
 
 
-def _eligible(items, league, policy, get_pct, get_code, allow_weak):
+def _row_ev_pct(row):
+    """implied EV% = (market_odds/our_fair_odds - 1) * 100 - същата формула
+    като match_predictor_app.py и validation/ev_threshold_backtest.py.
+    None, ако редът няма двете стойности (напр. predictions_snapshot
+    редове от живия /prognozi списък - нямат market_odds/our_fair_odds
+    изобщо, само fair_odds/ev с друг смисъл) - guard-ът не спъва избор,
+    за който EV не е смятаем, вместо да гадае."""
+    try:
+        odds, fair = row["market_odds"], row["our_fair_odds"]
+    except (KeyError, IndexError):
+        return None
+    if not odds or not fair or fair <= 0:
+        return None
+    return (odds / fair - 1) * 100.0
+
+
+def _eligible(items, league, policy, get_pct, get_code, allow_weak, get_ev=None):
     return [it for it in items
             if get_pct(it) < MAX_PUBLISHABLE_PCT
-            and policy.is_top_pick_eligible(league, get_code(it), allow_weak=allow_weak)]
+            and policy.is_top_pick_eligible(league, get_code(it), allow_weak=allow_weak)
+            and (get_ev is None or get_ev(it) is None or get_ev(it) <= MAX_TRUSTWORTHY_EV)]
 
 
 def _dedupe_complementary(pool, get_pct, get_code):
@@ -46,7 +73,7 @@ def _dedupe_complementary(pool, get_pct, get_code):
     return [it for it in pool if get_code(it) not in exclude]
 
 
-def _apply_rules(items, league, policy, get_pct, get_code, n, full_fallback):
+def _apply_rules(items, league, policy, get_pct, get_code, n, full_fallback, get_ev=None):
     """PROVEN -> allow_weak=True -> (по избор) пълен неfiltриран списък -> [].
 
     full_fallback=True възпроизвежда старото поведение на
@@ -56,10 +83,15 @@ def _apply_rules(items, league, policy, get_pct, get_code, n, full_fallback):
 
     full_fallback=False спира на WEAK - поведението на index_home() от
     Фаза H.1: ако нищо не е eligible, връща [] и викащият решава да
-    пропусне мача изцяло, вместо да покаже нещо неелигибъл на "витрината"."""
-    pool = _eligible(items, league, policy, get_pct, get_code, allow_weak=False)
+    пропусне мача изцяло, вместо да покаже нещо неелигибъл на "витрината".
+
+    get_ev: незадължителен, EV guard (виж MAX_TRUSTWORTHY_EV по-горе) -
+    прилага се на всеки етап (PROVEN и WEAK), НЕ и на full_fallback капания
+    списък (капанът е "никога не оставяй мач без нищо", последна инстанция,
+    не участва в EV доверието)."""
+    pool = _eligible(items, league, policy, get_pct, get_code, allow_weak=False, get_ev=get_ev)
     if not pool:
-        pool = _eligible(items, league, policy, get_pct, get_code, allow_weak=True)
+        pool = _eligible(items, league, policy, get_pct, get_code, allow_weak=True, get_ev=get_ev)
     if not pool and full_fallback:
         capped = [it for it in items if get_pct(it) < MAX_PUBLISHABLE_PCT]
         pool = capped or list(items)
@@ -90,11 +122,15 @@ def rank_logged_rows(rows, league, policy, n=3):
     """rows: dict-ове от predictions_log (pick_pct вече е 0-100 скала,
     market_code е ключ за пазара). За index_home() - Фаза H.1 семантика:
     PROVEN -> WEAK -> ако пак празно, връща [] (мачът отпада, не се
-    показва боклук)."""
+    показва боклук).
+
+    02.09.2026: EV guard (MAX_TRUSTWORTHY_EV) вече включен тук - виж
+    validation/ev_guard_applied_20260902.md."""
     return _apply_rules(
         rows, league, policy,
         get_pct=lambda r: r["pick_pct"] or 0,
         get_code=lambda r: r["market_code"],
+        get_ev=_row_ev_pct,
         n=n, full_fallback=False,
     )
 
