@@ -19,17 +19,24 @@
   h1{ font-size:26px; font-weight:800; letter-spacing:-0.5px; margin-bottom:6px; }
   .sub{ font-size:14px; color:var(--sub); margin-bottom:28px; }
 
+  .match-head{ display:flex; align-items:center; gap:10px; margin-bottom:6px; flex-wrap:wrap; }
+  .team-logo{ width:26px; height:26px; object-fit:contain; }
+  .league-logo{ width:16px; height:16px; object-fit:contain; vertical-align:-3px; margin-right:4px; }
+
   .colheader{
-    display:grid; grid-template-columns: 1fr 84px 84px 96px; gap:14px;
+    display:grid; grid-template-columns: 1fr 84px 84px 96px 112px; gap:14px;
     padding:10px 16px; font-size:12px; color:var(--text-faint);
   }
   .colheader .r{text-align:right;}
 
   .marketlist{display:flex; flex-direction:column; gap:1px; background:var(--border); border:1px solid var(--border); border-radius:10px; overflow:hidden;}
   .marketrow{
-    display:grid; grid-template-columns: 1fr 84px 84px 96px; align-items:center;
+    display:grid; grid-template-columns: 1fr 84px 84px 96px 112px; align-items:center;
     gap:14px; background:var(--panel2); padding:14px 16px;
   }
+  .marketrow .trust{ font-size:11.5px; color:var(--text-faint); text-align:right; }
+  .marketrow .trust.good{ color:var(--accent); }
+  .marketrow .trust.weak{ color:var(--yellow); }
   .marketrow .label{ font-size:14px; font-weight:600; }
   .marketrow .num{ font-size:14px; font-weight:600; text-align:right; }
   .marketrow .diff{ font-size:14px; font-weight:700; text-align:right; color:var(--accent); }
@@ -51,7 +58,7 @@
     .shell{padding:24px 18px 56px;}
     .colheader{display:none;}
     .marketrow{grid-template-columns: 1fr; gap:4px; text-align:left;}
-    .marketrow .num, .marketrow .diff{text-align:left;}
+    .marketrow .num, .marketrow .diff, .marketrow .trust{text-align:left;}
   }
 </style>
 </head>
@@ -64,11 +71,18 @@
     <h1>Мачът не е намерен</h1>
     <div class="empty-note">Няма изчислена прогноза за този мач - или fixture_id е грешен, или мачът е извън наличния прозорец.</div>
     {% else %}
-    <h1>{{ home_cy }} — {{ away_cy }}</h1>
-    <div class="sub">{{ flag }} {{ league_name }} · {{ date[8:10] }}.{{ date[5:7] }} {{ date[-5:] }}</div>
+    <div class="match-head">
+      {% if home_logo %}<img class="team-logo" src="{{ home_logo }}" alt="" onerror="this.style.display='none'">{% endif %}
+      <h1 style="margin:0;">{{ home_cy }} — {{ away_cy }}</h1>
+      {% if away_logo %}<img class="team-logo" src="{{ away_logo }}" alt="" onerror="this.style.display='none'">{% endif %}
+    </div>
+    <div class="sub">
+      {% if league_logo %}<img class="league-logo" src="{{ league_logo }}" alt="" onerror="this.style.display='none'">{% endif %}
+      {{ flag }} {{ league_name }} · {{ date[8:10] }}.{{ date[5:7] }} {{ date[-5:] }} ч.
+    </div>
 
     {% if market_rows %}
-    <div class="colheader"><div>Пазар</div><div class="r">Наше</div><div class="r">Пазарно</div><div class="r">Разлика</div></div>
+    <div class="colheader"><div>Пазар</div><div class="r">Наше</div><div class="r">Пазарно</div><div class="r">Разлика</div><div class="r">Доверие</div></div>
     <div class="marketlist">
       {% for m in market_rows %}
       <div class="marketrow">
@@ -82,6 +96,7 @@
         {% else %}
         <div class="diff {{ 'down' if m.diff < 0 else '' }}">{{ "+" if m.diff >= 0 else "" }}{{ "%.1f"|format(m.diff) }}%</div>
         {% endif %}
+        <div class="trust {{ 'good' if m.trust_label == 'измерен и добър' else ('weak' if m.trust_label == 'измерен и слаб' else '') }}">{{ m.trust_label }}</div>
       </div>
       {% if m.market_copy %}
       <div class="copy-note">⚠️ {{ market_copy_note }}</div>
@@ -93,7 +108,7 @@
     {% endif %}
 
     {% if hidden_count %}
-    <div class="hidden-note">Още {{ hidden_count }} пазар{{ "а" if hidden_count != 1 else "" }} са изчислени, но нямат достатъчно доказана история, за да ги публикуваме.</div>
+    <div class="hidden-note">Още {{ hidden_count }} пазар{{ "а" if hidden_count != 1 else "" }} са изчислени, но измерено са по-зле от пазара или числото е твърде екстремно (≥95%), за да го публикуваме.</div>
     {% endif %}
 
     <div class="foot-note">

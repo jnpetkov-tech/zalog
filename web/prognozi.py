@@ -158,6 +158,11 @@ def register_prognozi_routes(app, ctx):
         for r in snap_rows:
             snap_by_fixture.setdefault(r["fixture_id"], []).append(r)
 
+        # НОЩ 02.09.2026 (задача 2, NOSHT2.md): лога на двата отбора - едно
+        # групово четене от fixture_meta (нула API заявки, чист DB прочит),
+        # по образец на notes_map по-горе.
+        fixture_meta = st.get_fixture_meta_for_fixtures(list(snap_by_fixture.keys()))
+
         # Преглед на Дака (01.09.2026), т.2 от предишната поправка:
         # top_pick_for_match() връща None за мач без публикуема прогноза -
         # такъв мач вече отива в no_pick_rows, сгъната секция, вместо да
@@ -177,12 +182,16 @@ def register_prognozi_routes(app, ctx):
         upcoming_rows, skipped_rows, no_pick_rows, in_progress_rows = [], [], [], []
         for fixture_id, rows in snap_by_fixture.items():
             league = rows[0]["league"]
+            meta = fixture_meta.get(fixture_id)
             base = {
                 "fixture_id": fixture_id, "league": league,
                 "league_name": ALL_LEAGUES.get(league, {}).get("name", league),
+                "league_logo": ALL_LEAGUES.get(league, {}).get("logo"),
                 "flag": LEAGUE_FLAGS.get(league, "⚽"),
                 "date": rows[0]["match_date"], "home": rows[0]["home_team"], "away": rows[0]["away_team"],
                 "home_cy": to_cyrillic(rows[0]["home_team"], league), "away_cy": to_cyrillic(rows[0]["away_team"], league),
+                "home_logo": meta.get("home_logo") if meta else None,
+                "away_logo": meta.get("away_logo") if meta else None,
             }
             note = notes_map.get(fixture_id)
             if note and note["skip"]:
@@ -192,7 +201,17 @@ def register_prognozi_routes(app, ctx):
                 skipped_rows.append(base)
                 continue
 
-            top = ps.top_pick_for_match(rows, league, policy)
+            # НОЩ 02.09.2026 (задача 3, NOSHT2.md): predictions_snapshot вече
+            # пази до 24 пазара на мач (виж build_predictions_snapshot.py),
+            # не само осемте сурови кандидата - ГРАНИЦАТА, изрично поставена
+            # в задачата, е top_pick_for_match() да продължи да избира от
+            # ТОЧНО СЪЩОТО множество като преди. Филтърът тук е буквално
+            # предишното съдържание на снимката (is_candidate=1 маркира
+            # редовете от m["picks"], незасегнати от тазвечершната промяна) -
+            # потвърдено с 0 разминавания върху 168 живи мача преди деплой,
+            # виж validation/full_market_table_20260902.md.
+            candidate_rows = [r for r in rows if r["is_candidate"]]
+            top = ps.top_pick_for_match(candidate_rows, league, policy)
             if top:
                 # 02.09.2026: guard-ът в pick_selection.py вече отхвърля
                 # такъв избор за predictions_log/top_pick_for_match, но
@@ -256,19 +275,28 @@ def register_prognozi_routes(app, ctx):
         # достъпните дни никога не би стигнала n_settled). Затова таб-броячът
         # и списъкът показват ЦЯЛАТА история на публикуваните уредени
         # прогнози (само с league филтъра по-долу) - винаги точно n_settled.
+        # НОЩ 02.09.2026 (задача 2): fixture_meta не се трие никога (за
+        # разлика от predictions_snapshot - clear_stale_snapshot по-долу) -
+        # затова логата остават достъпни и за отдавна приключили мачове,
+        # веднъж записани, докато е бил предстоящ.
+        finished_meta = st.get_fixture_meta_for_fixtures([p["fixture_id"] for p in published])
         finished_rows = []
         for p in published:
             if p["status"] not in ("won", "lost"):
                 continue
             league = p["league"]
             fixture_id = p["fixture_id"]
+            f_meta = finished_meta.get(fixture_id)
             market_pct, diff = _row_diff(fixture_id, p["market_code"], p["pick_pct"])
             finished_rows.append({
                 "fixture_id": fixture_id, "league": league,
                 "league_name": ALL_LEAGUES.get(league, {}).get("name", league),
+                "league_logo": ALL_LEAGUES.get(league, {}).get("logo"),
                 "flag": LEAGUE_FLAGS.get(league, "⚽"),
                 "date": p["match_date"], "home": p["home_team"], "away": p["away_team"],
                 "home_cy": to_cyrillic(p["home_team"], league), "away_cy": to_cyrillic(p["away_team"], league),
+                "home_logo": f_meta.get("home_logo") if f_meta else None,
+                "away_logo": f_meta.get("away_logo") if f_meta else None,
                 "pick_label": p["pick_label"], "pick_pct": p["pick_pct"],
                 "market_pct": market_pct, "diff": diff, "status": p["status"],
                 "market_copy": p["market_code"] in MARKET_COPY_CODES,
@@ -367,31 +395,58 @@ def register_prognozi_routes(app, ctx):
         league = rows[0]["league"]
         home, away = rows[0]["home_team"], rows[0]["away_team"]
         match_date = rows[0]["match_date"]
+        meta = st.get_fixture_meta_for_fixtures([fixture_id]).get(fixture_id)
 
-        # СЪЩАТА функция като списъка (ps.rank_logged_rows - top_pick_for_match()
-        # е буквално rank_logged_rows(..., n=1)[0] - тук просто искаме ВСИЧКИ
-        # policy-eligible пазари за мача, не само топ 1, затова n=len(rows) -
-        # не трети път за "коя е прогнозата", същият PROVEN/WEAK филтър +
-        # дедупликация на допълващи двойки.
-        eligible = ps.rank_logged_rows(rows, league, policy, n=len(rows))
+        # НОЩ 02.09.2026 (задача 3, NOSHT2.md): "пълната таблица" на
+        # страницата на мача вече показва ВСИЧКО публикуемо
+        # (policy.is_publishable - PROVEN/WEAK/UNVERIFIED), не само
+        # top-pick-eligible (ps.rank_logged_rows, стария филтър тук до
+        # тази нощ - PROVEN/WEAK, никога UNVERIFIED). Разликата има
+        # значение точно за england2/germany2 (структурно UNVERIFIED, виж
+        # validation/pokritie_i_byudzhet_20260902.md т.5) - преди тази
+        # промяна страницата им показваше празна таблица за ВСЕКИ мач,
+        # сега поне честно показва "още няма история" на всеки ред. Тази
+        # по-широка селекция засяга САМО тази таблица - top_pick_for_match()
+        # (списъка на /prognozi) продължава да минава през rank_logged_rows/
+        # is_top_pick_eligible, непроменено (виж prognozi() по-горе).
+        # REJECTED/NO_DATA (is_publishable()==False) и >=95% артефакти
+        # (ps.MAX_PUBLISHABLE_PCT) остават скрити, преброени в hidden_count.
+        eligible = [r for r in rows
+                    if r["pick_pct"] is not None and r["pick_pct"] < ps.MAX_PUBLISHABLE_PCT
+                    and policy.is_publishable(league, r["market_code"])]
+        eligible.sort(key=lambda r: r["pick_pct"], reverse=True)
         hidden_count = len(rows) - len(eligible)
+
+        def _trust_label(code, is_market_copy):
+            if is_market_copy:
+                return "= пазарна оценка"
+            t = policy.tier(league, code)
+            if t == policy.PROVEN:
+                return "измерен и добър"
+            if t == policy.UNVERIFIED:
+                return "още няма история"
+            return "измерен и слаб"  # WEAK/REJECTED/NO_DATA (REJECTED/NO_DATA вече филтрирани по-горе)
 
         market_rows = []
         for r in eligible:
             code = r["market_code"]
             market_pct, diff = _row_diff(fixture_id, code, r["pick_pct"])
+            is_copy = code in MARKET_COPY_CODES
             market_rows.append({
                 "label": r["pick_label"], "our_pct": r["pick_pct"],
                 "market_pct": market_pct, "diff": diff,
-                "market_copy": code in MARKET_COPY_CODES,
+                "market_copy": is_copy, "trust_label": _trust_label(code, is_copy),
             })
 
         return render_template(
             "prognozi_match.html", active_page="prognozi", found=True,
             fixture_id=fixture_id, league=league,
             league_name=ALL_LEAGUES.get(league, {}).get("name", league),
+            league_logo=ALL_LEAGUES.get(league, {}).get("logo"),
             flag=LEAGUE_FLAGS.get(league, "⚽"),
             home_cy=to_cyrillic(home, league), away_cy=to_cyrillic(away, league),
+            home_logo=meta.get("home_logo") if meta else None,
+            away_logo=meta.get("away_logo") if meta else None,
             date=match_date, market_rows=market_rows, hidden_count=hidden_count,
             market_copy_note=MARKET_COPY_NOTE,
         )
