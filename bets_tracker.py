@@ -111,6 +111,16 @@ def evaluate_market(market_code, hg, ag, ht_hg=None, ht_ag=None):
 
 
 def check_results(api_key, base_url, requests_module):
+    # Поправка 02.09.2026 (validation/pokritie_i_byudzhet_20260902.md, т.4 -
+    # последните два байпаса на rate limiter-а, по същия начин като
+    # system_tracker.check_results()/update_injuries_for_league() снощи):
+    # /fixtures вече през api_football._api_get() - минава през rate
+    # limiter-а и през централния брояч/лог. api_key/base_url/requests_module
+    # остават в сигнатурата непроменени (единственият жив извикващ,
+    # web/match.py, ги подава идентични на api_football.API_KEY/BASE_URL),
+    # вече не се ползват тук.
+    import api_football as af
+
     conn = get_conn()
     conn.row_factory = sqlite3.Row
     pending = conn.execute("SELECT * FROM bets WHERE status='pending' AND fixture_id IS NOT NULL").fetchall()
@@ -118,11 +128,7 @@ def check_results(api_key, base_url, requests_module):
 
     for row in pending:
         fixture_id = row["fixture_id"]
-        r = requests_module.get(
-            f"{base_url}/fixtures",
-            headers={"x-apisports-key": api_key},
-            params={"id": fixture_id},
-        )
+        r = af._api_get("/fixtures", params={"id": fixture_id})
         data = r.json()
         if not data.get("response"):
             continue
@@ -227,8 +233,10 @@ def evaluate_stat_market(market_code, stats):
 
 
 def fetch_fixture_stats(api_key, base_url, requests_module, fixture_id, home_team, away_team):
-    r = requests_module.get(f"{base_url}/fixtures/statistics", headers={"x-apisports-key": api_key},
-                             params={"fixture": fixture_id})
+    # Поправка 02.09.2026 (същия доклад, т.4): същата смяна като check_results()
+    # по-горе - /fixtures/statistics вече през api_football._api_get().
+    import api_football as af
+    r = af._api_get("/fixtures/statistics", params={"fixture": fixture_id})
     data = r.json()
     response = data.get("response", [])
     if not response:
