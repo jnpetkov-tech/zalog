@@ -30,8 +30,8 @@ our_fair_odds, pick_pct, status) - бъдещ diag_value_edge.py повторе�
 директно ще каже дали хипотезата се потвърждава.
 """
 from flask import Blueprint, render_template
-from datetime import datetime
 import brier_vs_market as bm
+import system_tracker as st_mod
 
 MIN_PCT = 25
 MAX_PCT = 85
@@ -51,7 +51,13 @@ def get_value_opportunities(get_conn, is_eligible, hours_ahead=None):
     # на 3 часа, затова status може все още да казва "pending" няколко часа
     # СЛЕД реалния начален час - бордът не бива да показва вече започнали
     # мачове като "възможност за залог".
-    now_str = datetime.now().strftime("%Y-%m-%d %H:%M")
+    # Поправка 02.09.2026: match_date е Sofia местно време (виж
+    # system_tracker.py::_now_sofia_naive() докстринг) - наивно datetime.
+    # now() (сървърен UTC) го сравняваше грешно, мач започнал до 2-3 часа
+    # (според DST) преди истинския момент можеше да мине като "все още
+    # предстоящ". Същия helper като get_fixtures_needing_odds_refresh(),
+    # не трети вариант на същата логика.
+    now_str = st_mod._now_sofia_naive().strftime("%Y-%m-%d %H:%M")
     conn = get_conn()
     conn.row_factory = __import__("sqlite3").Row
     rows = conn.execute("""
