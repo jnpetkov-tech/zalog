@@ -7,8 +7,10 @@ api_football.py — API-Football HTTP клиент, изваден от match_pr
 поведението. match_predictor_app.py импортира оттук вместо да дефинира
 локално - вижте validation/ за преди/след доказателство на всяка стъпка.
 """
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from collections import deque
+import inspect
+import os
 import threading
 import time
 import requests
@@ -83,6 +85,45 @@ def reset_call_count():
         _call_count = 0
 
 
+# Поправка 02.09.2026 (Дака: validation/pokritie_i_byudzhet_20260902.md, т.4 -
+# собственото предложение от доклада как да се брои занапред): един ред на
+# всяка реална заявка - endpoint, час, кой я е поискал (непосредственият
+# извикващ на _api_get(), доколкото inspect може да го установи). Отделен
+# файл от rate_limiter/call_count по-горе - тези остават in-memory (нулират
+# се при рестарт), този лог е траен (за да може утре да се преброи "колко
+# похарчихме вчера по източник", не само "откакто последно рестартирахме").
+# Срязва се сам при >5MB (запазва последните 20000 реда) - за да не расте
+# безкрайно, вместо отделен ротиращ механизъм.
+_API_CALLS_LOG_PATH = "api_calls.log"
+_API_CALLS_LOG_MAX_BYTES = 5 * 1024 * 1024
+_API_CALLS_LOG_KEEP_LINES = 20000
+_api_calls_log_lock = threading.Lock()
+
+
+def _log_api_call(path):
+    caller = "?"
+    try:
+        # stack()[0] = тази функция, [1] = _api_get(), [2] = реалният
+        # извикващ (fetch_fixture_odds/check_results/...) - "ако е достъпно",
+        # никога не гърми самото извикване към API-то заради това.
+        caller = inspect.stack()[2].function
+    except Exception:
+        pass
+    line = f"{datetime.now().isoformat()} {path} {caller}\n"
+    try:
+        with _api_calls_log_lock:
+            if (os.path.exists(_API_CALLS_LOG_PATH)
+                    and os.path.getsize(_API_CALLS_LOG_PATH) > _API_CALLS_LOG_MAX_BYTES):
+                with open(_API_CALLS_LOG_PATH, "r", encoding="utf-8") as f:
+                    kept = f.readlines()[-_API_CALLS_LOG_KEEP_LINES:]
+                with open(_API_CALLS_LOG_PATH, "w", encoding="utf-8") as f:
+                    f.writelines(kept)
+            with open(_API_CALLS_LOG_PATH, "a", encoding="utf-8") as f:
+                f.write(line)
+    except Exception:
+        pass
+
+
 def _api_get(path, params=None, timeout=10):
     """Единствената точка, през която минават всички fetch_* по-долу към
     API-Football - гарантира, че rate limiter-ът вижда всяка заявка."""
@@ -90,6 +131,7 @@ def _api_get(path, params=None, timeout=10):
     _rate_limiter.acquire()
     with _call_count_lock:
         _call_count += 1
+    _log_api_call(path)
     return requests.get(f"{BASE_URL}{path}", headers=API_HEADERS, params=params, timeout=timeout)
 
 
