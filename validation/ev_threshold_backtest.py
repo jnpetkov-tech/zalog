@@ -33,6 +33,7 @@ logged_at (не предположено): към 24.08.2026 ВСИЧКИ 430 у
 import csv
 import random
 import sqlite3
+from datetime import date
 
 BLEND_CUTOFF = "2026-08-23 19:43:52"
 BLENDED_MARKET_CODES = {"home_win", "draw", "away_win", "over25", "under25"}
@@ -105,7 +106,7 @@ def main():
         print("Няма уредени редове с коефициент+our_fair_odds за анализ.")
         return
 
-    out_path = "validation/ev_threshold_backtest_20260825.csv"
+    out_path = f"validation/ev_threshold_backtest_{date.today().strftime('%Y%m%d')}.csv"
     with open(out_path, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(detail[0].keys()))
         w.writeheader()
