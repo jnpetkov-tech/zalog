@@ -628,6 +628,15 @@ def check_results(api_key, base_url, requests_module):
     import sys
     sys.path.insert(0, '.')
     import bets_tracker as bt
+    # Партида 4 (02.09.2026): /fixtures вика се през api_football._api_get()
+    # вместо requests_module.get() директно - минава през rate limiter-а
+    # (до 191 непроверени заявки на цикъл преди тази промяна, виж
+    # validation/rate_limit_diagnosis_20260901.md т.в). api_key/base_url
+    # параметрите остават непроменени в сигнатурата (единственият жив
+    # извикващ, web/admin.py, вече ги подава идентични на api_football.
+    # API_KEY/BASE_URL), но вече не се ползват тук - _api_get() носи
+    # собствените си headers/URL.
+    import api_football as af
 
     conn = get_conn()
     conn.row_factory = sqlite3.Row
@@ -652,8 +661,7 @@ def check_results(api_key, base_url, requests_module):
                 no_data += 1
 
         if fixture_id not in fixture_cache:
-            r = requests_module.get(f"{base_url}/fixtures", headers={"x-apisports-key": api_key},
-                                     params={"id": fixture_id})
+            r = af._api_get("/fixtures", params={"id": fixture_id})
             data = r.json()
             fixture_cache[fixture_id] = data.get("response", [])
 
