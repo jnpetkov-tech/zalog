@@ -32,8 +32,20 @@
   h1{font-size:30px; font-weight:800; letter-spacing:-0.5px;}
   .heading-sub{font-size:14px; color:var(--sub); margin-top:6px; max-width:48ch;}
 
+  /* Преустройство 02.09.2026 (Дака: горният отчет ядеше 1/3 от първия
+     екран) - тънък ред горе, пълният отчет (стария .metrics) слиза долу
+     до "Как да чета тези числа". #full-report - котвата от долу нагоре -
+     scroll-margin-top, за да не опира в самия ръб при скрол. */
+  .summary-line{
+    display:flex; align-items:baseline; flex-wrap:wrap; gap:6px 10px;
+    font-size:13px; color:var(--text-faint); margin-bottom:24px;
+  }
+  .summary-link{ color:var(--accent); white-space:nowrap; font-weight:600; }
+  .report-label{ font-size:13px; font-weight:600; color:var(--text-faint); margin-bottom:10px; }
+
   .metrics{
     display:flex; margin-bottom:34px; border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+    scroll-margin-top:24px;
   }
   .metric{ flex:1; padding:22px 28px; border-right:1px solid var(--border); }
   .metric:last-child{border-right:none;}
@@ -138,6 +150,7 @@
 
   @media (max-width: 720px){
     .shell{padding:24px 18px 56px;}
+    .summary-line{font-size:12.5px;}
     .metrics{flex-wrap:wrap;}
     .metric{flex:0 0 50%; border-bottom:1px solid var(--border);}
     .metric:nth-child(2n){border-right:none;}
@@ -158,42 +171,15 @@
       </div>
     </div>
 
-    <div class="metrics">
-      <div class="metric">
-        <div class="num">{{ scorecard.n_settled }}</div>
-        <div class="label">уредени прогнози до момента</div>
-      </div>
-      <div class="metric">
-        {% if scorecard.actual_pct is none or scorecard.promised_avg is none %}
-        <div class="num">—</div>
-        <div class="label">калибрация</div>
+    <div class="summary-line">
+      <a href="#full-report" class="summary-text">
+        {% if scorecard.n_settled and scorecard.actual_pct is not none %}
+          {{ scorecard.n_settled }} проверени прогнози · {% if scorecard.actual_pct < scorecard.promised_avg %}обещахме {{ "%.1f"|format(scorecard.promised_avg) }}%, познахме само {{ "%.1f"|format(scorecard.actual_pct) }}%{% else %}обещахме {{ "%.1f"|format(scorecard.promised_avg) }}%, познахме {{ "%.1f"|format(scorecard.actual_pct) }}%{% endif %}
         {% else %}
-        <div class="num compound">обещахме <span class="dim">{{ "%.1f"|format(scorecard.promised_avg) }}%</span> · познахме <span class="{{ 'up' if scorecard.actual_pct >= scorecard.promised_avg else 'down' }}">{{ "%.1f"|format(scorecard.actual_pct) }}%</span></div>
-        <div class="label">калибрация (n={{ scorecard.n_settled }})</div>
+          Все още няма достатъчно уредени прогнози за отчет
         {% endif %}
-      </div>
-      <div class="metric">
-        {% if scorecard.roi is none %}
-        <div class="num">—</div>
-        <div class="label">ROI</div>
-        {% else %}
-        {# Спешна поправка (01.09.2026, преглед на Дака): ROI е зелено/
-           червено САМО ако 95% интервалът НЕ съдържа нулата (реална
-           статистическа значимост) - иначе неутрален цвят, дори числото
-           да е положително. Зеленото се пази за твърдения, които издържат
-           проверка, не за суров знак на числото. #}
-        {% set roi_significant = scorecard.roi_ci and not scorecard.roi_ci.contains_zero %}
-        <div class="num {% if roi_significant %}{{ 'up' if scorecard.roi >= 0 else 'down' }}{% endif %}">{{ "+" if scorecard.roi >= 0 else "" }}{{ "%.1f"|format(scorecard.roi) }}%</div>
-        <div class="label">ROI (n={{ scorecard.roi_n }})</div>
-        {% if scorecard.roi_ci %}
-          {% if scorecard.roi_ci.contains_zero %}
-          <div class="caveat">при n={{ scorecard.roi_n }} това е в рамките на случайността ({{ "%+.1f"|format(scorecard.roi_ci.ci_lo_pct) }}% до {{ "%+.1f"|format(scorecard.roi_ci.ci_hi_pct) }}%)</div>
-          {% else %}
-          <div class="caveat">при n={{ scorecard.roi_n }}, 95% интервал {{ "%+.1f"|format(scorecard.roi_ci.ci_lo_pct) }}% до {{ "%+.1f"|format(scorecard.roi_ci.ci_hi_pct) }}% — не съдържа нулата</div>
-          {% endif %}
-        {% endif %}
-        {% endif %}
-      </div>
+      </a>
+      <a href="#full-report" class="summary-link">виж пълния отчет →</a>
     </div>
 
     {% if snapshot_stale_note %}
@@ -331,6 +317,45 @@
       {% endif %}
     {% endif %}
 
+    <div class="report-label" id="full-report">Пълен отчет</div>
+    <div class="metrics">
+      <div class="metric">
+        <div class="num">{{ scorecard.n_settled }}</div>
+        <div class="label">уредени прогнози до момента</div>
+      </div>
+      <div class="metric">
+        {% if scorecard.actual_pct is none or scorecard.promised_avg is none %}
+        <div class="num">—</div>
+        <div class="label">калибрация</div>
+        {% else %}
+        <div class="num compound">обещахме <span class="dim">{{ "%.1f"|format(scorecard.promised_avg) }}%</span> · познахме <span class="{{ 'up' if scorecard.actual_pct >= scorecard.promised_avg else 'down' }}">{{ "%.1f"|format(scorecard.actual_pct) }}%</span></div>
+        <div class="label">калибрация (n={{ scorecard.n_settled }})</div>
+        {% endif %}
+      </div>
+      <div class="metric">
+        {% if scorecard.roi is none %}
+        <div class="num">—</div>
+        <div class="label">ROI</div>
+        {% else %}
+        {# Спешна поправка (01.09.2026, преглед на Дака): ROI е зелено/
+           червено САМО ако 95% интервалът НЕ съдържа нулата (реална
+           статистическа значимост) - иначе неутрален цвят, дори числото
+           да е положително. Зеленото се пази за твърдения, които издържат
+           проверка, не за суров знак на числото. #}
+        {% set roi_significant = scorecard.roi_ci and not scorecard.roi_ci.contains_zero %}
+        <div class="num {% if roi_significant %}{{ 'up' if scorecard.roi >= 0 else 'down' }}{% endif %}">{{ "+" if scorecard.roi >= 0 else "" }}{{ "%.1f"|format(scorecard.roi) }}%</div>
+        <div class="label">ROI (n={{ scorecard.roi_n }})</div>
+        {% if scorecard.roi_ci %}
+          {% if scorecard.roi_ci.contains_zero %}
+          <div class="caveat">при n={{ scorecard.roi_n }} това е в рамките на случайността ({{ "%+.1f"|format(scorecard.roi_ci.ci_lo_pct) }}% до {{ "%+.1f"|format(scorecard.roi_ci.ci_hi_pct) }}%)</div>
+          {% else %}
+          <div class="caveat">при n={{ scorecard.roi_n }}, 95% интервал {{ "%+.1f"|format(scorecard.roi_ci.ci_lo_pct) }}% до {{ "%+.1f"|format(scorecard.roi_ci.ci_hi_pct) }}% — не съдържа нулата</div>
+          {% endif %}
+        {% endif %}
+        {% endif %}
+      </div>
+    </div>
+
     <details class="howto">
       <summary>Как да чета тези числа</summary>
       <div class="howto-body">
@@ -350,6 +375,7 @@
 
         <h2>Какво сме измерили за себе си</h2>
         <p>Всеки ден записваме коя прогноза сме дали и после сравняваме с реалния резултат от мача. Пазим всичко — както познатите, така и непознатите прогнози — не подбираме само добрите примери.</p>
+        <p>От 02.09.2026 изключваме от препоръките прогнози, чиято собствена оценка се разминава твърде много с пазара (над 40% разлика) — измерихме, че точно тези крайни случаи губят пари, не печелят, затова системата вече сама не им се доверява. Това свива показаната по-долу възвръщаемост (ROI) спрямо преди тази дата — не крием старото число, вижте <code>validation/ev_guard_applied_20260902.md</code> в хранилището за пълния преди/след разчет.</p>
 
         <div class="box warn">
           <h2 style="margin-top:0;">⚠️ Честно казано засега</h2>
