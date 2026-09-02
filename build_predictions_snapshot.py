@@ -42,6 +42,39 @@ def get_model_version():
         return "unknown"
 
 
+def _extra_market_rows(league, m, model_version):
+    """НОЩ 02.09.2026 (задача 3, NOSHT2.md): compute_grouped_markets() вече
+    смята до 24 пазара за всеки мач (нула нови API заявки - real_odds идва
+    от кеша, home_inj/away_inj вече изчислени в m по-горе), но само 8-те
+    сурови кандидата (m["picks"]) стигаха до predictions_snapshot. Тук
+    добавяме остатъка (is_candidate=0) - страницата на мача ги показва в
+    пълната таблица, top_pick_for_match() (Задача 3, границата) никога не
+    ги вижда, защото web/prognozi.py филтрира по is_candidate=1 преди да
+    подаде редовете натам."""
+    cached_odds = st.get_cached_odds(m["fixture_id"])
+    groups, _ = mpa.compute_grouped_markets(
+        league, m["home"], m["away"], m.get("home_inj", 0), m.get("away_inj", 0),
+        real_odds=cached_odds,
+    )
+    if not groups:
+        return []
+    rows = []
+    for _title, items, _has_form in groups:
+        for item in items:
+            if len(item) <= 3 or not item[3]:
+                continue
+            label, pct, _form, code = item[0], item[1], item[2], item[3]
+            fair = round(100.0 / pct, 2) if pct > 0 else None
+            rows.append({
+                "fixture_id": m["fixture_id"], "league": league,
+                "match_date": m["date"], "home_team": m["home"], "away_team": m["away"],
+                "market_code": code, "pick_label": label, "pick_pct": pct,
+                "fair_odds": fair, "ev": None, "model_version": model_version,
+                "is_candidate": 0,
+            })
+    return rows
+
+
 def build():
     model_version = get_model_version()
     # mpa.get_leagues() филтрира по бисквитка от браузъра (кой Дака е
@@ -57,17 +90,35 @@ def build():
         t_lg = time.time()
         matches, api_error = mpa._predict_matches_for_league_impl(league, None, None, use_fixture_cache=True)
         rows = []
+        meta_rows = []
         for m in matches:
+            # НОЩ 02.09.2026 (задача 2): fixture_meta - лого на двата отбора,
+            # за ВСЕКИ мач в снимката (не само тези с прогноза) - логата вече
+            # са в m["home_logo"]/m["away_logo"] от fetch_upcoming_fixtures(),
+            # нула допълнителни заявки.
+            meta_rows.append({
+                "fixture_id": m["fixture_id"], "league": league, "match_date": m["date"],
+                "home_team": m["home"], "away_team": m["away"],
+                "home_logo": m.get("home_logo"), "away_logo": m.get("away_logo"),
+            })
             if m.get("pct") is None or not m.get("picks"):
                 continue
+            candidate_codes = set()
             for p in m["picks"]:
+                candidate_codes.add(p["code"])
                 rows.append({
                     "fixture_id": m["fixture_id"], "league": league,
                     "match_date": m["date"], "home_team": m["home"], "away_team": m["away"],
                     "market_code": p["code"], "pick_label": p["label"], "pick_pct": p["pct"],
                     "fair_odds": p["odds"], "ev": None, "model_version": model_version,
+                    "is_candidate": 1,
                 })
+            for extra_row in _extra_market_rows(league, m, model_version):
+                if extra_row["market_code"] in candidate_codes:
+                    continue  # вече записан по-горе от m["picks"] - същата формула/число
+                rows.append(extra_row)
         st.save_snapshot_predictions(rows)
+        st.save_fixture_meta(meta_rows)
         elapsed = time.time() - t_lg
         status = f"api_error={api_error!r}" if api_error else "ok"
         print(f"[{league}] {len(matches)} мача, {len(rows)} реда записани, {elapsed:.1f}s, {status}", flush=True)
