@@ -196,7 +196,7 @@
 {% if tab == 'results' %}
 
 <div class="rv-kpis">
-  <div class="rv-kpi"><div class="k">Приключени</div><div class="v">{{overall.settled}}</div><div class="n">+{{overall.pending}} чакащи</div></div>
+  <div class="rv-kpi"><div class="k">Логнати пазари</div><div class="v">{{overall.settled}}</div><div class="n">всички логнати изходи · {{overall.pending}} още чакат резултат</div></div>
   <div class="rv-kpi"><div class="k">Познати (честно)</div><div class="v">{% if eval_summary.actual_pct is not none %}{{"%.1f"|format(eval_summary.actual_pct)}}%{% else %}—{% endif %}</div><div class="n">{% if eval_summary.promised_avg is not none %}обещано {{"%.1f"|format(eval_summary.promised_avg)}}% &middot; n={{eval_summary.n_settled}}{% else %}n=0{% endif %}</div></div>
   <div class="rv-kpi"><div class="k">Възвръщаемост</div>
     <div class="v {% if eval_summary.roi is not none %}{% if eval_summary.roi>=0 %}rv-pos{% else %}rv-neg{% endif %}{% else %}rv-neu{% endif %}">
