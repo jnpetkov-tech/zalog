@@ -1,0 +1,148 @@
+league,market_group,real_status,real_n,sim_status,sim_n,changed
+bulgaria,1x2,unverified,12,proven,66,True
+bulgaria,btts,unverified(no row),0,weak,44,True
+bulgaria,cards,unverified(no row),0,proven,26,True
+bulgaria,double_chance,unverified(no row),0,proven,66,True
+bulgaria,htft,unverified(no row),0,weak,88,True
+bulgaria,ou25,unverified,10,weak,44,True
+bulgaria,team_total,weak,20,proven,132,True
+bulgaria2,1x2,unverified,19,weak,57,True
+bulgaria2,btts,unverified(no row),0,weak,38,True
+bulgaria2,double_chance,unverified(no row),0,weak,57,True
+bulgaria2,htft,unverified(no row),0,weak,76,True
+bulgaria2,ou25,unverified(no row),0,rejected,38,True
+bulgaria2,team_total,unverified(no row),0,proven,114,True
+champions_league,1x2,unverified,17,proven,51,True
+champions_league,btts,unverified(no row),0,proven,34,True
+champions_league,cards,unverified(no row),0,rejected,34,True
+champions_league,corners,unverified(no row),0,rejected,68,True
+champions_league,double_chance,unverified(no row),0,proven,51,True
+champions_league,htft,unverified(no row),0,proven,68,True
+champions_league,offsides,unverified(no row),0,rejected,34,True
+champions_league,ou25,unverified(no row),0,proven,34,True
+champions_league,team_total,unverified(no row),0,proven,102,True
+conference_league,1x2,unverified(no row),0,proven,261,True
+conference_league,btts,unverified,5,weak,174,True
+conference_league,cards,unverified(no row),0,rejected,174,True
+conference_league,corners,unverified(no row),0,rejected,348,True
+conference_league,double_chance,unverified(no row),0,proven,261,True
+conference_league,htft,unverified(no row),0,weak,348,True
+conference_league,offsides,unverified(no row),0,weak,160,True
+conference_league,ou25,unverified,5,weak,174,True
+conference_league,team_total,weak,77,proven,522,True
+england,1x2,unverified(no row),0,proven,54,True
+england,btts,unverified(no row),0,weak,36,True
+england,cards,unverified(no row),0,rejected,36,True
+england,corners,unverified(no row),0,proven,72,True
+england,double_chance,unverified(no row),0,proven,54,True
+england,htft,unverified(no row),0,weak,72,True
+england,offsides,unverified(no row),0,proven,34,True
+england,ou25,unverified,3,proven,36,True
+england,team_total,unverified,15,proven,108,True
+england2,1x2,unverified(no row),0,weak,87,True
+england2,btts,unverified(no row),0,weak,58,True
+england2,cards,unverified(no row),0,weak,58,True
+england2,corners,unverified(no row),0,rejected,116,True
+england2,double_chance,unverified(no row),0,weak,87,True
+england2,htft,unverified(no row),0,weak,116,True
+england2,offsides,unverified(no row),0,rejected,58,True
+england2,ou25,unverified(no row),0,rejected,58,True
+england2,team_total,unverified(no row),0,weak,174,True
+europa_league,1x2,proven,33,proven,99,False
+europa_league,btts,unverified(no row),0,weak,66,True
+europa_league,cards,unverified(no row),0,rejected,40,True
+europa_league,corners,unverified(no row),0,rejected,82,True
+europa_league,double_chance,unverified(no row),0,proven,99,True
+europa_league,htft,unverified(no row),0,weak,132,True
+europa_league,offsides,unverified(no row),0,proven,40,True
+europa_league,ou25,unverified(no row),0,weak,66,True
+europa_league,team_total,unverified(no row),0,proven,198,True
+france,1x2,unverified(no row),0,weak,51,True
+france,btts,unverified(no row),0,weak,34,True
+france,cards,unverified(no row),0,weak,34,True
+france,corners,unverified(no row),0,rejected,68,True
+france,double_chance,unverified(no row),0,weak,51,True
+france,htft,unverified(no row),0,weak,68,True
+france,offsides,unverified(no row),0,proven,32,True
+france,ou25,unverified,1,weak,34,True
+france,team_total,unverified,16,weak,102,True
+france2,1x2,unverified,1,weak,48,True
+france2,btts,unverified(no row),0,weak,32,True
+france2,cards,unverified(no row),0,weak,32,True
+france2,corners,unverified(no row),0,proven,64,True
+france2,double_chance,unverified(no row),0,weak,48,True
+france2,htft,unverified(no row),0,weak,64,True
+france2,offsides,unverified(no row),0,rejected,28,True
+france2,ou25,unverified,15,weak,32,True
+france2,team_total,unverified(no row),0,proven,96,True
+germany,1x2,unverified(no row),0,proven,27,True
+germany,btts,unverified(no row),0,unverified,18,True
+germany,cards,unverified(no row),0,unverified,18,True
+germany,corners,unverified(no row),0,rejected,36,True
+germany,double_chance,unverified(no row),0,proven,27,True
+germany,htft,unverified(no row),0,proven,36,True
+germany,offsides,unverified(no row),0,unverified,16,True
+germany,ou25,unverified(no row),0,unverified,18,True
+germany,team_total,unverified,9,proven,54,True
+germany2,1x2,unverified(no row),0,weak,27,True
+germany2,btts,unverified(no row),0,unverified,18,True
+germany2,cards,unverified(no row),0,unverified,18,True
+germany2,corners,unverified(no row),0,rejected,36,True
+germany2,double_chance,unverified(no row),0,weak,27,True
+germany2,htft,unverified(no row),0,weak,36,True
+germany2,offsides,unverified(no row),0,unverified,18,True
+germany2,ou25,unverified(no row),0,unverified,18,True
+germany2,team_total,unverified(no row),0,weak,54,True
+italy,1x2,weak,20,proven,60,True
+italy,btts,unverified(no row),0,proven,40,True
+italy,cards,unverified(no row),0,weak,40,True
+italy,corners,unverified(no row),0,weak,80,True
+italy,double_chance,unverified(no row),0,proven,60,True
+italy,htft,unverified(no row),0,weak,80,True
+italy,offsides,unverified(no row),0,weak,38,True
+italy,ou25,unverified(no row),0,weak,40,True
+italy,team_total,unverified(no row),0,proven,120,True
+italy2,1x2,unverified,1,weak,51,True
+italy2,btts,unverified(no row),0,weak,34,True
+italy2,cards,unverified(no row),0,weak,34,True
+italy2,corners,unverified(no row),0,rejected,68,True
+italy2,double_chance,unverified(no row),0,weak,51,True
+italy2,htft,unverified(no row),0,weak,68,True
+italy2,offsides,unverified(no row),0,proven,32,True
+italy2,ou25,unverified,16,weak,34,True
+italy2,team_total,unverified(no row),0,proven,102,True
+portugal,1x2,unverified,10,proven,75,True
+portugal,btts,unverified(no row),0,weak,50,True
+portugal,cards,unverified(no row),0,rejected,48,True
+portugal,corners,unverified(no row),0,proven,97,True
+portugal,double_chance,unverified(no row),0,proven,75,True
+portugal,htft,unverified(no row),0,weak,100,True
+portugal,offsides,unverified(no row),0,proven,44,True
+portugal,ou25,unverified,15,proven,50,True
+portugal,team_total,unverified(no row),0,proven,150,True
+portugal2,1x2,unverified(no row),0,weak,51,True
+portugal2,btts,unverified(no row),0,weak,34,True
+portugal2,cards,unverified(no row),0,unverified,16,True
+portugal2,corners,unverified(no row),0,unverified,4,True
+portugal2,double_chance,unverified(no row),0,weak,51,True
+portugal2,htft,unverified(no row),0,weak,68,True
+portugal2,ou25,unverified(no row),0,weak,34,True
+portugal2,team_total,unverified(no row),0,weak,102,True
+spain,1x2,unverified,9,proven,72,True
+spain,btts,unverified(no row),0,weak,48,True
+spain,cards,unverified(no row),0,weak,48,True
+spain,corners,unverified(no row),0,rejected,96,True
+spain,double_chance,unverified(no row),0,proven,72,True
+spain,htft,unverified(no row),0,weak,96,True
+spain,offsides,unverified(no row),0,weak,44,True
+spain,ou25,unverified,15,proven,48,True
+spain,team_total,weak,22,proven,144,True
+spain2,1x2,unverified(no row),0,weak,66,True
+spain2,btts,unverified(no row),0,weak,44,True
+spain2,cards,unverified(no row),0,rejected,44,True
+spain2,corners,unverified(no row),0,proven,88,True
+spain2,double_chance,unverified(no row),0,weak,66,True
+spain2,htft,unverified(no row),0,weak,88,True
+spain2,offsides,unverified(no row),0,rejected,42,True
+spain2,ou25,rejected,20,proven,44,True
+spain2,team_total,weak,22,proven,132,True
