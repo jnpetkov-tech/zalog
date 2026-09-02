@@ -94,6 +94,31 @@ def register_prognozi_routes(app, ctx):
         market_pct = market_p * 100
         return market_pct, our_pct - market_pct
 
+    def _snapshot_ev_pct(fixture_id, code, pick_pct):
+        """Поправка 02.09.2026 (Дака: guard-ът покриваше историята
+        (predictions_log), не витрината): implied EV% за избраната
+        прогноза на ПРЕДСТОЯЩ мач, за да може guard-ът в pick_selection.py
+        (веднъж приложен само върху predictions_log/top_pick_for_match) да
+        важи и тук. predictions_snapshot редовете НЯМАТ market_odds/
+        our_fair_odds колони (виж validation/ev_guard_applied_20260902.md)
+        - смята се от каквото има: кешираният пазарен коефициент (st.
+        get_cached_odds, СЪЩИЯТ източник като _row_diff по-горе, покрива
+        само home_win/draw/away_win/over25/under25 - odds_cache схемата)
+        + our_fair_odds по СЪЩАТА конвенция като system_tracker.
+        log_all_markets() (100/pick_pct, закръглено на 2 знака).
+
+        Самата EV формула и прагът НЕ се преизобретяват тук - вика
+        pick_selection._row_ev_pct()/MAX_TRUSTWORTHY_EV директно (ps е
+        pick_selection модула). None, ако коефициент липсва - EV не е
+        сметаем за пазар извън тези пет, не гадаем."""
+        cached_odds = st.get_cached_odds(fixture_id)
+        odds_key = st.MARKET_ODDS_MAP.get(code)
+        market_odds_val = cached_odds.get(odds_key) if (cached_odds and odds_key) else None
+        if not market_odds_val or not pick_pct:
+            return None
+        our_fair_odds = round(100.0 / pick_pct, 2)
+        return ps._row_ev_pct({"market_odds": market_odds_val, "our_fair_odds": our_fair_odds})
+
     # Смяна на входните точки (01.09.2026, задача от Дака): "/" вече е
     # публичната начална страница - СЪЩАТА view функция, два маршрута
     # (не дублиран код). "/prognozi" остава като псевдоним, за да не се
@@ -168,6 +193,19 @@ def register_prognozi_routes(app, ctx):
                 continue
 
             top = ps.top_pick_for_match(rows, league, policy)
+            if top:
+                # 02.09.2026: guard-ът в pick_selection.py вече отхвърля
+                # такъв избор за predictions_log/top_pick_for_match, но
+                # predictions_snapshot редовете (тук) нямат market_odds/
+                # our_fair_odds - guard-ът там е физически неприложим.
+                # Смятаме implied EV отделно (_snapshot_ev_pct, СЪЩАТА
+                # формула/праг от pick_selection) и третираме "над прага"
+                # точно като "top_pick_for_match върна None" - НЕ показваме
+                # прогнозата с предупреждение, отива в "без доверена
+                # прогноза" (прагът значи "не вярваме", не "с уговорка").
+                ev_pct = _snapshot_ev_pct(fixture_id, top["market_code"], top["pick_pct"])
+                if ev_pct is not None and ev_pct > ps.MAX_TRUSTWORTHY_EV:
+                    top = None
             if not top:
                 # "Без доверена прогноза" - само бъдещи (т.3 от предишната
                 # поправка); ако вече е започнал и няма прогноза, просто
