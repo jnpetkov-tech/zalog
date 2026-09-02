@@ -643,12 +643,29 @@ def check_results(api_key, base_url, requests_module):
     pending = conn.execute("SELECT * FROM predictions_log WHERE status='pending'").fetchall()
     updated = 0
     no_data = 0
+    skipped_future = 0
     fixture_cache = {}
+    stats_cache = {}
     now = datetime.now()
 
     for row in pending:
         fixture_id = row["fixture_id"]
         market_code = row["market_code"]
+
+        # Поправка 02.09.2026 (Дака: validation/pokritie_i_byudzhet_20260902.md,
+        # т.4 - 188 fixture_id на всяко пускане, включително мачове след 5 дни,
+        # никога не могат да са FT). Sofia местно време - СЪЩОТО сравнение като
+        # _odds_needs_refresh() в match_predictor_app.py, match_date тук е
+        # Sofia местно без offset (виж бележката до _now_sofia_naive() по-горе).
+        # Не пипа мачове без разбираем match_date (както преди - fromisoformat
+        # хвърля, стигаме до mark_stale_if_old() по старата пътека).
+        try:
+            match_dt = datetime.fromisoformat(row["match_date"])
+        except (ValueError, TypeError):
+            match_dt = None
+        if match_dt is not None and match_dt > _now_sofia_naive():
+            skipped_future += 1
+            continue
 
         def mark_stale_if_old():
             nonlocal no_data
@@ -680,8 +697,14 @@ def check_results(api_key, base_url, requests_module):
         ht_hg, ht_ag = ht.get("home"), ht.get("away")
 
         if market_code.startswith(("corners_", "cards_", "offsides_")):
-            stats = bt.fetch_fixture_stats(api_key, base_url, requests_module, fixture_id,
-                                             row["home_team"], row["away_team"])
+            # Поправка 02.09.2026 (същия доклад, т.4): 4 corner реда на един
+            # мач правеха 4 еднакви /fixtures/statistics заявки - кеш по
+            # fixture_id, както fixture_cache по-горе за /fixtures.
+            if fixture_id not in stats_cache:
+                stats_cache[fixture_id] = bt.fetch_fixture_stats(
+                    api_key, base_url, requests_module, fixture_id,
+                    row["home_team"], row["away_team"])
+            stats = stats_cache[fixture_id]
             result = bt.evaluate_stat_market(market_code, stats)
         else:
             result = bt.evaluate_market_v2(market_code, hg, ag, ht_hg, ht_ag)
