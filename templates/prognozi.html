@@ -356,6 +356,15 @@
         {% endif %}
         {% endif %}
       </div>
+      <div class="metric">
+        {% if scorecard.profit is none %}
+        <div class="num">—</div>
+        <div class="label">печалба/загуба</div>
+        {% else %}
+        <div class="num {{ 'up' if scorecard.profit >= 0 else 'down' }}">{{ "+" if scorecard.profit >= 0 else "" }}{{ "%.1f"|format(scorecard.profit) }} u</div>
+        <div class="label">печалба/загуба (n={{ scorecard.roi_n }})</div>
+        {% endif %}
+      </div>
     </div>
 
     <details class="howto">

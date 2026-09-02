@@ -147,7 +147,7 @@ def register_prognozi_routes(app, ctx):
         # (т.3, преглед на Дака 01.09.2026: и двете вече минават през
         # evaluation.published_picks() - виж бележката там).
         predictions = st.list_predictions()
-        scorecard = evaluation.summary(predictions, policy)
+        scorecard = evaluation.summary_priced_only(predictions, policy)
         published = evaluation.published_picks(predictions, policy)
 
         notes_map = st.get_all_match_notes()

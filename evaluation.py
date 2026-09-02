@@ -217,3 +217,33 @@ def summary(rows, policy, bands=None):
         "roi": roi_pct, "roi_n": roi_n,
         "profit": profit, "avg_odds": avg_odds, "roi_ci": roi_ci,
     }
+
+
+def summary_priced_only(rows, policy, bands=None):
+    """Вариант на summary() само за /prognozi (публичната витрина) -
+    Дака поиска (02.09.2026) четирите показани числа (брой, калибрация,
+    ROI, печалба) да минават през ЕДНО n, вместо calibration да показва
+    n_settled а ROI/печалба по-малко n (объркващо разминаване на едно
+    табло). Разлика от summary(): всичко тук се смята само върху
+    roi_eligible (settled публикувани топ-прогнози С реален
+    market_odds), не върху всички settled. summary() (за /results,
+    админ одит) остава непроменена нарочно."""
+    picks = published_picks(rows, policy)
+    settled = _settled(picks)
+    roi_eligible = [p for p in settled if p["market_odds"]]
+    n = len(roi_eligible)
+    promised_avg = (sum((p["pick_pct"] or 0) for p in roi_eligible) / n) if n else None
+    won = sum(1 for p in roi_eligible if p["status"] == "won")
+    actual_pct = (won / n * 100.0) if n else None
+    roi_pct, roi_n = roi(picks)
+    profit = (sum((p["market_odds"] if p["status"] == "won" else 0.0) - 1.0
+                  for p in roi_eligible) if roi_eligible else None)
+    avg_odds = (sum(p["market_odds"] for p in roi_eligible) / n) if n else None
+    roi_ci = roi_confidence_interval(roi_eligible)
+    return {
+        "n_settled": n, "n_won": won, "n_lost": n - won,
+        "promised_avg": promised_avg, "actual_pct": actual_pct,
+        "calibration": calibration_curve(roi_eligible, bands),
+        "roi": roi_pct, "roi_n": roi_n,
+        "profit": profit, "avg_odds": avg_odds, "roi_ci": roi_ci,
+    }
