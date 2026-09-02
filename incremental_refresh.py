@@ -14,8 +14,13 @@ headers = {"x-apisports-key": API_KEY}
 
 
 def fetch_fixture_stats(fixture_id):
-    r = requests.get(f"{BASE_URL}/fixtures/statistics", headers=headers,
-                      params={"fixture": fixture_id})
+    # Поправка 02.09.2026 (validation/pokritie_i_byudzhet_20260902.md, т.4 -
+    # последните два байпаса на rate limiter-а, по същия начин като
+    # system_tracker.py/bets_tracker.py вече оправени): вече през
+    # api_football._api_get() вместо собствен requests.get - минава през
+    # rate limiter-а и централния брояч/лог.
+    import api_football as af
+    r = af._api_get("/fixtures/statistics", params={"fixture": fixture_id})
     data = r.json()
     if not data.get("response") or len(data["response"]) < 2:
         return None
@@ -61,9 +66,11 @@ def main(league_key, league_id):
     season = today.year if today.month >= 7 else today.year - 1
     print(f"{league_key}: последна дата в данните {last_date}, тегля от {last_date} до {today} (сезон {season})...")
 
-    r = requests.get(f"{BASE_URL}/fixtures", headers=headers,
-                      params={"league": league_id, "season": season,
-                              "from": last_date.isoformat(), "to": today.isoformat()})
+    # Поправка 02.09.2026 (същия доклад, т.4): същата смяна като
+    # fetch_fixture_stats() по-горе - /fixtures вече през api_football._api_get().
+    import api_football as af
+    r = af._api_get("/fixtures", params={"league": league_id, "season": season,
+                                          "from": last_date.isoformat(), "to": today.isoformat()})
     data = r.json()
     if data.get("errors"):
         print(f"  Грешка: {data['errors']}")
