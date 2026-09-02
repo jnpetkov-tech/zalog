@@ -131,24 +131,37 @@ from api_football import API_KEY, BASE_URL, API_HEADERS, FINISHED_STATUSES, fetc
 # лиги, за които контузиите ДОКАЗАНО НЕ подобряват модела (тествано и отхвърлено)
 NO_INJURY_MODEL_LEAGUES = {"champions_league", "europa_league"}
 
+# Минимално покритие на "home_corners"/"away_corners" сред завършените мачове, за да се фитне
+# corners_model изобщо - виж validation/corners_data_guard_20260902.md. 70% е избрано, защото пада
+# точно между двата ясни клъстера в реалните данни: 13 лиги >=96% (солидна база) + champions_league/
+# europa_league на 82-85% (граничен, но приемлив случай) от една страна, срещу bulgaria2 (0%),
+# portugal2 (47.5%), conference_league (69.7%, точно под прага) от друга - под 70% моделът се фитва
+# на твърде малко/нула реални стойности и предсказва константна, безсмислена лямбда.
+CORNERS_MIN_COVERAGE = 0.70
+
+# "logo" (НОЩ 02.09.2026, задача 2): дръпнати ЕДНОКРАТНО от API-Football
+# (/leagues?id=<id>, 17 заявки общо, виж archive/fetch_league_logos_20260902.py) -
+# хардкоднати литерали тук, скриптът не се пуска на цикъл. Браузърът на
+# посетителя ги зарежда директно от media.api-sports.io - не минават през
+# нашия сървър, не харчат наша API квота при показване.
 ALL_LEAGUES = {
-    "bulgaria": {"name": "Първа лига България", "id": 172},
-    "england": {"name": "Английска Висша лига", "id": 39},
-    "germany": {"name": "Бундеслига", "id": 78},
-    "spain": {"name": "Ла Лига", "id": 140},
-    "france": {"name": "Лига 1 Франция", "id": 61},
-    "champions_league": {"name": "Шампионска лига", "id": 2},
-    "europa_league": {"name": "Лига Европа", "id": 3},
-    "conference_league": {"name": "Лига на конференциите", "id": 848},
-    "italy": {"name": "Серия А Италия", "id": 135},
-    "portugal": {"name": "Примейра Лига Португалия", "id": 94},
-    "france2": {"name": "Франция - Лига 2", "id": 62},
-    "spain2": {"name": "Испания - Сегунда Дивисион", "id": 141},
-    "italy2": {"name": "Италия - Серия Б", "id": 136},
-    "portugal2": {"name": "Португалия - Сегунда Лига", "id": 95},
-    "bulgaria2": {"name": "България - Втора лига", "id": 173},
-    "england2": {"name": "Англия - Чемпиъншип", "id": 40},
-    "germany2": {"name": "Германия - Втора Бундеслига", "id": 79},
+    "bulgaria": {"name": "Първа лига България", "id": 172, "logo": "https://media.api-sports.io/football/leagues/172.png"},
+    "england": {"name": "Английска Висша лига", "id": 39, "logo": "https://media.api-sports.io/football/leagues/39.png"},
+    "germany": {"name": "Бундеслига", "id": 78, "logo": "https://media.api-sports.io/football/leagues/78.png"},
+    "spain": {"name": "Ла Лига", "id": 140, "logo": "https://media.api-sports.io/football/leagues/140.png"},
+    "france": {"name": "Лига 1 Франция", "id": 61, "logo": "https://media.api-sports.io/football/leagues/61.png"},
+    "champions_league": {"name": "Шампионска лига", "id": 2, "logo": "https://media.api-sports.io/football/leagues/2.png"},
+    "europa_league": {"name": "Лига Европа", "id": 3, "logo": "https://media.api-sports.io/football/leagues/3.png"},
+    "conference_league": {"name": "Лига на конференциите", "id": 848, "logo": "https://media.api-sports.io/football/leagues/848.png"},
+    "italy": {"name": "Серия А Италия", "id": 135, "logo": "https://media.api-sports.io/football/leagues/135.png"},
+    "portugal": {"name": "Примейра Лига Португалия", "id": 94, "logo": "https://media.api-sports.io/football/leagues/94.png"},
+    "france2": {"name": "Франция - Лига 2", "id": 62, "logo": "https://media.api-sports.io/football/leagues/62.png"},
+    "spain2": {"name": "Испания - Сегунда Дивисион", "id": 141, "logo": "https://media.api-sports.io/football/leagues/141.png"},
+    "italy2": {"name": "Италия - Серия Б", "id": 136, "logo": "https://media.api-sports.io/football/leagues/136.png"},
+    "portugal2": {"name": "Португалия - Сегунда Лига", "id": 95, "logo": "https://media.api-sports.io/football/leagues/95.png"},
+    "bulgaria2": {"name": "България - Втора лига", "id": 173, "logo": "https://media.api-sports.io/football/leagues/173.png"},
+    "england2": {"name": "Англия - Чемпиъншип", "id": 40, "logo": "https://media.api-sports.io/football/leagues/40.png"},
+    "germany2": {"name": "Германия - Втора Бундеслига", "id": 79, "logo": "https://media.api-sports.io/football/leagues/79.png"},
 }
 
 LEAGUE_FLAGS = {
@@ -248,7 +261,17 @@ def get_models(league):
         recent_df = df[df["date"] >= recent_cutoff]
         recent_matches_count = len(recent_df)
         recent_model = fl.fit_goals_model(recent_df, ref_date, team_idx, n, xi=league_xi) if recent_matches_count >= 20 else None
-        corners_model = fl.fit_total_model(df, ref_date, team_idx, n, "home_corners", "away_corners", xi=league_xi) if "home_corners" in df.columns else None
+        # Праг на покритие за корнери (02.09.2026) - "home_corners" СЪЩЕСТВУВА в CSV-то не значи, че има
+        # реални стойности в нея (bulgaria2: колоната е 100% празна -> моделът се "фитваше" на 0 реда и
+        # тихо предсказваше константни 1.0 корнера/отбор за всеки мач - виж
+        # validation/corners_data_guard_20260902.md). Прагът е върху "завършени" мачове (home_goals/
+        # away_goals не са празни - същият критерий като fl.fit_goals_model()), не върху целия CSV.
+        _finished = df.dropna(subset=["home_goals", "away_goals"])
+        if "home_corners" in df.columns and "away_corners" in df.columns and len(_finished) > 0:
+            _corners_coverage = len(_finished.dropna(subset=["home_corners", "away_corners"])) / len(_finished)
+        else:
+            _corners_coverage = 0.0
+        corners_model = fl.fit_total_model(df, ref_date, team_idx, n, "home_corners", "away_corners", xi=league_xi) if _corners_coverage >= CORNERS_MIN_COVERAGE else None
         # Картони/засади премахнати от системата (25.08.2026, Дака): "прогнози, които не подлежат на
         # сравнение, нямат място в система за сравнение" - 0% покритие с коефициент във вторите
         # дивизии, 21-36% дори в топ лигите (validation/coverage_diagnosis_20260825.md), никога не
@@ -428,10 +451,32 @@ def top_picks_with_code(lam, mu, home, away, ht_ft_probs, league, market_odds=No
     return ranked, used_market
 
 
+# НОЩ 02.09.2026 (задача 3): двойки с естествен допълващ пазар в odds_cache
+# (виж ODDS_CACHE_MARKETS, разширено 02.09.2026 следобед от 5 на 23 колони) -
+# devig_ou() е чисто 2-изходно обезвиждане, не специфично за over/under,
+# затова е реизползваемо буквално за всяка от тези двойки.
+_COMPLEMENTARY_ODDS_PAIRS = [
+    ("over25", "under25"), ("home_over15", "home_under15"),
+    ("away_over15", "away_under15"), ("btts_yes", "btts_no"),
+]
+
+
 def _market_info_for_pick(code, market_odds):
     """Обезвигована пазарна вероятност + коефициент за market_code, ако
-    market_odds има пълна двойка/тройка за него - иначе None (пазарът не
-    покрива този код, напр. home_over15/htft:*, или липсва данни за мача)."""
+    market_odds има пълна двойка/тройка за него. Разширено 02.09.2026
+    (задача 3, пълната таблица на страницата на мача) - преди покриваше
+    само home_win/draw/away_win/over25/under25 (петте, които /daily
+    смесва); сега покрива всички кодове, за които odds_cache реално пази
+    коефициент:
+    - тройка/двойка с истински допълващ пазар -> пълно обезвиждане (devig).
+    - dc_1x/dc_x2/dc_12 и htft:* нямат кеширан допълващ пазар (двойният
+      шанс/резултат почивка-край е самостоятелна котировка, не двойка) ->
+      суров implied (1/коефициент), БЕЗ обезвиждане - леко завишен спрямо
+      истинската пазарна вероятност (надценката на букмейкъра остава
+      вътре), но е по-честно от нищо и ясно е по-малко прецизно от
+      случаите с истинско обезвиждане по-горе.
+    - код без никакъв кеширан коефициент (corners_*, home/away_clean_sheet)
+      -> None, викащият показва празно, не 0 (заданието, т.3)."""
     if not market_odds:
         return None
     try:
@@ -439,9 +484,12 @@ def _market_info_for_pick(code, market_odds):
             mh, md, ma = devig_1x2(market_odds["home_win"], market_odds["draw"], market_odds["away_win"])
             return {"home_win": (mh, market_odds["home_win"]), "draw": (md, market_odds["draw"]),
                     "away_win": (ma, market_odds["away_win"])}.get(code)
-        if code in ("over25", "under25") and market_odds.get("over25") and market_odds.get("under25"):
-            mo, mund = devig_ou(market_odds["over25"], market_odds["under25"])
-            return {"over25": (mo, market_odds["over25"]), "under25": (mund, market_odds["under25"])}.get(code)
+        for a, b in _COMPLEMENTARY_ODDS_PAIRS:
+            if code in (a, b) and market_odds.get(a) and market_odds.get(b):
+                pa, pb = devig_ou(market_odds[a], market_odds[b])
+                return {a: (pa, market_odds[a]), b: (pb, market_odds[b])}.get(code)
+        if market_odds.get(code):
+            return (1.0 / market_odds[code], market_odds[code])
     except (ZeroDivisionError, TypeError):
         return None
     return None
@@ -1308,6 +1356,14 @@ def _predict_matches_for_league_impl(league, from_date, to_date, use_fixture_cac
             "used_market": used_market, "odds_updated_at": (cached_odds.get("fetched_at") if cached_odds else None),
             "status_short": status_short, "elapsed": elapsed,
             "goals_home": goals_home, "goals_away": goals_away, "live_result": live_result,
+            # НОЩ 02.09.2026 (задача 3): вече изчислени по-горе в тази функция
+            # (has_injuries клона) - подадени тук без нищо ново да се смята/
+            # тегли, за да може build_predictions_snapshot.py да извика
+            # compute_grouped_markets() със СЪЩИТЕ контузийни числа, които
+            # вече определят home_win/draw/away_win по-горе (иначе групите с
+            # допълнителните 16+ пазара биха тръгнали от инжектирано 0/0,
+            # разминаващо се тихо с pick/pct в същия ред).
+            "home_inj": home_inj, "away_inj": away_inj,
         })
     return matches, api_error
 

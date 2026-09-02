@@ -179,6 +179,42 @@ def init_db():
         CREATE INDEX IF NOT EXISTS idx_predictions_snapshot_league_date
         ON predictions_snapshot(league, match_date)
     """)
+    # НОЩ 02.09.2026 (задача 3, NOSHT2.md): predictions_snapshot вече пази
+    # ВСИЧКИ пазари, които compute_grouped_markets() смята (до 24 - виж
+    # build_predictions_snapshot.py), не само осемте сурови кандидата от
+    # _raw_candidates(). is_candidate=1 маркира точно тези осем (същите
+    # кодове/числа като преди, нищо преизчислено по различен начин) -
+    # web/prognozi.py филтрира по is_candidate=1 ПРЕДИ да подаде редовете на
+    # pick_selection.top_pick_for_match(), за да остане изборът на "топ
+    # прогноза" на /prognozi буквално идентичен на преди тази промяна
+    # (границата, изрично поставена в задачата - регресия, ако мач смени
+    # топ прогнозата си). Останалите редове (is_candidate=0) служат само за
+    # пълната таблица на страницата на мача.
+    for col_def in ["is_candidate INTEGER DEFAULT 0"]:
+        try:
+            conn.execute(f"ALTER TABLE predictions_snapshot ADD COLUMN {col_def}")
+        except sqlite3.OperationalError:
+            pass
+    # НОЩ 02.09.2026 (задача 2): лога на двата отбора + мач-контекст, за
+    # /prognozi и страницата на мача - БЕЗ нова API заявка (home_logo/
+    # away_logo вече идват от fetch_upcoming_fixtures() заедно със списъка
+    # мачове, _predict_matches_for_league_impl() вече ги връща в matches[],
+    # build_predictions_snapshot.py само ги записва тук в същия цикъл).
+    # Отделна таблица от predictions_snapshot нарочно (заданието, т.2) -
+    # едно ПО fixture_id, не по (fixture_id, market_code) - нямаше смисъл
+    # да се повтарят логата на всеки от до 24-те пазарни реда.
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS fixture_meta (
+            fixture_id INTEGER PRIMARY KEY,
+            league TEXT,
+            match_date TEXT,
+            home_team TEXT,
+            away_team TEXT,
+            home_logo TEXT,
+            away_logo TEXT,
+            updated_at TEXT
+        )
+    """)
     # Партида 4, Стъпка 1 (21.08.2026, ARCHITECTURE.md, Граница 3: „измерване
     # срещу правило"). Едно място за реалното измерено доверие в
     # (лига, пазарна група) - за разлика от TRUST_MATRIX в prediction_policy.py
@@ -371,19 +407,60 @@ def save_snapshot_predictions(rows):
     conn.executemany("""
         INSERT INTO predictions_snapshot
             (fixture_id, league, match_date, home_team, away_team, market_code,
-             pick_label, pick_pct, fair_odds, ev, computed_at, model_version)
-        VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+             pick_label, pick_pct, fair_odds, ev, computed_at, model_version, is_candidate)
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
         ON CONFLICT(fixture_id, market_code) DO UPDATE SET
             league=excluded.league, match_date=excluded.match_date,
             home_team=excluded.home_team, away_team=excluded.away_team,
             pick_label=excluded.pick_label, pick_pct=excluded.pick_pct,
             fair_odds=excluded.fair_odds, ev=excluded.ev,
-            computed_at=excluded.computed_at, model_version=excluded.model_version
+            computed_at=excluded.computed_at, model_version=excluded.model_version,
+            is_candidate=excluded.is_candidate
     """, [(r["fixture_id"], r["league"], r["match_date"], r["home_team"], r["away_team"],
            r["market_code"], r["pick_label"], r["pick_pct"], r["fair_odds"], r.get("ev"),
-           now, r.get("model_version")) for r in rows])
+           now, r.get("model_version"), int(bool(r.get("is_candidate")))) for r in rows])
     conn.commit()
     conn.close()
+
+
+def save_fixture_meta(rows):
+    """НОЩ 02.09.2026 (задача 2): UPSERT в fixture_meta по fixture_id - по
+    образец на save_snapshot_predictions(). rows: списък dict-и с
+    fixture_id, league, match_date, home_team, away_team, home_logo,
+    away_logo."""
+    if not rows:
+        return
+    conn = get_conn()
+    now = datetime.now().isoformat()
+    conn.executemany("""
+        INSERT INTO fixture_meta
+            (fixture_id, league, match_date, home_team, away_team, home_logo, away_logo, updated_at)
+        VALUES (?,?,?,?,?,?,?,?)
+        ON CONFLICT(fixture_id) DO UPDATE SET
+            league=excluded.league, match_date=excluded.match_date,
+            home_team=excluded.home_team, away_team=excluded.away_team,
+            home_logo=excluded.home_logo, away_logo=excluded.away_logo,
+            updated_at=excluded.updated_at
+    """, [(r["fixture_id"], r["league"], r["match_date"], r["home_team"], r["away_team"],
+           r.get("home_logo"), r.get("away_logo"), now) for r in rows])
+    conn.commit()
+    conn.close()
+
+
+def get_fixture_meta_for_fixtures(fixture_ids):
+    """Едно зареждане за N fixture_id-та наведнъж (по образец на
+    get_snapshot_picks_for_fixtures) - за /prognozi, където много мачове
+    се показват на една страница."""
+    if not fixture_ids:
+        return {}
+    conn = get_conn()
+    conn.row_factory = sqlite3.Row
+    placeholders = ",".join("?" for _ in fixture_ids)
+    rows = conn.execute(
+        f"SELECT * FROM fixture_meta WHERE fixture_id IN ({placeholders})", fixture_ids
+    ).fetchall()
+    conn.close()
+    return {r["fixture_id"]: dict(r) for r in rows}
 
 
 def clear_stale_snapshot(before_date):
@@ -409,7 +486,7 @@ def get_snapshot_picks_for_fixtures(fixture_ids):
     conn.row_factory = sqlite3.Row
     placeholders = ",".join("?" for _ in fixture_ids)
     rows = conn.execute(f"""
-        SELECT fixture_id, market_code, pick_label, pick_pct, fair_odds, ev, computed_at, model_version
+        SELECT fixture_id, market_code, pick_label, pick_pct, fair_odds, ev, computed_at, model_version, is_candidate
         FROM predictions_snapshot
         WHERE fixture_id IN ({placeholders})
         ORDER BY fixture_id, pick_pct DESC
@@ -435,7 +512,7 @@ def get_snapshot_rows_for_date_range(from_date, to_date):
     conn.row_factory = sqlite3.Row
     rows = conn.execute("""
         SELECT fixture_id, league, match_date, home_team, away_team, market_code,
-               pick_label, pick_pct, fair_odds, ev, computed_at, model_version
+               pick_label, pick_pct, fair_odds, ev, computed_at, model_version, is_candidate
         FROM predictions_snapshot
         WHERE substr(match_date,1,10) BETWEEN ? AND ?
         ORDER BY match_date, fixture_id, pick_pct DESC
@@ -456,7 +533,7 @@ def get_snapshot_rows_for_fixture(fixture_id):
     conn.row_factory = sqlite3.Row
     rows = conn.execute("""
         SELECT fixture_id, league, match_date, home_team, away_team, market_code,
-               pick_label, pick_pct, fair_odds, ev, computed_at, model_version
+               pick_label, pick_pct, fair_odds, ev, computed_at, model_version, is_candidate
         FROM predictions_snapshot
         WHERE fixture_id = ?
         ORDER BY pick_pct DESC
