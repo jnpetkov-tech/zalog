@@ -742,25 +742,15 @@ def update_injuries_for_league(league_key, max_fixtures=60):
         fixture_id = df.at[idx, "fixture_id"]
         checked += 1
         try:
-            r = requests.get(f"{BASE_URL}/injuries", headers=API_HEADERS,
-                              params={"fixture": int(fixture_id)}, timeout=10)
-            data = r.json()
-            if data.get("errors") or not data.get("response"):
-                df.at[idx, "home_injuries"] = 0
-                df.at[idx, "away_injuries"] = 0
-            else:
-                home_count = 0
-                away_count = 0
-                home_team_id = None
-                for inj in data["response"]:
-                    if home_team_id is None:
-                        home_team_id = inj["team"]["id"]
-                    if inj["team"]["id"] == home_team_id:
-                        home_count += 1
-                    else:
-                        away_count += 1
-                df.at[idx, "home_injuries"] = home_count
-                df.at[idx, "away_injuries"] = away_count
+            # Партида 4 (02.09.2026): вика споделената fetch_fixture_injuries()
+            # (api_football.py) вместо собствен requests.get - минава през
+            # _api_get()/rate limiter-а. Идентична логика на парсване (home_
+            # team_id по първата контузия, броене по team id) - виж
+            # validation/rate_limit_diagnosis_20260901.md т.(в).
+            home_count, away_count, ok = fetch_fixture_injuries(int(fixture_id))
+            df.at[idx, "home_injuries"] = home_count
+            df.at[idx, "away_injuries"] = away_count
+            if ok:
                 updated += 1
         except Exception:
             pass
