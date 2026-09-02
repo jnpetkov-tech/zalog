@@ -25,6 +25,32 @@ def _now_sofia_naive():
     return datetime.now(SOFIA_TZ).replace(tzinfo=None)
 
 
+# Разширение 02.09.2026 (Дака: "най-евтината реална печалба") -
+# api_football.fetch_fixture_odds() вече връща ~20 пазара (1X2, над/под
+# 2.5, отборни голове, двоен шанс, BTTS, полувреме/край), но odds_cache
+# пазеше само пет колони - всичко останало се плащаше с API заявка
+# (fetch_fixture_odds() вика /odds ЕДИН път за целия отговор) и после се
+# изхвърляше на границата на кеша, преди да стигне до /prognozi/EV guard-а.
+# ODDS_CACHE_MARKETS - единственият източник за "кой ключ от
+# fetch_fixture_odds()/MARKET_ODDS_MAP отговаря на коя колона тук" -
+# set_cached_odds()/get_cached_odds() го ползват директно, не дублират
+# списъка. Първите пет ЗАПАЗВАТ старите имена на колони (home_odds, не
+# home_win_odds) - вече съществуващи редове имат реални стойности там,
+# преименуване би ги направило нечетими без причина. Новите 18 - собствени
+# имена, ":"/"/" от htft:X/Y кодовете не са валидни в SQL идентификатор.
+ODDS_CACHE_MARKETS = {
+    "home_win": "home_odds", "draw": "draw_odds", "away_win": "away_odds",
+    "over25": "over25_odds", "under25": "under25_odds",
+    "home_over15": "home_over15_odds", "home_under15": "home_under15_odds",
+    "away_over15": "away_over15_odds", "away_under15": "away_under15_odds",
+    "dc_1x": "dc_1x_odds", "dc_x2": "dc_x2_odds", "dc_12": "dc_12_odds",
+    "btts_yes": "btts_yes_odds", "btts_no": "btts_no_odds",
+    "htft:1/1": "htft_1_1_odds", "htft:1/X": "htft_1_x_odds", "htft:1/2": "htft_1_2_odds",
+    "htft:X/1": "htft_x_1_odds", "htft:X/X": "htft_x_x_odds", "htft:X/2": "htft_x_2_odds",
+    "htft:2/1": "htft_2_1_odds", "htft:2/X": "htft_2_x_odds", "htft:2/2": "htft_2_2_odds",
+}
+
+
 def get_conn():
     conn = sqlite3.connect(DB_PATH, timeout=10)
     conn.execute("PRAGMA journal_mode=WAL")
@@ -69,6 +95,15 @@ def init_db():
             fetched_at TEXT
         )
     """)
+    # Разширение 02.09.2026 (виж ODDS_CACHE_MARKETS по-горе) - новите 18
+    # колони за съществуваща база; за първите пет (вече в CREATE TABLE-а
+    # по-горе) ALTER TABLE просто хвърля "duplicate column", хванато от
+    # except-а, както навсякъде другаде в тази функция.
+    for col in ODDS_CACHE_MARKETS.values():
+        try:
+            conn.execute(f"ALTER TABLE odds_cache ADD COLUMN {col} REAL")
+        except sqlite3.OperationalError:
+            pass
     conn.execute("""
         CREATE TABLE IF NOT EXISTS injuries_cache (
             fixture_id INTEGER PRIMARY KEY,
@@ -704,31 +739,45 @@ def get_stats_by_league():
 
 
 def set_cached_odds(fixture_id, odds_dict):
-    """odds_dict: {'home_win':.., 'draw':.., 'away_win':.., 'over25':.., 'under25':..} (decimal odds, могат да липсват)."""
+    """odds_dict: fetch_fixture_odds() резултат - decimal odds по пазар
+    (ключове от ODDS_CACHE_MARKETS/MARKET_ODDS_MAP), могат да липсват.
+    Разширено 02.09.2026 - преди пазеше само пет пазара hardcode-нато,
+    вижте ODDS_CACHE_MARKETS докстринга за причината. Викащите (само
+    run_refresh_odds_cache()) вече подават целия речник от
+    fetch_fixture_odds() непроменени - тук просто вече не се изхвърля
+    остатъкът."""
+    cols = list(ODDS_CACHE_MARKETS.values())
+    values = [odds_dict.get(k) for k in ODDS_CACHE_MARKETS.keys()]
+    set_clause = ", ".join(f"{c}=excluded.{c}" for c in cols)
+    placeholders = ", ".join(["?"] * (1 + len(cols) + 1))
     conn = get_conn()
-    conn.execute("""
-        INSERT INTO odds_cache (fixture_id, home_odds, draw_odds, away_odds, over25_odds, under25_odds, fetched_at)
-        VALUES (?,?,?,?,?,?,?)
+    conn.execute(f"""
+        INSERT INTO odds_cache (fixture_id, {", ".join(cols)}, fetched_at)
+        VALUES ({placeholders})
         ON CONFLICT(fixture_id) DO UPDATE SET
-            home_odds=excluded.home_odds, draw_odds=excluded.draw_odds, away_odds=excluded.away_odds,
-            over25_odds=excluded.over25_odds, under25_odds=excluded.under25_odds, fetched_at=excluded.fetched_at
-    """, (fixture_id, odds_dict.get("home_win"), odds_dict.get("draw"), odds_dict.get("away_win"),
-          odds_dict.get("over25"), odds_dict.get("under25"), datetime.now().isoformat()))
+            {set_clause}, fetched_at=excluded.fetched_at
+    """, (fixture_id, *values, datetime.now().isoformat()))
     conn.commit()
     conn.close()
 
 
 def get_cached_odds(fixture_id):
+    """Връща dict по пазарен код (ODDS_CACHE_MARKETS ключове) + fetched_at.
+    Разширено 02.09.2026 - сигнатурата/връщаният тип са същите (dict по
+    пазарен код), само с повече ключове, отколкото преди - никой
+    съществуващ викащ не итерира ключовете на речника, всички правят
+    целенасочен .get(конкретен_код), затова добавянето е обратно
+    съвместимо (виж validation/odds_cache_widening_20260902.md за списъка
+    проверени викащи места)."""
     conn = get_conn()
     conn.row_factory = sqlite3.Row
     row = conn.execute("SELECT * FROM odds_cache WHERE fixture_id=?", (fixture_id,)).fetchone()
     conn.close()
     if not row:
         return None
-    return {
-        "home_win": row["home_odds"], "draw": row["draw_odds"], "away_win": row["away_odds"],
-        "over25": row["over25_odds"], "under25": row["under25_odds"], "fetched_at": row["fetched_at"],
-    }
+    result = {k: row[c] for k, c in ODDS_CACHE_MARKETS.items()}
+    result["fetched_at"] = row["fetched_at"]
+    return result
 def set_cached_injuries(fixture_id, home_inj, away_inj, ok):
     # Хотфикс 12.08.2026: /daily?league=all правеше живо API извикване за
     # контузии на ВСЕКИ мач при ВСЯКО зареждане (нула кеш) - с до 8 успоредни
