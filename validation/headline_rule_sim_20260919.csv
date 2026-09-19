@@ -1,0 +1,485 @@
+match_date,league,home_team,away_team,status,old_market_code,old_pick_label,old_pick_pct,old_status,new_market_code,new_pick_label,new_pick_pct,new_status
+2026-09-26 19:30,spain2,Celta de Vigo II,Sabadell,pending,away_under15,Sabadell под 1.5 гола,73.09,pending,home_win,Celta de Vigo II печели,38.46,pending
+2026-09-26 19:30,spain2,Tenerife,Cadiz,pending,away_under15,Cadiz под 1.5 гола,80.25,pending,home_win,Tenerife печели,46.44,pending
+2026-09-26 17:15,spain2,Granada CF,FC Andorra,pending,away_under15,FC Andorra под 1.5 гола,68.36,pending,home_win,Granada CF печели,46.62,pending
+2026-09-26 16:00,bulgaria2,Rilski Sportist,Pirin Blagoevgrad,pending,away_under15,Пирин Благоевград под 1.5 гола,80.59,pending,under25,Под 2.5 гола,51.38,pending
+2026-09-26 16:00,bulgaria2,Lokomotiv G. Oryahovitsa,Marek,pending,away_under15,Марек под 1.5 гола,75.31,pending,under25,Под 2.5 гола,69.90,pending
+2026-09-26 15:00,spain2,AD Ceuta FC,Real Sociedad II,pending,home_under15,AD Ceuta FC под 1.5 гола,59.71,pending,away_win,Real Sociedad II печели,38.38,pending
+2026-09-25 21:30,spain2,Girona,Albacete,pending,away_under15,Albacete под 1.5 гола,68.78,pending,home_win,Girona печели,51.86,pending
+2026-09-21 19:30,bulgaria2,Montana,Hebar 1918,pending,away_under15,Хебър 1918 под 1.5 гола,76.06,pending,over25,Над 2.5 гола,57.79,pending
+2026-09-21 19:00,bulgaria2,Dobrudzha,CSKA Sofia II,pending,away_under15,ЦСКА София 2 под 1.5 гола,65.91,pending,under25,Под 2.5 гола,50.80,pending
+2026-09-21 19:00,bulgaria2,Spartak Pleven,Ludogorets II,pending,away_under15,Лудогорец 2 под 1.5 гола,68.72,pending,under25,Под 2.5 гола,57.68,pending
+2026-09-21 17:00,bulgaria2,Sportist Svoge,Vihren,pending,home_under15,Спортист Своге под 1.5 гола,79.68,pending,under25,Под 2.5 гола,56.70,pending
+2026-09-20 22:00,spain2,Leganes,Granada CF,pending,away_under15,Granada CF под 1.5 гола,75.46,pending,home_win,Leganes печели,40.78,pending
+2026-09-20 21:45,italy,AC Milan,Lecce,pending,away_under15,Lecce под 1.5 гола,86.28,pending,home_win,AC Milan печели,70.15,pending
+2026-09-20 20:30,bulgaria2,Etar Veliko Tarnovo,Chernomorets 1919 Burgas,pending,away_under15,Черноморец 1919 Бургас под 1.5 гола,75.38,pending,under25,Под 2.5 гола,61.89,pending
+2026-09-20 20:30,italy2,Modena,Empoli,pending,away_under15,Empoli под 1.5 гола,77.60,pending,home_win,Modena печели,49.07,pending
+2026-09-20 19:30,spain2,Almeria,Celta de Vigo II,pending,away_under15,Celta de Vigo II под 1.5 гола,64.23,pending,home_win,Almeria печели,50.12,pending
+2026-09-20 19:30,spain2,Las Palmas,Burgos,pending,away_under15,Burgos под 1.5 гола,81.06,pending,home_win,Las Palmas печели,44.25,pending
+2026-09-20 19:00,bulgaria2,Yantra 2019,Lokomotiv G. Oryahovitsa,pending,away_under15,Локомотив Г. Оряховица под 1.5 гола,85.11,pending,under25,Под 2.5 гола,54.25,pending
+2026-09-20 19:00,bulgaria2,Pirin Blagoevgrad,Fratria,pending,home_under15,Пирин Благоевград под 1.5 гола,69.11,pending,over25,Над 2.5 гола,52.72,pending
+2026-09-20 19:00,italy,Juventus,Atalanta,pending,away_under15,Atalanta под 1.5 гола,70.50,pending,home_win,Juventus печели,57.80,pending
+2026-09-20 18:30,england,Fulham,Manchester United,pending,away_under15,Manchester United под 1.5 гола,61.33,pending,away_win,Manchester United печели,43.83,pending
+2026-09-20 18:15,italy2,Mantova,Pisa,pending,away_under15,Pisa под 1.5 гола,58.48,pending,home_win,Mantova печели,36.41,pending
+2026-09-20 17:15,spain2,AD Ceuta FC,Valladolid,pending,away_under15,Valladolid под 1.5 гола,66.97,pending,home_win,AD Ceuta FC печели,38.10,pending
+2026-09-20 17:00,bulgaria2,Marek,Rilski Sportist,pending,away_under15,Рилски спортист под 1.5 гола,83.37,pending,under25,Под 2.5 гола,72.12,pending
+2026-09-20 17:00,bulgaria2,Nesebar,Beroe,pending,home_under15,Несебър под 1.5 гола,65.74,pending,under25,Под 2.5 гола,53.08,pending
+2026-09-20 16:00,italy2,Arezzo,Sudtirol,pending,away_under15,Sudtirol под 1.5 гола,69.62,pending,home_win,Arezzo печели,41.16,pending
+2026-09-20 16:00,italy2,Hellas Verona,Vicenza Virtus,pending,away_under15,Vicenza Virtus под 1.5 гола,66.64,pending,home_win,Hellas Verona печели,52.77,pending
+2026-09-20 16:00,italy,Parma,Genoa,pending,home_under15,Parma под 1.5 гола,74.30,pending,away_win,Genoa печели,36.59,pending
+2026-09-20 16:00,italy,Frosinone,Como,pending,home_under15,Frosinone под 1.5 гола,71.71,pending,away_win,Como печели,57.95,pending
+2026-09-20 16:00,england,Leeds,Crystal Palace,pending,away_under15,Crystal Palace под 1.5 гола,65.46,pending,home_win,Leeds печели,45.77,pending
+2026-09-20 16:00,england,Manchester City,Sunderland,pending,away_under15,Sunderland под 1.5 гола,84.59,pending,home_win,Manchester City печели,74.53,pending
+2026-09-20 16:00,england,Bournemouth,Liverpool,pending,home_under15,Bournemouth под 1.5 гола,62.99,pending,away_win,Liverpool печели,46.28,pending
+2026-09-20 15:00,spain2,Sabadell,Oviedo,pending,away_under15,Oviedo под 1.5 гола,81.81,pending,home_win,Sabadell печели,37.48,pending
+2026-09-20 13:30,italy,Fiorentina,Napoli,pending,home_under15,Fiorentina под 1.5 гола,70.83,pending,away_win,Napoli печели,44.18,pending
+2026-09-19 22:00,spain2,Cadiz,Girona,pending,home_under15,Cadiz под 1.5 гола,65.48,pending,away_win,Girona печели,42.80,pending
+2026-09-19 21:45,italy,Venezia,Lazio,pending,home_under15,Venezia под 1.5 гола,79.62,pending,away_win,Lazio печели,43.52,pending
+2026-09-19 21:00,france2,Metz,Saint Etienne,pending,away_under15,Saint Etienne под 1.5 гола,63.24,pending,away_win,Saint Etienne печели,31.81,pending
+2026-09-19 20:30,italy2,Ascoli,Avellino,pending,away_under15,Avellino под 1.5 гола,78.93,pending,home_win,Ascoli печели,47.04,pending
+2026-09-19 19:30,spain2,Eldense,Eibar,pending,home_under15,Eldense под 1.5 гола,76.46,pending,away_win,Eibar печели,43.02,pending
+2026-09-19 19:30,spain2,Castellón,Tenerife,pending,away_under15,Tenerife под 1.5 гола,79.41,pending,home_win,Castellón печели,54.06,pending
+2026-09-19 19:30,england,Nottingham Forest,Coventry,pending,away_under15,Coventry под 1.5 гола,80.71,pending,home_win,Nottingham Forest печели,53.20,pending
+2026-09-19 19:00,italy,AS Roma,Inter,pending,home_under15,AS Roma под 1.5 гола,62.04,pending,home_win,AS Roma печели,37.03,pending
+2026-09-19 18:15,italy2,Sampdoria,Catanzaro,pending,home_under15,Sampdoria под 1.5 гола,64.19,pending,away_win,Catanzaro печели,36.99,pending
+2026-09-19 18:00,bulgaria,Spartak Varna,Lokomotiv Sofia,pending,home_under15,Спартак Варна под 1.5 гола,60.76,pending,away_win,Локомотив София печели,37.78,pending
+2026-09-19 18:00,bulgaria,Arda Kardzhali,Cherno More Varna,pending,away_under15,Черно море Варна под 1.5 гола,79.40,pending,home_win,Арда Кърджали печели,46.61,pending
+2026-09-19 18:00,bulgaria,Lokomotiv Plovdiv,CSKA Sofia,pending,home_under15,Локомотив Пловдив под 1.5 гола,82.00,pending,away_win,ЦСКА София печели,46.09,pending
+2026-09-19 18:00,bulgaria,Septemvri Sofia,Botev Plovdiv,pending,home_under15,Септември София под 1.5 гола,74.49,pending,away_win,Ботев Пловдив печели,50.88,pending
+2026-09-19 18:00,bulgaria,Slavia Sofia,CSKA 1948,pending,home_under15,Славия София под 1.5 гола,74.81,pending,away_win,ЦСКА 1948 печели,46.09,pending
+2026-09-19 18:00,bulgaria,Dunav Ruse,Botev Vratsa,pending,away_under15,Ботев Враца под 1.5 гола,68.87,pending,home_win,Дунав Русе печели,40.34,pending
+2026-09-19 18:00,bulgaria,Levski Sofia,Ludogorets,pending,home_under15,Левски София под 1.5 гола,67.32,pending,home_win,Левски София печели,33.30,pending
+2026-09-19 17:15,spain2,FC Andorra,Sporting Gijon,pending,away_under15,Sporting Gijon под 1.5 гола,68.05,pending,home_win,FC Andorra печели,44.34,pending
+2026-09-19 17:00,england,Brighton,Arsenal,pending,home_under15,Brighton под 1.5 гола,72.34,pending,away_win,Arsenal печели,53.42,pending
+2026-09-19 17:00,england,Everton,Ipswich,pending,away_under15,Ipswich под 1.5 гола,80.68,pending,home_win,Everton печели,52.78,pending
+2026-09-19 17:00,england,Newcastle,Hull City,pending,away_under15,Hull City под 1.5 гола,76.61,pending,home_win,Newcastle печели,63.91,pending
+2026-09-19 16:00,italy2,Carrarese,Benevento,pending,away_under15,Benevento под 1.5 гола,75.20,pending,home_win,Carrarese печели,44.15,pending
+2026-09-19 16:00,italy2,Palermo,Padova,pending,away_under15,Padova под 1.5 гола,81.17,pending,home_win,Palermo печели,57.59,pending
+2026-09-19 16:00,italy2,Cremonese,Virtus Entella,pending,away_under15,Virtus Entella под 1.5 гола,81.56,pending,home_win,Cremonese печели,59.04,pending
+2026-09-19 16:00,italy,Bologna,Torino,pending,away_under15,Torino под 1.5 гола,73.46,pending,home_win,Bologna печели,49.57,pending
+2026-09-19 16:00,italy,Udinese,Cagliari,pending,away_under15,Cagliari под 1.5 гола,71.38,pending,home_win,Udinese печели,45.51,pending
+2026-09-19 15:00,spain2,Real Sociedad II,Mallorca,pending,away_under15,Mallorca под 1.5 гола,69.04,pending,home_win,Real Sociedad II печели,36.14,pending
+2026-09-19 15:00,france2,Boulogne,Nantes,pending,away_under15,Nantes под 1.5 гола,68.08,pending,home_win,Boulogne печели,40.88,pending
+2026-09-19 15:00,france2,Guingamp,RED Star FC 93,pending,away_under15,RED Star FC 93 под 1.5 гола,66.91,pending,home_win,Guingamp печели,42.03,pending
+2026-09-19 14:30,england,Tottenham,Aston Villa,pending,over25,Над 2.5 гола,57.01,pending,home_win,Tottenham печели,47.35,pending
+2026-09-18 22:00,england,Brentford,Chelsea,won,away_under15,Chelsea под 1.5 гола,59.97,won,away_win,Chelsea печели,36.41,lost
+2026-09-18 21:45,italy,Monza,Sassuolo,lost,home_under15,Monza под 1.5 гола,65.53,lost,away_win,Sassuolo печели,39.39,lost
+2026-09-18 21:30,italy2,Juve Stabia,Cesena,won,away_under15,Cesena под 1.5 гола,75.87,won,home_win,Juve Stabia печели,46.94,lost
+2026-09-18 21:30,spain2,Albacete,Cordoba,lost,away_under15,Cordoba под 1.5 гола,63.33,lost,home_win,Albacete печели,48.72,lost
+2026-09-18 21:00,france2,Annecy,Dijon,lost,away_under15,Dijon под 1.5 гола,75.62,lost,home_win,Annecy печели,48.56,lost
+2026-09-18 21:00,france2,Rodez,Nancy,lost,away_under15,Nancy под 1.5 гола,73.78,lost,home_win,Rodez печели,53.83,lost
+2026-09-18 21:00,france2,PAU,Dunkerque,lost,over25,Над 2.5 гола,60.00,lost,away_win,Dunkerque печели,40.73,lost
+2026-09-18 21:00,france2,Laval,Sochaux,won,home_under15,Laval под 1.5 гола,75.53,won,away_win,Sochaux печели,34.03,lost
+2026-09-18 21:00,france2,Grenoble,Clermont Foot,won,away_under15,Clermont Foot под 1.5 гола,76.32,won,home_win,Grenoble печели,41.80,lost
+2026-09-18 21:00,france2,Reims,Montpellier,won,away_under15,Montpellier под 1.5 гола,75.97,won,home_win,Reims печели,45.12,lost
+2026-09-15 19:00,bulgaria2,Ludogorets II,Fratria,won,home_under15,Лудогорец 2 под 1.5 гола,65.68,won,under25,Под 2.5 гола,55.63,won
+2026-09-15 18:30,bulgaria2,Lokomotiv G. Oryahovitsa,Nesebar,won,away_under15,Несебър под 1.5 гола,68.57,won,over25,Над 2.5 гола,50.72,lost
+2026-09-14 22:00,england,Leeds,Newcastle,lost,home_under15,Leeds под 1.5 гола,62.99,lost,home_win,Leeds печели,41.38,won
+2026-09-14 21:45,france2,RED Star FC 93,Metz,won,home_under15,RED Star FC 93 под 1.5 гола,70.69,won,away_win,Metz печели,45.56,lost
+2026-09-14 21:45,italy,Inter,Udinese,lost,away_under15,Udinese под 1.5 гола,79.36,lost,home_win,Inter печели,72.90,won
+2026-09-14 21:30,spain2,Celta de Vigo II,Eibar,lost,away_under15,Eibar под 1.5 гола,74.30,lost,home_win,Celta de Vigo II печели,40.53,lost
+2026-09-14 19:30,italy,Como,Parma,won,away_under15,Parma под 1.5 гола,85.51,won,home_win,Como печели,76.05,won
+2026-09-14 19:30,italy,Torino,AS Roma,won,home_under15,Torino под 1.5 гола,77.80,won,away_win,AS Roma печели,58.15,won
+2026-09-13 22:00,spain2,Tenerife,Leganes,won,away_under15,Leganes под 1.5 гола,80.71,won,home_win,Tenerife печели,36.53,won
+2026-09-13 21:45,italy,Sassuolo,Juventus,lost,home_under15,Sassuolo под 1.5 гола,75.71,lost,away_win,Juventus печели,57.23,lost
+2026-09-13 19:30,spain2,Mallorca,Sabadell,won,away_under15,Sabadell под 1.5 гола,80.78,won,home_win,Mallorca печели,41.12,won
+2026-09-13 19:00,bulgaria2,Beroe,Sportist Svoge,won,away_under15,Спортист Своге под 1.5 гола,87.67,won,under25,Под 2.5 гола,65.45,won
+2026-09-13 19:00,italy,Napoli,Bologna,won,away_under15,Bologna под 1.5 гола,75.53,won,home_win,Napoli печели,56.30,won
+2026-09-13 18:30,england,Manchester United,Manchester City,won,home_under15,Manchester United под 1.5 гола,69.23,won,away_win,Manchester City печели,46.92,won
+2026-09-13 18:15,italy2,Mantova,Sampdoria,won,away_under15,Sampdoria под 1.5 гола,72.72,won,home_win,Mantova печели,45.26,won
+2026-09-13 17:15,spain2,Valladolid,Oviedo,won,home_under15,Valladolid под 1.5 гола,77.36,won,away_win,Oviedo печели,37.09,won
+2026-09-13 17:00,bulgaria2,Rilski Sportist,Yantra 2019,won,away_under15,Янтра 2019 под 1.5 гола,72.87,won,under25,Под 2.5 гола,66.29,won
+2026-09-13 17:00,bulgaria2,Marek,Pirin Blagoevgrad,won,away_under15,Пирин Благоевград под 1.5 гола,83.79,won,under25,Под 2.5 гола,61.74,lost
+2026-09-13 17:00,bulgaria2,Chernomorets 1919 Burgas,Spartak Pleven,won,away_under15,Спартак Плевен под 1.5 гола,83.79,won,under25,Под 2.5 гола,63.77,lost
+2026-09-13 17:00,bulgaria2,Vihren,Dobrudzha,won,away_under15,Добруджа под 1.5 гола,72.41,won,over25,Над 2.5 гола,55.97,lost
+2026-09-13 17:00,bulgaria2,CSKA Sofia II,Montana,won,away_under15,Монтана под 1.5 гола,73.43,won,under25,Под 2.5 гола,57.31,lost
+2026-09-13 16:00,italy2,Avellino,Palermo,won,home_under15,Avellino под 1.5 гола,69.17,won,away_win,Palermo печели,42.22,lost
+2026-09-13 16:00,italy,Lecce,Monza,lost,away_under15,Monza под 1.5 гола,73.11,lost,home_win,Lecce печели,41.83,won
+2026-09-13 16:00,england,Coventry,Brighton,won,home_under15,Coventry под 1.5 гола,72.01,won,away_win,Brighton печели,51.09,won
+2026-09-13 15:00,spain2,Sporting Gijon,Eldense,won,away_under15,Eldense под 1.5 гола,77.98,won,home_win,Sporting Gijon печели,57.69,lost
+2026-09-12 22:00,spain2,Cordoba,Almeria,won,away_over15,Almeria над 1.5 гола,53.08,won,away_win,Almeria печели,40.33,won
+2026-09-12 22:00,england,Sunderland,Arsenal,won,home_under15,Sunderland под 1.5 гола,82.96,won,away_win,Arsenal печели,61.07,won
+2026-09-12 21:45,italy,Atalanta,Cagliari,lost,away_under15,Cagliari под 1.5 гола,80.10,lost,home_win,Atalanta печели,61.56,lost
+2026-09-12 21:00,france2,Dunkerque,Saint Etienne,lost,home_under15,Dunkerque под 1.5 гола,62.12,lost,away_win,Saint Etienne печели,45.54,lost
+2026-09-12 20:30,italy2,Cesena,Cremonese,lost,home_under15,Cesena под 1.5 гола,65.43,lost,away_win,Cremonese печели,37.19,lost
+2026-09-12 19:30,spain2,Granada CF,Albacete,won,away_under15,Albacete под 1.5 гола,70.76,won,home_win,Granada CF печели,48.60,lost
+2026-09-12 19:30,spain2,Girona,Castellón,lost,away_under15,Castellón под 1.5 гола,58.16,lost,home_win,Girona печели,42.77,lost
+2026-09-12 19:30,england,Tottenham,Everton,won,away_under15,Everton под 1.5 гола,70.10,won,home_win,Tottenham печели,47.66,lost
+2026-09-12 19:00,italy,Lazio,AC Milan,lost,home_under15,Lazio под 1.5 гола,68.06,lost,away_win,AC Milan печели,40.30,lost
+2026-09-12 18:15,italy2,Catanzaro,Carrarese,won,away_under15,Carrarese под 1.5 гола,71.07,won,home_win,Catanzaro печели,54.98,won
+2026-09-12 18:00,bulgaria,CSKA 1948,Dunav Ruse,won,away_under15,Дунав Русе под 1.5 гола,82.92,won,home_win,ЦСКА 1948 печели,72.17,won
+2026-09-12 18:00,bulgaria,Botev Vratsa,Levski Sofia,won,home_under15,Ботев Враца под 1.5 гола,83.99,won,away_win,Левски София печели,62.75,lost
+2026-09-12 18:00,bulgaria,Slavia Sofia,Spartak Varna,won,away_under15,Спартак Варна под 1.5 гола,79.97,won,home_win,Славия София печели,57.36,lost
+2026-09-12 18:00,bulgaria,CSKA Sofia,Arda Kardzhali,won,away_under15,Арда Кърджали под 1.5 гола,86.35,won,home_win,ЦСКА София печели,51.39,won
+2026-09-12 18:00,bulgaria,Cherno More Varna,Lokomotiv Sofia,lost,away_under15,Локомотив София под 1.5 гола,77.41,lost,home_win,Черно море Варна печели,55.94,lost
+2026-09-12 18:00,bulgaria,Botev Plovdiv,Lokomotiv Plovdiv,won,away_under15,Локомотив Пловдив под 1.5 гола,67.51,won,home_win,Ботев Пловдив печели,37.00,won
+2026-09-12 18:00,bulgaria,Ludogorets,Septemvri Sofia,won,away_under15,Септември София под 1.5 гола,93.16,won,home_win,Лудогорец печели,89.89,won
+2026-09-12 17:15,spain2,Cadiz,Las Palmas,won,home_under15,Cadiz под 1.5 гола,72.21,won,away_win,Las Palmas печели,41.14,won
+2026-09-12 17:00,england,Aston Villa,Nottingham Forest,lost,away_under15,Nottingham Forest под 1.5 гола,70.72,lost,home_win,Aston Villa печели,48.50,lost
+2026-09-12 17:00,england,Crystal Palace,Ipswich,lost,away_under15,Ipswich под 1.5 гола,77.93,lost,home_win,Crystal Palace печели,49.86,lost
+2026-09-12 17:00,england,Liverpool,Fulham,won,away_under15,Fulham под 1.5 гола,72.13,won,home_win,Liverpool печели,64.94,lost
+2026-09-12 17:00,england,Bournemouth,Brentford,lost,away_under15,Brentford под 1.5 гола,59.60,lost,home_win,Bournemouth печели,36.63,lost
+2026-09-12 16:00,italy2,Vicenza Virtus,Juve Stabia,won,away_under15,Juve Stabia под 1.5 гола,69.23,won,home_win,Vicenza Virtus печели,37.94,lost
+2026-09-12 16:00,italy2,Sudtirol,Modena,won,away_under15,Modena под 1.5 гола,70.82,won,home_win,Sudtirol печели,34.68,lost
+2026-09-12 16:00,italy2,Padova,Ascoli,won,away_under15,Ascoli под 1.5 гола,76.19,won,home_win,Padova печели,37.49,won
+2026-09-12 16:00,italy,Genoa,Frosinone,won,away_under15,Frosinone под 1.5 гола,69.59,won,home_win,Genoa печели,50.74,lost
+2026-09-12 15:00,spain2,FC Andorra,Real Sociedad II,lost,away_under15,Real Sociedad II под 1.5 гола,70.48,lost,home_win,FC Andorra печели,51.97,lost
+2026-09-12 15:00,france2,Sochaux,Nantes,won,away_under15,Nantes под 1.5 гола,75.04,won,draw,Равен,26.76,lost
+2026-09-12 15:00,france2,Guingamp,Annecy,won,away_under15,Annecy под 1.5 гола,63.67,won,home_win,Guingamp печели,38.19,won
+2026-09-11 22:00,italy2,Pisa,Virtus Entella,lost,away_under15,Virtus Entella под 1.5 гола,81.94,lost,home_win,Pisa печели,56.99,lost
+2026-09-11 22:00,italy2,Benevento,Hellas Verona,won,away_under15,Hellas Verona под 1.5 гола,70.89,won,home_win,Benevento печели,39.33,won
+2026-09-11 21:45,italy,Venezia,Fiorentina,lost,home_under15,Venezia под 1.5 гола,75.30,lost,away_win,Fiorentina печели,39.96,won
+2026-09-11 21:30,spain2,Burgos,AD Ceuta FC,won,away_under15,AD Ceuta FC под 1.5 гола,80.92,won,home_win,Burgos печели,55.49,won
+2026-09-11 21:00,france2,Rodez,Grenoble,won,away_under15,Grenoble под 1.5 гола,72.13,won,home_win,Rodez печели,49.60,lost
+2026-09-11 21:00,france2,Nancy,Reims,won,home_under15,Nancy под 1.5 гола,73.49,won,away_win,Reims печели,50.06,won
+2026-09-11 21:00,france2,Clermont Foot,Boulogne,won,away_under15,Boulogne под 1.5 гола,77.30,won,home_win,Clermont Foot печели,42.14,lost
+2026-09-11 21:00,france2,Dijon,Laval,lost,away_under15,Laval под 1.5 гола,75.39,lost,home_win,Dijon печели,43.36,won
+2026-09-11 21:00,france2,Montpellier,PAU,won,away_under15,PAU под 1.5 гола,79.62,won,home_win,Montpellier печели,55.77,won
+2026-09-11 20:00,italy2,Empoli,Arezzo,won,away_under15,Arezzo под 1.5 гола,65.66,won,home_win,Empoli печели,40.56,lost
+2026-09-08 19:00,bulgaria2,Montana,Vihren,lost,away_under15,Vihren под 1.5 гола,69.79,lost,under25,Под 2.5 гола,52.84,lost
+2026-09-07 21:45,france2,Nantes,Nancy,won,away_under15,Nancy под 1.5 гола,63.12,won,home_win,Nantes печели,40.79,won
+2026-09-07 21:45,italy,Udinese,Lazio,won,home_under15,Udinese под 1.5 гола,70.55,won,away_win,Lazio печели,39.52,won
+2026-09-07 21:30,italy2,Palermo,Sampdoria,won,away_under15,Sampdoria под 1.5 гола,82.18,won,home_win,Palermo печели,57.10,won
+2026-09-07 21:30,spain2,Sabadell,Cordoba,lost,away_under15,Cordoba под 1.5 гола,76.92,lost,home_win,Sabadell печели,47.29,won
+2026-09-07 20:30,bulgaria,Dunav Ruse,Slavia Sofia,won,home_under15,Дунав Русе под 1.5 гола,72.54,won,away_win,Славия София печели,43.55,won
+2026-09-07 19:30,italy,Cagliari,Lecce,won,away_under15,Lecce под 1.5 гола,77.95,won,home_win,Cagliari печели,43.67,won
+2026-09-07 19:00,bulgaria2,Pirin Blagoevgrad,Ludogorets II,lost,away_under15,Ludogorets II под 1.5 гола,62.46,lost,under25,Под 2.5 гола,51.44,lost
+2026-09-07 19:00,bulgaria2,Spartak Pleven,Hebar 1918,lost,away_under15,Hebar 1918 под 1.5 гола,66.28,lost,over25,Над 2.5 гола,53.82,won
+2026-09-07 18:00,bulgaria2,Fratria,Chernomorets 1919 Burgas,lost,away_under15,Chernomorets 1919 Burgas под 1.5 гола,80.50,lost,under25,Под 2.5 гола,60.12,lost
+2026-09-07 17:00,bulgaria2,Sportist Svoge,Lokomotiv G. Oryahovitsa,won,away_under15,Lokomotiv G. Oryahovitsa под 1.5 гола,76.97,won,under25,Под 2.5 гола,66.41,won
+2026-09-06 22:00,spain2,Almeria,Cadiz,lost,away_under15,Cadiz под 1.5 гола,72.28,lost,home_win,Almeria печели,62.31,won
+2026-09-06 21:45,italy,Juventus,AC Milan,won,away_under15,AC Milan под 1.5 гола,71.48,won,home_win,Juventus печели,43.55,lost
+2026-09-06 21:15,bulgaria,Lokomotiv Sofia,Ludogorets,won,home_under15,Локомотив София под 1.5 гола,82.01,won,away_win,Лудогорец печели,69.70,won
+2026-09-06 20:30,italy2,Cremonese,Padova,won,away_under15,Padova под 1.5 гола,79.63,won,home_win,Cremonese печели,51.79,won
+2026-09-06 19:30,spain2,Castellón,Albacete,won,away_under15,Albacete под 1.5 гола,67.94,won,home_win,Castellón печели,53.08,won
+2026-09-06 19:00,bulgaria2,Yantra 2019,Marek,won,away_under15,Marek под 1.5 гола,84.93,won,under25,Под 2.5 гола,69.51,lost
+2026-09-06 19:00,bulgaria2,Dobrudzha,Beroe,lost,away_under15,Beroe под 1.5 гола,76.64,lost,under25,Под 2.5 гола,54.88,lost
+2026-09-06 19:00,bulgaria2,Etar Veliko Tarnovo,CSKA Sofia II,won,away_under15,CSKA Sofia II под 1.5 гола,64.05,won,under25,Под 2.5 гола,51.43,won
+2026-09-06 19:00,italy,Bologna,Sassuolo,lost,away_under15,Sassuolo под 1.5 гола,71.41,lost,home_win,Bologna печели,50.78,lost
+2026-09-06 19:00,bulgaria,Lokomotiv Plovdiv,Cherno More Varna,won,away_under15,Черно море Варна под 1.5 гола,73.50,won,home_win,Локомотив Пловдив печели,40.12,won
+2026-09-06 18:30,england,Arsenal,Chelsea,won,away_under15,Chelsea под 1.5 гола,79.54,won,home_win,Arsenal печели,64.63,won
+2026-09-06 18:15,italy2,Hellas Verona,Arezzo,won,away_under15,Arezzo под 1.5 гола,70.37,won,home_win,Hellas Verona печели,39.53,won
+2026-09-06 17:15,spain2,Oviedo,Burgos,won,away_under15,Burgos под 1.5 гола,83.18,won,home_win,Oviedo печели,41.41,lost
+2026-09-06 17:00,bulgaria2,Nesebar,Rilski Sportist,won,away_under15,Rilski Sportist под 1.5 гола,66.31,won,under25,Под 2.5 гола,52.66,lost
+2026-09-06 16:00,italy2,Modena,Avellino,won,away_under15,Avellino под 1.5 гола,78.74,won,home_win,Modena печели,53.89,lost
+2026-09-06 16:00,italy2,Juve Stabia,Pisa,lost,away_under15,Pisa под 1.5 гола,69.96,lost,home_win,Juve Stabia печели,37.43,lost
+2026-09-06 16:00,italy2,Virtus Entella,Vicenza Virtus,lost,home_under15,Virtus Entella под 1.5 гола,70.24,lost,away_win,Vicenza Virtus печели,34.92,lost
+2026-09-06 16:00,italy2,Cesena,Mantova,won,away_under15,Mantova под 1.5 гола,66.61,won,home_win,Cesena печели,43.33,lost
+2026-09-06 16:00,italy,Parma,Monza,won,away_under15,Monza под 1.5 гола,76.65,won,home_win,Parma печели,43.33,lost
+2026-09-06 16:00,italy,Frosinone,Venezia,lost,away_under15,Venezia под 1.5 гола,75.10,lost,home_win,Frosinone печели,43.74,won
+2026-09-06 16:00,england,Everton,Manchester United,lost,home_under15,Everton под 1.5 гола,69.36,lost,away_win,Manchester United печели,36.67,lost
+2026-09-06 15:00,spain2,Eibar,Granada CF,won,away_under15,Granada CF под 1.5 гола,76.91,won,home_win,Eibar печели,46.61,won
+2026-09-05 22:00,spain2,Eldense,Mallorca,won,away_under15,Mallorca под 1.5 гола,67.05,won,home_win,Eldense печели,36.03,lost
+2026-09-05 21:45,italy,AS Roma,Atalanta,won,away_under15,Atalanta под 1.5 гола,69.11,won,home_win,AS Roma печели,49.31,won
+2026-09-05 21:15,bulgaria,Levski Sofia,CSKA 1948,won,away_under15,ЦСКА 1948 под 1.5 гола,76.68,won,home_win,Левски София печели,56.39,won
+2026-09-05 21:00,france2,Saint Etienne,Montpellier,won,away_under15,Montpellier под 1.5 гола,76.79,won,home_win,Saint Etienne печели,46.59,won
+2026-09-05 20:30,italy2,Carrarese,Empoli,won,away_under15,Empoli под 1.5 гола,69.05,won,home_win,Carrarese печели,41.54,lost
+2026-09-05 19:30,spain2,AD Ceuta FC,Celta de Vigo II,won,home_under15,AD Ceuta FC под 1.5 гола,62.94,won,away_win,Celta de Vigo II печели,38.38,won
+2026-09-05 19:30,spain2,Valladolid,FC Andorra,won,home_under15,Valladolid под 1.5 гола,65.45,won,away_win,FC Andorra печели,36.14,lost
+2026-09-05 19:30,england,Hull City,Aston Villa,won,away_under15,Aston Villa под 1.5 гола,70.85,won,away_win,Aston Villa печели,43.99,lost
+2026-09-05 19:00,italy,Inter,Napoli,lost,away_under15,Napoli под 1.5 гола,70.40,lost,home_win,Inter печели,53.73,won
+2026-09-05 19:00,bulgaria,Spartak Varna,CSKA Sofia,won,home_under15,Спартак Варна под 1.5 гола,86.73,won,away_win,ЦСКА София печели,66.08,lost
+2026-09-05 18:15,italy2,Ascoli,Benevento,won,away_under15,Benevento под 1.5 гола,77.72,won,home_win,Ascoli печели,46.91,won
+2026-09-05 17:15,spain2,Sporting Gijon,Girona,lost,away_under15,Girona под 1.5 гола,74.86,lost,home_win,Sporting Gijon печели,49.58,lost
+2026-09-05 17:00,england,Nottingham Forest,Tottenham,won,away_under15,Tottenham под 1.5 гола,58.52,won,away_win,Tottenham печели,36.47,lost
+2026-09-05 17:00,england,Brentford,Sunderland,won,away_under15,Sunderland под 1.5 гола,73.71,won,home_win,Brentford печели,56.70,lost
+2026-09-05 17:00,england,Brighton,Leeds,won,away_under15,Leeds под 1.5 гола,68.89,won,home_win,Brighton печели,52.32,lost
+2026-09-05 17:00,england,Manchester City,Coventry,won,away_under15,Coventry под 1.5 гола,85.46,won,home_win,Manchester City печели,77.99,won
+2026-09-05 17:00,england,Fulham,Crystal Palace,lost,away_under15,Crystal Palace под 1.5 гола,70.92,lost,home_win,Fulham печели,41.15,lost
+2026-09-05 16:00,italy2,Sudtirol,Catanzaro,lost,home_under15,Sudtirol под 1.5 гола,62.53,lost,away_win,Catanzaro печели,36.09,lost
+2026-09-05 16:00,italy,Fiorentina,Torino,lost,away_under15,Torino под 1.5 гола,71.96,lost,home_win,Fiorentina печели,50.42,lost
+2026-09-05 15:00,spain2,Real Sociedad II,Tenerife,won,away_under15,Tenerife под 1.5 гола,75.59,won,home_win,Real Sociedad II печели,41.23,lost
+2026-09-05 15:00,france2,Metz,Rodez,won,away_under15,Rodez под 1.5 гола,69.97,won,home_win,Metz печели,52.81,won
+2026-09-05 15:00,france2,Reims,Guingamp,lost,away_under15,Guingamp под 1.5 гола,73.68,lost,home_win,Reims печели,53.96,lost
+2026-09-05 14:30,england,Newcastle,Bournemouth,lost,away_under15,Bournemouth под 1.5 гола,68.62,lost,home_win,Newcastle печели,40.99,lost
+2026-09-04 22:00,england,Ipswich,Liverpool,won,home_under15,Ipswich под 1.5 гола,75.84,won,away_win,Liverpool печели,62.82,won
+2026-09-04 21:45,italy,Genoa,Como,won,home_under15,Genoa под 1.5 гола,76.65,won,away_win,Como печели,52.43,won
+2026-09-04 21:30,spain2,Las Palmas,Leganes,won,away_under15,Leganes под 1.5 гола,83.78,won,home_win,Las Palmas печели,50.29,lost
+2026-09-04 21:15,bulgaria,Arda Kardzhali,Botev Plovdiv,lost,away_under15,Ботев Пловдив под 1.5 гола,80.90,lost,home_win,Арда Кърджали печели,46.58,lost
+2026-09-04 21:00,france2,Dunkerque,Clermont Foot,won,away_under15,Clermont Foot под 1.5 гола,72.91,won,home_win,Dunkerque печели,51.35,lost
+2026-09-04 21:00,france2,Boulogne,Dijon,won,home_under15,Boulogne под 1.5 гола,73.86,won,away_win,Dijon печели,35.01,lost
+2026-09-04 21:00,france2,PAU,Sochaux,won,away_under15,Sochaux под 1.5 гола,64.38,won,home_win,PAU печели,36.86,lost
+2026-09-04 21:00,france2,Laval,RED Star FC 93,won,home_under15,Laval под 1.5 гола,69.43,won,away_win,RED Star FC 93 печели,36.14,won
+2026-09-04 21:00,france2,Grenoble,Annecy,won,home_under15,Grenoble под 1.5 гола,69.54,won,away_win,Annecy печели,37.80,won
+2026-09-04 19:00,bulgaria,Septemvri Sofia,Botev Vratsa,lost,home_under15,Септември София под 1.5 гола,72.97,lost,home_win,Септември София печели,39.34,lost
+2026-09-03 20:00,bulgaria2,Beroe,Montana,won,away_under15,Montana под 1.5 гола,72.54,won,under25,Под 2.5 гола,63.90,won
+2026-09-03 19:00,bulgaria2,Lokomotiv G. Oryahovitsa,Dobrudzha,lost,home_under15,Lokomotiv G. Oryahovitsa под 1.5 гола,69.27,lost,under25,Под 2.5 гола,52.23,won
+2026-09-03 17:00,bulgaria2,Vihren,Etar Veliko Tarnovo,won,away_under15,Etar Veliko Tarnovo под 1.5 гола,73.47,won,over25,Над 2.5 гола,56.42,won
+2026-09-03 17:00,bulgaria2,CSKA Sofia II,Spartak Pleven,won,away_under15,Spartak Pleven под 1.5 гола,80.99,won,over25,Над 2.5 гола,50.06,won
+2026-09-02 19:00,bulgaria2,Yantra 2019,Pirin Blagoevgrad,won,away_under15,Pirin Blagoevgrad под 1.5 гола,81.97,won,over25,Над 2.5 гола,50.95,lost
+2026-09-02 17:00,bulgaria2,Rilski Sportist,Sportist Svoge,won,away_under15,Sportist Svoge под 1.5 гола,84.45,won,under25,Под 2.5 гола,66.29,lost
+2026-09-02 17:00,bulgaria2,Marek,Nesebar,won,away_under15,Nesebar под 1.5 гола,81.34,won,under25,Под 2.5 гола,59.37,won
+2026-09-02 17:00,bulgaria2,Chernomorets 1919 Burgas,Ludogorets II,won,away_under15,Ludogorets II под 1.5 гола,78.38,won,under25,Под 2.5 гола,64.47,won
+2026-08-31 22:30,spain2,Celta de Vigo II,Castellón,lost,away_under15,Castellón под 1.5 гола,63.60,lost,away_win,Castellón печели,35.93,won
+2026-08-31 22:00,england,Aston Villa,Arsenal,won,home_under15,Aston Villa под 1.5 гола,72.71,won,away_win,Arsenal печели,57.33,won
+2026-08-31 21:45,france2,Dijon,Saint Etienne,lost,home_under15,Dijon под 1.5 гола,75.06,lost,away_win,Saint Etienne печели,47.03,won
+2026-08-31 21:45,italy,Atalanta,Bologna,won,away_under15,Bologna под 1.5 гола,71.72,won,home_win,Atalanta печели,51.18,won
+2026-08-31 21:15,bulgaria,Arda Kardzhali,Botev Vratsa,won,away_under15,Ботев Враца под 1.5 гола,87.90,won,home_win,Арда Кърджали печели,64.25,won
+2026-08-31 20:00,spain2,Burgos,Real Sociedad II,lost,away_under15,Real Sociedad II под 1.5 гола,80.67,lost,home_win,Burgos печели,49.34,lost
+2026-08-31 19:30,italy,Lecce,AS Roma,won,home_under15,Lecce под 1.5 гола,85.77,won,away_win,AS Roma печели,56.41,won
+2026-08-31 19:00,bulgaria,Dunav Ruse,Lokomotiv Sofia,lost,home_under15,Дунав Русе под 1.5 гола,61.51,lost,away_win,Локомотив София печели,38.38,lost
+2026-08-30 22:30,spain2,Cordoba,Granada CF,lost,away_under15,Granada CF под 1.5 гола,62.48,lost,home_win,Cordoba печели,42.77,lost
+2026-08-30 22:00,italy2,Pisa,Catanzaro,won,away_under15,Catanzaro под 1.5 гола,64.88,won,home_win,Pisa печели,48.10,won
+2026-08-30 22:00,italy2,Benevento,Sudtirol,won,away_under15,Sudtirol под 1.5 гола,76.29,won,home_win,Benevento печели,43.71,lost
+2026-08-30 21:45,italy,Cagliari,Inter,won,home_under15,Cagliari под 1.5 гола,77.81,won,away_win,Inter печели,69.06,won
+2026-08-30 21:45,italy,Lazio,Genoa,won,away_under15,Genoa под 1.5 гола,76.98,won,home_win,Lazio печели,47.15,won
+2026-08-30 21:15,bulgaria,CSKA Sofia,Cherno More Varna,won,away_under15,Черно море Варна под 1.5 гола,86.85,won,home_win,ЦСКА София печели,57.89,won
+2026-08-30 20:00,italy2,Arezzo,Palermo,lost,away_under15,Palermo под 1.5 гола,65.86,lost,home_win,Arezzo печели,35.42,lost
+2026-08-30 20:00,bulgaria2,Spartak Pleven,Vihren,won,home_under15,Spartak Pleven под 1.5 гола,68.82,won,under25,Под 2.5 гола,52.20,won
+2026-08-30 20:00,italy2,Mantova,Empoli,won,away_under15,Empoli под 1.5 гола,66.00,won,home_win,Mantova печели,42.96,won
+2026-08-30 20:00,spain2,Mallorca,AD Ceuta FC,won,away_under15,AD Ceuta FC под 1.5 гола,73.76,won,home_win,Mallorca печели,52.75,won
+2026-08-30 20:00,spain2,Cadiz,Valladolid,won,away_under15,Valladolid под 1.5 гола,73.83,won,home_win,Cadiz печели,41.35,lost
+2026-08-30 19:30,italy,Napoli,Como,lost,away_under15,Como под 1.5 гола,69.60,lost,home_win,Napoli печели,39.97,lost
+2026-08-30 19:00,bulgaria,Spartak Varna,Ludogorets,won,home_under15,Спартак Варна под 1.5 гола,84.95,won,away_win,Лудогорец печели,77.16,lost
+2026-08-30 18:30,england,Manchester United,Ipswich,lost,away_under15,Ipswich под 1.5 гола,80.54,lost,home_win,Manchester United печели,70.16,won
+2026-08-30 18:00,bulgaria2,Montana,Lokomotiv G. Oryahovitsa,won,away_under15,Lokomotiv G. Oryahovitsa под 1.5 гола,84.95,won,under25,Под 2.5 гола,52.78,lost
+2026-08-30 18:00,spain2,FC Andorra,Eibar,won,away_under15,Eibar под 1.5 гола,71.72,won,home_win,FC Andorra печели,41.31,lost
+2026-08-30 16:00,england,Sunderland,Fulham,won,away_under15,Fulham под 1.5 гола,71.05,won,home_win,Sunderland печели,39.57,won
+2026-08-30 16:00,england,Leeds,Brentford,won,home_under15,Leeds под 1.5 гола,59.04,won,away_win,Brentford печели,40.63,lost
+2026-08-30 16:00,england,Chelsea,Brighton,lost,away_under15,Brighton под 1.5 гола,63.50,lost,home_win,Chelsea печели,45.71,won
+2026-08-29 22:30,spain2,Girona,Las Palmas,lost,away_under15,Las Palmas под 1.5 гола,69.54,lost,home_win,Girona печели,33.12,won
+2026-08-29 22:00,italy2,Padova,Hellas Verona,won,away_under15,Hellas Verona под 1.5 гола,74.34,won,home_win,Padova печели,39.83,lost
+2026-08-29 22:00,italy2,Avellino,Vicenza Virtus,won,away_under15,Vicenza Virtus под 1.5 гола,65.11,won,home_win,Avellino печели,35.21,won
+2026-08-29 22:00,italy2,Ascoli,Carrarese,won,away_under15,Carrarese под 1.5 гола,75.97,won,home_win,Ascoli печели,44.05,lost
+2026-08-29 21:45,italy,Juventus,Parma,won,away_under15,Parma под 1.5 гола,86.11,won,home_win,Juventus печели,60.60,won
+2026-08-29 21:15,bulgaria,Botev Plovdiv,Levski Sofia,won,home_under15,Ботев Пловдив под 1.5 гола,74.22,won,away_win,Левски София печели,51.42,won
+2026-08-29 21:00,france2,Guingamp,Nantes,lost,away_under15,Nantes под 1.5 гола,73.08,lost,home_win,Guingamp печели,45.42,lost
+2026-08-29 20:00,bulgaria2,Fratria,CSKA Sofia II,won,away_under15,CSKA Sofia II под 1.5 гола,66.94,won,over25,Над 2.5 гола,51.50,lost
+2026-08-29 20:00,bulgaria2,Pirin Blagoevgrad,Chernomorets 1919 Burgas,lost,away_under15,Chernomorets 1919 Burgas под 1.5 гола,71.35,lost,under25,Под 2.5 гола,61.62,lost
+2026-08-29 20:00,bulgaria2,Dobrudzha,Rilski Sportist,won,away_under15,Rilski Sportist под 1.5 гола,83.10,won,under25,Под 2.5 гола,56.14,won
+2026-08-29 20:00,bulgaria2,Ludogorets II,Hebar 1918,won,away_under15,Hebar 1918 под 1.5 гола,66.49,won,over25,Над 2.5 гола,60.17,lost
+2026-08-29 20:00,italy2,Virtus Entella,Cesena,lost,away_under15,Cesena под 1.5 гола,72.76,lost,home_win,Virtus Entella печели,39.24,lost
+2026-08-29 20:00,italy2,Sampdoria,Juve Stabia,lost,away_under15,Juve Stabia под 1.5 гола,74.00,lost,home_win,Sampdoria печели,35.31,lost
+2026-08-29 20:00,spain2,Albacete,Oviedo,won,away_under15,Oviedo под 1.5 гола,70.92,won,home_win,Albacete печели,37.14,lost
+2026-08-29 20:00,spain2,Leganes,Eldense,won,away_under15,Eldense под 1.5 гола,79.91,won,home_win,Leganes печели,49.81,won
+2026-08-29 19:30,italy,Monza,Udinese,lost,home_under15,Monza под 1.5 гола,71.71,lost,away_win,Udinese печели,42.85,won
+2026-08-29 19:30,italy,Fiorentina,Frosinone,lost,away_under15,Frosinone под 1.5 гола,73.67,lost,home_win,Fiorentina печели,54.05,lost
+2026-08-29 19:30,italy,Sassuolo,Torino,won,away_under15,Torino под 1.5 гола,66.08,won,home_win,Sassuolo печели,40.65,won
+2026-08-29 19:30,england,Tottenham,Newcastle,lost,over25,Над 2.5 гола,64.23,lost,away_win,Newcastle печели,40.72,won
+2026-08-29 18:45,bulgaria2,Etar Veliko Tarnovo,Beroe,lost,away_under15,Beroe под 1.5 гола,77.16,lost,under25,Под 2.5 гола,58.18,lost
+2026-08-29 18:00,bulgaria2,Sportist Svoge,Marek,won,home_under15,Sportist Svoge под 1.5 гола,81.82,won,under25,Под 2.5 гола,77.63,won
+2026-08-29 18:00,bulgaria2,Nesebar,Yantra 2019,won,home_under15,Nesebar под 1.5 гола,77.10,won,under25,Под 2.5 гола,56.48,won
+2026-08-29 18:00,spain2,Sabadell,Almeria,won,home_under15,Sabadell под 1.5 гола,59.52,won,away_win,Almeria печели,37.38,lost
+2026-08-29 17:00,england,Coventry,Hull City,won,away_under15,Hull City под 1.5 гола,65.35,won,draw,Равен,29.07,lost
+2026-08-29 17:00,england,Bournemouth,Everton,won,away_under15,Everton под 1.5 гола,73.35,won,home_win,Bournemouth печели,44.17,lost
+2026-08-29 15:00,france2,Annecy,Metz,won,home_under15,Annecy под 1.5 гола,67.46,won,away_win,Metz печели,40.98,lost
+2026-08-29 15:00,france2,RED Star FC 93,Reims,won,home_under15,RED Star FC 93 под 1.5 гола,67.35,won,away_win,Reims печели,38.65,won
+2026-08-29 14:30,england,Liverpool,Nottingham Forest,lost,away_under15,Nottingham Forest под 1.5 гола,74.27,lost,home_win,Liverpool печели,63.77,lost
+2026-08-28 22:00,spain2,Tenerife,Sporting Gijon,won,away_under15,Sporting Gijon под 1.5 гола,71.67,won,home_win,Tenerife печели,36.62,lost
+2026-08-28 22:00,england,Crystal Palace,Manchester City,won,home_under15,Crystal Palace под 1.5 гола,76.52,won,away_win,Manchester City печели,57.29,won
+2026-08-28 21:45,italy,AC Milan,Venezia,won,away_under15,Venezia под 1.5 гола,82.03,won,home_win,AC Milan печели,61.29,won
+2026-08-28 21:30,italy2,Cremonese,Modena,lost,away_under15,Modena под 1.5 гола,77.24,lost,home_win,Cremonese печели,51.78,lost
+2026-08-28 21:15,bulgaria,CSKA 1948,Lokomotiv Plovdiv,won,away_under15,Локомотив Пловдив под 1.5 гола,77.27,won,home_win,ЦСКА 1948 печели,49.77,won
+2026-08-28 21:00,france2,Rodez,PAU,lost,away_under15,PAU под 1.5 гола,65.48,lost,home_win,Rodez печели,56.36,lost
+2026-08-28 21:00,france2,Laval,Grenoble,lost,away_under15,Grenoble под 1.5 гола,73.25,lost,home_win,Laval печели,37.90,lost
+2026-08-28 21:00,france2,Nancy,Dunkerque,lost,home_under15,Nancy под 1.5 гола,66.43,lost,away_win,Dunkerque печели,44.28,lost
+2026-08-28 21:00,france2,Clermont Foot,Sochaux,won,away_under15,Sochaux под 1.5 гола,73.02,won,home_win,Clermont Foot печели,37.80,lost
+2026-08-28 21:00,france2,Montpellier,Boulogne,won,away_under15,Boulogne под 1.5 гола,85.21,won,home_win,Montpellier печели,54.59,lost
+2026-08-28 19:00,bulgaria,Slavia Sofia,Septemvri Sofia,won,away_under15,Септември София под 1.5 гола,86.59,won,home_win,Славия София печели,63.70,lost
+2026-08-27 22:00,conference_league,FK Partizan,Getafe,won,away_under15,Getafe под 1.5 гола,75.08,won,over25,Над 2.5 гола,54.96,won
+2026-08-27 22:00,conference_league,Larne,Lincoln Red Imps FC,no_data,away_under15,Lincoln Red Imps FC под 1.5 гола,72.14,no_data,under25,Под 2.5 гола,51.96,no_data
+2026-08-27 22:00,conference_league,Hibernian,Gent,lost,away_under15,Gent под 1.5 гола,71.52,lost,under25,Под 2.5 гола,58.24,lost
+2026-08-27 21:45,conference_league,HNK Rijeka,FC Midtjylland,lost,away_under15,FC Midtjylland под 1.5 гола,78.78,lost,under25,Под 2.5 гола,58.78,lost
+2026-08-27 21:30,conference_league,Brighton,Tromso,won,away_under15,Tromso под 1.5 гола,71.57,won,over25,Над 2.5 гола,40.21,won
+2026-08-27 21:30,conference_league,Borac Banja Luka,Vikingur Reykjavik,won,away_under15,Vikingur Reykjavik под 1.5 гола,70.89,won,under25,Под 2.5 гола,57.31,lost
+2026-08-27 21:30,conference_league,Austria Vienna,SC Braga,won,away_under15,SC Braga под 1.5 гола,75.89,won,under25,Под 2.5 гола,54.41,won
+2026-08-27 20:00,conference_league,Hradec Králové,Panathinaikos,no_data,away_under15,Panathinaikos под 1.5 гола,66.97,no_data,over25,Над 2.5 гола,54.52,no_data
+2026-08-27 20:00,conference_league,Riga,KI Klaksvik,won,away_under15,KI Klaksvik под 1.5 гола,77.59,won,under25,Под 2.5 гола,58.41,lost
+2026-08-27 20:00,conference_league,Raków Częstochowa,HNK Hajduk Split,no_data,away_under15,HNK Hajduk Split под 1.5 гола,79.95,no_data,under25,Под 2.5 гола,56.00,no_data
+2026-08-27 20:00,conference_league,Pafos,Dinamo Tirana,no_data,away_under15,Dinamo Tirana под 1.5 гола,75.94,no_data,under25,Под 2.5 гола,58.86,no_data
+2026-08-27 20:00,conference_league,Inter Club d'Escaldes,Drita,no_data,away_under15,Drita под 1.5 гола,63.32,no_data,over25,Над 2.5 гола,61.57,no_data
+2026-08-27 20:00,conference_league,FC Copenhagen,Inter Turku,won,away_under15,Inter Turku под 1.5 гола,69.82,won,over25,Над 2.5 гола,59.36,won
+2026-08-27 20:00,conference_league,Brann,PAOK,lost,away_under15,PAOK под 1.5 гола,66.56,lost,over25,Над 2.5 гола,53.36,won
+2026-08-27 19:45,conference_league,SC Freiburg,Motherwell,won,away_under15,Motherwell под 1.5 гола,70.60,won,under25,Под 2.5 гола,51.39,lost
+2026-08-27 19:45,conference_league,Monaco,Gornik Zabrze,won,away_under15,Gornik Zabrze под 1.5 гола,72.16,won,over25,Над 2.5 гола,54.72,won
+2026-08-27 19:00,conference_league,FK Jablonec,Rangers,no_data,away_under15,Rangers под 1.5 гола,77.85,no_data,under25,Под 2.5 гола,54.32,no_data
+2026-08-27 19:00,conference_league,Maccabi Tel Aviv,FC Lugano,won,away_under15,FC Lugano под 1.5 гола,67.40,won,over25,Над 2.5 гола,60.46,lost
+2026-08-27 19:00,conference_league,Qarabag,Twente,no_data,away_under15,Twente под 1.5 гола,59.43,no_data,over25,Над 2.5 гола,53.74,no_data
+2026-08-27 18:00,conference_league,KuPS,Shamrock Rovers,won,away_under15,Shamrock Rovers под 1.5 гола,76.79,won,under25,Под 2.5 гола,61.90,won
+2026-08-26 19:45,conference_league,Rapid Vienna,Heart Of Midlothian,no_data,away_under15,Heart Of Midlothian под 1.5 гола,78.50,no_data,over25,Над 2.5 гола,63.83,no_data
+2026-08-24 22:30,spain2,Granada CF,Mallorca,won,away_under15,Mallorca под 1.5 гола,70.14,won,home_win,Granada CF печели,39.75,won
+2026-08-24 22:00,england,Fulham,Chelsea,lost,away_under15,Chelsea под 1.5 гола,61.57,lost,home_win,Fulham печели,38.01,lost
+2026-08-24 21:45,france2,Reims,Annecy,won,away_under15,Annecy под 1.5 гола,71.59,won,home_win,Reims печели,47.92,won
+2026-08-24 21:45,italy,AS Roma,Fiorentina,won,away_under15,Fiorentina под 1.5 гола,76.11,won,home_win,AS Roma печели,52.64,won
+2026-08-24 21:15,bulgaria,Lokomotiv Sofia,CSKA Sofia,no_data,home_under15,Локомотив София под 1.5 гола,84.26,no_data,away_win,ЦСКА София печели,57.97,no_data
+2026-08-24 20:00,spain2,Celta de Vigo II,FC Andorra,lost,away_under15,FC Andorra под 1.5 гола,73.73,lost,home_win,Celta de Vigo II печели,38.46,won
+2026-08-24 19:30,italy,Bologna,Lazio,won,away_under15,Lazio под 1.5 гола,68.97,won,home_win,Bologna печели,40.20,lost
+2026-08-24 19:00,bulgaria,Botev Vratsa,Botev Plovdiv,won,home_under15,Ботев Враца под 1.5 гола,70.91,won,away_win,Ботев Пловдив печели,40.56,lost
+2026-08-23 22:30,spain2,Tenerife,Almeria,won,home_under15,Tenerife под 1.5 гола,67.26,won,away_win,Almeria печели,42.32,lost
+2026-08-23 22:00,italy2,Palermo,Juve Stabia,won,away_under15,Juve Stabia под 1.5 гола,78.20,won,home_win,Palermo печели,53.03,won
+2026-08-23 22:00,italy2,Cesena,Sampdoria,won,away_under15,Sampdoria под 1.5 гола,74.59,won,home_win,Cesena печели,43.77,lost
+2026-08-23 21:45,italy,Torino,AC Milan,won,home_under15,Torino под 1.5 гола,72.51,won,away_win,AC Milan печели,49.22,won
+2026-08-23 21:45,italy,Atalanta,Sassuolo,won,away_under15,Sassuolo под 1.5 гола,76.51,won,home_win,Atalanta печели,61.99,won
+2026-08-23 21:15,bulgaria,Lokomotiv Plovdiv,Arda Kardzhali,won,away_under15,Арда Кърджали под 1.5 гола,73.57,won,home_win,Локомотив Пловдив печели,35.65,lost
+2026-08-23 20:00,spain2,Castellón,Sabadell,won,away_under15,Sabadell под 1.5 гола,77.00,won,home_win,Castellón печели,49.22,lost
+2026-08-23 20:00,italy2,Pisa,Padova,won,away_under15,Padova под 1.5 гола,79.39,won,home_win,Pisa печели,57.92,lost
+2026-08-23 20:00,spain2,Sporting Gijon,Burgos,won,away_under15,Burgos под 1.5 гола,76.21,won,home_win,Sporting Gijon печели,41.33,won
+2026-08-23 19:30,italy,Venezia,Lecce,lost,away_under15,Lecce под 1.5 гола,79.57,lost,home_win,Venezia печели,40.09,lost
+2026-08-23 19:30,italy,Frosinone,Juventus,won,home_under15,Frosinone под 1.5 гола,77.86,won,away_win,Juventus печели,58.86,won
+2026-08-23 19:00,bulgaria,Septemvri Sofia,CSKA 1948,won,home_under15,Септември София под 1.5 гола,84.33,won,away_win,ЦСКА 1948 печели,66.12,lost
+2026-08-23 18:30,england,Newcastle,Liverpool,won,over25,Над 2.5 гола,61.99,won,away_win,Liverpool печели,38.65,lost
+2026-08-23 18:00,spain2,Eibar,Valladolid,won,away_under15,Valladolid под 1.5 гола,82.80,won,home_win,Eibar печели,52.72,won
+2026-08-23 16:00,england,Brighton,Aston Villa,won,away_under15,Aston Villa под 1.5 гола,60.46,won,home_win,Brighton печели,42.25,won
+2026-08-23 16:00,england,Manchester City,Bournemouth,won,away_under15,Bournemouth под 1.5 гола,79.14,won,home_win,Manchester City печели,71.18,won
+2026-08-22 22:30,spain2,Eldense,Cadiz,lost,away_under15,Cadiz под 1.5 гола,70.40,lost,home_win,Eldense печели,42.86,lost
+2026-08-22 22:00,italy2,Empoli,Cremonese,won,home_under15,Empoli под 1.5 гола,66.53,won,away_win,Cremonese печели,42.84,lost
+2026-08-22 22:00,italy2,Benevento,Modena,lost,away_under15,Modena под 1.5 гола,71.60,lost,home_win,Benevento печели,37.37,lost
+2026-08-22 21:45,italy,Parma,Cagliari,won,away_under15,Cagliari под 1.5 гола,72.08,won,home_win,Parma печели,37.61,lost
+2026-08-22 21:45,italy,Genoa,Napoli,won,home_under15,Genoa под 1.5 гола,77.92,won,away_win,Napoli печели,49.71,won
+2026-08-22 21:15,bulgaria,Levski Sofia,Spartak Varna,won,away_under15,Спартак Варна под 1.5 гола,85.38,won,home_win,Левски София печели,77.70,won
+2026-08-22 21:00,france2,Saint Etienne,Grenoble,won,away_under15,Grenoble под 1.5 гола,79.65,won,home_win,Saint Etienne печели,57.74,won
+2026-08-22 20:00,italy2,Carrarese,Mantova,lost,away_under15,Mantova под 1.5 гола,68.63,lost,home_win,Carrarese печели,46.75,lost
+2026-08-22 20:00,italy2,Sudtirol,Virtus Entella,won,away_under15,Virtus Entella под 1.5 гола,79.08,won,home_win,Sudtirol печели,46.33,won
+2026-08-22 20:00,spain2,AD Ceuta FC,Las Palmas,won,home_under15,AD Ceuta FC под 1.5 гола,70.70,won,away_win,Las Palmas печели,41.30,won
+2026-08-22 20:00,spain2,Albacete,Real Sociedad II,lost,away_under15,Real Sociedad II под 1.5 гола,72.12,lost,home_win,Albacete печели,51.45,lost
+2026-08-22 19:30,italy,Inter,Monza,won,away_under15,Monza под 1.5 гола,85.46,won,home_win,Inter печели,82.39,won
+2026-08-22 19:30,italy,Udinese,Como,won,home_under15,Udinese под 1.5 гола,75.05,won,away_win,Como печели,50.29,lost
+2026-08-22 19:30,england,Brentford,Tottenham,won,over25,Над 2.5 гола,62.85,won,home_win,Brentford печели,47.25,won
+2026-08-22 19:00,bulgaria,Ludogorets,Slavia Sofia,won,away_under15,Славия София под 1.5 гола,88.09,won,home_win,Лудогорец печели,73.44,lost
+2026-08-22 18:00,bulgaria2,Rilski Sportist,Montana,lost,home_under15,Rilski Sportist под 1.5 гола,78.12,lost,under25,Под 2.5 гола,65.32,lost
+2026-08-22 18:00,bulgaria2,Marek,Dobrudzha,lost,home_under15,Marek под 1.5 гола,76.10,lost,under25,Под 2.5 гола,69.80,lost
+2026-08-22 18:00,bulgaria2,Vihren,Fratria,lost,away_under15,Fratria под 1.5 гола,67.17,lost,over25,Над 2.5 гола,55.80,won
+2026-08-22 18:00,bulgaria2,Yantra 2019,Sportist Svoge,won,away_under15,Sportist Svoge под 1.5 гола,87.52,won,under25,Под 2.5 гола,61.02,won
+2026-08-22 18:00,bulgaria2,Hebar 1918,Chernomorets 1919 Burgas,won,away_under15,Chernomorets 1919 Burgas под 1.5 гола,63.63,won,under25,Под 2.5 гола,51.63,won
+2026-08-22 18:00,bulgaria2,Lokomotiv G. Oryahovitsa,Etar Veliko Tarnovo,lost,home_under15,Lokomotiv G. Oryahovitsa под 1.5 гола,67.08,lost,under25,Под 2.5 гола,53.50,lost
+2026-08-22 18:00,bulgaria2,CSKA Sofia II,Ludogorets II,won,away_under15,Ludogorets II под 1.5 гола,75.68,won,over25,Над 2.5 гола,52.61,lost
+2026-08-22 18:00,bulgaria2,Nesebar,Pirin Blagoevgrad,lost,home_under15,Nesebar под 1.5 гола,65.60,lost,under25,Под 2.5 гола,52.44,lost
+2026-08-22 18:00,bulgaria2,Beroe,Spartak Pleven,won,away_under15,Spartak Pleven под 1.5 гола,78.91,won,under25,Под 2.5 гола,64.30,lost
+2026-08-22 18:00,spain2,Oviedo,Leganes,won,away_under15,Leganes под 1.5 гола,83.46,won,home_win,Oviedo печели,48.79,lost
+2026-08-22 17:00,england,Nottingham Forest,Leeds,won,away_under15,Leeds под 1.5 гола,67.27,won,home_win,Nottingham Forest печели,47.17,lost
+2026-08-22 17:00,england,Ipswich,Sunderland,lost,home_under15,Ipswich под 1.5 гола,76.14,lost,away_win,Sunderland печели,49.30,lost
+2026-08-22 17:00,england,Everton,Crystal Palace,won,away_under15,Crystal Palace под 1.5 гола,74.41,won,home_win,Everton печели,38.38,won
+2026-08-22 15:00,france2,Metz,Laval,no_data,away_under15,Laval под 1.5 гола,81.98,no_data,home_win,Metz печели,62.62,no_data
+2026-08-22 15:00,france2,Nantes,Rodez,no_data,home_under15,Nantes под 1.5 гола,69.43,no_data,home_win,Nantes печели,30.69,no_data
+2026-08-21 22:00,spain2,Cordoba,Girona,won,away_under15,Girona под 1.5 гола,67.17,won,away_win,Girona печели,28.70,lost
+2026-08-21 21:15,bulgaria,Cherno More Varna,Dunav Ruse,won,away_under15,Дунав Русе под 1.5 гола,84.21,won,home_win,Черно море Варна печели,66.84,won
+2026-08-21 21:00,france2,Dunkerque,Montpellier,won,away_under15,Montpellier под 1.5 гола,68.99,won,home_win,Dunkerque печели,37.23,lost
+2026-08-21 21:00,france2,Boulogne,RED Star FC 93,won,home_under15,Boulogne под 1.5 гола,70.74,won,away_win,RED Star FC 93 печели,40.45,lost
+2026-08-21 21:00,france2,PAU,Nancy,won,away_under15,Nancy под 1.5 гола,63.29,won,home_win,PAU печели,46.33,lost
+2026-08-21 21:00,france2,Sochaux,Guingamp,won,away_under15,Guingamp под 1.5 гола,64.34,won,home_win,Sochaux печели,37.36,won
+2026-08-21 21:00,france2,Clermont Foot,Dijon,won,away_under15,Dijon под 1.5 гола,72.17,won,home_win,Clermont Foot печели,35.30,lost
+2026-08-20 20:00,conference_league,KI Klaksvik,Riga,no_data,home_under15,KI Klaksvik под 1.5 гола,60.73,no_data,under25,Под 2.5 гола,59.31,no_data
+2026-08-20 20:00,conference_league,Drita,Inter Club d'Escaldes,lost,away_under15,Inter Club d'Escaldes под 1.5 гола,64.59,lost,over25,Над 2.5 гола,61.96,won
+2026-08-20 20:00,conference_league,Dinamo Tirana,Pafos,won,away_under15,Pafos под 1.5 гола,76.70,won,under25,Под 2.5 гола,58.57,won
+2026-08-20 20:00,conference_league,Inter Turku,FC Copenhagen,lost,btts_yes,BTTS - Да,59.09,lost,over25,Над 2.5 гола,57.11,lost
+2026-08-20 20:00,conference_league,Lincoln Red Imps FC,Larne,lost,away_under15,Larne под 1.5 гола,72.74,lost,under25,Под 2.5 гола,51.74,won
+2026-08-20 20:00,conference_league,Shamrock Rovers,KuPS,won,away_under15,KuPS под 1.5 гола,78.89,won,under25,Под 2.5 гола,61.09,won
+2026-08-20 20:00,conference_league,Gent,Hibernian,won,away_under15,Hibernian под 1.5 гола,79.02,won,under25,Под 2.5 гола,55.45,won
+2026-08-20 20:00,conference_league,PAOK,Brann,won,away_under15,Brann под 1.5 гола,71.18,won,over25,Над 2.5 гола,54.92,lost
+2026-08-20 20:00,conference_league,HNK Hajduk Split,Raków Częstochowa,lost,away_under15,Raków Częstochowa под 1.5 гола,71.42,lost,under25,Под 2.5 гола,59.19,lost
+2026-08-20 20:00,conference_league,FC Lugano,Maccabi Tel Aviv,won,away_under15,Maccabi Tel Aviv под 1.5 гола,63.15,won,over25,Над 2.5 гола,59.13,won
+2026-08-20 20:00,conference_league,Twente,Qarabag,won,away_under15,Qarabag под 1.5 гола,75.65,won,over25,Над 2.5 гола,59.08,lost
+2026-08-20 20:00,conference_league,FC Nordsjaelland,FC ST. Gallen,lost,home_over15,FC Nordsjaelland над 1.5 гола,81.75,lost,over25,Над 2.5 гола,76.94,lost
+2026-08-20 20:00,conference_league,FC Midtjylland,HNK Rijeka,won,away_under15,HNK Rijeka под 1.5 гола,74.76,won,under25,Под 2.5 гола,60.30,won
+2026-08-20 20:00,conference_league,Vikingur Reykjavik,Borac Banja Luka,lost,away_under15,Borac Banja Luka под 1.5 гола,78.59,lost,under25,Под 2.5 гола,54.47,lost
+2026-08-20 20:00,conference_league,Heart Of Midlothian,Rapid Vienna,lost,home_under15,Heart Of Midlothian под 1.5 гола,62.05,lost,over25,Над 2.5 гола,55.64,won
+2026-08-20 20:00,conference_league,SC Braga,Austria Vienna,won,away_under15,Austria Vienna под 1.5 гола,72.61,won,under25,Под 2.5 гола,55.61,won
+2026-08-18 20:00,bulgaria2,Ludogorets II,Vihren,no_data,home_under15,Ludogorets II под 1.5 гола,60.95,no_data,over25,Над 2.5 гола,52.42,no_data
+2026-08-18 18:30,bulgaria2,Pirin Blagoevgrad,Hebar 1918,no_data,away_under15,Hebar 1918 под 1.5 гола,66.68,no_data,over25,Над 2.5 гола,56.85,no_data
+2026-08-17 22:30,spain2,Almeria,Eldense,no_data,away_under15,Eldense под 1.5 гола,71.79,no_data,home_win,Almeria печели,64.71,no_data
+2026-08-17 21:15,bulgaria,Arda Kardzhali,Lokomotiv Sofia,no_data,away_under15,Локомотив София под 1.5 гола,82.57,no_data,home_win,Арда Кърджали печели,59.19,no_data
+2026-08-17 19:00,bulgaria,Spartak Varna,Septemvri Sofia,no_data,away_under15,Септември София под 1.5 гола,76.10,no_data,home_win,Спартак Варна печели,55.03,no_data
+2026-08-17 18:00,bulgaria2,Chernomorets 1919 Burgas,CSKA Sofia II,no_data,away_under15,CSKA Sofia II под 1.5 гола,69.58,no_data,under25,Под 2.5 гола,61.42,no_data
+2026-08-16 22:30,spain2,Las Palmas,Albacete,no_data,away_under15,Albacete под 1.5 гола,77.35,no_data,home_win,Las Palmas печели,51.45,no_data
+2026-08-16 21:15,bulgaria,Lokomotiv Plovdiv,Dunav Ruse,no_data,away_under15,Дунав Русе под 1.5 гола,82.19,no_data,home_win,Локомотив Пловдив печели,65.05,no_data
+2026-08-16 20:00,bulgaria2,Dobrudzha,Yantra 2019,no_data,away_under15,Yantra 2019 под 1.5 гола,78.05,no_data,under25,Под 2.5 гола,57.93,no_data
+2026-08-16 20:00,bulgaria2,Montana,Marek,no_data,away_under15,Marek под 1.5 гола,88.15,no_data,under25,Под 2.5 гола,72.77,no_data
+2026-08-16 20:00,bulgaria2,Spartak Pleven,Lokomotiv G. Oryahovitsa,no_data,away_under15,Lokomotiv G. Oryahovitsa под 1.5 гола,77.20,no_data,under25,Под 2.5 гола,54.54,no_data
+2026-08-16 20:00,bulgaria2,Etar Veliko Tarnovo,Rilski Sportist,no_data,away_under15,Rilski Sportist под 1.5 гола,80.80,no_data,under25,Под 2.5 гола,56.67,no_data
+2026-08-16 20:00,spain2,Burgos,Cordoba,no_data,away_under15,Cordoba под 1.5 гола,76.85,no_data,home_win,Burgos печели,48.53,no_data
+2026-08-16 19:00,bulgaria,CSKA Sofia,Botev Vratsa,no_data,away_under15,Ботев Враца под 1.5 гола,92.25,no_data,home_win,ЦСКА София печели,72.23,no_data
+2026-08-16 18:00,bulgaria2,Sportist Svoge,Nesebar,no_data,away_under15,Nesebar под 1.5 гола,81.47,no_data,under25,Под 2.5 гола,60.05,no_data
+2026-08-16 18:00,spain2,Eibar,Tenerife,no_data,away_under15,Tenerife под 1.5 гола,86.54,no_data,home_win,Eibar печели,52.38,no_data
+2026-08-15 21:15,bulgaria,Ludogorets,Botev Plovdiv,won,away_under15,Ботев Пловдив под 1.5 гола,85.93,won,home_win,Лудогорец печели,77.57,won
+2026-08-15 20:00,spain2,Oviedo,Granada CF,no_data,away_under15,Granada CF под 1.5 гола,77.82,no_data,home_win,Oviedo печели,48.92,no_data
+2026-08-15 19:00,bulgaria,Slavia Sofia,Levski Sofia,no_data,home_under15,Славия София под 1.5 гола,78.74,no_data,away_win,Левски София печели,49.23,no_data
+2026-08-15 18:00,spain2,FC Andorra,AD Ceuta FC,no_data,away_under15,AD Ceuta FC под 1.5 гола,72.18,no_data,home_win,FC Andorra печели,53.38,no_data
+2026-08-14 21:45,france2,Annecy,Rodez,no_data,away_under15,Rodez под 1.5 гола,64.02,no_data,home_win,Annecy печели,41.91,no_data
+2026-08-14 21:45,france2,Saint Etienne,Clermont Foot,no_data,away_under15,Clermont Foot под 1.5 гола,80.03,no_data,home_win,Saint Etienne печели,59.78,no_data
+2026-08-14 21:45,france2,Laval,Nantes,no_data,away_under15,Nantes под 1.5 гола,76.03,no_data,home_win,Laval печели,38.17,no_data
+2026-08-14 21:45,france2,RED Star FC 93,Sochaux,no_data,away_under15,Sochaux под 1.5 гола,73.55,no_data,home_win,RED Star FC 93 печели,48.00,no_data
+2026-08-14 21:45,france2,Nancy,Montpellier,no_data,home_under15,Nancy под 1.5 гола,77.67,no_data,away_win,Montpellier печели,45.01,no_data
+2026-08-14 21:45,france2,Grenoble,Metz,no_data,home_under15,Grenoble под 1.5 гола,74.50,no_data,away_win,Metz печели,48.71,no_data
+2026-08-14 21:45,france2,Reims,Dunkerque,no_data,away_under15,Dunkerque под 1.5 гола,71.87,no_data,home_win,Reims печели,50.40,no_data
+2026-08-14 21:45,france2,Guingamp,Boulogne,no_data,away_under15,Boulogne под 1.5 гола,75.10,no_data,home_win,Guingamp печели,51.02,no_data
+2026-08-14 21:45,france2,Dijon,PAU,no_data,away_under15,PAU под 1.5 гола,70.41,no_data,home_win,Dijon печели,50.18,no_data
+2026-08-14 21:30,spain2,Real Sociedad II,Castellón,no_data,home_under15,Real Sociedad II под 1.5 гола,58.42,no_data,away_win,Castellón печели,40.32,no_data
+2026-08-14 21:15,bulgaria,CSKA 1948,Cherno More Varna,won,away_under15,Черно море Варна под 1.5 гола,77.44,won,home_win,ЦСКА 1948 печели,46.84,won
+2026-08-14 18:45,bulgaria2,Fratria,Beroe,no_data,away_under15,Beroe под 1.5 гола,79.94,no_data,under25,Под 2.5 гола,53.21,no_data
+2026-08-13 22:00,conference_league,Dinamo Tirana,Auda,won,away_under15,Auda под 1.5 гола,69.42,won,under25,Под 2.5 гола,61.50,lost
+2026-08-13 22:00,conference_league,HNK Hajduk Split,FK Zalgiris Vilnius,won,away_under15,FK Zalgiris Vilnius под 1.5 гола,68.90,won,over25,Над 2.5 гола,50.26,won
+2026-08-13 21:45,conference_league,Shelbourne,Ajax,lost,home_under15,Shelbourne под 1.5 гола,57.98,lost,over25,Над 2.5 гола,51.67,won
+2026-08-13 21:30,conference_league,Gent,IFK Goteborg,won,away_under15,IFK Goteborg под 1.5 гола,81.89,won,over25,Над 2.5 гола,51.58,lost
+2026-08-13 21:30,conference_league,Motherwell,HJK Helsinki,won,away_under15,HJK Helsinki под 1.5 гола,78.24,won,over25,Над 2.5 гола,52.39,lost
+2026-08-13 21:15,conference_league,FC Sion,FC Noah,won,away_under15,FC Noah под 1.5 гола,74.07,won,over25,Над 2.5 гола,55.64,won
+2026-08-13 21:00,conference_league,Drita,Tre Fiori,won,away_under15,Tre Fiori под 1.5 гола,77.58,won,over25,Над 2.5 гола,44.97,won
+2026-08-13 21:00,conference_league,FC ST. Gallen,Sheriff Tiraspol,won,away_under15,Sheriff Tiraspol под 1.5 гола,71.40,won,over25,Над 2.5 гола,58.94,won
+2026-08-13 21:00,conference_league,Shkendija,Hibernian,won,away_under15,Hibernian под 1.5 гола,72.27,won,under25,Под 2.5 гола,51.41,won
+2026-08-13 20:30,conference_league,NSI Runavik,FC Lugano,won,btts_yes,BTTS - Да,56.13,won,over25,Над 2.5 гола,52.60,won
+2026-08-13 20:30,conference_league,FC Vaduz,Inter Turku,lost,away_under15,Inter Turku под 1.5 гола,75.34,lost,under25,Под 2.5 гола,60.18,lost
+2026-08-13 20:00,conference_league,ML Vitebsk,Borac Banja Luka,no_data,away_under15,Borac Banja Luka под 1.5 гола,78.90,no_data,under25,Под 2.5 гола,51.23,no_data
+2026-08-13 20:00,conference_league,Gyori ETO FC,Riga,won,away_under15,Riga под 1.5 гола,67.77,won,over25,Над 2.5 гола,65.24,lost
+2026-08-13 20:00,conference_league,FC Nordsjaelland,Valur Reykjavik,won,away_under15,Valur Reykjavik под 1.5 гола,77.34,won,over25,Над 2.5 гола,59.29,won
+2026-08-13 20:00,conference_league,FC Midtjylland,Bohemians,lost,away_under15,Bohemians под 1.5 гола,73.54,lost,over25,Над 2.5 гола,39.64,won
+2026-08-13 20:00,conference_league,Dinamo Minsk,SC Braga,won,home_under15,Dinamo Minsk под 1.5 гола,72.78,won,under25,Под 2.5 гола,55.05,won
+2026-08-13 20:00,conference_league,Hammarby FF,Raków Częstochowa,won,away_under15,Raków Częstochowa под 1.5 гола,69.47,won,over25,Над 2.5 гола,28.44,lost
+2026-08-13 20:00,conference_league,Tromso,CFR 1907 Cluj,won,away_under15,CFR 1907 Cluj под 1.5 гола,73.99,won,under25,Под 2.5 гола,59.07,lost
+2026-08-13 19:30,conference_league,Rīgas FS,FK Jablonec,lost,away_under15,FK Jablonec под 1.5 гола,71.57,lost,over25,Над 2.5 гола,55.46,won
+2026-08-13 19:00,conference_league,Ilves,HNK Rijeka,won,home_under15,Ilves под 1.5 гола,71.62,won,under25,Под 2.5 гола,64.28,won
+2026-08-13 19:00,conference_league,Flora Tallinn,Inter Club d'Escaldes,lost,away_under15,Inter Club d'Escaldes под 1.5 гола,67.36,lost,over25,Над 2.5 гола,54.10,won
+2026-08-13 19:00,conference_league,Qarabag,Dynamo Kyiv,won,away_under15,Dynamo Kyiv под 1.5 гола,69.35,won,under25,Под 2.5 гола,52.66,won
+2026-08-13 18:00,conference_league,FK Tobol Kostanay,FK Partizan,won,home_under15,FK Tobol Kostanay под 1.5 гола,68.06,won,under25,Под 2.5 гола,58.16,lost
+2026-08-12 19:00,conference_league,GKS Katowice,Hapoel Tel Aviv,won,away_under15,Hapoel Tel Aviv под 1.5 гола,66.25,won,over25,Над 2.5 гола,52.01,won
+2026-08-12 19:00,conference_league,Rapid Vienna,Paide,won,away_under15,Paide под 1.5 гола,70.08,won,over25,Над 2.5 гола,63.19,lost
+2026-08-12 19:00,conference_league,FC Copenhagen,Debreceni VSC,won,away_under15,Debreceni VSC под 1.5 гола,79.84,won,over25,Над 2.5 гола,37.78,won
+2026-08-11 20:30,conference_league,CSKA 1948,Panathinaikos,no_data,away_under15,Panathinaikos под 1.5 гола,72.16,no_data,under25,Под 2.5 гола,58.79,no_data
+2026-08-11 20:00,bulgaria2,Yantra 2019,Montana,no_data,away_under15,Montana под 1.5 гола,76.41,no_data,under25,Под 2.5 гола,67.15,no_data
+2026-08-11 20:00,conference_league,Apollon Limassol,Brann,no_data,away_under15,Brann под 1.5 гола,75.80,no_data,over25,Над 2.5 гола,60.14,no_data
+2026-08-11 18:00,bulgaria2,CSKA Sofia II,Hebar 1918,no_data,away_under15,Hebar 1918 под 1.5 гола,76.49,no_data,over25,Над 2.5 гола,62.99,no_data
+2026-08-10 21:15,bulgaria,Botev Plovdiv,Spartak Varna,lost,away_under15,Спартак Варна под 1.5 гола,73.98,lost,home_win,Ботев Пловдив печели,58.21,won
+2026-08-10 20:00,bulgaria2,Beroe,Ludogorets II,no_data,away_under15,Ludogorets II под 1.5 гола,71.93,no_data,under25,Под 2.5 гола,59.90,no_data
+2026-08-10 19:00,bulgaria,Botev Vratsa,Slavia Sofia,won,home_under15,Ботев Враца под 1.5 гола,76.54,won,away_win,Славия София печели,39.10,won
+2026-08-10 18:00,bulgaria2,Nesebar,Dobrudzha,no_data,home_under15,Nesebar под 1.5 гола,80.27,no_data,over25,Над 2.5 гола,52.35,no_data
+2026-08-09 21:15,bulgaria,Septemvri Sofia,CSKA Sofia,won,home_under15,Септември София под 1.5 гола,92.51,won,away_win,ЦСКА София печели,74.23,won
+2026-08-09 19:00,bulgaria,Cherno More Varna,Ludogorets,lost,home_under15,Черно море Варна под 1.5 гола,81.00,lost,away_win,Лудогорец печели,55.69,won
+2026-08-08 21:45,france2,Dunkerque,Grenoble,no_data,away_under15,Grenoble под 1.5 гола,72.97,no_data,home_win,Dunkerque печели,48.24,no_data
+2026-08-08 21:45,france2,Rodez,Laval,no_data,away_under15,Laval под 1.5 гола,74.55,no_data,home_win,Rodez печели,53.28,no_data
+2026-08-08 21:45,france2,Boulogne,Nancy,no_data,away_under15,Nancy под 1.5 гола,71.47,no_data,home_win,Boulogne печели,41.54,no_data
+2026-08-08 21:45,france2,PAU,Annecy,no_data,home_under15,PAU под 1.5 гола,60.04,no_data,away_win,Annecy печели,42.83,no_data
+2026-08-08 21:45,france2,Sochaux,Saint Etienne,no_data,home_under15,Sochaux под 1.5 гола,71.53,no_data,away_win,Saint Etienne печели,48.70,no_data
+2026-08-08 21:45,france2,Metz,Guingamp,no_data,away_under15,Guingamp под 1.5 гола,74.85,no_data,home_win,Metz печели,59.07,no_data
+2026-08-08 21:45,france2,Clermont Foot,Reims,no_data,home_under15,Clermont Foot под 1.5 гола,75.52,no_data,away_win,Reims печели,45.18,no_data
+2026-08-08 21:45,france2,Nantes,RED Star FC 93,no_data,home_under15,Nantes под 1.5 гола,71.90,no_data,home_win,Nantes печели,34.59,no_data
+2026-08-08 21:45,france2,Montpellier,Dijon,no_data,away_under15,Dijon под 1.5 гола,81.40,no_data,home_win,Montpellier печели,45.44,no_data
+2026-08-08 21:15,bulgaria,Dunav Ruse,Arda Kardzhali,won,home_under15,Дунав Русе под 1.5 гола,82.23,won,away_win,Арда Кърджали печели,59.82,won
+2026-08-08 19:00,bulgaria,Lokomotiv Sofia,CSKA 1948,won,home_under15,Локомотив София под 1.5 гола,73.32,won,away_win,ЦСКА 1948 печели,48.65,won
+2026-08-07 21:15,bulgaria,Levski Sofia,Lokomotiv Plovdiv,won,away_under15,Локомотив Пловдив под 1.5 гола,81.18,won,home_win,Левски София печели,58.09,won
+2026-08-06 22:00,conference_league,Tre Fiori,Drita,lost,away_under15,Drita под 1.5 гола,72.08,lost,under25,Под 2.5 гола,57.06,lost
+2026-08-06 22:00,conference_league,FK Partizan,FK Tobol Kostanay,won,away_under15,FK Tobol Kostanay под 1.5 гола,82.45,won,under25,Под 2.5 гола,52.13,lost
+2026-08-06 22:00,conference_league,Hibernian,Shkendija,won,away_under15,Shkendija под 1.5 гола,72.13,won,under25,Под 2.5 гола,51.46,lost
+2026-08-06 21:45,conference_league,Bohemians,FC Midtjylland,lost,away_under15,FC Midtjylland под 1.5 гола,79.62,lost,under25,Под 2.5 гола,58.06,won
+2026-08-06 21:45,conference_league,HNK Rijeka,Ilves,won,away_under15,Ilves под 1.5 гола,84.70,won,over25,Над 2.5 гола,41.03,lost
+2026-08-06 21:30,conference_league,Borac Banja Luka,ML Vitebsk,won,away_under15,ML Vitebsk под 1.5 гола,67.61,won,under25,Под 2.5 гола,55.32,won
+2026-08-06 21:30,conference_league,FC Lugano,NSI Runavik,won,away_under15,NSI Runavik под 1.5 гола,74.20,won,over25,Над 2.5 гола,56.29,lost
+2026-08-06 21:30,conference_league,Valur Reykjavik,FC Nordsjaelland,won,home_under15,Valur Reykjavik под 1.5 гола,60.36,won,over25,Над 2.5 гола,52.95,lost
+2026-08-06 21:30,conference_league,SC Braga,Dinamo Minsk,won,away_under15,Dinamo Minsk под 1.5 гола,85.41,won,over25,Над 2.5 гола,54.96,lost
+2026-08-06 21:00,conference_league,Hapoel Tel Aviv,GKS Katowice,won,away_under15,GKS Katowice под 1.5 гола,72.75,won,over25,Над 2.5 гола,54.22,lost
+2026-08-06 21:00,conference_league,Twente,Dunajska Streda,won,away_under15,Dunajska Streda под 1.5 гола,72.37,won,over25,Над 2.5 гола,43.38,won
+2026-08-06 21:00,conference_league,Ajax,Shelbourne,won,away_under15,Shelbourne под 1.5 гола,75.68,won,over25,Над 2.5 гола,56.15,won
+2026-08-06 20:30,conference_league,Beitar Jerusalem,Austria Vienna,won,btts_yes,BTTS - Да,63.99,won,over25,Над 2.5 гола,63.57,won
+2026-08-06 20:00,conference_league,Riga,Gyori ETO FC,lost,btts_yes,BTTS - Да,63.35,lost,over25,Над 2.5 гола,62.21,lost
+2026-08-06 20:00,conference_league,Raków Częstochowa,Hammarby FF,won,away_under15,Hammarby FF под 1.5 гола,91.31,won,under25,Под 2.5 гола,62.78,won
+2026-08-06 20:00,conference_league,Inter Club d'Escaldes,Flora Tallinn,won,away_under15,Flora Tallinn под 1.5 гола,69.90,won,over25,Над 2.5 гола,54.95,lost
+2026-08-06 20:00,conference_league,Debreceni VSC,FC Copenhagen,lost,away_under15,FC Copenhagen под 1.5 гола,77.17,lost,under25,Под 2.5 гола,63.25,lost
+2026-08-06 20:00,conference_league,FK Zalgiris Vilnius,HNK Hajduk Split,lost,away_under15,HNK Hajduk Split под 1.5 гола,72.72,lost,over25,Над 2.5 гола,51.59,won
+2026-08-06 20:00,conference_league,Dynamo Kyiv,Qarabag,won,away_under15,Qarabag под 1.5 гола,75.25,won,under25,Под 2.5 гола,50.56,won
+2026-08-06 20:00,conference_league,Sheriff Tiraspol,FC ST. Gallen,lost,away_under15,FC ST. Gallen под 1.5 гола,62.24,lost,over25,Над 2.5 гола,55.97,won
+2026-08-06 20:00,conference_league,IFK Goteborg,Gent,won,home_under15,IFK Goteborg под 1.5 гола,67.19,won,under25,Под 2.5 гола,55.23,won
+2026-08-06 19:30,conference_league,CFR 1907 Cluj,Tromso,lost,away_under15,Tromso под 1.5 гола,78.17,lost,under25,Под 2.5 гола,57.51,lost
+2026-08-06 19:00,conference_league,FC Noah,FC Sion,lost,away_under15,FC Sion под 1.5 гола,63.95,lost,over25,Над 2.5 гола,52.23,won
+2026-08-06 19:00,conference_league,Paide,Rapid Vienna,won,btts_yes,BTTS - Да,61.53,won,over25,Над 2.5 гола,59.62,won
+2026-08-06 19:00,conference_league,FK Jablonec,Rīgas FS,won,away_under15,Rīgas FS под 1.5 гола,65.75,won,over25,Над 2.5 гола,53.51,lost
+2026-08-06 19:00,conference_league,HJK Helsinki,Motherwell,won,away_under15,Motherwell под 1.5 гола,64.53,won,under25,Под 2.5 гола,52.43,won
+2026-08-06 18:00,conference_league,Inter Turku,FC Vaduz,won,away_under15,FC Vaduz под 1.5 гола,78.29,won,under25,Под 2.5 гола,59.06,lost
+2026-08-05 21:30,conference_league,Panathinaikos,CSKA 1948,won,away_under15,CSKA 1948 под 1.5 гола,93.80,won,under25,Под 2.5 гола,86.57,won
+2026-08-05 20:00,conference_league,Brann,Apollon Limassol,won,home_under15,Brann под 1.5 гола,86.84,won,over25,Над 2.5 гола,53.80,lost
