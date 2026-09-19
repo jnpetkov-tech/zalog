@@ -16,28 +16,43 @@
   .back{ font-size:13px; color:var(--sub); margin-bottom:20px; display:inline-block; }
   .back:hover{ color:var(--accent); }
 
-  h1{ font-size:26px; font-weight:800; letter-spacing:-0.5px; margin-bottom:6px; }
-  .sub{ font-size:14px; color:var(--sub); margin-bottom:28px; }
-
-  .match-head{ display:flex; align-items:center; gap:10px; margin-bottom:6px; flex-wrap:wrap; }
-  .team-logo{ width:26px; height:26px; object-fit:contain; }
   .league-logo{ width:16px; height:16px; object-fit:contain; vertical-align:-3px; margin-right:4px; }
 
+  /* ZADACHA_DIZAYN т.6: шапка на страницата - центриран блок, двата герба
+     64px, имената под тях, "срещу" между тях. */
+  .match-hero{ text-align:center; margin-bottom:30px; }
+  .hero-meta{ font-size:12.5px; color:var(--text-faint); margin-bottom:16px; }
+  .hero-teams{ display:flex; align-items:flex-start; justify-content:center; gap:26px; flex-wrap:wrap; }
+  .hero-team{ display:flex; flex-direction:column; align-items:center; gap:10px; width:110px; }
+  .hero-team .team-logo{ width:64px; height:64px; object-fit:contain; }
+  .hero-team .crest-fallback{
+    width:64px; height:64px; border-radius:50%; background:var(--panel2);
+    display:none; align-items:center; justify-content:center;
+    font-size:13px; font-weight:700; color:var(--sub);
+  }
+  .hero-name{ font-size:18px; font-weight:700; }
+  .hero-vs{ font-size:13px; color:var(--text-faint); align-self:center; padding-top:22px; }
+
+  /* ZADACHA_DIZAYN т.6: таблицата - Залог | Прогноза | Пазар. */
   .colheader{
-    display:grid; grid-template-columns: 1fr 96px; gap:14px;
+    display:grid; grid-template-columns: 1fr 110px 110px; gap:14px;
     padding:10px 16px; font-size:12px; color:var(--text-faint);
   }
   .colheader .r{text-align:right;}
 
-  .estimate-note{ padding:0 16px 10px; font-size:12px; color:var(--text-faint); }
+  .estimate-note{ padding:0 0 12px; font-size:12px; color:var(--text-faint); text-align:right; }
 
-  .marketlist{display:flex; flex-direction:column; gap:1px; background:var(--border); border:1px solid var(--border); border-radius:10px; overflow:hidden;}
+  .marketlist{ border:1px solid var(--border); border-radius:12px; overflow:hidden; }
   .marketrow{
-    display:grid; grid-template-columns: 1fr 96px; align-items:center;
-    gap:14px; background:var(--panel2); padding:14px 16px;
+    display:grid; grid-template-columns: 1fr 110px 110px; align-items:center;
+    gap:14px; padding:16px 20px; border-bottom:1px solid var(--border);
   }
+  .marketrow:last-child{ border-bottom:none; }
   .marketrow .label{ font-size:14px; font-weight:600; }
-  .marketrow .num{ font-size:14px; font-weight:600; text-align:right; }
+  .marketrow .num{ text-align:right; }
+  .marketrow .num.our{ font-size:17px; font-weight:700; color:var(--text); }
+  .marketrow .num.our.first{ color:var(--accent); }
+  .marketrow .num.market{ font-size:15px; font-weight:600; color:var(--sub); }
 
   .hidden-note{ margin-top:18px; font-size:13px; color:var(--text-faint); }
   .howto-link{ margin-top:10px; font-size:13px; }
@@ -50,8 +65,11 @@
 
   @media (max-width: 620px){
     .shell{padding:24px 18px 56px;}
-    .colheader{grid-template-columns: 1fr 72px;}
-    .marketrow{grid-template-columns: 1fr 72px;}
+    .hero-teams{ gap:16px; }
+    .hero-team{ width:92px; }
+    .hero-vs{ padding-top:20px; }
+    .colheader{grid-template-columns: 1fr 70px 70px; gap:8px;}
+    .marketrow{grid-template-columns: 1fr 70px 70px; gap:8px; padding:14px 14px;}
   }
 </style>
 </head>
@@ -64,24 +82,35 @@
     <h1>Мачът не е намерен</h1>
     <div class="empty-note">Няма изчислена прогноза за този мач - или fixture_id е грешен, или мачът е извън наличния прозорец.</div>
     {% else %}
-    <div class="match-head">
-      {% if home_logo %}<img class="team-logo" src="{{ home_logo }}" alt="" onerror="this.style.display='none'">{% endif %}
-      <h1 style="margin:0;">{{ home_cy }} — {{ away_cy }}</h1>
-      {% if away_logo %}<img class="team-logo" src="{{ away_logo }}" alt="" onerror="this.style.display='none'">{% endif %}
-    </div>
-    <div class="sub">
-      {% if league_logo %}<img class="league-logo" src="{{ league_logo }}" alt="" onerror="this.style.display='none'">{% endif %}
-      {{ flag }} {{ league_name }} · {{ date[8:10] }}.{{ date[5:7] }} {{ date[-5:] }} ч.
+    <div class="match-hero">
+      <div class="hero-meta">
+        {% if league_logo %}<img class="league-logo" src="{{ league_logo }}" alt="" onerror="this.style.display='none'">{% endif %}
+        {{ flag }} {{ league_name }} · {{ date[8:10] }}.{{ date[5:7] }} {{ date[-5:] }} ч.
+      </div>
+      <div class="hero-teams">
+        <div class="hero-team">
+          {% if home_logo %}<img class="team-logo" src="{{ home_logo }}" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">{% endif %}
+          <span class="crest-fallback"{% if not home_logo %} style="display:flex;"{% endif %}>{{ (home_cy or '')[:3]|upper }}</span>
+          <div class="hero-name">{{ home_cy }}</div>
+        </div>
+        <div class="hero-vs">срещу</div>
+        <div class="hero-team">
+          {% if away_logo %}<img class="team-logo" src="{{ away_logo }}" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">{% endif %}
+          <span class="crest-fallback"{% if not away_logo %} style="display:flex;"{% endif %}>{{ (away_cy or '')[:3]|upper }}</span>
+          <div class="hero-name">{{ away_cy }}</div>
+        </div>
+      </div>
     </div>
 
     {% if market_rows %}
-    <div class="colheader"><div>Пазар</div><div class="r">Прогноза</div></div>
-    <div class="estimate-note">Процентът е оценка на нашия модел, не гаранция.</div>
+    <div class="colheader"><div>Залог</div><div class="r">Прогноза</div><div class="r">Пазар</div></div>
+    <div class="estimate-note">Прогноза = нашата оценка · Пазар = оценката по коефициентите</div>
     <div class="marketlist">
       {% for m in market_rows %}
       <div class="marketrow">
         <div class="label">{{ m.label }}</div>
-        <div class="num">{{ "%.1f"|format(m.our_pct) }}%</div>
+        <div class="num our{{ ' first' if loop.index0 == 0 else '' }}">{{ "%.1f"|format(m.our_pct) }}%</div>
+        <div class="num market">{% if m.market_copy %}=пазар{% elif m.market_pct is none %}—{% else %}{{ "%.0f"|format(m.market_pct) }}%{% endif %}</div>
       </div>
       {% endfor %}
     </div>
