@@ -178,6 +178,30 @@ TRUST_MATRIX = {
         # слаби
         "corners": NO_DATA, "cards": NO_DATA, "offsides": NO_DATA,
     },
+
+    # --- england2/germany2 (19.09.2026, ZADACHA_CHAMPIONSHIP.md) ---
+    # "Затвореният кръг" (trust_circle_sim_20260902.md): без ръчен ред тук
+    # тези две лиги никога не натрупват trust_derived статус, защото
+    # build_trust_derived.py смята само от evaluation.published_picks(),
+    # което само по себе си изисква вече наличен PROVEN/WEAK статус.
+    # Нивата по-долу идват от validation/trust_bootstrap_v2_20260919.md
+    # (дедупликация по мач - едно наблюдение на (лига,група) вместо
+    # цялото допълващо се множество изходи), таван WEAK навсякъде -
+    # НИКОГА PROVEN от студен старт, дори измереният статус да е "proven".
+    # ou25 (england2) и team_total (germany2) измерени "rejected" -
+    # оставени UNVERIFIED, непроменени. trust_derived има приоритет пред
+    # тези ръчни редове и ще ги премери сам, щом лигите започнат да
+    # публикуват прогнози.
+    "england2": {
+        "1x2": WEAK, "ou25": UNVERIFIED, "team_total": WEAK, "htft": WEAK,
+        "double_chance": UNVERIFIED, "btts": UNVERIFIED,
+        "corners": UNVERIFIED, "cards": UNVERIFIED, "offsides": UNVERIFIED,
+    },
+    "germany2": {
+        "1x2": WEAK, "ou25": WEAK, "team_total": UNVERIFIED, "htft": WEAK,
+        "double_chance": UNVERIFIED, "btts": UNVERIFIED,
+        "corners": UNVERIFIED, "cards": UNVERIFIED, "offsides": UNVERIFIED,
+    },
 }
 
 # Пазарни групи, изключени от избора за ТОП прогноза по БИЗНЕС причина
