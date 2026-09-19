@@ -222,7 +222,6 @@
     <div class="statustabs">
       <a href="/prognozi?day={{ day_offset }}&status=upcoming&league={{ league_filter }}" class="{{ 'active' if status_tab=='upcoming' else '' }}">Предстоящи <span class="count">{{ upcoming_rows|length }}</span></a>
       <a href="/prognozi?day={{ day_offset }}&status=finished&league={{ league_filter }}" class="{{ 'active' if status_tab=='finished' else '' }}">Приключили <span class="count">{{ finished_total }}</span></a>
-      <a href="/prognozi?day={{ day_offset }}&status=skipped&league={{ league_filter }}" class="{{ 'active' if status_tab=='skipped' else '' }}">Пропуснати <span class="count">{{ skipped_rows|length }}</span></a>
     </div>
 
     {% if status_tab == 'upcoming' %}
@@ -320,6 +319,10 @@
       </div>
       {% endif %}
     {% else %}
+      {# A3 (19.09.2026): този клон е НЕДОСТИЖИМ - status_tab вече може да е
+         само 'upcoming' или 'finished' (web/prognozi.py). Оставен непипнат
+         нарочно: задачата казваше да падне само линкът на таба, бекендът да
+         остане. Ако табът някога се върне, разкоментирай линка в .statustabs. #}
       {% if not skipped_rows %}
       <div class="empty-note">Няма пропуснати мачове за този ден.</div>
       {% else %}

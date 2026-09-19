@@ -144,7 +144,13 @@ def register_prognozi_routes(app, ctx):
 
         league_filter = request.args.get("league", "all")
         status_tab = request.args.get("status", "upcoming")
-        if status_tab not in ("upcoming", "finished", "skipped"):
+        # A3 (ZADACHA_FAZA1.md, 19.09.2026): "Пропуснати" е админска функция
+        # (мачове, ръчно маркирани от Дака да се пропуснат) - на публиката не
+        # ѝ говори нищо, табът е махнат. Валидните стойности са само две;
+        # ?status=skipped вече пада към "Предстоящи". Самата skipped_rows
+        # логика долу остава непокътната (мачът продължава да НЕ се показва
+        # сред предстоящите), просто няма свой таб.
+        if status_tab not in ("upcoming", "finished"):
             status_tab = "upcoming"
 
         # A2 (ZADACHA_FAZA1.md, 19.09.2026): "Приключили" показваше ЦЯЛАТА
