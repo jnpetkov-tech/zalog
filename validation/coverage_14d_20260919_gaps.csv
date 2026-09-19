@@ -1,0 +1,80 @@
+league,day,fixture_id,home,away,where
+champions_league,2026-09-08,1635683,Lille,Real Betis,няма ред в predictions_log
+champions_league,2026-09-10,1635659,Fenerbahçe,AS Roma,няма ред в predictions_log
+champions_league,2026-09-10,1635648,Como,RB Leipzig,няма ред в predictions_log
+england2,2026-09-05,1563136,Preston,Blackburn,филтър за доверие
+england2,2026-09-05,1563139,Stoke City,Charlton,филтър за доверие
+england2,2026-09-05,1563133,Lincoln,Southampton,филтър за доверие
+england2,2026-09-05,1563132,Burnley,Bristol City,филтър за доверие
+england2,2026-09-05,1563142,West Ham,Derby,филтър за доверие
+england2,2026-09-05,1563134,Millwall,Bolton,филтър за доверие
+england2,2026-09-05,1563141,West Brom,Watford,филтър за доверие
+england2,2026-09-05,1563138,Sheffield Utd,Norwich,филтър за доверие
+england2,2026-09-05,1563137,QPR,Middlesbrough,филтър за доверие
+england2,2026-09-05,1563135,Portsmouth,Cardiff,филтър за доверие
+england2,2026-09-05,1563140,Swansea,Wrexham,филтър за доверие
+england2,2026-09-06,1563131,Birmingham,Wolves,филтър за доверие
+england2,2026-09-08,1563149,Watford,Preston,филтър за доверие
+england2,2026-09-08,1563148,Southampton,Swansea,филтър за доверие
+england2,2026-09-08,1563146,Cardiff,Stoke City,филтър за доверие
+england2,2026-09-08,1563143,Blackburn,Sheffield Utd,филтър за доверие
+england2,2026-09-08,1563154,Wrexham,Burnley,филтър за доверие
+england2,2026-09-08,1563144,Bolton,West Ham,филтър за доверие
+england2,2026-09-09,1563152,Derby,West Brom,филтър за доверие
+england2,2026-09-09,1563153,Norwich,Birmingham,филтър за доверие
+england2,2026-09-09,1563151,Charlton,QPR,филтър за доверие
+england2,2026-09-11,1563166,West Ham,Wrexham,филтър за доверие
+england2,2026-09-12,1563165,West Brom,QPR,филтър за доверие
+england2,2026-09-12,1563156,Bolton,Cardiff,филтър за доверие
+england2,2026-09-12,1563158,Derby,Birmingham,филтър за доверие
+england2,2026-09-12,1563164,Watford,Stoke City,филтър за доверие
+england2,2026-09-12,1563162,Southampton,Bristol City,филтър за доверие
+england2,2026-09-12,1563160,Preston,Lincoln,филтър за доверие
+england2,2026-09-12,1563155,Blackburn,Millwall,филтър за доверие
+england2,2026-09-12,1563159,Middlesbrough,Norwich,филтър за доверие
+england2,2026-09-12,1563163,Swansea,Burnley,филтър за доверие
+england2,2026-09-12,1563157,Charlton,Portsmouth,филтър за доверие
+england2,2026-09-13,1563161,Sheffield Utd,Wolves,филтър за доверие
+england2,2026-09-15,1563145,Bristol City,Lincoln,филтър за доверие
+england2,2026-09-15,1563147,Middlesbrough,Millwall,филтър за доверие
+england2,2026-09-18,1563168,Bristol City,Watford,филтър за доверие
+europa_league,2026-09-16,1636344,Sunderland,AZ Alkmaar,няма ред в predictions_log
+europa_league,2026-09-17,1636251,Crystal Palace,Lech Poznan,няма ред в predictions_log
+europa_league,2026-09-17,1636287,Lillestrom,Torreense,няма ред в predictions_log
+europa_league,2026-09-17,1636278,Juventus,NEC Nijmegen,няма ред в predictions_log
+europa_league,2026-09-17,1636321,Real Sociedad,Bournemouth,няма ред в predictions_log
+germany2,2026-09-05,1576169,VfL Wolfsburg,Energie Cottbus,филтър за доверие
+germany2,2026-09-05,1576165,Holstein Kiel,1. FC Nürnberg,филтър за доверие
+germany2,2026-09-05,1576166,1. FC Kaiserslautern,SV Darmstadt 98,филтър за доверие
+germany2,2026-09-05,1576167,Dynamo Dresden,VfL Bochum,филтър за доверие
+germany2,2026-09-06,1576164,Hertha BSC,1. FC Magdeburg,филтър за доверие
+germany2,2026-09-06,1576162,SpVgg Greuther Fürth,1. FC Heidenheim,филтър за доверие
+germany2,2026-09-06,1576168,VfL Osnabrück,Eintracht Braunschweig,филтър за доверие
+germany2,2026-09-11,1576176,1. FC Nürnberg,Hannover 96,филтър за доверие
+germany2,2026-09-11,1576172,SV Darmstadt 98,Arminia Bielefeld,филтър за доверие
+germany2,2026-09-12,1576170,VfL Bochum,SpVgg Greuther Fürth,филтър за доверие
+germany2,2026-09-12,1576175,1. FC Magdeburg,1. FC Kaiserslautern,филтър за доверие
+germany2,2026-09-12,1576171,Eintracht Braunschweig,Dynamo Dresden,филтър за доверие
+germany2,2026-09-12,1576177,FC St. Pauli,VfL Wolfsburg,филтър за доверие
+germany2,2026-09-13,1576173,1. FC Heidenheim,Holstein Kiel,филтър за доверие
+germany2,2026-09-13,1576174,Karlsruher SC,Energie Cottbus,филтър за доверие
+germany2,2026-09-13,1576178,VfL Osnabrück,Hertha BSC,филтър за доверие
+germany2,2026-09-18,1576187,VfL Wolfsburg,SV Darmstadt 98,филтър за доверие
+germany2,2026-09-18,1576181,SpVgg Greuther Fürth,1. FC Magdeburg,филтър за доверие
+portugal2,2026-09-05,1576483,Tondela,FC Porto B,филтър за доверие
+portugal2,2026-09-05,1576481,Penafiel,Academica,филтър за доверие
+portugal2,2026-09-05,1576477,Feirense,Sporting CP B,филтър за доверие
+portugal2,2026-09-05,1576476,Benfica B,Torreense,филтър за доверие
+portugal2,2026-09-06,1576484,Vizela,Felgueiras 1932,филтър за доверие
+portugal2,2026-09-06,1576479,Leixoes,Amarante,филтър за доверие
+portugal2,2026-09-06,1576478,União de Leiria,Portimonense,филтър за доверие
+portugal2,2026-09-07,1576480,Lusitânia Lourosa,AVS,филтър за доверие
+portugal2,2026-09-11,1576493,Torreense,Leixoes,филтър за доверие
+portugal2,2026-09-11,1576485,Academica,Benfica B,филтър за доверие
+portugal2,2026-09-12,1576491,Portimonense,Tondela,филтър за доверие
+portugal2,2026-09-12,1576490,Felgueiras 1932,Penafiel,филтър за доверие
+portugal2,2026-09-13,1576486,AVS,Farense,филтър за доверие
+portugal2,2026-09-13,1576488,Chaves,Feirense,филтър за доверие
+portugal2,2026-09-13,1576487,Amarante,União de Leiria,филтър за доверие
+portugal2,2026-09-14,1576489,FC Porto B,Vizela,филтър за доверие
+portugal2,2026-09-14,1576492,Sporting CP B,Lusitânia Lourosa,филтър за доверие

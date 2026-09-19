@@ -1,0 +1,833 @@
+{
+ "from": "2026-09-05",
+ "to": "2026-09-18",
+ "api_calls": 17,
+ "per_league": {
+  "bulgaria": {
+   "name": "Първа лига България",
+   "real": 14,
+   "logged": 14,
+   "shown": 14,
+   "not_played": 0
+  },
+  "england": {
+   "name": "Английска Висша лига",
+   "real": 20,
+   "logged": 20,
+   "shown": 20,
+   "not_played": 0
+  },
+  "germany": {
+   "name": "Бундеслига",
+   "real": 18,
+   "logged": 18,
+   "shown": 18,
+   "not_played": 0
+  },
+  "spain": {
+   "name": "Ла Лига",
+   "real": 28,
+   "logged": 28,
+   "shown": 28,
+   "not_played": 1
+  },
+  "france": {
+   "name": "Лига 1 Франция",
+   "real": 16,
+   "logged": 16,
+   "shown": 16,
+   "not_played": 0
+  },
+  "champions_league": {
+   "name": "Шампионска лига",
+   "real": 18,
+   "logged": 15,
+   "shown": 15,
+   "not_played": 0
+  },
+  "europa_league": {
+   "name": "Лига Европа",
+   "real": 18,
+   "logged": 13,
+   "shown": 13,
+   "not_played": 0
+  },
+  "conference_league": {
+   "name": "Лига на конференциите",
+   "real": 0,
+   "logged": 0,
+   "shown": 0,
+   "not_played": 0
+  },
+  "italy": {
+   "name": "Серия А Италия",
+   "real": 20,
+   "logged": 20,
+   "shown": 20,
+   "not_played": 0
+  },
+  "portugal": {
+   "name": "Примейра Лига Португалия",
+   "real": 19,
+   "logged": 19,
+   "shown": 19,
+   "not_played": 0
+  },
+  "france2": {
+   "name": "Франция - Лига 2",
+   "real": 19,
+   "logged": 19,
+   "shown": 19,
+   "not_played": 0
+  },
+  "spain2": {
+   "name": "Испания - Сегунда Дивисион",
+   "real": 22,
+   "logged": 22,
+   "shown": 22,
+   "not_played": 0
+  },
+  "italy2": {
+   "name": "Италия - Серия Б",
+   "real": 21,
+   "logged": 21,
+   "shown": 21,
+   "not_played": 0
+  },
+  "portugal2": {
+   "name": "Португалия - Сегунда Лига",
+   "real": 17,
+   "logged": 17,
+   "shown": 0,
+   "not_played": 0
+  },
+  "bulgaria2": {
+   "name": "България - Втора лига",
+   "real": 18,
+   "logged": 18,
+   "shown": 18,
+   "not_played": 0
+  },
+  "england2": {
+   "name": "Англия - Чемпиъншип",
+   "real": 36,
+   "logged": 36,
+   "shown": 0,
+   "not_played": 0
+  },
+  "germany2": {
+   "name": "Германия - Втора Бундеслига",
+   "real": 18,
+   "logged": 18,
+   "shown": 0,
+   "not_played": 0
+  }
+ },
+ "per_day": {
+  "2026-09-05": [
+   58,
+   58,
+   39
+  ],
+  "2026-09-06": [
+   41,
+   41,
+   34
+  ],
+  "2026-09-07": [
+   14,
+   14,
+   13
+  ],
+  "2026-09-08": [
+   13,
+   12,
+   6
+  ],
+  "2026-09-09": [
+   10,
+   10,
+   7
+  ],
+  "2026-09-10": [
+   7,
+   5,
+   5
+  ],
+  "2026-09-11": [
+   19,
+   19,
+   14
+  ],
+  "2026-09-12": [
+   59,
+   59,
+   43
+  ],
+  "2026-09-13": [
+   39,
+   39,
+   32
+  ],
+  "2026-09-14": [
+   14,
+   14,
+   12
+  ],
+  "2026-09-15": [
+   7,
+   7,
+   5
+  ],
+  "2026-09-16": [
+   13,
+   12,
+   12
+  ],
+  "2026-09-17": [
+   11,
+   7,
+   7
+  ],
+  "2026-09-18": [
+   17,
+   17,
+   14
+  ]
+ },
+ "errors": {},
+ "gaps": [
+  {
+   "league": "champions_league",
+   "fixture_id": 1635683,
+   "day": "2026-09-08",
+   "home": "Lille",
+   "away": "Real Betis",
+   "where": "няма ред в predictions_log"
+  },
+  {
+   "league": "champions_league",
+   "fixture_id": 1635659,
+   "day": "2026-09-10",
+   "home": "Fenerbahçe",
+   "away": "AS Roma",
+   "where": "няма ред в predictions_log"
+  },
+  {
+   "league": "champions_league",
+   "fixture_id": 1635648,
+   "day": "2026-09-10",
+   "home": "Como",
+   "away": "RB Leipzig",
+   "where": "няма ред в predictions_log"
+  },
+  {
+   "league": "europa_league",
+   "fixture_id": 1636344,
+   "day": "2026-09-16",
+   "home": "Sunderland",
+   "away": "AZ Alkmaar",
+   "where": "няма ред в predictions_log"
+  },
+  {
+   "league": "europa_league",
+   "fixture_id": 1636251,
+   "day": "2026-09-17",
+   "home": "Crystal Palace",
+   "away": "Lech Poznan",
+   "where": "няма ред в predictions_log"
+  },
+  {
+   "league": "europa_league",
+   "fixture_id": 1636287,
+   "day": "2026-09-17",
+   "home": "Lillestrom",
+   "away": "Torreense",
+   "where": "няма ред в predictions_log"
+  },
+  {
+   "league": "europa_league",
+   "fixture_id": 1636278,
+   "day": "2026-09-17",
+   "home": "Juventus",
+   "away": "NEC Nijmegen",
+   "where": "няма ред в predictions_log"
+  },
+  {
+   "league": "europa_league",
+   "fixture_id": 1636321,
+   "day": "2026-09-17",
+   "home": "Real Sociedad",
+   "away": "Bournemouth",
+   "where": "няма ред в predictions_log"
+  },
+  {
+   "league": "portugal2",
+   "fixture_id": 1576483,
+   "day": "2026-09-05",
+   "home": "Tondela",
+   "away": "FC Porto B",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "portugal2",
+   "fixture_id": 1576481,
+   "day": "2026-09-05",
+   "home": "Penafiel",
+   "away": "Academica",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "portugal2",
+   "fixture_id": 1576477,
+   "day": "2026-09-05",
+   "home": "Feirense",
+   "away": "Sporting CP B",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "portugal2",
+   "fixture_id": 1576476,
+   "day": "2026-09-05",
+   "home": "Benfica B",
+   "away": "Torreense",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "portugal2",
+   "fixture_id": 1576484,
+   "day": "2026-09-06",
+   "home": "Vizela",
+   "away": "Felgueiras 1932",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "portugal2",
+   "fixture_id": 1576479,
+   "day": "2026-09-06",
+   "home": "Leixoes",
+   "away": "Amarante",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "portugal2",
+   "fixture_id": 1576478,
+   "day": "2026-09-06",
+   "home": "União de Leiria",
+   "away": "Portimonense",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "portugal2",
+   "fixture_id": 1576480,
+   "day": "2026-09-07",
+   "home": "Lusitânia Lourosa",
+   "away": "AVS",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "portugal2",
+   "fixture_id": 1576493,
+   "day": "2026-09-11",
+   "home": "Torreense",
+   "away": "Leixoes",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "portugal2",
+   "fixture_id": 1576485,
+   "day": "2026-09-11",
+   "home": "Academica",
+   "away": "Benfica B",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "portugal2",
+   "fixture_id": 1576491,
+   "day": "2026-09-12",
+   "home": "Portimonense",
+   "away": "Tondela",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "portugal2",
+   "fixture_id": 1576490,
+   "day": "2026-09-12",
+   "home": "Felgueiras 1932",
+   "away": "Penafiel",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "portugal2",
+   "fixture_id": 1576486,
+   "day": "2026-09-13",
+   "home": "AVS",
+   "away": "Farense",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "portugal2",
+   "fixture_id": 1576488,
+   "day": "2026-09-13",
+   "home": "Chaves",
+   "away": "Feirense",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "portugal2",
+   "fixture_id": 1576487,
+   "day": "2026-09-13",
+   "home": "Amarante",
+   "away": "União de Leiria",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "portugal2",
+   "fixture_id": 1576489,
+   "day": "2026-09-14",
+   "home": "FC Porto B",
+   "away": "Vizela",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "portugal2",
+   "fixture_id": 1576492,
+   "day": "2026-09-14",
+   "home": "Sporting CP B",
+   "away": "Lusitânia Lourosa",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563136,
+   "day": "2026-09-05",
+   "home": "Preston",
+   "away": "Blackburn",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563139,
+   "day": "2026-09-05",
+   "home": "Stoke City",
+   "away": "Charlton",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563133,
+   "day": "2026-09-05",
+   "home": "Lincoln",
+   "away": "Southampton",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563132,
+   "day": "2026-09-05",
+   "home": "Burnley",
+   "away": "Bristol City",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563142,
+   "day": "2026-09-05",
+   "home": "West Ham",
+   "away": "Derby",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563134,
+   "day": "2026-09-05",
+   "home": "Millwall",
+   "away": "Bolton",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563141,
+   "day": "2026-09-05",
+   "home": "West Brom",
+   "away": "Watford",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563138,
+   "day": "2026-09-05",
+   "home": "Sheffield Utd",
+   "away": "Norwich",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563137,
+   "day": "2026-09-05",
+   "home": "QPR",
+   "away": "Middlesbrough",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563135,
+   "day": "2026-09-05",
+   "home": "Portsmouth",
+   "away": "Cardiff",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563140,
+   "day": "2026-09-05",
+   "home": "Swansea",
+   "away": "Wrexham",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563131,
+   "day": "2026-09-06",
+   "home": "Birmingham",
+   "away": "Wolves",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563149,
+   "day": "2026-09-08",
+   "home": "Watford",
+   "away": "Preston",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563148,
+   "day": "2026-09-08",
+   "home": "Southampton",
+   "away": "Swansea",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563146,
+   "day": "2026-09-08",
+   "home": "Cardiff",
+   "away": "Stoke City",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563143,
+   "day": "2026-09-08",
+   "home": "Blackburn",
+   "away": "Sheffield Utd",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563154,
+   "day": "2026-09-08",
+   "home": "Wrexham",
+   "away": "Burnley",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563144,
+   "day": "2026-09-08",
+   "home": "Bolton",
+   "away": "West Ham",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563152,
+   "day": "2026-09-09",
+   "home": "Derby",
+   "away": "West Brom",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563153,
+   "day": "2026-09-09",
+   "home": "Norwich",
+   "away": "Birmingham",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563151,
+   "day": "2026-09-09",
+   "home": "Charlton",
+   "away": "QPR",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563166,
+   "day": "2026-09-11",
+   "home": "West Ham",
+   "away": "Wrexham",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563165,
+   "day": "2026-09-12",
+   "home": "West Brom",
+   "away": "QPR",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563156,
+   "day": "2026-09-12",
+   "home": "Bolton",
+   "away": "Cardiff",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563158,
+   "day": "2026-09-12",
+   "home": "Derby",
+   "away": "Birmingham",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563164,
+   "day": "2026-09-12",
+   "home": "Watford",
+   "away": "Stoke City",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563162,
+   "day": "2026-09-12",
+   "home": "Southampton",
+   "away": "Bristol City",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563160,
+   "day": "2026-09-12",
+   "home": "Preston",
+   "away": "Lincoln",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563155,
+   "day": "2026-09-12",
+   "home": "Blackburn",
+   "away": "Millwall",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563159,
+   "day": "2026-09-12",
+   "home": "Middlesbrough",
+   "away": "Norwich",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563163,
+   "day": "2026-09-12",
+   "home": "Swansea",
+   "away": "Burnley",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563157,
+   "day": "2026-09-12",
+   "home": "Charlton",
+   "away": "Portsmouth",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563161,
+   "day": "2026-09-13",
+   "home": "Sheffield Utd",
+   "away": "Wolves",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563145,
+   "day": "2026-09-15",
+   "home": "Bristol City",
+   "away": "Lincoln",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563147,
+   "day": "2026-09-15",
+   "home": "Middlesbrough",
+   "away": "Millwall",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "england2",
+   "fixture_id": 1563168,
+   "day": "2026-09-18",
+   "home": "Bristol City",
+   "away": "Watford",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "germany2",
+   "fixture_id": 1576169,
+   "day": "2026-09-05",
+   "home": "VfL Wolfsburg",
+   "away": "Energie Cottbus",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "germany2",
+   "fixture_id": 1576165,
+   "day": "2026-09-05",
+   "home": "Holstein Kiel",
+   "away": "1. FC Nürnberg",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "germany2",
+   "fixture_id": 1576166,
+   "day": "2026-09-05",
+   "home": "1. FC Kaiserslautern",
+   "away": "SV Darmstadt 98",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "germany2",
+   "fixture_id": 1576167,
+   "day": "2026-09-05",
+   "home": "Dynamo Dresden",
+   "away": "VfL Bochum",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "germany2",
+   "fixture_id": 1576164,
+   "day": "2026-09-06",
+   "home": "Hertha BSC",
+   "away": "1. FC Magdeburg",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "germany2",
+   "fixture_id": 1576162,
+   "day": "2026-09-06",
+   "home": "SpVgg Greuther Fürth",
+   "away": "1. FC Heidenheim",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "germany2",
+   "fixture_id": 1576168,
+   "day": "2026-09-06",
+   "home": "VfL Osnabrück",
+   "away": "Eintracht Braunschweig",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "germany2",
+   "fixture_id": 1576176,
+   "day": "2026-09-11",
+   "home": "1. FC Nürnberg",
+   "away": "Hannover 96",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "germany2",
+   "fixture_id": 1576172,
+   "day": "2026-09-11",
+   "home": "SV Darmstadt 98",
+   "away": "Arminia Bielefeld",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "germany2",
+   "fixture_id": 1576170,
+   "day": "2026-09-12",
+   "home": "VfL Bochum",
+   "away": "SpVgg Greuther Fürth",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "germany2",
+   "fixture_id": 1576175,
+   "day": "2026-09-12",
+   "home": "1. FC Magdeburg",
+   "away": "1. FC Kaiserslautern",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "germany2",
+   "fixture_id": 1576171,
+   "day": "2026-09-12",
+   "home": "Eintracht Braunschweig",
+   "away": "Dynamo Dresden",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "germany2",
+   "fixture_id": 1576177,
+   "day": "2026-09-12",
+   "home": "FC St. Pauli",
+   "away": "VfL Wolfsburg",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "germany2",
+   "fixture_id": 1576173,
+   "day": "2026-09-13",
+   "home": "1. FC Heidenheim",
+   "away": "Holstein Kiel",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "germany2",
+   "fixture_id": 1576174,
+   "day": "2026-09-13",
+   "home": "Karlsruher SC",
+   "away": "Energie Cottbus",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "germany2",
+   "fixture_id": 1576178,
+   "day": "2026-09-13",
+   "home": "VfL Osnabrück",
+   "away": "Hertha BSC",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "germany2",
+   "fixture_id": 1576187,
+   "day": "2026-09-18",
+   "home": "VfL Wolfsburg",
+   "away": "SV Darmstadt 98",
+   "where": "филтър за доверие"
+  },
+  {
+   "league": "germany2",
+   "fixture_id": 1576181,
+   "day": "2026-09-18",
+   "home": "SpVgg Greuther Fürth",
+   "away": "1. FC Magdeburg",
+   "where": "филтър за доверие"
+  }
+ ]
+}
