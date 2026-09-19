@@ -51,6 +51,11 @@ SNAPSHOT_INTERVAL_MINUTES = 30
 SNAPSHOT_STALE_AFTER_MINUTES = 90
 
 DAY_TAB_COUNT = 7  # съвпада с DAYS_AHEAD прозореца, проверено т.2.6
+
+# A2 (ZADACHA_FAZA1.md, 19.09.2026): колко уредени мача се показват наведнъж
+# в таб "Приключили" и колко добавя бутонът "Покажи още".
+FINISHED_PAGE_SIZE = 25
+FINISHED_LIMIT_MAX = 2000
 BG_WEEKDAYS_SHORT = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"]
 BG_MONTHS_SHORT = ["яну", "фев", "мар", "апр", "май", "юни",
                     "юли", "авг", "сеп", "окт", "ное", "дек"]
@@ -141,6 +146,18 @@ def register_prognozi_routes(app, ctx):
         status_tab = request.args.get("status", "upcoming")
         if status_tab not in ("upcoming", "finished", "skipped"):
             status_tab = "upcoming"
+
+        # A2 (ZADACHA_FAZA1.md, 19.09.2026): "Приключили" показваше ЦЯЛАТА
+        # история (300+ реда) на една страница. Сървърно странициране -
+        # само за този таб ("Предстоящи" е ограничен до един ден, няма нужда).
+        # Рязането става ЧАК СЛЕД сортирането по-долу, за да е "последните
+        # X", не "случайни X". Горната граница е предпазна - не искаме
+        # ?limit=999999999 да строи безкраен списък.
+        try:
+            finished_limit = int(request.args.get("limit", FINISHED_PAGE_SIZE))
+        except ValueError:
+            finished_limit = FINISHED_PAGE_SIZE
+        finished_limit = max(FINISHED_PAGE_SIZE, min(finished_limit, FINISHED_LIMIT_MAX))
 
         # т.2.3: трите числа горе - САМО от evaluation.summary(), нищо друго.
         # Единен fetch на predictions_log - за отчета И за "Приключили" по-долу
@@ -337,6 +354,13 @@ def register_prognozi_routes(app, ctx):
 
         upcoming_rows.sort(key=lambda r: r["date"])
         finished_rows.sort(key=lambda r: r["date"], reverse=True)  # най-скоро уредените отгоре
+        # A2: пълният брой се пази ЗА ПОКАЗВАНЕ (броячът на таба, "Показани X
+        # от Y") - режем чак тук, след сортирането и след league филтъра, за
+        # да е "последните X от избраната лига".
+        finished_total = len(finished_rows)
+        finished_rows = finished_rows[:finished_limit]
+        finished_has_more = finished_total > len(finished_rows)
+        finished_next_limit = finished_limit + FINISHED_PAGE_SIZE
         skipped_rows.sort(key=lambda r: r["date"])
         no_pick_rows.sort(key=lambda r: r["date"])
         in_progress_rows.sort(key=lambda r: r["date"])
@@ -370,6 +394,8 @@ def register_prognozi_routes(app, ctx):
             league_filter=league_filter, league_options=league_options,
             status_tab=status_tab,
             upcoming_rows=upcoming_rows, finished_rows=finished_rows, skipped_rows=skipped_rows,
+            finished_total=finished_total, finished_limit=finished_limit,
+            finished_has_more=finished_has_more, finished_next_limit=finished_next_limit,
             no_pick_rows=no_pick_rows, in_progress_rows=in_progress_rows,
             snapshot_empty=snapshot_empty, snapshot_stale_note=snapshot_stale_note,
             market_copy_note=MARKET_COPY_NOTE,
