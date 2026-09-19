@@ -300,6 +300,12 @@ def register_prognozi_routes(app, ctx):
                 "pick_label": p["pick_label"], "pick_pct": p["pick_pct"],
                 "market_pct": market_pct, "diff": diff, "status": p["status"],
                 "market_copy": p["market_code"] in MARKET_COPY_CODES,
+                # A1 (ZADACHA_FAZA1.md, 19.09.2026): реалният резултат на мача.
+                # predictions_log ги пази още от init_db() (actual_home_goals/
+                # actual_away_goals, попълвани от check_results()) - published_picks()
+                # връща същите редове, така че тук няма нито ново четене, нито
+                # нова заявка. None-безопасно: шаблонът пада към тиренцето.
+                "hg": p["actual_home_goals"], "ag": p["actual_away_goals"],
             })
 
         # Преглед на Дака (01.09.2026), т.1: падащото меню обещаваше лиги от
