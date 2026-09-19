@@ -169,8 +169,16 @@ def register_prognozi_routes(app, ctx):
         # Единен fetch на predictions_log - за отчета И за "Приключили" по-долу
         # (т.3, преглед на Дака 01.09.2026: и двете вече минават през
         # evaluation.published_picks() - виж бележката там).
+        #
+        # A1 (ZADACHA_FAZA2.md, 19.09.2026): обратно на summary() - границата
+        # до мачове с реален market_odds (summary_priced_only()) съществуваше
+        # само за да съвпада n-ото на калибрацията с доходността. Доходността
+        # вече не се показва тук (виж templates/prognozi.html), значи
+        # калибрацията няма нужда от коефициент - стъпва на всички уредени
+        # публикувани прогнози. summary_priced_only() остава в evaluation.py
+        # непокътната, просто вече не се вика оттук.
         predictions = st.list_predictions()
-        scorecard = evaluation.summary_priced_only(predictions, policy)
+        scorecard = evaluation.summary(predictions, policy)
         published = evaluation.published_picks(predictions, policy)
 
         notes_map = st.get_all_match_notes()
