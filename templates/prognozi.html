@@ -232,7 +232,7 @@
         <div class="empty-note">Няма изчислени прогнози за този ден все още.</div>
         {% endif %}
         {% if upcoming_rows %}
-        <div class="colheader"><div>Час</div><div>Мач</div><div class="r">Прогноза</div><div class="r">Разлика с пазара</div></div>
+        <div class="colheader"><div>Час</div><div>Мач</div><div class="r">Прогноза</div><div class="r">Пазар</div></div>
         <div class="predlist">
           {% for m in upcoming_rows %}
           <a class="predrow" href="/prognozi/match/{{ m.fixture_id }}">
@@ -241,10 +241,15 @@
             <div class="pred-pick">{{ m.pick_label }} · {{ "%.0f"|format(m.pick_pct) }}%</div>
             {% if m.market_copy %}
             <div class="pred-edge copy">= пазар</div>
-            {% elif m.diff is none %}
+            {% elif m.market_pct is none %}
             <div class="pred-edge none">—</div>
             {% else %}
-            <div class="pred-edge {{ 'down' if m.diff < 0 else '' }}">{{ "+" if m.diff >= 0 else "" }}{{ "%.1f"|format(m.diff) }}%</div>
+            {# A4 (19.09.2026, решение на Дака): вече НЕ показваме цветен ±процент
+               разлика - цветната разлика се четеше като съвет "тук има стойност",
+               а нямаме доказано предимство пред пазара. Двете числа стоят едно до
+               друго, неутрално: колоната "Прогноза" е нашата оценка, тази - пазарната.
+               .pred-edge.down/.up CSS-ът остава в стила, просто не се ползва тук. #}
+            <div class="pred-edge">{{ "%.0f"|format(m.market_pct) }}%</div>
             {% endif %}
           </a>
           {% endfor %}
@@ -261,10 +266,15 @@
             <div class="pred-pick">{{ m.pick_label }} · {{ "%.0f"|format(m.pick_pct) }}%<span class="badge inprogress">резултатът се проверява</span></div>
             {% if m.market_copy %}
             <div class="pred-edge copy">= пазар</div>
-            {% elif m.diff is none %}
+            {% elif m.market_pct is none %}
             <div class="pred-edge none">—</div>
             {% else %}
-            <div class="pred-edge {{ 'down' if m.diff < 0 else '' }}">{{ "+" if m.diff >= 0 else "" }}{{ "%.1f"|format(m.diff) }}%</div>
+            {# A4 (19.09.2026, решение на Дака): вече НЕ показваме цветен ±процент
+               разлика - цветната разлика се четеше като съвет "тук има стойност",
+               а нямаме доказано предимство пред пазара. Двете числа стоят едно до
+               друго, неутрално: колоната "Прогноза" е нашата оценка, тази - пазарната.
+               .pred-edge.down/.up CSS-ът остава в стила, просто не се ползва тук. #}
+            <div class="pred-edge">{{ "%.0f"|format(m.market_pct) }}%</div>
             {% endif %}
           </a>
           {% endfor %}
@@ -292,7 +302,7 @@
       <div class="empty-note">Няма уредени мачове все още.</div>
       {% else %}
       <div class="tab-note">Пълна история на уредените публикувани прогнози (n={{ finished_total }}) — не е ограничена до избрания ден по-горе, дните горе показват само предстоящи.</div>
-      <div class="colheader"><div>Дата</div><div>Мач</div><div class="r">Прогноза</div><div class="r">Разлика с пазара</div></div>
+      <div class="colheader"><div>Дата</div><div>Мач</div><div class="r">Прогноза</div><div class="r">Пазар</div></div>
       <div class="predlist">
         {% for m in finished_rows %}
         <a class="predrow" href="/prognozi/match/{{ m.fixture_id }}">
@@ -301,10 +311,11 @@
           <div class="pred-pick">{{ m.pick_label }} · {{ "%.0f"|format(m.pick_pct) }}%<span class="badge {{ m.status }}">{{ "✓ позна" if m.status=="won" else "✗ не позна" }}</span></div>
           {% if m.market_copy %}
           <div class="pred-edge copy">= пазар</div>
-          {% elif m.diff is none %}
+          {% elif m.market_pct is none %}
           <div class="pred-edge none">—</div>
           {% else %}
-          <div class="pred-edge {{ 'down' if m.diff < 0 else '' }}">{{ "+" if m.diff >= 0 else "" }}{{ "%.1f"|format(m.diff) }}%</div>
+          {# A4 (19.09.2026): виж бележката в цикъла "Предстоящи" по-горе. #}
+          <div class="pred-edge">{{ "%.0f"|format(m.market_pct) }}%</div>
           {% endif %}
         </a>
         {% endfor %}
