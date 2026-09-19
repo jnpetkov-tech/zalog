@@ -73,6 +73,20 @@ def _dedupe_complementary(pool, get_pct, get_code):
     return [it for it in pool if get_code(it) not in exclude]
 
 
+# A2 (ZADACHA_FAZA2.md, 19.09.2026): нова подредба на заглавната прогноза -
+# 1x2 първо, после ou25, чак после останалите (симулирано в
+# validation/headline_rule_sim_20260919.md, одобрено от Дака). Групата идва
+# от policy.market_group() (подадения policy обект, не нов импорт - модулът
+# нарочно не внася prediction_policy, виж докстринга горе).
+_GROUP_PRIORITY = {"1x2": 0, "ou25": 1}
+_OTHER_GROUP_PRIORITY = 2
+
+
+def _sort_key(it, get_pct, get_code, policy):
+    grp = policy.market_group(get_code(it))
+    return (_GROUP_PRIORITY.get(grp, _OTHER_GROUP_PRIORITY), -get_pct(it))
+
+
 def _apply_rules(items, league, policy, get_pct, get_code, n, full_fallback, get_ev=None):
     """PROVEN -> allow_weak=True -> (по избор) пълен неfiltриран списък -> [].
 
@@ -98,7 +112,7 @@ def _apply_rules(items, league, policy, get_pct, get_code, n, full_fallback, get
     if not pool:
         return []
     deduped = _dedupe_complementary(pool, get_pct, get_code)
-    return sorted(deduped, key=get_pct, reverse=True)[:n]
+    return sorted(deduped, key=lambda it: _sort_key(it, get_pct, get_code, policy))[:n]
 
 
 def rank_candidates(candidates, league, policy, n=3):
