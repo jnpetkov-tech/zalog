@@ -56,6 +56,12 @@ DAY_TAB_COUNT = 7  # съвпада с DAYS_AHEAD прозореца, прове
 # в таб "Приключили" и колко добавя бутонът "Покажи още".
 FINISHED_PAGE_SIZE = 25
 FINISHED_LIMIT_MAX = 2000
+
+# Б2 (ZADACHA_PAT.md, 20.09.2026): "Най-голяма разлика с пазара" - минимален
+# брой мачове с известен пазарен процент, за да си струва да се показва
+# секцията, и колко реда показва.
+DIFF_HIGHLIGHTS_MIN = 3
+DIFF_HIGHLIGHTS_COUNT = 5
 BG_WEEKDAYS_SHORT = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"]
 BG_MONTHS_SHORT = ["яну", "фев", "мар", "апр", "май", "юни",
                     "юли", "авг", "сеп", "окт", "ное", "дек"]
@@ -382,6 +388,19 @@ def register_prognozi_routes(app, ctx):
             league_filter = "all"
 
         upcoming_rows.sort(key=lambda r: r["date"])
+
+        # Б2 (ZADACHA_PAT.md, 20.09.2026): "Най-голяма разлика с пазара" -
+        # само в таба "Предстоящи", от буквално upcoming_rows (вече носи
+        # pick_pct/market_pct/diff - никаква нова сметка), след league
+        # филтъра по-горе и след сортирането, за да отговаря на точно това,
+        # което се вижда в списъка отдолу. Скрито под DIFF_HIGHLIGHTS_MIN
+        # известни пазарни проценти - твърде малка извадка да е показателна.
+        diff_highlights = []
+        if status_tab == "upcoming":
+            known_market = [r for r in upcoming_rows if r["market_pct"] is not None]
+            if len(known_market) >= DIFF_HIGHLIGHTS_MIN:
+                diff_highlights = sorted(known_market, key=lambda r: abs(r["diff"]), reverse=True)[:DIFF_HIGHLIGHTS_COUNT]
+
         finished_rows.sort(key=lambda r: r["date"], reverse=True)  # най-скоро уредените отгоре
         # A2: пълният брой се пази ЗА ПОКАЗВАНЕ (броячът на таба, "Показани X
         # от Y") - режем чак тук, след сортирането и след league филтъра, за
@@ -428,7 +447,7 @@ def register_prognozi_routes(app, ctx):
             no_pick_rows=no_pick_rows, in_progress_rows=in_progress_rows,
             snapshot_empty=snapshot_empty, snapshot_stale_note=snapshot_stale_note,
             market_copy_note=MARKET_COPY_NOTE,
-            yesterday=yesterday,
+            yesterday=yesterday, diff_highlights=diff_highlights,
         )
 
     # Публична страница на мача (01.09.2026, задача от Дака, т.2). Изричен
