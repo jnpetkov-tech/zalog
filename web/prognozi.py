@@ -181,6 +181,21 @@ def register_prognozi_routes(app, ctx):
         scorecard = evaluation.summary(predictions, policy)
         published = evaluation.published_picks(predictions, policy)
 
+        # Б1 (ZADACHA_PAT.md, 20.09.2026): "Вчера" ред - вчерашната дата по
+        # софийско време (СЪЩИЯТ SOFIA_TZ като _now_sofia_str по-горе, не
+        # серверния UTC системен часовник - виж бележката там защо), от
+        # вече наличния `published` списък - същият източник като scorecard/
+        # finished_rows по-долу, никакво ново четене. Ако вчера няма нито
+        # една уредена прогноза, `yesterday` остава None и редът не се
+        # показва изобщо (решение на шаблона).
+        yesterday_str = (datetime.now(SOFIA_TZ).date() - timedelta(days=1)).isoformat()
+        yesterday_settled = [p for p in published
+                              if p["status"] in ("won", "lost") and p["match_date"][:10] == yesterday_str]
+        yesterday = None
+        if yesterday_settled:
+            yesterday = {"total": len(yesterday_settled),
+                         "correct": sum(1 for p in yesterday_settled if p["status"] == "won")}
+
         notes_map = st.get_all_match_notes()
 
         # ---- Предстоящи / Пропуснати: от predictions_snapshot (т.2.10) ----
@@ -413,6 +428,7 @@ def register_prognozi_routes(app, ctx):
             no_pick_rows=no_pick_rows, in_progress_rows=in_progress_rows,
             snapshot_empty=snapshot_empty, snapshot_stale_note=snapshot_stale_note,
             market_copy_note=MARKET_COPY_NOTE,
+            yesterday=yesterday,
         )
 
     # Публична страница на мача (01.09.2026, задача от Дака, т.2). Изричен

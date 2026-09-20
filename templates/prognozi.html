@@ -43,6 +43,12 @@
   .summary-link{ color:var(--accent); white-space:nowrap; font-weight:600; }
   .report-label{ font-size:13px; font-weight:600; color:var(--text-faint); margin-bottom:10px; }
 
+  /* Б1 (ZADACHA_PAT.md, 20.09.2026): "Вчера" ред - приглушен, под
+     обобщителния ред. Margin-top не се задава нарочно (0) - margin-collapse
+     с .summary-line's margin-bottom:24px пази същия отстъп, когато този ред
+     липсва (виж коментара в web/prognozi.py защо може да липсва). */
+  .yesterday-line{ font-size:12px; color:var(--text-faint); margin-bottom:24px; }
+
   .metrics{
     display:flex; margin-bottom:34px; border-top:1px solid var(--border); border-bottom:1px solid var(--border);
     scroll-margin-top:24px;
@@ -272,6 +278,10 @@
       </a>
       <a href="#full-report" class="summary-link">виж пълния отчет →</a>
     </div>
+
+    {% if yesterday %}
+    <div class="yesterday-line">Вчера: познахме {{ yesterday.correct }} от {{ yesterday.total }}</div>
+    {% endif %}
 
     {% if snapshot_stale_note %}
     <div class="stale-banner">⚠️ {{ snapshot_stale_note }} — по-старо от обичайното (преизчислява се на {{ snapshot_interval_minutes }} мин). Прогнозите по-долу може да не са най-новите.</div>
