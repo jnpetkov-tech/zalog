@@ -67,6 +67,66 @@ BG_MONTHS_SHORT = ["яну", "фев", "мар", "апр", "май", "юни",
                     "юли", "авг", "сеп", "окт", "ное", "дек"]
 
 
+# ZADACHA_PAZARI.md, ЧАСТ Б (22.09.2026): страницата на мача е карта с
+# пазари - всеки пазар с ВСИЧКИТЕ си изходи един до друг, в този ред.
+# (заглавие на секция, [(код, етикет на изхода), ...] на пазар, сбор на
+# изходите в %). Етикетите с {home}/{away} се попълват с кирилските имена.
+# Голове над/под 1.5 и 3.5 не се смятат никъде в системата (само 2.5) -
+# затова секция "Голове" има само реда за 2.5 (виж доклада в git log).
+MARKET_SECTIONS = [
+    ("Краен резултат", [
+        ([("home_win", "1"), ("draw", "X"), ("away_win", "2")], 100),
+    ]),
+    ("Двоен шанс", [
+        ([("dc_1x", "1X"), ("dc_12", "12"), ("dc_x2", "X2")], 200),
+    ]),
+    ("Голове", [
+        ([("over25", "Над 2.5"), ("under25", "Под 2.5")], 100),
+    ]),
+    ("Двата отбора отбелязват", [
+        ([("btts_yes", "Да"), ("btts_no", "Не")], 100),
+    ]),
+    ("Голове на отбор", [
+        ([("home_over15", "{home} над 1.5"), ("home_under15", "{home} под 1.5")], 100),
+        ([("away_over15", "{away} над 1.5"), ("away_under15", "{away} под 1.5")], 100),
+    ]),
+    ("Корнери", [
+        ([("corners_total_over_9.5", "Над 9.5"), ("corners_total_under_9.5", "Под 9.5")], 100),
+    ]),
+]
+# Изходите на един пазар трябва да се събират около 100% (двойният шанс -
+# около 200%, всеки изход покрива два от трите). 1X2 може да се отклони,
+# защото BLEND_WEIGHTS смесва изходите с различно тегло (виж
+# validation/blend_weights_v2_20260922.md) - пазар извън този диапазон не се
+# показва за конкретния мач, вместо да публикуваме числа, които не се сумират.
+MARKET_SUM_TOLERANCE_PCT = 3.0
+
+
+def build_market_sections(rows, league, policy, max_pct, home_cy, away_cy):
+    """Редовете (predictions_snapshot или predictions_log) за един мач ->
+    секциите на картата. Пазар влиза само ако ВСИЧКИТЕ му изходи са налични,
+    publishable за лигата, под max_pct (артефакт праг) и сборът им е в
+    допустимия диапазон. Секция без нито един пазар отпада изцяло."""
+    pct_by_code = {r["market_code"]: r["pick_pct"] for r in rows if r["pick_pct"] is not None}
+    sections = []
+    for title, markets in MARKET_SECTIONS:
+        shown = []
+        for outcomes, expected_sum in markets:
+            pcts = [pct_by_code.get(code) for code, _ in outcomes]
+            if any(p is None or p >= max_pct for p in pcts):
+                continue
+            if not all(policy.is_publishable(league, code) for code, _ in outcomes):
+                continue
+            total = sum(pcts) * 100.0 / expected_sum
+            if abs(total - 100.0) > MARKET_SUM_TOLERANCE_PCT:
+                continue
+            shown.append([{"code": code, "label": label.format(home=home_cy, away=away_cy), "pct": p}
+                          for (code, label), p in zip(outcomes, pcts)])
+        if shown:
+            sections.append({"title": title, "markets": shown})
+    return sections
+
+
 def _day_tab(d, today):
     if d == today:
         label = "Днес"
@@ -478,51 +538,12 @@ def register_prognozi_routes(app, ctx):
         match_date = rows[0]["match_date"]
         meta = st.get_fixture_meta_for_fixtures([fixture_id]).get(fixture_id)
 
-        # НОЩ 02.09.2026 (задача 3, NOSHT2.md): "пълната таблица" на
-        # страницата на мача вече показва ВСИЧКО публикуемо
-        # (policy.is_publishable - PROVEN/WEAK/UNVERIFIED), не само
-        # top-pick-eligible (ps.rank_logged_rows, стария филтър тук до
-        # тази нощ - PROVEN/WEAK, никога UNVERIFIED). Разликата има
-        # значение точно за england2/germany2 (структурно UNVERIFIED, виж
-        # validation/pokritie_i_byudzhet_20260902.md т.5) - преди тази
-        # промяна страницата им показваше празна таблица за ВСЕКИ мач,
-        # сега поне честно показва "още няма история" на всеки ред. Тази
-        # по-широка селекция засяга САМО тази таблица - top_pick_for_match()
-        # (списъка на /prognozi) продължава да минава през rank_logged_rows/
-        # is_top_pick_eligible, непроменено (виж prognozi() по-горе).
-        # REJECTED/NO_DATA (is_publishable()==False) и >=95% артефакти
-        # (ps.MAX_PUBLISHABLE_PCT) остават скрити, преброени в hidden_count.
-        eligible = [r for r in rows
-                    if r["pick_pct"] is not None and r["pick_pct"] < ps.MAX_PUBLISHABLE_PCT
-                    and policy.is_publishable(league, r["market_code"])]
-        eligible.sort(key=lambda r: r["pick_pct"], reverse=True)
-        # Задача 3 (NOSHT3.md, 02.09.2026): посетителите виждат само топ 7
-        # прогнози за мача (опростена таблица, без Пазарно/Разлика/Доверие
-        # колоните) - hidden_count вече брои И филтрираните (REJECTED/NO_DATA/
-        # >=95%), И всичко след топ 7, за да остане честно число.
-        eligible = eligible[:7]
-        hidden_count = len(rows) - len(eligible)
-
-        def _trust_label(code, is_market_copy):
-            if is_market_copy:
-                return "= пазарна оценка"
-            t = policy.tier(league, code)
-            if t == policy.PROVEN:
-                return "измерен и добър"
-            if t == policy.UNVERIFIED:
-                return "още няма история"
-            return "измерен и слаб"  # WEAK/REJECTED/NO_DATA (REJECTED/NO_DATA вече филтрирани по-горе)
-
-        market_rows = []
-        for r in eligible:
-            code = r["market_code"]
-            market_pct, diff = _row_diff(fixture_id, code, r["pick_pct"])
-            is_copy = code in MARKET_COPY_CODES
-            market_rows.append({
-                "label": r["pick_label"], "our_pct": r["pick_pct"],
-                "market_pct": market_pct, "diff": diff,
-                "market_copy": is_copy, "trust_label": _trust_label(code, is_copy),
-            })
+        # ZADACHA_PAZARI.md, ЧАСТ Б (22.09.2026): вместо "топ 7 по
+        # вероятност" - карта с пазари, всички изходи на пазара един до друг
+        # (build_market_sections по-горе). Непубликуем пазар просто липсва -
+        # без бележка, без брояч на скритото, без етикет за доверие.
+        home_cy, away_cy = to_cyrillic(home, league), to_cyrillic(away, league)
+        sections = build_market_sections(rows, league, policy, ps.MAX_PUBLISHABLE_PCT, home_cy, away_cy)
 
         return render_template(
             "prognozi_match.html", active_page="prognozi", found=True,
@@ -530,11 +551,10 @@ def register_prognozi_routes(app, ctx):
             league_name=ALL_LEAGUES.get(league, {}).get("name", league),
             league_logo=ALL_LEAGUES.get(league, {}).get("logo"),
             flag=LEAGUE_FLAGS.get(league, "⚽"),
-            home_cy=to_cyrillic(home, league), away_cy=to_cyrillic(away, league),
+            home_cy=home_cy, away_cy=away_cy,
             home_logo=meta.get("home_logo") if meta else None,
             away_logo=meta.get("away_logo") if meta else None,
-            date=match_date, market_rows=market_rows, hidden_count=hidden_count,
-            market_copy_note=MARKET_COPY_NOTE,
+            date=match_date, sections=sections,
         )
 
     app.register_blueprint(prognozi_bp)

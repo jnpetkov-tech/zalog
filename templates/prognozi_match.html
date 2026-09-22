@@ -33,28 +33,18 @@
   .hero-name{ font-size:18px; font-weight:700; }
   .hero-vs{ font-size:13px; color:var(--text-faint); align-self:center; padding-top:22px; }
 
-  /* ZADACHA_DIZAYN т.6: таблицата - Залог | Прогноза | Пазар. */
-  .colheader{
-    display:grid; grid-template-columns: 1fr 110px 110px; gap:14px;
-    padding:10px 16px; font-size:12px; color:var(--text-faint);
+  /* ZADACHA_PAZARI.md, ЧАСТ Б: карта с пазари - секция, под нея всеки
+     пазар е ред от клетки (изход + наш процент) една до друга. */
+  .msection{ margin-bottom:22px; }
+  .msection-title{ font-size:12.5px; font-weight:600; color:var(--sub); margin:0 0 8px 2px; }
+  .mrow{ display:grid; grid-auto-flow:column; grid-auto-columns:1fr; gap:8px; margin-bottom:8px; }
+  .mcell{
+    border:1px solid var(--border); border-radius:10px; padding:12px 14px;
+    display:flex; flex-direction:column; align-items:center; gap:4px; text-align:center;
   }
-  .colheader .r{text-align:right;}
+  .mcell .olabel{ font-size:13px; color:var(--sub); }
+  .mcell .opct{ font-size:18px; font-weight:700; color:var(--text); }
 
-  .estimate-note{ padding:0 0 12px; font-size:12px; color:var(--text-faint); text-align:right; }
-
-  .marketlist{ border:1px solid var(--border); border-radius:12px; overflow:hidden; }
-  .marketrow{
-    display:grid; grid-template-columns: 1fr 110px 110px; align-items:center;
-    gap:14px; padding:16px 20px; border-bottom:1px solid var(--border);
-  }
-  .marketrow:last-child{ border-bottom:none; }
-  .marketrow .label{ font-size:14px; font-weight:600; }
-  .marketrow .num{ text-align:right; }
-  .marketrow .num.our{ font-size:17px; font-weight:700; color:var(--text); }
-  .marketrow .num.our.first{ color:var(--accent); }
-  .marketrow .num.market{ font-size:15px; font-weight:600; color:var(--sub); }
-
-  .hidden-note{ margin-top:18px; font-size:13px; color:var(--text-faint); }
   .howto-link{ margin-top:10px; font-size:13px; }
   .howto-link a{ color:var(--accent); }
 
@@ -68,8 +58,8 @@
     .hero-teams{ gap:16px; }
     .hero-team{ width:92px; }
     .hero-vs{ padding-top:20px; }
-    .colheader{grid-template-columns: 1fr 70px 70px; gap:8px;}
-    .marketrow{grid-template-columns: 1fr 70px 70px; gap:8px; padding:14px 14px;}
+    .mcell{ padding:10px 8px; }
+    .mcell .opct{ font-size:16px; }
   }
 </style>
 </head>
@@ -102,24 +92,21 @@
       </div>
     </div>
 
-    {% if market_rows %}
-    <div class="colheader"><div>Залог</div><div class="r">Прогноза</div><div class="r">Пазар</div></div>
-    <div class="estimate-note">Прогноза = нашата оценка · Пазар = оценката по коефициентите</div>
-    <div class="marketlist">
-      {% for m in market_rows %}
-      <div class="marketrow">
-        <div class="label">{{ m.label }}</div>
-        <div class="num our{{ ' first' if loop.index0 == 0 else '' }}">{{ "%.1f"|format(m.our_pct) }}%</div>
-        <div class="num market">{% if m.market_copy %}=пазар{% elif m.market_pct is none %}—{% else %}{{ "%.0f"|format(m.market_pct) }}%{% endif %}</div>
+    {% if sections %}
+    {% for sec in sections %}
+    <div class="msection">
+      <div class="msection-title">{{ sec.title }}</div>
+      {% for market in sec.markets %}
+      <div class="mrow">
+        {% for o in market %}
+        <div class="mcell"><span class="olabel">{{ o.label }}</span><span class="opct">{{ "%.1f"|format(o.pct) }}%</span></div>
+        {% endfor %}
       </div>
       {% endfor %}
     </div>
+    {% endfor %}
     {% else %}
-    <div class="empty-note">Няма доверена прогноза за този мач.</div>
-    {% endif %}
-
-    {% if hidden_count %}
-    <div class="hidden-note">Още {{ hidden_count }} пазар{{ "а" if hidden_count != 1 else "" }} са изчислени, но измерено са по-зле от пазара, числото е твърде екстремно (≥95%), или не са сред топ 7 за този мач.</div>
+    <div class="empty-note">Няма прогноза за този мач.</div>
     {% endif %}
 
     <div class="howto-link"><a href="/prognozi#full-report">Искаш повече обяснения? → Как да чета тези числа</a></div>
