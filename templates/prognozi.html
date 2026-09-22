@@ -259,7 +259,7 @@
     {% endif %}
 
     {% if snapshot_stale_note %}
-    <div class="stale-banner">⚠️ {{ snapshot_stale_note }} — по-старо от обичайното (преизчислява се на {{ snapshot_interval_minutes }} мин). Прогнозите по-долу може да не са най-новите.</div>
+    <div class="stale-banner">Числата може да не са най-новите.</div>
     {% endif %}
 
     <div class="daystrip">
@@ -290,10 +290,10 @@
 
     {% if status_tab == 'upcoming' %}
       {% if snapshot_empty %}
-      <div class="empty-note">Изчаква следващо изчисление — прогнозите се смятат на фон, на всеки {{ snapshot_interval_minutes }} минути. Тази страница не тегли данни на живо.</div>
+      <div class="empty-note">Прогнозите за този ден още не са готови.</div>
       {% else %}
         {% if not upcoming_rows and not in_progress_rows %}
-        <div class="empty-note">Няма изчислени прогнози за този ден все още.</div>
+        <div class="empty-note">Няма прогнози за този ден.</div>
         {% endif %}
         {% if upcoming_rows %}
         <div class="colheader"><div>Час</div><div>Мач</div><div class="x12h"><span>1</span><span>X</span><span>2</span></div></div>
@@ -329,7 +329,7 @@
         {% endif %}
 
         {% if in_progress_rows %}
-        <div class="tab-note" style="margin-top:20px;">Мачове в ход ({{ in_progress_rows|length }}) — прогнозата е тази отпреди началото на мача, не се преизчислява на живо.</div>
+        <div class="tab-note" style="margin-top:20px;">Мачове в ход ({{ in_progress_rows|length }}). Показаното е отпреди началото на мача.</div>
         <div class="predlist">
           {% for m in in_progress_rows %}
           <a class="predrow" href="/prognozi/match/{{ m.fixture_id }}">
@@ -346,7 +346,7 @@
       {% if not finished_rows %}
       <div class="empty-note">Няма уредени мачове все още.</div>
       {% else %}
-      <div class="tab-note">Пълна история на уредените публикувани прогнози (n={{ finished_total }}) — не е ограничена до избрания ден по-горе, дните горе показват само предстоящи.</div>
+      <div class="tab-note">Всички приключили мачове, не само от избрания ден.</div>
       <div class="colheader"><div>Дата</div><div>Мач</div><div class="x12h"><span>1</span><span>X</span><span>2</span></div></div>
       <div class="predlist">
         {% for m in finished_rows %}
@@ -412,9 +412,7 @@
         {# A5 (ZADACHA_FAZA1.md, 19.09.2026): петте раздела ("Какво значи нашето
            число?" ... "Какво сме измерили за себе си") са заменени с кратък
            речник - три реда. Двата цветни блока под тях остават непроменени. #}
-        <p><b>Прогноза</b> — вероятността според нашия модел.</p>
-        <p><b>Пазар</b> — същата вероятност, извадена от коефициентите на букмейкърите.</p>
-        <p><b>"= пазар"</b> — тук нямаме собствено мнение, показваме само пазарната оценка.</p>
+        <p><b>Процентът</b> до всеки изход — нашата прогноза.</p>
 
         <div class="box warn">
           <h2 style="margin-top:0;">⚠️ Честно казано засега</h2>
