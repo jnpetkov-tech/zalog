@@ -1,0 +1,7 @@
+market_code,n_first,n_second,best_w_first_half,brier_first_at_bestw,brier_first_at_05,brier_second_at_bestw,brier_second_at_05,brier_second_at_00,brier_second_at_10,enough_data,holds_out_of_sample
+away_win,420,420,0.8,0.18384,0.185,0.19786,0.20215,0.2176,0.19709,True,True
+draw,420,420,1.0,0.18296,0.18384,0.1898,0.19029,0.19216,0.1898,True,True
+home_win,420,420,1.0,0.20224,0.21026,0.21304,0.22406,0.24872,0.21304,True,True
+over25,420,420,0.9,0.23707,0.23904,0.23819,0.25001,0.27421,0.23629,True,True
+under25,420,420,0.9,0.23707,0.23904,0.23819,0.25001,0.27421,0.23629,True,True
+ALL,2100,2100,1.0,0.20882,0.21143,0.2145,0.22331,0.24138,0.2145,True,True
