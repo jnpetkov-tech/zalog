@@ -49,24 +49,6 @@
      липсва (виж коментара в web/prognozi.py защо може да липсва). */
   .yesterday-line{ font-size:12px; color:var(--text-faint); margin-bottom:24px; }
 
-  /* Б2 (ZADACHA_PAT.md, 20.09.2026): "Най-голяма разлика с пазара". */
-  .diffbox{ margin-bottom:24px; background:var(--panel2); border:1px solid var(--border);
-    border-radius:12px; padding:16px 20px; }
-  .diffbox-title{ font-size:13px; font-weight:600; color:var(--sub); margin-bottom:10px; }
-  .difflist{ display:flex; flex-direction:column; }
-  .diffrow{ display:flex; justify-content:space-between; align-items:baseline; gap:12px;
-    font-size:13.5px; padding:8px 0; border-bottom:1px solid var(--border); flex-wrap:wrap; }
-  .diffrow:last-child{ border-bottom:none; padding-bottom:0; }
-  .diffrow:first-child{ padding-top:0; }
-  .diff-match{ font-weight:600; }
-  .diff-nums{ color:var(--sub); font-size:13px; white-space:nowrap; }
-  .diff-vs{ color:var(--text-faint); font-weight:400; }
-  .diff-delta{ font-weight:700; color:var(--text); margin-left:4px; }
-  .diffbox-note{ margin-top:12px; font-size:12px; color:var(--text-faint); }
-  @media (max-width: 620px){
-    .diffrow{ flex-direction:column; align-items:flex-start; gap:2px; }
-  }
-
   .metrics{
     display:flex; margin-bottom:34px; border-top:1px solid var(--border); border-bottom:1px solid var(--border);
     scroll-margin-top:24px;
@@ -116,12 +98,10 @@
   .statustabs a .count{color:var(--text-faint); font-weight:400;}
 
   .colheader{
-    display:grid; grid-template-columns: 76px 1fr 250px 92px; gap:18px;
+    display:grid; grid-template-columns: 76px 1fr 240px; gap:18px;
     padding:14px 18px 10px; font-size:12px; color:var(--text-faint);
   }
   .colheader .r{text-align:right;}
-  /* A5 (19.09.2026): тънкото пояснение под колонхедъра на "Предстоящи". */
-  .col-legend{ padding:0 18px 10px; font-size:11.5px; color:var(--text-faint); }
 
   /* ZADACHA_DIZAYN т.1: лентата над всяка лига-група в "Предстоящи". */
   .league-group-head{
@@ -146,10 +126,10 @@
      редове в обща лента с 1px фуги (стария .predlist trick с background=border). */
   .predlist{display:flex; flex-direction:column; gap:10px;}
   .predrow{
-    display:grid; grid-template-columns: 76px 1fr 250px 92px; align-items:center;
+    display:grid; grid-template-columns: 76px 1fr 240px; align-items:center;
     gap:18px; background:var(--panel); border:1px solid var(--border); border-radius:14px;
     padding:18px 22px;
-    grid-template-areas: "time match pick market";
+    grid-template-areas: "time match pick";
     transition: border-color .12s ease, background-color .12s ease;
   }
   .predrow:hover{ border-color:rgba(24,185,138,0.35); background:var(--panel2); }
@@ -175,28 +155,16 @@
     flex:0 0 auto;
   }
   .pred-pick{grid-area:pick; display:flex; justify-content:flex-end; align-items:center; gap:8px; flex-wrap:wrap;}
-  .pred-pick.nopick-text{ color:var(--text-faint); font-weight:400; font-size:13.5px; text-align:right; }
-  /* ZADACHA_DIZAYN т.4: прогнозата - "хапче". */
-  .pick-pill{
-    display:inline-flex; align-items:center; gap:8px; background:var(--accent-soft);
-    border:1px solid rgba(24,185,138,0.35); border-radius:10px; padding:9px 14px;
-  }
-  .pick-pill .pick-label{font-size:14px; color:var(--text); font-weight:600;}
-  .pick-pill .pick-pct{font-size:17px; font-weight:700; color:var(--accent);}
-  .pick-pill .pick-mark{font-size:14px; font-weight:700;}
-  .pick-pill .pick-mark.won{color:var(--accent);}
-  .pick-pill .pick-mark.lost{color:var(--red);}
-  /* ZADACHA_DIZAYN т.5: непозната прогноза - хапчето неутрално, зеленото само за познати. */
-  .pick-pill.neutral{background:var(--panel2); border-color:var(--border);}
-  .pick-pill.neutral .pick-label{color:var(--sub);}
-  .pick-pill.neutral .pick-pct{color:var(--sub);}
   .badge.inprogress{font-size:11px; color:var(--text-faint); font-weight:400;}
-  /* ZADACHA_DIZAYN т.4: пазарното число - дясна колона, дума "пазар" + число, без цвят/знак. */
-  .market-col{grid-area:market; text-align:right;}
-  .market-label{font-size:11px; color:var(--text-faint);}
-  .market-num{font-size:15px; font-weight:600; color:var(--sub); margin-top:2px;}
-  .market-num.copy{color:var(--yellow); font-size:13px; font-weight:600;}
-
+  /* ZADACHA_PAZARI.md, ЧАСТ В: трите числа 1/X/2 - най-високото по-плътно,
+     без цвят и без знак. */
+  .x12{ display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; width:100%; }
+  .x12 .o{ display:flex; flex-direction:column; align-items:center; gap:2px;
+    background:var(--panel2); border:1px solid var(--border); border-radius:9px; padding:6px 4px; }
+  .x12 .ol{ font-size:11px; color:var(--text-faint); }
+  .x12 .op{ font-size:15px; font-weight:500; color:var(--sub); }
+  .x12 .o.top .op{ font-weight:800; color:var(--text); }
+  .colheader .x12h{ display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; text-align:center; }
   .empty-note{ padding:28px 18px; text-align:center; color:var(--sub); font-size:13.5px;
     background:var(--panel2); border:1px solid var(--border); border-radius:10px; }
 
@@ -211,13 +179,6 @@
   .showmore a{ color:var(--accent); font-weight:600; border:1px solid var(--border);
     border-radius:8px; padding:8px 16px; }
   .showmore a:hover{ background:var(--panel2); }
-
-  .nopick{ margin-top:20px; }
-  .nopick summary{ cursor:pointer; font-size:13px; color:var(--text-faint); list-style:none; padding:4px 0; }
-  .nopick summary::-webkit-details-marker{display:none;}
-  .nopick summary::before{content:"▸ ";}
-  .nopick[open] summary::before{content:"▾ ";}
-  .nopick-text{ color:var(--text-faint); font-weight:400; text-align:right; }
 
   .howto{ margin-top:34px; border:1px solid var(--border); border-radius:12px; padding:0; overflow:hidden; }
   .howto summary{ cursor:pointer; padding:16px 20px; font-size:14px; font-weight:600; list-style:none; }
@@ -246,22 +207,19 @@
 
   /* ZADACHA_DIZAYN т.7: под 620px картата се пренарежда вертикално чрез
      grid-template-areas - DOM редът остава непроменен, само визуалната
-     подредба. Колонните заглавия (.colheader) се крият, .col-legend НЕ
-     (нарочно, виж бележка A5 по-горе - трябва да се вижда и на телефон). */
+     подредба. Колонните заглавия (.colheader) се крият. */
   @media (max-width: 620px){
     .colheader{display:none;}
     .league-group-head{margin:18px 0 8px;}
     .predrow{
       grid-template-columns: 1fr auto;
       grid-template-areas:
-        "time market"
+        "time time"
         "match match"
         "pick pick";
       row-gap:10px; column-gap:10px; padding:16px;
     }
-    .market-col{text-align:right;}
     .pred-pick{justify-content:flex-start;}
-    .pred-pick .pick-pill{width:100%; justify-content:center;}
     .team-logo{width:32px; height:32px;}
     .crest-fallback{width:32px; height:32px; font-size:11px;}
   }
@@ -269,13 +227,12 @@
 </head>
 <body>
 
-{# ZADACHA_DIZAYN: три малки помощни макроса, за да не се повтаря герб-с-
-   резерва/хапче/пазарна-колона маркъпа на пет различни места в тази страница. #}
+{# ZADACHA_DIZAYN: малки помощни макроса, за да не се повтаря герб-с-резерва
+   и 1/X/2 маркъпа на няколко места в тази страница. #}
 {% macro crest(logo, name) %}{% if logo %}<img class="team-logo" src="{{ logo }}" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">{% endif %}<span class="crest-fallback"{% if not logo %} style="display:flex;"{% endif %}>{{ (name or '')[:3]|upper }}</span>{% endmacro %}
 
-{% macro market_col(m) %}<div class="market-col"><div class="market-label">пазар</div>{% if m.market_copy %}<div class="market-num copy">= пазар</div>{% elif m.market_pct is none %}<div class="market-num">—</div>{% else %}<div class="market-num">{{ "%.0f"|format(m.market_pct) }}%</div>{% endif %}</div>{% endmacro %}
-
-{% macro pick_pill(m, mark=none) %}<div class="pick-pill{{ ' neutral' if mark=='lost' else '' }}"><span class="pick-label">{{ m.pick_label }}</span><span class="pick-pct">{{ "%.0f"|format(m.pick_pct) }}%</span>{% if mark=='won' %}<span class="pick-mark won">✓</span>{% elif mark=='lost' %}<span class="pick-mark lost">✗</span>{% endif %}</div>{% endmacro %}
+{# ZADACHA_PAZARI.md, ЧАСТ В: 1/X/2; ако 1X2 не е публикуем - празно, без текст. #}
+{% macro x12(m) %}{% if m.x12 %}<div class="x12">{% for o in m.x12 %}<div class="o{{ ' top' if o.top else '' }}"><span class="ol">{{ o.label }}</span><span class="op">{{ "%.0f"|format(o.pct) }}%</span></div>{% endfor %}</div>{% endif %}{% endmacro %}
 
   <div class="shell">
 
@@ -335,28 +292,11 @@
       {% if snapshot_empty %}
       <div class="empty-note">Изчаква следващо изчисление — прогнозите се смятат на фон, на всеки {{ snapshot_interval_minutes }} минути. Тази страница не тегли данни на живо.</div>
       {% else %}
-        {% if diff_highlights %}
-        <div class="diffbox">
-          <div class="diffbox-title">Най-голяма разлика с пазара</div>
-          <div class="difflist">
-            {% for m in diff_highlights %}
-            <a class="diffrow" href="/prognozi/match/{{ m.fixture_id }}">
-              <span class="diff-match">{{ m.home_cy }} — {{ m.away_cy }}</span>
-              <span class="diff-nums">{{ "%.0f"|format(m.pick_pct) }}% <span class="diff-vs">срещу</span> {{ "%.0f"|format(m.market_pct) }}% пазар <span class="diff-delta">{{ '+' if m.diff >= 0 else '' }}{{ "%.1f"|format(m.diff) }}%</span></span>
-            </a>
-            {% endfor %}
-          </div>
-          <div class="diffbox-note">Показваме само къде числата се разминават с пазара. Не е препоръка за залог.</div>
-        </div>
-        {% endif %}
-        {% if not upcoming_rows and not no_pick_rows and not in_progress_rows %}
+        {% if not upcoming_rows and not in_progress_rows %}
         <div class="empty-note">Няма изчислени прогнози за този ден все още.</div>
         {% endif %}
         {% if upcoming_rows %}
-        <div class="colheader"><div>Час</div><div>Мач</div><div class="r">Прогноза</div><div class="r">Пазар</div></div>
-        {# A5 (19.09.2026): самостоятелен ред, не част от .colheader - .colheader
-           е display:none под 620px, а това пояснение трябва да се вижда и там. #}
-        <div class="col-legend">Прогноза = нашата оценка · Пазар = оценката по коефициентите</div>
+        <div class="colheader"><div>Час</div><div>Мач</div><div class="x12h"><span>1</span><span>X</span><span>2</span></div></div>
         {# ZADACHA_DIZAYN т.1: групиране по лига, групите подредени по часа на
            първия мач в тях. upcoming_rows идва вече сортиран хронологично от
            web/prognozi.py - затова първата поява на всяка лига в потока пада
@@ -381,8 +321,7 @@
           <a class="predrow" href="/prognozi/match/{{ m.fixture_id }}">
             <div class="pred-timecol"><div class="pred-time-hour">{{ m.date[-5:] }}</div></div>
             <div class="pred-match">{{ crest(m.home_logo, m.home_cy) }}{{ m.home_cy }} — {{ m.away_cy }}{{ crest(m.away_logo, m.away_cy) }}</div>
-            <div class="pred-pick">{{ pick_pill(m) }}</div>
-            {{ market_col(m) }}
+            <div class="pred-pick">{{ x12(m) }}</div>
           </a>
           {% endfor %}
         </div>
@@ -396,42 +335,25 @@
           <a class="predrow" href="/prognozi/match/{{ m.fixture_id }}">
             <div class="pred-timecol"><div class="pred-time-hour">{{ m.date[-5:] }}</div><div class="pred-league">{% if m.league_logo %}<img class="league-logo" src="{{ m.league_logo }}" alt="" onerror="this.style.display='none'">{% endif %}{{ m.flag }} {{ m.league_name }}</div></div>
             <div class="pred-match">{{ crest(m.home_logo, m.home_cy) }}{{ m.home_cy }} — {{ m.away_cy }}{{ crest(m.away_logo, m.away_cy) }}</div>
-            <div class="pred-pick">{{ pick_pill(m) }}<span class="badge inprogress">резултатът се проверява</span></div>
-            {{ market_col(m) }}
+            <div class="pred-pick">{{ x12(m) }}<span class="badge inprogress">резултатът се проверява</span></div>
           </a>
           {% endfor %}
         </div>
         {% endif %}
 
-        {% if no_pick_rows %}
-        <details class="nopick">
-          <summary>Мачове без доверена прогноза ({{ no_pick_rows|length }})</summary>
-          <div class="predlist" style="margin-top:10px;">
-            {% for m in no_pick_rows %}
-            <div class="predrow">
-              <div class="pred-timecol"><div class="pred-time">{{ m.date[-5:] }}</div><div class="pred-league">{% if m.league_logo %}<img class="league-logo" src="{{ m.league_logo }}" alt="" onerror="this.style.display='none'">{% endif %}{{ m.flag }} {{ m.league_name }}</div></div>
-              <div class="pred-match">{{ crest(m.home_logo, m.home_cy) }}{{ m.home_cy }} — {{ m.away_cy }}{{ crest(m.away_logo, m.away_cy) }}</div>
-              <div class="pred-pick nopick-text">Нямаме доверена прогноза за този мач</div>
-              <div class="market-col"></div>
-            </div>
-            {% endfor %}
-          </div>
-        </details>
-        {% endif %}
       {% endif %}
     {% elif status_tab == 'finished' %}
       {% if not finished_rows %}
       <div class="empty-note">Няма уредени мачове все още.</div>
       {% else %}
       <div class="tab-note">Пълна история на уредените публикувани прогнози (n={{ finished_total }}) — не е ограничена до избрания ден по-горе, дните горе показват само предстоящи.</div>
-      <div class="colheader"><div>Дата</div><div>Мач</div><div class="r">Прогноза</div><div class="r">Пазар</div></div>
+      <div class="colheader"><div>Дата</div><div>Мач</div><div class="x12h"><span>1</span><span>X</span><span>2</span></div></div>
       <div class="predlist">
         {% for m in finished_rows %}
         <a class="predrow" href="/prognozi/match/{{ m.fixture_id }}">
           <div class="pred-timecol"><div class="pred-time">{{ m.date[8:10] }}.{{ m.date[5:7] }} {{ m.date[-5:] }}</div><div class="pred-league">{% if m.league_logo %}<img class="league-logo" src="{{ m.league_logo }}" alt="" onerror="this.style.display='none'">{% endif %}{{ m.flag }} {{ m.league_name }}</div></div>
           <div class="pred-match">{{ crest(m.home_logo, m.home_cy) }}{{ m.home_cy }} {% if m.hg is not none and m.ag is not none %}<span class="pred-score">{{ m.hg }}:{{ m.ag }}</span>{% else %}—{% endif %} {{ m.away_cy }}{{ crest(m.away_logo, m.away_cy) }}</div>
-          <div class="pred-pick">{{ pick_pill(m, m.status) }}</div>
-          {{ market_col(m) }}
+          <div class="pred-pick">{{ x12(m) }}</div>
         </a>
         {% endfor %}
       </div>
@@ -452,14 +374,13 @@
       {% if not skipped_rows %}
       <div class="empty-note">Няма пропуснати мачове за този ден.</div>
       {% else %}
-      <div class="colheader"><div>Час</div><div>Мач</div><div class="r"></div><div class="r"></div></div>
+      <div class="colheader"><div>Час</div><div>Мач</div><div class="r"></div></div>
       <div class="predlist">
         {% for m in skipped_rows %}
         <div class="predrow">
           <div class="pred-timecol"><div class="pred-time">{{ m.date[-5:] }}</div><div class="pred-league">{% if m.league_logo %}<img class="league-logo" src="{{ m.league_logo }}" alt="" onerror="this.style.display='none'">{% endif %}{{ m.flag }} {{ m.league_name }}</div></div>
           <div class="pred-match">{{ crest(m.home_logo, m.home_cy) }}{{ m.home_cy }} — {{ m.away_cy }}{{ crest(m.away_logo, m.away_cy) }}</div>
           <div class="pred-pick" style="color:var(--text-faint);font-weight:400;">Изключен от прогнозите</div>
-          <div class="market-col"></div>
         </div>
         {% endfor %}
       </div>

@@ -7,10 +7,10 @@ API-Football (т.2.10) - чете само вече изчислени данн�
 източник, който вече вика evaluation.summary(), т.2.3) и кешираните
 коефициенти (odds_cache) - никога на живо.
 
-Прогнозата на всеки ред е pick_selection.top_pick_for_match() -
-единственият избор на "прогнозата за мача" в цялото приложение (виж
-CLAUDE_HANDOFF.md, ПРЕУСТРОЙСТВО раздел 14) - нито отделна логика, нито
-друг праг (т.2.7).
+ZADACHA_PAZARI.md (22.09.2026): редът в списъка показва трите числа 1/X/2,
+страницата на мача - карта с всички публикуеми пазари (MARKET_SECTIONS,
+build_market_sections по-долу). pick_selection.top_pick_for_match() вече не
+се показва тук - остава единственият избор за метриките (evaluation).
 
 Оформление/шрифт/цветове/структура: design_mockup_prognozi.html (Дака,
 committed като спецификация) - числата в макета са измислен пълнеж, тук
@@ -57,11 +57,6 @@ DAY_TAB_COUNT = 7  # съвпада с DAYS_AHEAD прозореца, прове
 FINISHED_PAGE_SIZE = 25
 FINISHED_LIMIT_MAX = 2000
 
-# Б2 (ZADACHA_PAT.md, 20.09.2026): "Най-голяма разлика с пазара" - минимален
-# брой мачове с известен пазарен процент, за да си струва да се показва
-# секцията, и колко реда показва.
-DIFF_HIGHLIGHTS_MIN = 3
-DIFF_HIGHLIGHTS_COUNT = 5
 BG_WEEKDAYS_SHORT = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"]
 BG_MONTHS_SHORT = ["яну", "фев", "мар", "апр", "май", "юни",
                     "юли", "авг", "сеп", "окт", "ное", "дек"]
@@ -127,6 +122,18 @@ def build_market_sections(rows, league, policy, max_pct, home_cy, away_cy):
     return sections
 
 
+def x12_from_sections(sections):
+    """ЧАСТ В: трите числа 1/X/2 за реда в списъка - буквално секцията
+    "Краен резултат" от картата на мача (същите филтри), или None, ако 1X2
+    не е публикуем/не се сумира за този мач. Най-високото се маркира."""
+    for sec in sections:
+        if sec["title"] == "Краен резултат":
+            outcomes = sec["markets"][0]
+            top = max(o["pct"] for o in outcomes)
+            return [{**o, "top": o["pct"] == top} for o in outcomes]
+    return None
+
+
 def _day_tab(d, today):
     if d == today:
         label = "Днес"
@@ -146,49 +153,8 @@ def register_prognozi_routes(app, ctx):
     ps = ctx["ps"]
     policy = ctx["policy"]
     to_cyrillic = ctx["to_cyrillic"]
-    market_info_for_pick = ctx["_market_info_for_pick"]
-    MARKET_COPY_CODES = ctx["MARKET_COPY_CODES"]
-    MARKET_COPY_NOTE = ctx["MARKET_COPY_NOTE"]
 
     prognozi_bp = Blueprint("prognozi", __name__)
-
-    def _row_diff(fixture_id, code, our_pct):
-        """Т.2.4: СЪЩАТА формула/помощна функция, която /daily вече ползва
-        за 'пазар X% · разлика +Y%' (_market_info_for_pick, devig от
-        кеширани коефициенти) - приложена тук за пазара, избран от
-        top_pick_for_match (т.2.7), не отделно пресметнат избор."""
-        cached_odds = st.get_cached_odds(fixture_id)
-        info = market_info_for_pick(code, cached_odds)
-        if not info:
-            return None, None
-        market_p, _odd = info
-        market_pct = market_p * 100
-        return market_pct, our_pct - market_pct
-
-    def _snapshot_ev_pct(fixture_id, code, pick_pct):
-        """Поправка 02.09.2026 (Дака: guard-ът покриваше историята
-        (predictions_log), не витрината): implied EV% за избраната
-        прогноза на ПРЕДСТОЯЩ мач, за да може guard-ът в pick_selection.py
-        (веднъж приложен само върху predictions_log/top_pick_for_match) да
-        важи и тук. predictions_snapshot редовете НЯМАТ market_odds/
-        our_fair_odds колони (виж validation/ev_guard_applied_20260902.md)
-        - смята се от каквото има: кешираният пазарен коефициент (st.
-        get_cached_odds, СЪЩИЯТ източник като _row_diff по-горе, покрива
-        само home_win/draw/away_win/over25/under25 - odds_cache схемата)
-        + our_fair_odds по СЪЩАТА конвенция като system_tracker.
-        log_all_markets() (100/pick_pct, закръглено на 2 знака).
-
-        Самата EV формула и прагът НЕ се преизобретяват тук - вика
-        pick_selection._row_ev_pct()/MAX_TRUSTWORTHY_EV директно (ps е
-        pick_selection модула). None, ако коефициент липсва - EV не е
-        сметаем за пазар извън тези пет, не гадаем."""
-        cached_odds = st.get_cached_odds(fixture_id)
-        odds_key = st.MARKET_ODDS_MAP.get(code)
-        market_odds_val = cached_odds.get(odds_key) if (cached_odds and odds_key) else None
-        if not market_odds_val or not pick_pct:
-            return None
-        our_fair_odds = round(100.0 / pick_pct, 2)
-        return ps._row_ev_pct({"market_odds": market_odds_val, "our_fair_odds": our_fair_odds})
 
     # Смяна на входните точки (01.09.2026, задача от Дака): "/" вече е
     # публичната начална страница - СЪЩАТА view функция, два маршрута
@@ -275,23 +241,24 @@ def register_prognozi_routes(app, ctx):
         # по образец на notes_map по-горе.
         fixture_meta = st.get_fixture_meta_for_fixtures(list(snap_by_fixture.keys()))
 
-        # Преглед на Дака (01.09.2026), т.2 от предишната поправка:
-        # top_pick_for_match() връща None за мач без публикуема прогноза -
-        # такъв мач вече отива в no_pick_rows, сгъната секция, вместо да
-        # изчезва без следа.
+        # ZADACHA_PAZARI.md, ЧАСТ В (22.09.2026): редът в списъка вече не е
+        # "една избрана прогноза" (top_pick_for_match), а трите числа 1/X/2 -
+        # СЪЩИТЕ като на картата на мача (build_market_sections). Мач влиза в
+        # списъка, ако картата му има поне един публикуем пазар; ако 1X2 не
+        # е публикуем, колоната остава празна. Мач без нито един публикуем
+        # пазар не се показва (досегашната сгъната секция "без доверена
+        # прогноза" отпада - без обяснителни надписи). top_pick_for_match()
+        # остава непокътнат - ползва се от метриките (evaluation), просто
+        # вече не се показва тук.
         #
-        # Преглед на Дака (01.09.2026), нова т.2 ("мачовете в ход изчезват"):
-        # часовият филтър от предишната поправка (само бъдещи в
-        # "Предстоящи") остави дупка - мач, започнал, но още неуреден
-        # (check_results върви на 3 часа), не е нито в "Предстоящи" (вече в
-        # миналото), нито в "Приключили" (не е settled) - изчезваше напълно.
-        # settled_fixture_ids - същият published списък, който вече дефинира
-        # "Приключили" по-долу (т.3 от предишната поправка) - едно
-        # определение за "уреден", не второ.
-        settled_fixture_ids = {p["fixture_id"] for p in published if p["status"] in ("won", "lost")}
+        # "Мачове в ход" (преглед на Дака 01.09.2026, т.2): започнал, още
+        # неуреден. settled_fixture_ids - всеки уреден ред в лога (не само
+        # published), за да не остане мач без публикувана топ прогноза
+        # завинаги "в ход".
+        settled_fixture_ids = {p["fixture_id"] for p in predictions if p["status"] in ("won", "lost")}
         now_sofia_str = _now_sofia_str()
 
-        upcoming_rows, skipped_rows, no_pick_rows, in_progress_rows = [], [], [], []
+        upcoming_rows, skipped_rows, in_progress_rows = [], [], []
         for fixture_id, rows in snap_by_fixture.items():
             league = rows[0]["league"]
             meta = fixture_meta.get(fixture_id)
@@ -307,66 +274,20 @@ def register_prognozi_routes(app, ctx):
             }
             note = notes_map.get(fixture_id)
             if note and note["skip"]:
-                # Пропуснат от Дака - приоритетно пред "без доверена
-                # прогноза"/"в ход" (мачът може реално да няма прогноза И да
-                # е пропуснат - показва се като пропуснат, не дублиран).
                 skipped_rows.append(base)
                 continue
 
-            # НОЩ 02.09.2026 (задача 3, NOSHT2.md): predictions_snapshot вече
-            # пази до 24 пазара на мач (виж build_predictions_snapshot.py),
-            # не само осемте сурови кандидата - ГРАНИЦАТА, изрично поставена
-            # в задачата, е top_pick_for_match() да продължи да избира от
-            # ТОЧНО СЪЩОТО множество като преди. Филтърът тук е буквално
-            # предишното съдържание на снимката (is_candidate=1 маркира
-            # редовете от m["picks"], незасегнати от тазвечершната промяна) -
-            # потвърдено с 0 разминавания върху 168 живи мача преди деплой,
-            # виж validation/full_market_table_20260902.md.
-            candidate_rows = [r for r in rows if r["is_candidate"]]
-            top = ps.top_pick_for_match(candidate_rows, league, policy)
-            if top:
-                # 02.09.2026: guard-ът в pick_selection.py вече отхвърля
-                # такъв избор за predictions_log/top_pick_for_match, но
-                # predictions_snapshot редовете (тук) нямат market_odds/
-                # our_fair_odds - guard-ът там е физически неприложим.
-                # Смятаме implied EV отделно (_snapshot_ev_pct, СЪЩАТА
-                # формула/праг от pick_selection) и третираме "над прага"
-                # точно като "top_pick_for_match върна None" - НЕ показваме
-                # прогнозата с предупреждение, отива в "без доверена
-                # прогноза" (прагът значи "не вярваме", не "с уговорка").
-                ev_pct = _snapshot_ev_pct(fixture_id, top["market_code"], top["pick_pct"])
-                if ev_pct is not None and ev_pct > ps.MAX_TRUSTWORTHY_EV:
-                    top = None
-            if not top:
-                # "Без доверена прогноза" - само бъдещи (т.3 от предишната
-                # поправка); ако вече е започнал и няма прогноза, просто
-                # няма какво честно да се покаже - извън обявения обхват.
-                if base["date"] > now_sofia_str:
-                    no_pick_rows.append(base)
+            sections = build_market_sections(rows, league, policy, ps.MAX_PUBLISHABLE_PCT,
+                                             base["home_cy"], base["away_cy"])
+            if not sections:
                 continue
-
-            market_pct, diff = _row_diff(fixture_id, top["market_code"], top["pick_pct"])
-            # Преглед на Дака (01.09.2026), спешно т.1: BLEND_WEIGHTS["home_win"]=1.0
-            # -> home_win е в MARKET_COPY_CODES -> показаното число Е
-            # обезвигованата пазарна оценка буквално, моделът не добавя
-            # нищо - вече честно разкрито тук (преди го нямаше на
-            # /prognozi, само на админските страници през build_diff_row()).
-            card = {**base, "pick_label": top["pick_label"], "pick_pct": top["pick_pct"],
-                    "market_pct": market_pct, "diff": diff, "status": None,
-                    "market_copy": top["market_code"] in MARKET_COPY_CODES}
+            card = {**base, "x12": x12_from_sections(sections)}
 
             if base["date"] > now_sofia_str:
                 upcoming_rows.append(card)
             elif fixture_id not in settled_fixture_ids:
-                # "Мачове в ход": започнал, не е в published_picks() като
-                # won/lost - показва СЪЩАТА прогноза, изчислена преди мача
-                # (predictions_snapshot не се преизчислява живо за мачове в
-                # ход), без резултат/минута/live преизчисление. Излиза
-                # оттук автоматично, щом published_picks() го покаже
-                # settled - никаква отделна логика за премахване.
                 in_progress_rows.append(card)
-            # else: започнал И уреден -> вече е в "Приключили" по-долу,
-            # пропускаме тук напълно (без дублиране).
+            # else: започнал И уреден -> в "Приключили" по-долу.
 
         # ---- Приключили: т.3, преглед на Дака (01.09.2026) - "два филтъра,
         # една таблица". Преди тази поправка тук се групираше predictions_log
@@ -392,6 +313,12 @@ def register_prognozi_routes(app, ctx):
         # затова логата остават достъпни и за отдавна приключили мачове,
         # веднъж записани, докато е бил предстоящ.
         finished_meta = st.get_fixture_meta_for_fixtures([p["fixture_id"] for p in published])
+        # ЧАСТ В: при приключилите - резултатът и трите числа 1/X/2 (от
+        # логнатите редове за мача, същата build_market_sections), без
+        # ✓/✗ оценка на избран залог.
+        log_by_fixture = {}
+        for r in predictions:
+            log_by_fixture.setdefault(r["fixture_id"], []).append(r)
         finished_rows = []
         for p in published:
             if p["status"] not in ("won", "lost"):
@@ -399,24 +326,20 @@ def register_prognozi_routes(app, ctx):
             league = p["league"]
             fixture_id = p["fixture_id"]
             f_meta = finished_meta.get(fixture_id)
-            market_pct, diff = _row_diff(fixture_id, p["market_code"], p["pick_pct"])
+            home_cy, away_cy = to_cyrillic(p["home_team"], league), to_cyrillic(p["away_team"], league)
+            sections = build_market_sections(log_by_fixture.get(fixture_id, []), league, policy,
+                                             ps.MAX_PUBLISHABLE_PCT, home_cy, away_cy)
             finished_rows.append({
                 "fixture_id": fixture_id, "league": league,
                 "league_name": ALL_LEAGUES.get(league, {}).get("name", league),
                 "league_logo": ALL_LEAGUES.get(league, {}).get("logo"),
                 "flag": LEAGUE_FLAGS.get(league, "⚽"),
                 "date": p["match_date"], "home": p["home_team"], "away": p["away_team"],
-                "home_cy": to_cyrillic(p["home_team"], league), "away_cy": to_cyrillic(p["away_team"], league),
+                "home_cy": home_cy, "away_cy": away_cy,
                 "home_logo": f_meta.get("home_logo") if f_meta else None,
                 "away_logo": f_meta.get("away_logo") if f_meta else None,
-                "pick_label": p["pick_label"], "pick_pct": p["pick_pct"],
-                "market_pct": market_pct, "diff": diff, "status": p["status"],
-                "market_copy": p["market_code"] in MARKET_COPY_CODES,
+                "x12": x12_from_sections(sections),
                 # A1 (ZADACHA_FAZA1.md, 19.09.2026): реалният резултат на мача.
-                # predictions_log ги пази още от init_db() (actual_home_goals/
-                # actual_away_goals, попълвани от check_results()) - published_picks()
-                # връща същите редове, така че тук няма нито ново четене, нито
-                # нова заявка. None-безопасно: шаблонът пада към тиренцето.
                 "hg": p["actual_home_goals"], "ag": p["actual_away_goals"],
             })
 
@@ -425,7 +348,7 @@ def register_prognozi_routes(app, ctx):
         # нито един неин мач не оцеляваше след top_pick_for_match()
         # филтъра - избор на лигата даваше празна страница. Менюто вече се
         # строи от лигите, които РЕАЛНО имат ред в активния таб (upcoming +
-        # no_pick заедно за "Предстоящи", всяка от другите две за своя таб) -
+        # "в ход" заедно за "Предстоящи", другите за своя таб) -
         # смятано ПРЕДИ league_filter да отреже списъците по-долу, иначе
         # менюто би показвало само една лига (избраната).
         if status_tab == "finished":
@@ -433,8 +356,7 @@ def register_prognozi_routes(app, ctx):
         elif status_tab == "skipped":
             tab_leagues = {r["league"] for r in skipped_rows}
         else:
-            tab_leagues = ({r["league"] for r in upcoming_rows} | {r["league"] for r in no_pick_rows}
-                            | {r["league"] for r in in_progress_rows})
+            tab_leagues = {r["league"] for r in upcoming_rows} | {r["league"] for r in in_progress_rows}
         active_leagues = sorted(tab_leagues, key=lambda k: ALL_LEAGUES.get(k, {}).get("name", k))
         league_options = [(k, ALL_LEAGUES.get(k, {}).get("name", k)) for k in active_leagues]
 
@@ -442,24 +364,11 @@ def register_prognozi_routes(app, ctx):
             upcoming_rows = [r for r in upcoming_rows if r["league"] == league_filter]
             finished_rows = [r for r in finished_rows if r["league"] == league_filter]
             skipped_rows = [r for r in skipped_rows if r["league"] == league_filter]
-            no_pick_rows = [r for r in no_pick_rows if r["league"] == league_filter]
             in_progress_rows = [r for r in in_progress_rows if r["league"] == league_filter]
         else:
             league_filter = "all"
 
         upcoming_rows.sort(key=lambda r: r["date"])
-
-        # Б2 (ZADACHA_PAT.md, 20.09.2026): "Най-голяма разлика с пазара" -
-        # само в таба "Предстоящи", от буквално upcoming_rows (вече носи
-        # pick_pct/market_pct/diff - никаква нова сметка), след league
-        # филтъра по-горе и след сортирането, за да отговаря на точно това,
-        # което се вижда в списъка отдолу. Скрито под DIFF_HIGHLIGHTS_MIN
-        # известни пазарни проценти - твърде малка извадка да е показателна.
-        diff_highlights = []
-        if status_tab == "upcoming":
-            known_market = [r for r in upcoming_rows if r["market_pct"] is not None]
-            if len(known_market) >= DIFF_HIGHLIGHTS_MIN:
-                diff_highlights = sorted(known_market, key=lambda r: abs(r["diff"]), reverse=True)[:DIFF_HIGHLIGHTS_COUNT]
 
         finished_rows.sort(key=lambda r: r["date"], reverse=True)  # най-скоро уредените отгоре
         # A2: пълният брой се пази ЗА ПОКАЗВАНЕ (броячът на таба, "Показани X
@@ -470,7 +379,6 @@ def register_prognozi_routes(app, ctx):
         finished_has_more = finished_total > len(finished_rows)
         finished_next_limit = finished_limit + FINISHED_PAGE_SIZE
         skipped_rows.sort(key=lambda r: r["date"])
-        no_pick_rows.sort(key=lambda r: r["date"])
         in_progress_rows.sort(key=lambda r: r["date"])
 
         snapshot_freshness = st.get_snapshot_freshness()
@@ -504,10 +412,9 @@ def register_prognozi_routes(app, ctx):
             upcoming_rows=upcoming_rows, finished_rows=finished_rows, skipped_rows=skipped_rows,
             finished_total=finished_total, finished_limit=finished_limit,
             finished_has_more=finished_has_more, finished_next_limit=finished_next_limit,
-            no_pick_rows=no_pick_rows, in_progress_rows=in_progress_rows,
+            in_progress_rows=in_progress_rows,
             snapshot_empty=snapshot_empty, snapshot_stale_note=snapshot_stale_note,
-            market_copy_note=MARKET_COPY_NOTE,
-            yesterday=yesterday, diff_highlights=diff_highlights,
+            yesterday=yesterday,
         )
 
     # Публична страница на мача (01.09.2026, задача от Дака, т.2). Изричен
