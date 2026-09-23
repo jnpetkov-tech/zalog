@@ -348,7 +348,9 @@ def edge_pct(prob_pct, market_odds):
 # (над/под...) остава 1, защото b-тата се сумират до 1.
 # Групи/кодове извън таблиците (двоен шанс, полувреме/край, корнери, чиста
 # мрежа) НЕ са мерени -> a = 1.0, т.е. непроменени.
-CALIBRATION_ENABLED = False
+# Включена след validation/kalibraciq_xg_20260923.md (късна половина, 5919 мача извън
+# извадката: -0.00070 Brier, 95% [-0.00107, -0.00034]).
+CALIBRATION_ENABLED = True
 CALIBRATION_A = {"1x2": 0.974, "btts": 0.532, "ou25": 0.624, "team_total": 0.818}
 CALIBRATION_BASE = {
     "home_win": 0.445122, "draw": 0.255759, "away_win": 0.299119,

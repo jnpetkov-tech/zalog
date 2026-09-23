@@ -139,6 +139,14 @@ NO_INJURY_MODEL_LEAGUES = {"champions_league", "europa_league"}
 # на твърде малко/нула реални стойности и предсказва константна, безсмислена лямбда.
 CORNERS_MIN_COVERAGE = 0.70
 
+# ZADACHA_KALIBRACIQ.md (23.09.2026), ЧАСТ Б: xG като ОТДЕЛЕН модел ("модел Б" -
+# fl.fit_goals_model(obs_cols=("home_xg", "away_xg"), use_dc=False), учен само от
+# мачовете с xG), смесен със сегашния на ниво очаквани голове в get_ft_lambdas():
+# lam = w*lam_Б + (1-w)*lam_А. Само лигите, където подобрението се задържа извън
+# извадката и сместа остава в 0.3-3.5 - validation/kalibraciq_xg_20260923.md
+# (germany/france - извън диапазона; italy - влошава; portugal - w=0).
+XG_BLEND_WEIGHTS = {"england": 0.7, "spain": 0.7, "england2": 0.5}
+
 # "logo" (НОЩ 02.09.2026, задача 2): дръпнати ЕДНОКРАТНО от API-Football
 # (/leagues?id=<id>, 17 заявки общо, виж archive/fetch_league_logos_20260902.py) -
 # хардкоднати литерали тук, скриптът не се пуска на цикъл. Браузърът на
@@ -256,6 +264,12 @@ def get_models(league):
             ft_model = fl.fit_goals_direct_covariate(df, ref_date, team_idx, n, "home_injuries", "away_injuries", xi=league_xi)
         else:
             ft_model = fl.fit_goals_model(df, ref_date, team_idx, n, xi=league_xi)
+        xg_w = XG_BLEND_WEIGHTS.get(league)
+        if xg_w:
+            _xg_df = df.dropna(subset=["home_xg", "away_xg"])
+            ft_model["xg_model"] = fl.fit_goals_model(_xg_df, ref_date, team_idx, n, xi=league_xi,
+                                                      use_dc=False, obs_cols=("home_xg", "away_xg"))
+            ft_model["xg_w"] = xg_w
         ht_model, h2_model = fit_ht_2h_models(df, team_idx, n)
         recent_cutoff = ref_date - pd.Timedelta(days=FORM_WINDOW_DAYS)
         recent_df = df[df["date"] >= recent_cutoff]
@@ -297,8 +311,17 @@ def get_models(league):
 
 def get_ft_lambdas(ft_model, team_idx, home, away, home_inj=0, away_inj=0):
     if ft_model.get("direct_covariate"):
-        return fl.get_lambdas_direct(ft_model, team_idx, home, away, home_inj, away_inj)
-    return fl.get_lambdas(ft_model, team_idx, home, away)
+        lam, mu = fl.get_lambdas_direct(ft_model, team_idx, home, away, home_inj, away_inj)
+    else:
+        lam, mu = fl.get_lambdas(ft_model, team_idx, home, away)
+    # ZADACHA_KALIBRACIQ.md, ЧАСТ Б: смес с модела върху xG (виж XG_BLEND_WEIGHTS)
+    xg_model = ft_model.get("xg_model")
+    if xg_model is not None and lam is not None:
+        lam_b, mu_b = fl.get_lambdas(xg_model, team_idx, home, away)
+        if lam_b is not None:
+            w = ft_model["xg_w"]
+            lam, mu = w * lam_b + (1 - w) * lam, w * mu_b + (1 - w) * mu
+    return lam, mu
 
 
 def fair_odds(pct):
