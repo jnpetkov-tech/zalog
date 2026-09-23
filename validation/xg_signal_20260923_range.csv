@@ -1,0 +1,9 @@
+league,config,min_lambda,max_lambda,share_outside_0.3_3.5
+england,current,0.442,3.296,0.0
+england,xg_1.0,0.299,3.401,0.001
+spain,current,0.481,4.721,0.0049
+spain,xg_1.0,0.387,4.55,0.002
+portugal2,current,0.75,1.993,0.0
+portugal2,current+red,0.751,2.046,0.0
+england2,current,0.614,3.031,0.0
+england2,xg_0.5,0.59,4.298,0.0046
