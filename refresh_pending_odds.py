@@ -36,7 +36,8 @@ def main():
             print(f"  все още няма коефициенти: {label}")
             time.sleep(0.3)
             continue
-        n = st.update_odds_for_fixture(f["fixture_id"], real_odds)
+        # ZADACHA_MODEL1.md, ЧАСТ А: и market_pct (обезвигована пазарна оценка)
+        n = st.update_odds_for_fixture(f["fixture_id"], real_odds, market_info_fn=mpa._market_info_for_pick)
         if n:
             updated_fixtures += 1
             updated_rows += n

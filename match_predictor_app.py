@@ -1327,7 +1327,15 @@ def _predict_matches_for_league_impl(league, from_date, to_date, use_fixture_cac
                 # фонова задача refresh_pending_odds.py (get_fixtures_needing_odds_refresh
                 # / update_odds_for_fixture) вече е предназначена точно за
                 # асинхронно допълване на такива липсващи коефициенти по-късно.
-                st.log_all_markets(league, fixture_id, match_date, home, away, groups_for_log, real_odds=cached_odds)
+                # ZADACHA_MODEL1.md (23.09.2026), ЧАСТ А: същата сметка без пазар
+                # (real_odds=None -> _blend_with_market() не смесва нищо) дава
+                # числото на чистия модел за всеки код -> невидимата колона
+                # model_pct; market_pct идва от _market_info_for_pick().
+                model_groups, _ = compute_grouped_markets(league, home, away, home_inj, away_inj, real_odds=None)
+                model_pcts = {row[3]: row[1] for _t, items, _h in (model_groups or [])
+                              for row in items if len(row) > 3 and row[3]}
+                st.log_all_markets(league, fixture_id, match_date, home, away, groups_for_log, real_odds=cached_odds,
+                                   model_pcts=model_pcts, market_info_fn=_market_info_for_pick)
 
         try:
             kickoff = datetime.fromisoformat(f["fixture"]["date"])

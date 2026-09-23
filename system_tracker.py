@@ -79,7 +79,14 @@ def init_db():
             our_fair_odds REAL
         )
     """)
-    for col_def in ["market_odds REAL", "our_fair_odds REAL", "odds_logged_at TEXT"]:
+    # ZADACHA_MODEL1.md (23.09.2026), ЧАСТ А: две невидими колони - мерило,
+    # не показвани на потребителя. model_pct = числото на ЧИСТИЯ модел, преди
+    # смесване с пазара (при тегло 0 = pick_pct); market_pct = обезвигованата
+    # пазарна оценка за същия изход (match_predictor_app._market_info_for_pick),
+    # ако има коефициент при записа, иначе NULL (допълва се по-късно от
+    # update_odds_for_fixture(), заедно с market_odds).
+    for col_def in ["market_odds REAL", "our_fair_odds REAL", "odds_logged_at TEXT",
+                    "model_pct REAL", "market_pct REAL"]:
         try:
             conn.execute(f"ALTER TABLE predictions_log ADD COLUMN {col_def}")
         except sqlite3.OperationalError:
@@ -331,7 +338,7 @@ def get_all_match_notes():
 
 
 def log_prediction(league, fixture_id, match_date, home, away, market_code, pick_label, pick_pct,
-                    market_odds=None, our_fair_odds=None):
+                    market_odds=None, our_fair_odds=None, model_pct=None, market_pct=None):
     # 2026-08-10: INSERT OR IGNORE вместо SELECT-then-INSERT - старият модел
     # имаше TOCTOU race при паралелни заявки (два thread-а минават SELECT
     # проверката преди първият да успее да INSERT-не), причинил реален
@@ -350,10 +357,12 @@ def log_prediction(league, fixture_id, match_date, home, away, market_code, pick
     conn = get_conn()
     cur = conn.execute(
         """INSERT OR IGNORE INTO predictions_log (logged_at, league, fixture_id, match_date, home_team, away_team,
-           market_code, pick_label, pick_pct, market_odds, our_fair_odds, odds_logged_at)
-           VALUES (?,?,?,?,?,?,?,?,?,?,?,?)""",
+           market_code, pick_label, pick_pct, market_odds, our_fair_odds, odds_logged_at,
+           model_pct, market_pct)
+           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
         (datetime.now().isoformat(), league, fixture_id, match_date, home, away,
-         market_code, pick_label, pick_pct, market_odds, our_fair_odds, odds_logged_at)
+         market_code, pick_label, pick_pct, market_odds, our_fair_odds, odds_logged_at,
+         model_pct, market_pct)
     )
     conn.commit()
     if cur.rowcount == 0:
@@ -630,7 +639,20 @@ def get_fixtures_needing_odds_refresh(hours_ahead=48):
     """, (*trackable, now_str, cutoff)).fetchall()
     conn.close()
     return [dict(r) for r in rows]
-def update_odds_for_fixture(fixture_id, real_odds):
+def _market_pct_for(market_info_fn, market_code, real_odds):
+    """ZADACHA_MODEL1.md, ЧАСТ А: пазарната оценка в проценти през
+    подадената market_info_fn (match_predictor_app._market_info_for_pick -
+    съществуващата сметка, не нова). None, ако няма функция/коефициент."""
+    if not market_info_fn or not real_odds:
+        return None
+    try:
+        info = market_info_fn(market_code, real_odds)
+    except Exception:
+        return None
+    return info[0] * 100 if info else None
+
+
+def update_odds_for_fixture(fixture_id, real_odds, market_info_fn=None):
     """НОВО (Фаза F0): обновява market_odds за вече логнати редове на
     fixture_id, при които все още е NULL. НИКОГА не презаписва
     съществуваща стойност и НИКОГА не пипа pick_pct/pick_label -
@@ -655,9 +677,13 @@ def update_odds_for_fixture(fixture_id, real_odds):
         odds_val = real_odds.get(odds_key) if odds_key else None
         if odds_val is None:
             continue
+        # ZADACHA_MODEL1.md, ЧАСТ А: market_pct заедно с коефициента;
+        # COALESCE - никога не презаписва вече записана стойност.
+        market_pct = _market_pct_for(market_info_fn, market_code, real_odds)
         cur.execute(
-            "UPDATE predictions_log SET market_odds=?, odds_logged_at=? WHERE id=? AND market_odds IS NULL",
-            (odds_val, odds_logged_at, row_id)
+            "UPDATE predictions_log SET market_odds=?, odds_logged_at=?, market_pct=COALESCE(market_pct, ?) "
+            "WHERE id=? AND market_odds IS NULL",
+            (odds_val, odds_logged_at, market_pct, row_id)
         )
         updated += cur.rowcount
     conn.commit()
@@ -665,7 +691,11 @@ def update_odds_for_fixture(fixture_id, real_odds):
     return updated
 
 
-def log_all_markets(league, fixture_id, match_date, home, away, groups, real_odds=None):
+def log_all_markets(league, fixture_id, match_date, home, away, groups, real_odds=None,
+                    model_pcts=None, market_info_fn=None):
+    """model_pcts: {market_code: процент на чистия модел} (ZADACHA_MODEL1.md,
+    ЧАСТ А) - None -> model_pct остава NULL. market_info_fn: виж
+    _market_pct_for()."""
     count = 0
     for title, items, has_form in groups:
         for row in items:
@@ -675,8 +705,11 @@ def log_all_markets(league, fixture_id, match_date, home, away, groups, real_odd
                 fair = round(100 / pick_pct, 2) if pick_pct > 0 else None
                 odds_key = MARKET_ODDS_MAP.get(market_code)
                 market_odds = real_odds.get(odds_key) if (real_odds and odds_key) else None
+                model_pct = model_pcts.get(market_code) if model_pcts else None
+                market_pct = _market_pct_for(market_info_fn, market_code, real_odds)
                 log_prediction(league, fixture_id, match_date, home, away, market_code, row[0], pick_pct,
-                                market_odds=market_odds, our_fair_odds=fair)
+                                market_odds=market_odds, our_fair_odds=fair,
+                                model_pct=model_pct, market_pct=market_pct)
                 count += 1
     return count
 
