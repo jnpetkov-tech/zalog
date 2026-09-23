@@ -94,6 +94,8 @@ MARKET_SECTIONS = [
 # защото BLEND_WEIGHTS смесва изходите с различно тегло (виж
 # validation/blend_weights_v2_20260922.md) - пазар извън този диапазон не се
 # показва за конкретния мач, вместо да публикуваме числа, които не се сумират.
+# 23.09.2026 (ZADACHA_MODEL1.md): BLEND_WEIGHTS = 0.0 -> 1X2 вече се сумира до
+# 100%, правилото остава само като предпазител (validation/blend_off_impact_20260923.txt).
 MARKET_SUM_TOLERANCE_PCT = 3.0
 
 
