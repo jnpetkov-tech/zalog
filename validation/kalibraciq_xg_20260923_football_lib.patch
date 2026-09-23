@@ -1,0 +1,66 @@
+--- football_lib.py	2026-08-20 20:46:20.434262092 +0000
++++ football_lib.py	2026-09-23 19:53:59.715793640 +0000
+@@ -1,6 +1,7 @@
+ import numpy as np
+ import pandas as pd
+ from scipy.optimize import minimize
++from scipy.special import gammaln, xlogy
+ from scipy.stats import poisson
+ 
+ XI = 0.0018
+@@ -84,7 +85,8 @@
+ 
+ 
+ def fit_goals_model(history_df, ref_date, team_idx, n, cov_home_col=None, cov_away_col=None, xi=None,
+-                     reg_strength=3.0, use_dc=True, low_data_extra_reg=15.0, reg_floor=1.0):
++                     reg_strength=3.0, use_dc=True, low_data_extra_reg=15.0, reg_floor=1.0,
++                     obs_cols=None):
+     """Фаза K.1 (20.08.2026), две промени спрямо оригинала - и двете
+     валидирани с walk-forward backtest на 17-те лиги (виж
+     CLAUDE_HANDOFF.md K.1) преди деплой, use_dc=False+low_data_extra_reg=0.0
+@@ -103,13 +105,29 @@
+        наблюдения (напр. ЦСКА 1948 в евротурнир) се дърпа силно към
+        "среден отбор" (потвърдено: до ~44% свиване на attack+defence за
+        weight~3 срещу <5% за weight>40), вместо да дава екстремна lambda.
+-       low_data_extra_reg=0.0 връща старата еднаква регуляризация точно."""
++       low_data_extra_reg=0.0 връща старата еднаква регуляризация точно.
++
++    obs_cols (ZADACHA_KALIBRACIQ.md, ЧАСТ Б, 23.09.2026): (домакин, гост)
++    колони, от които моделът учи вместо home_goals/away_goals - напр.
++    ("home_xg", "away_xg"). Наблюденията могат да са дробни, затова
++    Poisson log-вероятността е в общия вид k*log(lam) - lam - log(k!)
++    (log(k!) = gammaln(k+1)) - за цели k е точно poisson.logpmf. Само с
++    use_dc=False (Dixon-Coles корекцията е за точни резултати 0-0/1-0...).
++    None (по подразбиране) = старото поведение точно."""
+     xi_val = xi if xi is not None else XI
+-    valid = history_df.dropna(subset=["home_goals", "away_goals"])
++    if obs_cols is not None:
++        if use_dc:
++            raise ValueError("obs_cols изисква use_dc=False")
++        valid = history_df.dropna(subset=list(obs_cols))
++        hg = valid[obs_cols[0]].to_numpy(dtype=float)
++        ag = valid[obs_cols[1]].to_numpy(dtype=float)
++    else:
++        valid = history_df.dropna(subset=["home_goals", "away_goals"])
+     h_idx = valid["home_team"].map(team_idx).to_numpy()
+     a_idx = valid["away_team"].map(team_idx).to_numpy()
+-    hg = valid["home_goals"].to_numpy()
+-    ag = valid["away_goals"].to_numpy()
++    if obs_cols is None:
++        hg = valid["home_goals"].to_numpy()
++        ag = valid["away_goals"].to_numpy()
+     days_ago = (ref_date - valid["date"]).dt.days.to_numpy()
+     weights = np.exp(-xi_val * np.clip(days_ago, 0, None))
+ 
+@@ -146,7 +164,10 @@
+             rho = params[-1] if use_dc else 0.0
+             lam = np.exp(attack[h_idx] - defence[a_idx] + home_adv)
+             mu = np.exp(attack[a_idx] - defence[h_idx])
+-        ll = poisson.logpmf(hg, lam) + poisson.logpmf(ag, mu)
++        if obs_cols is None:
++            ll = poisson.logpmf(hg, lam) + poisson.logpmf(ag, mu)
++        else:
++            ll = (xlogy(hg, lam) - lam - gammaln(hg + 1)) + (xlogy(ag, mu) - mu - gammaln(ag + 1))
+         if use_dc:
+             tau = dc_tau(hg, ag, lam, mu, rho)
+             ll = ll + np.log(np.clip(tau, 1e-10, None))
