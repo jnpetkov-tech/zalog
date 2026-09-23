@@ -346,8 +346,8 @@ def edge_pct(prob_pct, market_odds):
 # validation/backtest_full_20260923_matches.csv); b - честотата на изхода
 # (по код) в същата по-ранна част. Сумата на 1X2 и на всяка двойка
 # (над/под...) остава 1, защото b-тата се сумират до 1.
-# Групи/кодове извън таблиците (двоен шанс, полувреме/край, корнери, чиста
-# мрежа) НЕ са мерени -> a = 1.0, т.е. непроменени.
+# Групи/кодове извън таблиците (двоен шанс, полувреме/край, чиста мрежа)
+# НЕ са мерени -> a = 1.0, т.е. непроменени. Корнерите - от 23.09.2026 (ZADACHA_TRI.md).
 # Включена след validation/kalibraciq_xg_20260923.md (късна половина, 5919 мача извън
 # извадката: -0.00070 Brier, 95% [-0.00107, -0.00034]).
 CALIBRATION_ENABLED = True
@@ -355,13 +355,18 @@ CALIBRATION_ENABLED = True
 # (FT_FIT_SETTINGS в match_predictor_app.py), същият метод и същата ранна половина -
 # validation/tri_a_20260923.md. b - без промяна (същите честоти). Предишни a:
 # 1x2 0.974, btts 0.532, ou25 0.624, team_total 0.818.
-CALIBRATION_A = {"1x2": 1.103, "btts": 0.772, "ou25": 0.931, "team_total": 0.997}
+# ZADACHA_TRI.md, ЧАСТ Б: корнерите (новият модел от удари/владение) - a и b от ранната половина,
+# validation/tri_b_20260923.md. Прилага се в compute_grouped_markets() (корнерите не минават през
+# _model_market_probs()).
+CALIBRATION_A = {"1x2": 1.103, "btts": 0.772, "ou25": 0.931, "team_total": 0.997, "corners": 0.855}
 CALIBRATION_BASE = {
     "home_win": 0.445122, "draw": 0.255759, "away_win": 0.299119,
     "over25": 0.506775, "under25": 0.493225,
     "btts_yes": 0.519986, "btts_no": 0.480014,
     "home_over15": 0.431572, "home_under15": 0.568428,
     "away_over15": 0.333164, "away_under15": 0.666836,
+    "corners_total_over_9.5": 0.484532, "corners_total_under_9.5": 0.515468,
+    "corners_home_over_4.5": 0.554726, "corners_away_over_4.5": 0.40751,
 }
 
 

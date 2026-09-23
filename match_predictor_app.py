@@ -138,6 +138,11 @@ NO_INJURY_MODEL_LEAGUES = {"champions_league", "europa_league"}
 # portugal2 (47.5%), conference_league (69.7%, точно под прага) от друга - под 70% моделът се фитва
 # на твърде малко/нула реални стойности и предсказва константна, безсмислена лямбда.
 CORNERS_MIN_COVERAGE = 0.70
+# Отрицателно биномно alpha за корнерите по лига (ZADACHA_TRI.md, ЧАСТ Б) - фитнато на ранната
+# половина, validation/tri_b_20260923_params.csv. Лига без стойност - 0.1 (около медианата).
+CORNERS_NB_ALPHA = {"bulgaria": 0.10, "england": 0.13, "germany": 0.07, "spain": 0.08, "france": 0.09,
+                    "champions_league": 0.13, "europa_league": 0.11, "italy": 0.12, "portugal": 0.08,
+                    "france2": 0.11, "spain2": 0.07, "italy2": 0.10, "england2": 0.08, "germany2": 0.09}
 
 # ZADACHA_KALIBRACIQ.md (23.09.2026), ЧАСТ Б: xG като ОТДЕЛЕН модел ("модел Б" -
 # fl.fit_goals_model(obs_cols=("home_xg", "away_xg"), use_dc=False), учен само от
@@ -327,7 +332,11 @@ def get_models(league):
             _corners_coverage = len(_finished.dropna(subset=["home_corners", "away_corners"])) / len(_finished)
         else:
             _corners_coverage = 0.0
-        corners_model = fl.fit_total_model(df, ref_date, team_idx, n, "home_corners", "away_corners", xi=league_xi) if _corners_coverage >= CORNERS_MIN_COVERAGE else None
+        # ZADACHA_TRI.md, ЧАСТ Б (23.09.2026): корнерите от очакваните удари и владение за мача, не от
+        # средния брой корнери на отбора (fit_total_model) - validation/tri_b_20260923.md.
+        corners_model = (fl.fit_corners_pressure(df, ref_date, team_idx, n, xi=league_xi,
+                                                 alpha=CORNERS_NB_ALPHA.get(league, 0.1))
+                         if _corners_coverage >= CORNERS_MIN_COVERAGE else None)
         # Картони/засади премахнати от системата (25.08.2026, Дака): "прогнози, които не подлежат на
         # сравнение, нямат място в система за сравнение" - 0% покритие с коефициент във вторите
         # дивизии, 21-36% дори в топ лигите (validation/coverage_diagnosis_20260825.md), никога не
@@ -736,14 +745,20 @@ def compute_grouped_markets(league, home, away, home_inj=0, away_inj=0, real_odd
         for outcome, prob in sorted(ht_ft_probs.items(), key=lambda x: -x[1])[:4]
     ], False))
 
-    if corners_model:
-        lam_c, mu_c = fl.get_lambdas(corners_model, team_idx, home, away)
-        over_total = fl.total_ou_prob(lam_c, mu_c, 9.5)
-        over_home = 1 - poisson.cdf(4, lam_c)
-        over_away = 1 - poisson.cdf(4, mu_c)
+    lam_c = mu_c = None
+    if corners_model and "glm" in corners_model:
+        lam_c, mu_c = fl.corners_pressure_lambdas(corners_model, team_idx, home, away)
+    if lam_c is not None:
+        # ZADACHA_TRI.md, ЧАСТ Б: калибрацията за корнерите се прилага ТУК (корнерите не минават през
+        # _model_market_probs(), затова няма двойно прилагане).
+        _cr = fl.corners_probs(lam_c, mu_c, corners_model["alpha"])
+        _cr["corners_total_under_9.5"] = 1 - _cr["corners_total_over_9.5"]
+        _cp = {k: policy.calibrate(p * 100, league, k) / 100 for k, p in _cr.items()}
+        over_total, over_home, over_away = (_cp["corners_total_over_9.5"], _cp["corners_home_over_4.5"],
+                                            _cp["corners_away_over_4.5"])
         groups.append(("Корнери ⚠️", [
             (f"Общо над 9.5 (~{lam_c+mu_c:.1f})", over_total * 100, None, "corners_total_over_9.5"),
-            ("Общо под 9.5", (1 - over_total) * 100, None, "corners_total_under_9.5"),
+            ("Общо под 9.5", _cp["corners_total_under_9.5"] * 100, None, "corners_total_under_9.5"),
             (f"{home_cy} над 4.5 корнера (~{lam_c:.1f})", over_home * 100, None, "corners_home_over_4.5"),
             (f"{away_cy} над 4.5 корнера (~{mu_c:.1f})", over_away * 100, None, "corners_away_over_4.5"),
         ], False))

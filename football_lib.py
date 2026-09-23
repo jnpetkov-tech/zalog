@@ -436,6 +436,108 @@ def fit_total_model(df, ref_date, team_idx, n, home_col, away_col, xi=None, reg_
     }
 
 
+# --- Корнери от натиска (ZADACHA_TRI.md, ЧАСТ Б, 23.09.2026) --------------
+# Вместо "средният брой корнери на отбора" (fit_total_model върху корнерите):
+# очаквани удари/удари в целта (модел атака/защита върху тях) и очаквано
+# владение за конкретния мач -> Поасонова регресия за корнерите на всяка
+# страна -> отрицателно биномно. Доказателство: validation/tri_b_20260923.md
+# (живият модел бърка с +7.5 пункта обещано-познато, този - с -0.4 след
+# калибрация). Методът е копие на validation/tri_b_20260923.py.
+CORNERS_PRESSURE_COLS = ["home_corners", "away_corners", "home_shots", "away_shots", "home_shots_on_goal",
+                         "away_shots_on_goal", "home_possession"]
+CORNERS_MAX = 30
+
+
+def _fit_possession(v, ref_date, team_idx, n, xi_val, lam=5.0):
+    y = np.clip(v["home_possession"].to_numpy(float), 5, 95) / 100
+    y = np.log(y / (1 - y))
+    w = np.exp(-xi_val * np.clip((ref_date - v["date"]).dt.days.to_numpy(), 0, None))
+    h = v["home_team"].map(team_idx).to_numpy()
+    a = v["away_team"].map(team_idx).to_numpy()
+    X = np.zeros((len(v), n + 1))
+    X[:, n] = 1
+    X[np.arange(len(v)), h] += 1
+    X[np.arange(len(v)), a] -= 1
+    R = np.eye(n + 1) * lam
+    R[n, n] = 0
+    return np.linalg.solve(X.T @ (X * w[:, None]) + R, X.T @ (w * y))
+
+
+def _corners_features(model, hi, ai):
+    """hi/ai - масиви индекси на отборите -> (X_домакин, X_гост)."""
+    def lam(m):
+        l = np.exp(m.get("c", 0.0) + m["attack"][hi] - m["defence"][ai] + m["home_adv"])
+        u = np.exp(m.get("c", 0.0) + m["attack"][ai] - m["defence"][hi])
+        return l, u
+    sh_h, sh_a = lam(model["shots"])
+    so_h, so_a = lam(model["sot"])
+    pl = model["poss"][-1] + model["poss"][hi] - model["poss"][ai]
+    one = np.ones(len(hi))
+    Xh = np.column_stack([one, one, np.log(sh_h), np.log(sh_a), pl, np.log(so_h)])
+    Xa = np.column_stack([one, 0 * one, np.log(sh_a), np.log(sh_h), -pl, np.log(so_a)])
+    return Xh, Xa
+
+
+def fit_corners_pressure(df, ref_date, team_idx, n, xi=None, alpha=0.1, min_rows=150, l2=1.0):
+    """None, ако има по-малко от min_rows мача с всички нужни колони."""
+    xi_val = xi if xi is not None else XI
+    v = df.dropna(subset=["home_goals", "away_goals"] + CORNERS_PRESSURE_COLS)
+    v = v[v["date"] <= ref_date]
+    if len(v) < min_rows:
+        return None
+    model = {
+        "shots": fit_goals_model(v, ref_date, team_idx, n, xi=xi_val, use_dc=False,
+                                 obs_cols=("home_shots", "away_shots"), intercept=True),
+        "sot": fit_goals_model(v, ref_date, team_idx, n, xi=xi_val, use_dc=False,
+                               obs_cols=("home_shots_on_goal", "away_shots_on_goal"), intercept=True),
+        "poss": _fit_possession(v, ref_date, team_idx, n, xi_val),
+        "alpha": float(alpha),
+    }
+    hi = v["home_team"].map(team_idx).to_numpy()
+    ai = v["away_team"].map(team_idx).to_numpy()
+    Xh, Xa = _corners_features(model, hi, ai)
+    X = np.vstack([Xh, Xa])
+    y = np.concatenate([v["home_corners"].to_numpy(float), v["away_corners"].to_numpy(float)])
+    w = np.exp(-xi_val * np.clip((ref_date - v["date"]).dt.days.to_numpy(), 0, None))
+    ww = np.concatenate([w, w])
+
+    def f(b):
+        eta = X @ b
+        m = np.exp(eta)
+        val = -(ww * (y * eta - m)).sum() + l2 * (b[1:] ** 2).sum()
+        g = -X.T @ (ww * (y - m))
+        g[1:] += 2 * l2 * b[1:]
+        return val, g
+    b0 = np.zeros(X.shape[1])
+    b0[0] = np.log(max(y.mean(), 0.1))
+    model["glm"] = minimize(f, b0, jac=True, method="L-BFGS-B").x
+    return model
+
+
+def corners_pressure_lambdas(model, team_idx, home, away):
+    if home not in team_idx or away not in team_idx:
+        return None, None
+    Xh, Xa = _corners_features(model, np.array([team_idx[home]]), np.array([team_idx[away]]))
+    return float(np.exp(Xh @ model["glm"])[0]), float(np.exp(Xa @ model["glm"])[0])
+
+
+def _nb_pmf(m, alpha, max_val=CORNERS_MAX):
+    k = np.arange(max_val)
+    if alpha <= 0:
+        return poisson.pmf(k, m)
+    r = 1.0 / alpha
+    return np.exp(gammaln(k + r) - gammaln(r) - gammaln(k + 1) + r * np.log(r / (r + m)) + k * np.log(m / (r + m)))
+
+
+def corners_probs(lam_c, mu_c, alpha):
+    """Отрицателно биномно на страна, общото - конволюция. Прагове = показваните."""
+    ph, pa = _nb_pmf(lam_c, alpha), _nb_pmf(mu_c, alpha)
+    tot = np.convolve(ph, pa)[:CORNERS_MAX]
+    return {"corners_total_over_9.5": float(1 - tot[:10].sum()),
+            "corners_home_over_4.5": float(1 - ph[:5].sum()),
+            "corners_away_over_4.5": float(1 - pa[:5].sum())}
+
+
 def total_ou_prob(lam, mu, threshold, max_val=25):
     dist_h = poisson.pmf(range(max_val), lam)
     dist_a = poisson.pmf(range(max_val), mu)
