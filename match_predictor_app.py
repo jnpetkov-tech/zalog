@@ -144,8 +144,11 @@ CORNERS_MIN_COVERAGE = 0.70
 # мачовете с xG), смесен със сегашния на ниво очаквани голове в get_ft_lambdas():
 # lam = w*lam_Б + (1-w)*lam_А. Само лигите, където подобрението се задържа извън
 # извадката и сместа остава в 0.3-3.5 - validation/kalibraciq_xg_20260923.md
-# (germany/france - извън диапазона; italy - влошава; portugal - w=0).
-XG_BLEND_WEIGHTS = {"england": 0.7, "spain": 0.7, "england2": 0.5}
+# (italy - влошава; portugal - w=0).
+# 23.09.2026 (ZADACHA_RAZPREDELENIE.md, ЧАСТ А): правилото за диапазона поправено - сместа влиза,
+# ако НЕ влошава диапазона спрямо сегашния модел (без абсолютен праг 0.3-3.5); germany/france
+# го подобряват (напр. germany макс 4.69 -> 4.19) и влизат - validation/razpredelenie_a_20260923.md.
+XG_BLEND_WEIGHTS = {"england": 0.7, "germany": 0.5, "spain": 0.7, "france": 0.7, "england2": 0.5}
 
 # "logo" (НОЩ 02.09.2026, задача 2): дръпнати ЕДНОКРАТНО от API-Football
 # (/leagues?id=<id>, 17 заявки общо, виж archive/fetch_league_logos_20260902.py) -
