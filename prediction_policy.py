@@ -351,7 +351,11 @@ def edge_pct(prob_pct, market_odds):
 # Включена след validation/kalibraciq_xg_20260923.md (късна половина, 5919 мача извън
 # извадката: -0.00070 Brier, 95% [-0.00107, -0.00034]).
 CALIBRATION_ENABLED = True
-CALIBRATION_A = {"1x2": 0.974, "btts": 0.532, "ou25": 0.624, "team_total": 0.818}
+# 23.09.2026 (ZADACHA_TRI.md, ЧАСТ А): a фитнати НАНОВО върху модела със свито темпо
+# (FT_FIT_SETTINGS в match_predictor_app.py), същият метод и същата ранна половина -
+# validation/tri_a_20260923.md. b - без промяна (същите честоти). Предишни a:
+# 1x2 0.974, btts 0.532, ou25 0.624, team_total 0.818.
+CALIBRATION_A = {"1x2": 1.103, "btts": 0.772, "ou25": 0.931, "team_total": 0.997}
 CALIBRATION_BASE = {
     "home_win": 0.445122, "draw": 0.255759, "away_win": 0.299119,
     "over25": 0.506775, "under25": 0.493225,

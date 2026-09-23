@@ -150,6 +150,43 @@ CORNERS_MIN_COVERAGE = 0.70
 # го подобряват (напр. germany макс 4.69 -> 4.19) и влизат - validation/razpredelenie_a_20260923.md.
 XG_BLEND_WEIGHTS = {"england": 0.7, "germany": 0.5, "spain": 0.7, "france": 0.7, "england2": 0.5}
 
+# ZADACHA_TRI.md (23.09.2026), ЧАСТ А: по-предпазливо учене на атака/защита за ft_model (и
+# модела върху xG). intercept - общо ниво на головете; tempo_mult - свива само "темпото" на
+# отбора (колко гола има в мачовете му), не силата (кой печели); reg_mult - множител на цялата
+# регуларизация. Избрано по лига на ранната половина, проверено на късната -
+# validation/tri_a_20260923.md. Лига без ред = старото поведение.
+FT_FIT_SETTINGS = {
+    "bulgaria": {"intercept": True, "tempo_mult": 30},
+    "england": {"intercept": True, "tempo_mult": 3},
+    "germany": {"intercept": True, "tempo_mult": 3},
+    "spain": {"intercept": True, "tempo_mult": 3},
+    "france": {"intercept": True},
+    "europa_league": {"intercept": True, "tempo_mult": 1000},
+    "conference_league": {"intercept": True, "tempo_mult": 3},
+    "italy": {"intercept": True, "tempo_mult": 30},
+    "portugal": {"intercept": True, "tempo_mult": 3},
+    "france2": {"intercept": True, "tempo_mult": 1000},
+    "italy2": {"intercept": True, "tempo_mult": 1000},
+    "portugal2": {"intercept": True, "tempo_mult": 1000},
+    "bulgaria2": {"intercept": True, "tempo_mult": 10},
+    "germany2": {"intercept": True, "reg_mult": 10},
+}
+
+
+def _ft_fit_kwargs(league, direct):
+    """kwargs за fl.fit_goals_model()/fit_goals_direct_covariate() по FT_FIT_SETTINGS.
+    reg_mult умножава reg_strength (3.0) и, за fit_goals_model, low_data_extra_reg (15.0)."""
+    cfg = FT_FIT_SETTINGS.get(league)
+    if not cfg:
+        return {}
+    kw = {"intercept": cfg.get("intercept", False), "tempo_mult": float(cfg.get("tempo_mult", 1.0))}
+    m = cfg.get("reg_mult", 1)
+    if m != 1:
+        kw["reg_strength"] = 3.0 * m
+        if not direct:
+            kw["low_data_extra_reg"] = 15.0 * m
+    return kw
+
 # "logo" (НОЩ 02.09.2026, задача 2): дръпнати ЕДНОКРАТНО от API-Football
 # (/leagues?id=<id>, 17 заявки общо, виж archive/fetch_league_logos_20260902.py) -
 # хардкоднати литерали тук, скриптът не се пуска на цикъл. Браузърът на
@@ -264,14 +301,16 @@ def get_models(league):
         league_xi = fl.LEAGUE_XI.get(league, fl.XI)
         has_injuries = ("home_injuries" in df.columns) and (league not in NO_INJURY_MODEL_LEAGUES)
         if has_injuries:
-            ft_model = fl.fit_goals_direct_covariate(df, ref_date, team_idx, n, "home_injuries", "away_injuries", xi=league_xi)
+            ft_model = fl.fit_goals_direct_covariate(df, ref_date, team_idx, n, "home_injuries", "away_injuries", xi=league_xi,
+                                                     **_ft_fit_kwargs(league, True))
         else:
-            ft_model = fl.fit_goals_model(df, ref_date, team_idx, n, xi=league_xi)
+            ft_model = fl.fit_goals_model(df, ref_date, team_idx, n, xi=league_xi, **_ft_fit_kwargs(league, False))
         xg_w = XG_BLEND_WEIGHTS.get(league)
         if xg_w:
             _xg_df = df.dropna(subset=["home_xg", "away_xg"])
             ft_model["xg_model"] = fl.fit_goals_model(_xg_df, ref_date, team_idx, n, xi=league_xi,
-                                                      use_dc=False, obs_cols=("home_xg", "away_xg"))
+                                                      use_dc=False, obs_cols=("home_xg", "away_xg"),
+                                                      **_ft_fit_kwargs(league, False))
             ft_model["xg_w"] = xg_w
         ht_model, h2_model = fit_ht_2h_models(df, team_idx, n)
         recent_cutoff = ref_date - pd.Timedelta(days=FORM_WINDOW_DAYS)

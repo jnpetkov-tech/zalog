@@ -59,6 +59,21 @@ def dc_adjust_matrix(pm, lam, mu, rho):
     return pm
 
 
+def _team_params(params, n, reg_vec, tempo_mult):
+    """(attack, defence, регуларизация). tempo_mult == 1: параметрите са
+    атака/защита направо - точно старото. Иначе оптимизаторът работи със сила s
+    и мащабирано темпо u (t = u/sqrt(k)), за да е задачата добре обусловена
+    при голямо k (числените производни не стигат до оптимума при k ~ 1000):
+    attack = s + t, defence = s - t, регуларизация 2*reg*(s^2 + u^2) =
+    2*reg*(s^2 + k*t^2)."""
+    if tempo_mult == 1.0:
+        attack, defence = params[:n], params[n:2 * n]
+        return attack, defence, np.sum(reg_vec * (attack ** 2 + defence ** 2))
+    s, u = params[:n], params[n:2 * n]
+    t = u / np.sqrt(tempo_mult)
+    return s + t, s - t, np.sum(2 * reg_vec * (s ** 2 + u ** 2))
+
+
 def load_league_data(country_name):
     df = pd.read_csv(f"{country_name.lower()}_merged_full.csv")
     df["date"] = pd.to_datetime(df["date"].astype(str).str[:10])
@@ -86,7 +101,7 @@ def team_rating(history_df, ref_date, team, home_col, away_col, xi=None):
 
 def fit_goals_model(history_df, ref_date, team_idx, n, cov_home_col=None, cov_away_col=None, xi=None,
                      reg_strength=3.0, use_dc=True, low_data_extra_reg=15.0, reg_floor=1.0,
-                     obs_cols=None):
+                     obs_cols=None, intercept=False, tempo_mult=1.0):
     """Фаза K.1 (20.08.2026), две промени спрямо оригинала - и двете
     валидирани с walk-forward backtest на 17-те лиги (виж
     CLAUDE_HANDOFF.md K.1) преди деплой, use_dc=False+low_data_extra_reg=0.0
@@ -113,7 +128,18 @@ def fit_goals_model(history_df, ref_date, team_idx, n, cov_home_col=None, cov_aw
     Poisson log-вероятността е в общия вид k*log(lam) - lam - log(k!)
     (log(k!) = gammaln(k+1)) - за цели k е точно poisson.logpmf. Само с
     use_dc=False (Dixon-Coles корекцията е за точни резултати 0-0/1-0...).
-    None (по подразбиране) = старото поведение точно."""
+    None (по подразбиране) = старото поведение точно.
+
+    intercept, tempo_mult (ZADACHA_TRI.md, ЧАСТ А, 23.09.2026) - по подразбиране
+    старото поведение точно:
+    - intercept=True: общо ниво на головете c (без регуларизация),
+      lam = exp(c + ...), mu = exp(c + ...). Без него регуларизацията дърпа
+      отборите към lam = exp(home_adv), mu = 1.0 вместо към средното на лигата.
+    - tempo_mult = k: атака a и защита d се разлагат на сила s = (a+d)/2 (кой
+      печели) и темпо t = (a-d)/2 (колко гола има в мачовете на отбора).
+      Регуларизацията reg*(a^2+d^2) = 2*reg*(s^2+t^2) става 2*reg*(s^2+k*t^2)
+      - свива само темпото. k = 1 - точно старото. Доказателство и избор по
+      лига: validation/tri_a_20260923.md."""
     xi_val = xi if xi is not None else XI
     if obs_cols is not None:
         if use_dc:
@@ -151,19 +177,19 @@ def fit_goals_model(history_df, ref_date, team_idx, n, cov_home_col=None, cov_aw
         home_diff = away_diff = None
 
     def nll(params):
-        attack = params[:n]
-        defence = params[n:2 * n]
+        attack, defence, reg = _team_params(params, n, reg_vec, tempo_mult)
+        c = params[2 * n] if intercept else 0.0
         if use_covariate:
             home_adv = params[-3] if use_dc else params[-2]
             beta = params[-2] if use_dc else params[-1]
             rho = params[-1] if use_dc else 0.0
-            lam = np.exp(attack[h_idx] - defence[a_idx] + home_adv + beta * home_diff / scale)
-            mu = np.exp(attack[a_idx] - defence[h_idx] + beta * away_diff / scale)
+            lam = np.exp(c + attack[h_idx] - defence[a_idx] + home_adv + beta * home_diff / scale)
+            mu = np.exp(c + attack[a_idx] - defence[h_idx] + beta * away_diff / scale)
         else:
             home_adv = params[-2] if use_dc else params[-1]
             rho = params[-1] if use_dc else 0.0
-            lam = np.exp(attack[h_idx] - defence[a_idx] + home_adv)
-            mu = np.exp(attack[a_idx] - defence[h_idx])
+            lam = np.exp(c + attack[h_idx] - defence[a_idx] + home_adv)
+            mu = np.exp(c + attack[a_idx] - defence[h_idx])
         if obs_cols is None:
             ll = poisson.logpmf(hg, lam) + poisson.logpmf(ag, mu)
         else:
@@ -171,13 +197,13 @@ def fit_goals_model(history_df, ref_date, team_idx, n, cov_home_col=None, cov_aw
         if use_dc:
             tau = dc_tau(hg, ag, lam, mu, rho)
             ll = ll + np.log(np.clip(tau, 1e-10, None))
-        reg = np.sum(reg_vec * (attack ** 2 + defence ** 2))
         return -np.sum(ll * weights) + reg
 
     if use_covariate:
         n_params = 2 * n + 3 if use_dc else 2 * n + 2
     else:
         n_params = 2 * n + 2 if use_dc else 2 * n + 1
+    n_params += int(intercept)
     x0 = np.zeros(n_params)
     bounds = None
     if use_dc:
@@ -189,10 +215,11 @@ def fit_goals_model(history_df, ref_date, team_idx, n, cov_home_col=None, cov_aw
     else:
         home_adv_i, beta_i = ((-2, None) if use_dc else (-1, None))
     rho_val = float(result.x[-1]) if use_dc else 0.0
+    attack_fit, defence_fit, _ = _team_params(result.x, n, reg_vec, tempo_mult)
 
     return {
-        "attack": result.x[:n],
-        "defence": result.x[n:2 * n],
+        "attack": attack_fit,
+        "defence": defence_fit,
         "home_adv": result.x[home_adv_i],
         "beta": result.x[beta_i] if (use_covariate and beta_i is not None) else 0.0,
         "ratings": ratings,
@@ -201,6 +228,7 @@ def fit_goals_model(history_df, ref_date, team_idx, n, cov_home_col=None, cov_aw
         "use_covariate": use_covariate,
         "rho": rho_val,
         "team_weight": team_weight,
+        "c": float(result.x[2 * n]) if intercept else 0.0,
     }
 
 
@@ -209,16 +237,17 @@ def get_lambdas(model, team_idx, home, away):
         return None, None
     hi, ai = team_idx[home], team_idx[away]
     attack, defence, home_adv = model["attack"], model["defence"], model["home_adv"]
+    c = model.get("c", 0.0)
 
     if model["use_covariate"]:
         hd = model["ratings"].get(home, model["league_avg"]) - model["league_avg"]
         ad = model["ratings"].get(away, model["league_avg"]) - model["league_avg"]
         beta, scale = model["beta"], model["scale"]
-        lam = np.exp(attack[hi] - defence[ai] + home_adv + beta * hd / scale)
-        mu = np.exp(attack[ai] - defence[hi] + beta * ad / scale)
+        lam = np.exp(c + attack[hi] - defence[ai] + home_adv + beta * hd / scale)
+        mu = np.exp(c + attack[ai] - defence[hi] + beta * ad / scale)
     else:
-        lam = np.exp(attack[hi] - defence[ai] + home_adv)
-        mu = np.exp(attack[ai] - defence[hi])
+        lam = np.exp(c + attack[hi] - defence[ai] + home_adv)
+        mu = np.exp(c + attack[ai] - defence[hi])
     return lam, mu
 
 
@@ -416,7 +445,10 @@ def total_ou_prob(lam, mu, threshold, max_val=25):
     return over
 
 
-def fit_goals_direct_covariate(history_df, ref_date, team_idx, n, home_cov_col, away_cov_col, xi=None, reg_strength=3.0):
+def fit_goals_direct_covariate(history_df, ref_date, team_idx, n, home_cov_col, away_cov_col, xi=None, reg_strength=3.0,
+                               intercept=False, tempo_mult=1.0):
+    """intercept/tempo_mult - виж fit_goals_model() (ZADACHA_TRI.md, ЧАСТ А); по
+    подразбиране старото поведение точно."""
     xi_val = xi if xi is not None else XI
     valid = history_df.dropna(subset=["home_goals", "away_goals", home_cov_col, away_cov_col])
     h_idx = valid["home_team"].map(team_idx).to_numpy()
@@ -427,19 +459,24 @@ def fit_goals_direct_covariate(history_df, ref_date, team_idx, n, home_cov_col, 
     a_cov = valid[away_cov_col].to_numpy()
     days_ago = (ref_date - valid["date"]).dt.days.to_numpy()
     weights = np.exp(-xi_val * np.clip(days_ago, 0, None))
+    reg_vec = np.full(n, reg_strength)
+
     def nll(params):
-        attack = params[:n]; defence = params[n:2 * n]
+        attack, defence, reg = _team_params(params, n, reg_vec, tempo_mult)
         home_adv = params[-2]; beta = params[-1]
-        lam = np.exp(attack[h_idx] - defence[a_idx] + home_adv + beta * h_cov)
-        mu = np.exp(attack[a_idx] - defence[h_idx] + beta * a_cov)
+        c = params[2 * n] if intercept else 0.0
+        lam = np.exp(c + attack[h_idx] - defence[a_idx] + home_adv + beta * h_cov)
+        mu = np.exp(c + attack[a_idx] - defence[h_idx] + beta * a_cov)
         ll = poisson.logpmf(hg, lam) + poisson.logpmf(ag, mu)
-        reg = reg_strength * (np.sum(attack ** 2) + np.sum(defence ** 2))
+        if tempo_mult == 1.0:  # точно старият израз (ред на сумиране)
+            reg = reg_strength * (np.sum(attack ** 2) + np.sum(defence ** 2))
         return -np.sum(ll * weights) + reg
-    x0 = np.zeros(2 * n + 2)
+    x0 = np.zeros(2 * n + 2 + int(intercept))
     result = minimize(nll, x0, method="L-BFGS-B")
-    return {"attack": result.x[:n], "defence": result.x[n:2 * n],
+    attack_fit, defence_fit, _ = _team_params(result.x, n, reg_vec, tempo_mult)
+    return {"attack": attack_fit, "defence": defence_fit,
             "home_adv": result.x[-2], "beta_direct": result.x[-1],
-            "direct_covariate": True}
+            "direct_covariate": True, "c": float(result.x[2 * n]) if intercept else 0.0}
     return {"attack": result.x[:n], "defence": result.x[n:2 * n],
             "home_adv": result.x[-2], "beta_direct": result.x[-1],
             "direct_covariate": True}
@@ -450,8 +487,9 @@ def get_lambdas_direct(model, team_idx, home, away, h_cov, a_cov):
         return None, None
     hi, ai = team_idx[home], team_idx[away]
     attack, defence, home_adv, beta = model["attack"], model["defence"], model["home_adv"], model["beta_direct"]
-    lam = np.exp(attack[hi] - defence[ai] + home_adv + beta * h_cov)
-    mu = np.exp(attack[ai] - defence[hi] + beta * a_cov)
+    c = model.get("c", 0.0)
+    lam = np.exp(c + attack[hi] - defence[ai] + home_adv + beta * h_cov)
+    mu = np.exp(c + attack[ai] - defence[hi] + beta * a_cov)
     return lam, mu
 
 
