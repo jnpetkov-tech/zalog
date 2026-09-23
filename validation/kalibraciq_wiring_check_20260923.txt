@@ -1,0 +1,6 @@
+1) Изключена калибрация, нов код срещу жив: 60 мача, макс. разлика таблица 1.4e-14, топ прогнози 7.1e-15, същият ред на прогнозите: True
+2) Включена: макс. отклонение от p'=b+a(p-b), приложена ВЕДНЪЖ: 1.4e-14 (приложена два пъти би дала отклонение от порядъка на проценти)
+   калибрирани кодове: away_over15, away_under15, away_win, btts_no, btts_yes, draw, home_over15, home_under15, home_win, over25, under25
+   непроменени кодове: away_clean_sheet, corners_away_over_4.5, corners_home_over_4.5, corners_total_over_9.5, corners_total_under_9.5, dc_12, dc_1x, dc_x2, home_clean_sheet, htft
+   сборът на 1X2 не се отдалечава от 100 повече от преди: 1.4e-14
+3) Главната прогноза (top_picks_with_code) = същото число като в таблицата на мача за същия код: ДА

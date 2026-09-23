@@ -339,10 +339,37 @@ def edge_pct(prob_pct, market_odds):
     return round((market_odds / fo - 1) * 100, 1)
 
 
+# --- Калибрация (ZADACHA_KALIBRACIQ.md, ЧАСТ А, 23.09.2026) -------------
+# p' = b + a * (p - b) - "свиване към базовата честота". Параметрите са
+# ВЗЕТИ от validation/calibration_fit_20260923.md, не фитнати наново:
+# a - по пазарна група (научено от мачовете преди 23.09.2025 в
+# validation/backtest_full_20260923_matches.csv); b - честотата на изхода
+# (по код) в същата по-ранна част. Сумата на 1X2 и на всяка двойка
+# (над/под...) остава 1, защото b-тата се сумират до 1.
+# Групи/кодове извън таблиците (двоен шанс, полувреме/край, корнери, чиста
+# мрежа) НЕ са мерени -> a = 1.0, т.е. непроменени.
+CALIBRATION_ENABLED = False
+CALIBRATION_A = {"1x2": 0.974, "btts": 0.532, "ou25": 0.624, "team_total": 0.818}
+CALIBRATION_BASE = {
+    "home_win": 0.445122, "draw": 0.255759, "away_win": 0.299119,
+    "over25": 0.506775, "under25": 0.493225,
+    "btts_yes": 0.519986, "btts_no": 0.480014,
+    "home_over15": 0.431572, "home_under15": 0.568428,
+    "away_over15": 0.333164, "away_under15": 0.666836,
+}
+
+
 def calibrate(prob_pct, league, market_code):
-    """Заглушка за Фаза E. Днес връща входа непроменен - диагностиката от
-    2026-08-10 показа, че свръхувереността е концентрирана в REJECTED/
-    NO_DATA пазари (corners/cards), не в PROVEN пазарите, затова
-    калибрация все още НЕ Е оправдана. Закачена навсякъде отсега, за да
-    може да се включи на едно място, ако бъдещи данни го оправдаят."""
-    return prob_pct
+    """Процент (0-100) -> калибриран процент. Вика се на ЕДНО място:
+    match_predictor_app._model_market_probs() (оттам минават и главната
+    прогноза, и пълната таблица на мача, и записа в predictions_log).
+    league не се ползва днес (параметрите са общи за всички лиги) - остава
+    в подписа за бъдеща калибрация по лига."""
+    if not CALIBRATION_ENABLED or prob_pct is None:
+        return prob_pct
+    b = CALIBRATION_BASE.get(market_code)
+    a = CALIBRATION_A.get(market_group(market_code), 1.0)
+    if b is None or a == 1.0:
+        return prob_pct
+    p = b + a * (prob_pct / 100.0 - b)
+    return 100.0 * min(1.0, max(0.0, p))

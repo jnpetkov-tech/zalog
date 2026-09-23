@@ -402,7 +402,33 @@ def _blend_with_market(home_win, draw, away_win, ou_p, market_odds):
     return home_win, draw, away_win, ou_p
 
 
-def _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds=None, rho=0.0):
+def _model_market_probs(lam, mu, rho, league):
+    """ZADACHA_KALIBRACIQ.md (23.09.2026), ЧАСТ А: ЕДИНСТВЕНОТО място, където
+    от очакваните голове (lam, mu, rho) стават вероятностите на пазарите,
+    които публикуваме. Викат го _raw_candidates() (главната прогноза/топ N)
+    и compute_grouped_markets() (пълната таблица на мача, value/EV, записът
+    в predictions_log) - преди двете смятаха всяко за себе си. Калибрацията
+    (policy.calibrate) се прилага ТУК и само тук.
+
+    Връща (raw, cal): dict код -> вероятност 0-1. raw - чистата Poisson/
+    Dixon-Coles сметка (за двойния шанс и чистата мрежа, които не са
+    калибрирани); cal - след policy.calibrate()."""
+    max_g = 10
+    pm = np.outer(poisson.pmf(range(max_g), lam), poisson.pmf(range(max_g), mu))
+    if rho:
+        pm = fl.dc_adjust_matrix(pm, lam, mu, rho)
+    btts_p, ou_p = fl.btts_ou_probs(lam, mu, rho=rho)
+    extra = fl.extra_markets_probs(lam, mu, rho=rho)
+    raw = {"home_win": np.sum(np.tril(pm, -1)), "draw": np.sum(np.diag(pm)), "away_win": np.sum(np.triu(pm, 1)),
+           "over25": ou_p, "under25": 1 - ou_p, "btts_yes": btts_p, "btts_no": 1 - btts_p,
+           "home_over15": extra["home_over15"], "home_under15": 1 - extra["home_over15"],
+           "away_over15": extra["away_over15"], "away_under15": 1 - extra["away_over15"],
+           "home_clean_sheet": extra["home_clean_sheet"], "away_clean_sheet": extra["away_clean_sheet"]}
+    cal = {code: policy.calibrate(p * 100, league, code) / 100 for code, p in raw.items()}
+    return raw, cal
+
+
+def _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds=None, rho=0.0, league=None):
     """Суровите candidates (label, prob_0_1, code) от Poisson + пазарен
     blend - БЕЗ policy филтриране/дедупликация/класиране. Тази логика вече
     е в pick_selection.py (Фаза I.1), за да не се разминава между
@@ -411,15 +437,9 @@ def _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds=None, rho=0.0)
     rho: Фаза K.1 (20.08.2026) - Dixon-Coles параметър от ft_model["rho"],
     подаден от викащия. 0.0 (по подразбиране) = без корекция, старо
     поведение точно."""
-    max_g = 10
-    pm = np.outer(poisson.pmf(range(max_g), lam), poisson.pmf(range(max_g), mu))
-    if rho:
-        pm = fl.dc_adjust_matrix(pm, lam, mu, rho)
-    home_win = np.sum(np.tril(pm, -1))
-    draw = np.sum(np.diag(pm))
-    away_win = np.sum(np.triu(pm, 1))
-    _, ou_p = fl.btts_ou_probs(lam, mu, rho=rho)
-    extra = fl.extra_markets_probs(lam, mu, rho=rho)
+    _raw, cal = _model_market_probs(lam, mu, rho, league)
+    home_win, draw, away_win, ou_p = cal["home_win"], cal["draw"], cal["away_win"], cal["over25"]
+    extra = {"home_over15": cal["home_over15"]}
     best_htft = max(ht_ft_probs.items(), key=lambda x: x[1])
 
     home_win, draw, away_win, ou_p = _blend_with_market(home_win, draw, away_win, ou_p, market_odds)
@@ -443,7 +463,7 @@ def _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds=None, rho=0.0)
 
 
 def top_pick_with_code(lam, mu, home, away, ht_ft_probs, league, market_odds=None, rho=0.0):
-    candidates, used_market = _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds, rho=rho)
+    candidates, used_market = _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds, rho=rho, league=league)
     label, pct, code = ps.rank_candidates(candidates, league, policy, n=1)[0]
     return label, pct, code, used_market
 
@@ -454,7 +474,7 @@ def top_picks_with_code(lam, mu, home, away, ht_ft_probs, league, market_odds=No
     fallback/дедупликационна логика. НОВО спрямо преди Фаза I.1: вече
     отхвърля и тук >=95% кандидати (pick_selection.MAX_PUBLISHABLE_PCT) -
     съзнателна унификация, виж claude/ACTION_PLAN.md Фаза I.1."""
-    candidates, used_market = _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds, rho=rho)
+    candidates, used_market = _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds, rho=rho, league=league)
     ranked = ps.rank_candidates(candidates, league, policy, n=n)
     return ranked, used_market
 
@@ -581,7 +601,12 @@ def compute_grouped_markets(league, home, away, home_inj=0, away_inj=0, real_odd
         btts_p, ou_p = fl.btts_ou_probs(l, m, rho=rho)
         return hw, dr, aw, btts_p, ou_p
 
-    home_win, draw, away_win, btts_p, ou_p = probs_1x2_ou(lam, mu, rho=rho_ft)
+    # ZADACHA_KALIBRACIQ.md (23.09.2026): основните вероятности - от
+    # единственото място _model_market_probs() (калибрацията е там);
+    # probs_1x2_ou() остава само за формата (recent_model) по-долу.
+    raw_ft, cal_ft = _model_market_probs(lam, mu, rho_ft, league)
+    home_win, draw, away_win = cal_ft["home_win"], cal_ft["draw"], cal_ft["away_win"]
+    btts_p, ou_p = cal_ft["btts_yes"], cal_ft["over25"]
     # Задача 2 (нощна сесия 24.08.2026): смесеното число (модел+пазар) е
     # статистически значимо по-точно за home_win/draw/away_win/over25/under25
     # (validation/blend_vs_raw_significance_20260824.txt) - огледално на /daily,
@@ -599,7 +624,8 @@ def compute_grouped_markets(league, home, away, home_inj=0, away_inj=0, real_odd
         if (real_odds and real_odds.get("home_win") and real_odds.get("draw") and real_odds.get("away_win"))
         else set()
     )
-    extra = fl.extra_markets_probs(lam, mu, rho=rho_ft)
+    extra = {"home_over15": cal_ft["home_over15"], "away_over15": cal_ft["away_over15"],
+             "home_clean_sheet": raw_ft["home_clean_sheet"], "away_clean_sheet": raw_ft["away_clean_sheet"]}
     ht_ft_probs = predict_ht_ft(lam_ht, mu_ht, lam_2h, mu_2h)
 
     form_data = None
@@ -618,9 +644,10 @@ def compute_grouped_markets(league, home, away, home_inj=0, away_inj=0, real_odd
         (f"{home_cy} печели", home_win * 100, form_data["home_win"] if form_data else None, "home_win"),
         ("Равен", draw * 100, form_data["draw"] if form_data else None, "draw"),
         (f"{away_cy} печели", away_win * 100, form_data["away_win"] if form_data else None, "away_win"),
-        ("Двоен шанс 1X", (home_win + draw) * 100, None, "dc_1x"),
-        ("Двоен шанс X2", (draw + away_win) * 100, None, "dc_x2"),
-        ("Двоен шанс 12", (home_win + away_win) * 100, None, "dc_12"),
+        # двойният шанс не е калибриран (не е мерен) - от суровите 1X2
+        ("Двоен шанс 1X", (raw_ft["home_win"] + raw_ft["draw"]) * 100, None, "dc_1x"),
+        ("Двоен шанс X2", (raw_ft["draw"] + raw_ft["away_win"]) * 100, None, "dc_x2"),
+        ("Двоен шанс 12", (raw_ft["home_win"] + raw_ft["away_win"]) * 100, None, "dc_12"),
     ], True))
 
     groups.append(("Общо голове", [
