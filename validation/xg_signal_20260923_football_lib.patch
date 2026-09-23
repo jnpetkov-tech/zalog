@@ -1,0 +1,34 @@
+--- football_lib.py	2026-08-20 20:46:20.434262092 +0000
++++ football_lib.py	2026-09-23 18:21:34.679185525 +0000
+@@ -84,7 +84,8 @@
+ 
+ 
+ def fit_goals_model(history_df, ref_date, team_idx, n, cov_home_col=None, cov_away_col=None, xi=None,
+-                     reg_strength=3.0, use_dc=True, low_data_extra_reg=15.0, reg_floor=1.0):
++                     reg_strength=3.0, use_dc=True, low_data_extra_reg=15.0, reg_floor=1.0,
++                     row_weight_col=None):
+     """Фаза K.1 (20.08.2026), две промени спрямо оригинала - и двете
+     валидирани с walk-forward backtest на 17-те лиги (виж
+     CLAUDE_HANDOFF.md K.1) преди деплой, use_dc=False+low_data_extra_reg=0.0
+@@ -103,7 +104,11 @@
+        наблюдения (напр. ЦСКА 1948 в евротурнир) се дърпа силно към
+        "среден отбор" (потвърдено: до ~44% свиване на attack+defence за
+        weight~3 срещу <5% за weight>40), вместо да дава екстремна lambda.
+-       low_data_extra_reg=0.0 връща старата еднаква регуляризация точно."""
++       low_data_extra_reg=0.0 връща старата еднаква регуляризация точно.
++
++    row_weight_col (ZADACHA_XG.md, ЧАСТ В, 23.09.2026): име на колона с
++    множител за теглото на всеки мач (напр. 0.5 за мач с червен картон);
++    празно = 1.0. None (по подразбиране) = старото поведение точно."""
+     xi_val = xi if xi is not None else XI
+     valid = history_df.dropna(subset=["home_goals", "away_goals"])
+     h_idx = valid["home_team"].map(team_idx).to_numpy()
+@@ -112,6 +117,8 @@
+     ag = valid["away_goals"].to_numpy()
+     days_ago = (ref_date - valid["date"]).dt.days.to_numpy()
+     weights = np.exp(-xi_val * np.clip(days_ago, 0, None))
++    if row_weight_col is not None:
++        weights = weights * valid[row_weight_col].fillna(1.0).to_numpy(dtype=float)
+ 
+     team_weight = np.zeros(n)
+     np.add.at(team_weight, h_idx, weights)
