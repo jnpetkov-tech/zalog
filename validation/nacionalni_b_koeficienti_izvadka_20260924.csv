@@ -1,0 +1,53 @@
+source,fixture_id,league,date,home,away,status,bookmakers,has_1x2,has_ou25,has_btts,n_bk_1x2,n_bk_ou25,n_bk_btts
+odds_5_p1,1528862,UEFA Nations League,2026-09-24T18:45,Netherlands,Germany,NS,9,1,1,1,9,7,7
+odds_5_p1,1528863,UEFA Nations League,2026-09-24T18:45,Serbia,Greece,NS,9,1,1,1,9,8,7
+odds_5_p1,1528864,UEFA Nations League,2026-09-24T18:45,Portugal,Wales,NS,9,1,1,1,9,7,7
+odds_5_p1,1528865,UEFA Nations League,2026-09-24T18:45,Norway,Denmark,NS,9,1,1,1,9,8,7
+odds_5_p1,1528878,UEFA Nations League,2026-09-24T18:45,Austria,Israel,NS,9,1,1,1,9,7,7
+odds_5_p1,1528879,UEFA Nations League,2026-09-24T18:45,Kosovo,Rep. Of Ireland,NS,9,1,1,1,9,8,7
+odds_5_p1,1528880,UEFA Nations League,2026-09-24T18:45,Liechtenstein,Lithuania,NS,9,1,1,1,9,8,7
+odds_5_p1,1528881,UEFA Nations League,2026-09-25T16:00,Georgia,Northern Ireland,NS,9,1,1,1,9,8,7
+odds_5_p1,1528882,UEFA Nations League,2026-09-25T18:45,Türkiye,France,NS,9,1,1,1,9,7,7
+odds_5_p1,1528883,UEFA Nations League,2026-09-25T18:45,Italy,Belgium,NS,9,1,1,1,9,8,7
+odds_5_p2,1528884,UEFA Nations League,2026-09-25T18:45,Hungary,Ukraine,NS,9,1,1,1,9,8,7
+odds_5_p2,1528885,UEFA Nations League,2026-09-25T18:45,Poland,Bosnia & Herzegovina,NS,9,1,1,1,9,8,7
+odds_5_p2,1528886,UEFA Nations League,2026-09-25T18:45,Sweden,Romania,NS,9,1,1,1,9,7,7
+odds_5_p2,1528887,UEFA Nations League,2026-09-25T18:45,Montenegro,Cyprus,NS,9,1,1,1,9,8,7
+odds_5_p2,1528888,UEFA Nations League,2026-09-26T16:00,San Marino,Finland,NS,9,1,1,1,8,7,7
+odds_5_p2,1528889,UEFA Nations League,2026-09-26T16:00,Faroe Islands,Kazakhstan,NS,9,1,1,1,9,7,7
+odds_5_p2,1528890,UEFA Nations League,2026-09-26T16:00,Iceland,Estonia,NS,9,1,1,1,9,8,7
+odds_5_p2,1528891,UEFA Nations League,2026-09-26T18:45,England,Spain,NS,9,1,1,1,9,8,7
+odds_5_p2,1528892,UEFA Nations League,2026-09-26T18:45,Czechia,Croatia,NS,9,1,1,1,9,8,7
+odds_5_p2,1528893,UEFA Nations League,2026-09-26T18:45,Albania,Belarus,NS,9,1,1,1,9,7,7
+odds_10_p1,1640499,Friendlies,2026-09-21T04:00,New Caledonia,Solomon Islands,FT,5,1,1,1,5,4,2
+odds_10_p1,1610876,Friendlies,2026-09-23T16:00,Azerbaijan,Tajikistan,FT,7,1,1,1,7,6,6
+odds_10_p1,1640055,Friendlies,2026-09-23T16:00,Gibraltar,Sao Tome and Principe,FT,6,1,1,1,6,5,6
+odds_10_p1,1628995,Friendlies,2026-09-24T10:05,Japan,Uruguay,NS,9,1,1,1,9,8,7
+odds_10_p1,1628994,Friendlies,2026-09-24T11:00,South Korea,Ecuador,NS,9,1,1,1,9,8,7
+odds_10_p1,1638591,Friendlies,2026-09-24T14:00,Uzbekistan,Iran,NS,9,1,1,1,9,7,7
+odds_10_p1,1640056,Friendlies,2026-09-24T09:30,Palestine,New Zealand,NS,6,1,1,1,6,5,6
+odds_10_p1,1640057,Friendlies,2026-09-24T11:35,China,Maldives,NS,9,1,1,1,6,7,6
+odds_10_p1,1632348,Friendlies,2026-09-24T11:00,Netherlands U19,Belgium U19,NS,8,1,1,1,8,6,6
+odds_10_p1,1583655,Friendlies,2026-09-25T10:00,Australia,Brazil,NS,8,1,1,1,8,6,6
+odds_36_p1,1545822,Africa Cup of Nations - Qualification,2026-09-24T16:00,Libya,Botswana,NS,9,1,1,1,9,7,7
+odds_36_p1,1545816,Africa Cup of Nations - Qualification,2026-09-24T19:00,Cameroon,Comoros,NS,9,1,1,1,9,8,7
+odds_36_p1,1545817,Africa Cup of Nations - Qualification,2026-09-24T16:00,Congo DR,Equatorial Guinea,NS,9,1,1,1,9,7,7
+odds_36_p1,1545820,Africa Cup of Nations - Qualification,2026-09-24T19:00,Ivory Coast,Ghana,NS,9,1,1,1,9,7,7
+odds_36_p1,1545814,Africa Cup of Nations - Qualification,2026-09-25T19:00,Algeria,Zambia,NS,8,1,1,1,8,7,6
+odds_36_p1,1545819,Africa Cup of Nations - Qualification,2026-09-25T16:00,Gambia,Somalia,NS,8,1,1,1,8,7,6
+odds_36_p1,1545818,Africa Cup of Nations - Qualification,2026-09-25T19:00,Egypt,Angola,NS,8,1,1,1,8,7,6
+odds_36_p1,1545815,Africa Cup of Nations - Qualification,2026-09-25T19:00,Burkina Faso,Benin,NS,8,1,1,1,8,6,6
+odds_36_p1,1545823,Africa Cup of Nations - Qualification,2026-09-25T16:00,Malawi,South Sudan,NS,8,1,1,1,8,6,6
+odds_36_p1,1545824,Africa Cup of Nations - Qualification,2026-09-25T19:00,Mali,Cape Verde Islands,NS,8,1,1,1,8,7,6
+odds_536_p1,1639930,CONCACAF Nations League,2026-09-23T19:00,Turks and Caicos Islands,Montserrat,FT,9,1,1,1,9,7,6
+odds_536_p1,1639931,CONCACAF Nations League,2026-09-23T20:00,Bahamas,Saint Martin,FT,8,1,1,1,8,7,6
+odds_536_p1,1639932,CONCACAF Nations League,2026-09-23T23:00,Aruba,Antigua and Barbuda,FT,9,1,1,1,9,7,7
+odds_536_p1,1639936,CONCACAF Nations League,2026-09-25T00:20,Haiti,Trinidad and Tobago,NS,8,1,1,1,8,7,7
+odds_536_p1,1639933,CONCACAF Nations League,2026-09-24T19:00,Puerto Rico,Guyana,NS,8,1,1,1,8,7,7
+odds_536_p1,1639934,CONCACAF Nations League,2026-09-25T00:00,Dominican Republic,Nicaragua,NS,8,1,1,1,8,7,7
+odds_536_p1,1639937,CONCACAF Nations League,2026-09-25T02:00,Costa Rica,Curaçao,NS,8,1,1,1,8,7,7
+odds_536_p1,1639939,CONCACAF Nations League,2026-09-25T21:00,Grenada,Cuba,NS,7,1,1,1,7,6,6
+odds_536_p1,1639938,CONCACAF Nations League,2026-09-25T19:00,Bermuda,Guadeloupe,NS,8,1,1,1,8,7,7
+odds_536_p1,1639935,CONCACAF Nations League,2026-09-25T00:10,Cayman Islands,Dominica,NS,8,1,1,1,8,6,6
+odds_fin_1637929,1637929,Gulf Cup of Nations,2026-09-23T18:00,Saudi Arabia,Kuwait,FT,9,1,1,1,9,8,7
+odds_fin_1537579,1537579,,,,,,0,0,0,0,0,0,0

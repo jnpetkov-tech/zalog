@@ -1,0 +1,141 @@
+fixture_id,league_id,league,season,date,home,away,has_any_stats,xg,shots,shots_on_goal,possession,corners
+821416,10,Friendlies,2022,2022-01-16,Colombia,Honduras,0,0,0,0,0,0
+823572,10,Friendlies,2022,2022-01-21,Iraq,Uganda,0,0,0,0,0,0
+827602,10,Friendlies,2022,2022-03-29,England,Ivory Coast,1,0,1,1,1,1
+942144,10,Friendlies,2022,2022-09-23,Qatar,Canada,0,0,0,0,0,0
+945814,10,Friendlies,2022,2022-09-27,Algeria,Nigeria,0,0,0,0,0,0
+958281,10,Friendlies,2022,2022-11-18,Belgium,Egypt,0,0,0,0,0,0
+969915,10,Friendlies,2022,2022-12-30,Syria,Oman,0,0,0,0,0,0
+1012355,10,Friendlies,2023,2023-02-24,Grenada,Barbados,0,0,0,0,0,0
+1028671,10,Friendlies,2023,2023-06-14,Djibouti,Mauritius,0,0,0,0,0,0
+1155253,10,Friendlies,2024,2024-01-09,Zambia,Cameroon,0,0,0,0,0,0
+1193961,10,Friendlies,2024,2024-06-12,Chile,Paraguay,1,0,1,1,1,1
+1313047,10,Friendlies,2024,2024-11-13,Tajikistan,Nepal,0,0,0,0,0,0
+1374570,10,Friendlies,2025,2025-06-01,Puerto Rico,Nicaragua,0,0,0,0,0,0
+1376418,10,Friendlies,2025,2025-06-06,Burundi,Guinea-Bissau,0,0,0,0,0,0
+1436810,10,Friendlies,2025,2025-11-12,Russia,Peru,1,0,1,1,1,1
+1501816,10,Friendlies,2026,2026-03-30,Germany,Ghana,1,0,1,1,1,1
+1512767,10,Friendlies,2026,2026-06-06,Belgium,Tunisia,1,0,1,1,1,1
+1514070,10,Friendlies,2026,2026-01-30,Uzbekistan,FC Urartu,0,0,0,0,0,0
+1583647,10,Friendlies,2026,2026-07-08,Vietnam,Yongin City,0,0,0,0,0,0
+1586127,10,Friendlies,2026,2026-07-10,Club Tijuana,El Salvador,0,0,0,0,0,0
+854603,5,UEFA Nations League,2022,2022-06-13,Denmark,Austria,1,0,1,1,1,1
+854611,5,UEFA Nations League,2022,2022-09-22,Belgium,Wales,1,0,1,1,1,1
+854665,5,UEFA Nations League,2022,2022-09-27,Rep. Of Ireland,Armenia,1,0,1,1,1,1
+854666,5,UEFA Nations League,2022,2022-09-27,Ukraine,Scotland,1,0,1,1,1,1
+854669,5,UEFA Nations League,2022,2022-09-27,Albania,Iceland,1,0,1,1,1,1
+854677,5,UEFA Nations League,2022,2022-06-03,Kazakhstan,Azerbaijan,1,0,1,1,1,1
+854682,5,UEFA Nations League,2022,2022-06-05,Gibraltar,FYR Macedonia,1,0,1,1,1,1
+854714,5,UEFA Nations League,2022,2022-09-25,Azerbaijan,Kazakhstan,1,0,1,1,1,1
+854724,5,UEFA Nations League,2022,2022-06-05,San Marino,Malta,1,0,1,1,1,1
+854729,5,UEFA Nations League,2022,2022-06-10,Moldova,Latvia,1,0,1,1,1,1
+1172894,5,UEFA Nations League,2024,2024-09-06,Wales,Türkiye,1,0,1,1,1,1
+1172916,5,UEFA Nations League,2024,2024-10-13,Finland,England,1,0,1,1,1,1
+1172961,5,UEFA Nations League,2024,2024-10-12,Serbia,Switzerland,1,0,1,1,1,1
+1172992,5,UEFA Nations League,2024,2024-09-07,Faroe Islands,FYR Macedonia,1,0,1,1,1,1
+1173012,5,UEFA Nations League,2024,2024-10-15,Kosovo,Cyprus,1,0,1,1,1,1
+1173022,5,UEFA Nations League,2024,2024-11-17,Latvia,Armenia,1,0,1,1,1,1
+1173029,5,UEFA Nations League,2024,2024-09-05,San Marino,Liechtenstein,1,0,1,1,1,1
+1316555,5,UEFA Nations League,2024,2025-03-20,Ukraine,Belgium,1,0,1,1,1,1
+1316561,5,UEFA Nations League,2024,2025-03-20,Kosovo,Iceland,1,0,1,1,1,1
+1366136,5,UEFA Nations League,2024,2025-06-04,Germany,Portugal,1,0,1,1,1,1
+852238,36,Africa Cup of Nations - Qualification,2023,2022-03-29,Gambia,Chad,0,0,0,0,0,0
+859118,36,Africa Cup of Nations - Qualification,2023,2022-06-03,Togo,Eswatini,0,0,0,0,0,0
+859131,36,Africa Cup of Nations - Qualification,2023,2022-06-04,Congo DR,Gabon,0,0,0,0,0,0
+859164,36,Africa Cup of Nations - Qualification,2023,2023-03-22,Sierra Leone,Sao Tome and Principe,0,0,0,0,0,0
+859173,36,Africa Cup of Nations - Qualification,2023,2023-03-23,Algeria,Niger,0,0,0,0,0,0
+859226,36,Africa Cup of Nations - Qualification,2023,2023-06-17,Lesotho,Comoros,0,0,0,0,0,0
+859227,36,Africa Cup of Nations - Qualification,2023,2023-06-18,Gabon,Congo DR,0,0,0,0,0,0
+859230,36,Africa Cup of Nations - Qualification,2023,2023-06-17,Botswana,Libya,0,0,0,0,0,0
+859238,36,Africa Cup of Nations - Qualification,2023,2023-09-10,Togo,Cape Verde Islands,0,0,0,0,0,0
+859244,36,Africa Cup of Nations - Qualification,2023,2023-09-07,Ghana,Central African Republic,0,0,0,0,0,0
+1175241,36,Africa Cup of Nations - Qualification,2025,2024-03-26,Liberia,Djibouti,0,0,0,0,0,0
+1232415,36,Africa Cup of Nations - Qualification,2025,2024-09-05,Ghana,Angola,0,0,0,0,0,0
+1232426,36,Africa Cup of Nations - Qualification,2025,2024-09-05,Congo,South Sudan,0,0,0,0,0,0
+1232441,36,Africa Cup of Nations - Qualification,2025,2024-09-10,Zambia,Sierra Leone,0,0,0,0,0,0
+1232471,36,Africa Cup of Nations - Qualification,2025,2024-10-11,Cameroon,Kenya,0,0,0,0,0,0
+1232503,36,Africa Cup of Nations - Qualification,2025,2024-11-15,Gabon,Morocco,0,0,0,0,0,0
+1232523,36,Africa Cup of Nations - Qualification,2025,2024-11-14,Burkina Faso,Senegal,0,0,0,0,0,0
+1232533,36,Africa Cup of Nations - Qualification,2025,2024-11-17,Togo,Equatorial Guinea,0,0,0,0,0,0
+1232534,36,Africa Cup of Nations - Qualification,2025,2024-11-17,Algeria,Liberia,0,0,0,0,0,0
+1232540,36,Africa Cup of Nations - Qualification,2025,2024-11-19,Congo DR,Ethiopia,0,0,0,0,0,0
+1125853,29,World Cup - Qualification Africa,2023,2023-11-16,Nigeria,Lesotho,0,0,0,0,0,0
+1125865,29,World Cup - Qualification Africa,2023,2023-11-16,Algeria,Somalia,0,0,0,0,0,0
+1125876,29,World Cup - Qualification Africa,2023,2023-11-21,South Sudan,Mauritania,0,0,0,0,0,0
+1125886,29,World Cup - Qualification Africa,2023,2023-11-21,Tanzania,Morocco,0,0,0,0,0,0
+1125892,29,World Cup - Qualification Africa,2023,2023-11-19,Mozambique,Algeria,1,0,0,0,0,1
+1125923,29,World Cup - Qualification Africa,2023,2024-06-05,Tunisia,Equatorial Guinea,0,0,0,0,0,0
+1125955,29,World Cup - Qualification Africa,2023,2025-03-20,Sierra Leone,Guinea-Bissau,0,0,0,0,0,0
+1125976,29,World Cup - Qualification Africa,2023,2025-03-20,Malawi,Namibia,0,0,0,0,0,0
+1125981,29,World Cup - Qualification Africa,2023,2025-03-24,Guinea-Bissau,Burkina Faso,0,0,0,0,0,0
+1125986,29,World Cup - Qualification Africa,2023,2025-03-25,Sudan,South Sudan,0,0,0,0,0,0
+1125987,29,World Cup - Qualification Africa,2023,2025-03-25,Benin,South Africa,1,0,1,1,1,1
+1125993,29,World Cup - Qualification Africa,2023,2025-03-22,Congo,Zambia,0,0,0,0,0,0
+1126018,29,World Cup - Qualification Africa,2023,2025-09-04,Mauritius,Cape Verde Islands,0,0,0,0,0,0
+1126023,29,World Cup - Qualification Africa,2023,2025-09-05,Kenya,Gambia,0,0,0,0,0,0
+1126029,29,World Cup - Qualification Africa,2023,2025-09-05,Namibia,Malawi,0,0,0,0,0,0
+1126041,29,World Cup - Qualification Africa,2023,2025-09-09,South Africa,Nigeria,1,0,1,1,1,1
+1126042,29,World Cup - Qualification Africa,2023,2025-09-09,Benin,Lesotho,1,0,0,0,0,0
+1126072,29,World Cup - Qualification Africa,2023,2025-10-08,Libya,Cape Verde Islands,1,0,0,0,0,0
+1126081,29,World Cup - Qualification Africa,2023,2025-10-09,Mozambique,Guinea,1,0,0,0,0,0
+1126095,29,World Cup - Qualification Africa,2023,2025-10-14,South Africa,Rwanda,1,0,1,1,1,1
+980461,960,Euro Championship - Qualification,2023,2023-03-23,Portugal,Liechtenstein,1,0,1,1,1,1
+980484,960,Euro Championship - Qualification,2023,2023-03-26,Northern Ireland,Finland,1,0,1,1,1,1
+980518,960,Euro Championship - Qualification,2023,2023-06-17,Montenegro,Hungary,1,0,1,1,1,1
+980541,960,Euro Championship - Qualification,2023,2023-06-20,Austria,Sweden,1,0,1,1,1,1
+980556,960,Euro Championship - Qualification,2023,2023-09-07,Slovenia,Northern Ireland,1,0,1,1,1,1
+980586,960,Euro Championship - Qualification,2023,2023-09-11,Slovakia,Liechtenstein,1,0,1,1,1,1
+980590,960,Euro Championship - Qualification,2023,2023-09-12,Sweden,Austria,1,0,1,1,1,1
+980592,960,Euro Championship - Qualification,2023,2023-09-12,Israel,Belarus,1,0,1,1,1,1
+980608,960,Euro Championship - Qualification,2023,2023-10-13,Portugal,Slovakia,1,0,1,1,1,1
+980613,960,Euro Championship - Qualification,2023,2023-10-14,Slovenia,Finland,1,0,1,1,1,1
+980616,960,Euro Championship - Qualification,2023,2023-10-14,Denmark,Kazakhstan,1,0,1,1,1,1
+980626,960,Euro Championship - Qualification,2023,2023-10-16,Azerbaijan,Austria,1,0,1,1,1,1
+980633,960,Euro Championship - Qualification,2023,2023-10-17,England,Italy,1,0,1,1,1,1
+980642,960,Euro Championship - Qualification,2023,2023-11-16,Azerbaijan,Sweden,1,0,1,1,1,1
+980648,960,Euro Championship - Qualification,2023,2023-11-16,Liechtenstein,Portugal,1,0,1,1,1,1
+980655,960,Euro Championship - Qualification,2023,2023-11-17,Denmark,Slovenia,1,0,1,1,1,1
+980656,960,Euro Championship - Qualification,2023,2023-11-18,Armenia,Wales,1,0,1,1,1,1
+980663,960,Euro Championship - Qualification,2023,2023-11-19,Hungary,Montenegro,1,0,1,1,1,1
+980680,960,Euro Championship - Qualification,2023,2023-11-21,Gibraltar,Netherlands,1,0,1,1,1,1
+1144236,960,Euro Championship - Qualification,2023,2024-03-21,Israel,Iceland,1,0,1,1,1,1
+1100326,30,World Cup - Qualification Asia,2026,2023-11-16,Malaysia,Kyrgyzstan,0,0,0,0,0,0
+1100337,30,World Cup - Qualification Asia,2026,2023-11-21,Jordan,Saudi Arabia,1,0,1,1,1,1
+1100360,30,World Cup - Qualification Asia,2026,2024-06-06,Uzbekistan,Turkmenistan,0,0,0,0,0,0
+1139083,30,World Cup - Qualification Asia,2026,2023-11-16,Japan,Myanmar,1,0,1,1,1,1
+1139106,30,World Cup - Qualification Asia,2026,2024-03-21,Indonesia,Vietnam,1,0,0,0,0,1
+1139121,30,World Cup - Qualification Asia,2026,2024-06-06,Afghanistan,Qatar,1,0,1,1,1,1
+1139125,30,World Cup - Qualification Asia,2026,2024-06-06,Hong Kong,Iran,0,0,0,0,0,0
+1218491,30,World Cup - Qualification Asia,2026,2024-09-10,United Arab Emirates,Iran,1,0,1,1,1,1
+1218495,30,World Cup - Qualification Asia,2026,2024-09-10,China,Saudi Arabia,1,0,1,1,1,1
+1218497,30,World Cup - Qualification Asia,2026,2024-09-10,Bahrain,Japan,1,0,1,1,1,1
+1218513,30,World Cup - Qualification Asia,2026,2024-10-15,China,Indonesia,1,0,1,1,1,1
+1218518,30,World Cup - Qualification Asia,2026,2024-11-14,Qatar,Uzbekistan,1,0,1,1,1,1
+1218521,30,World Cup - Qualification Asia,2026,2024-11-14,Iraq,Jordan,1,0,1,1,1,1
+1218531,30,World Cup - Qualification Asia,2026,2024-11-19,China,Japan,1,0,1,1,1,1
+1218538,30,World Cup - Qualification Asia,2026,2025-03-20,Iraq,Kuwait,1,0,1,1,1,1
+1218547,30,World Cup - Qualification Asia,2026,2025-03-25,Kuwait,Oman,1,0,1,1,1,1
+1218553,30,World Cup - Qualification Asia,2026,2025-06-05,United Arab Emirates,Uzbekistan,1,0,1,1,1,1
+1218560,30,World Cup - Qualification Asia,2026,2025-06-05,Australia,Japan,1,0,1,1,1,1
+1218561,30,World Cup - Qualification Asia,2026,2025-06-10,Kyrgyzstan,United Arab Emirates,1,0,1,1,1,1
+1218568,30,World Cup - Qualification Asia,2026,2025-06-10,Japan,Indonesia,1,0,1,1,1,1
+1323240,32,World Cup - Qualification Europe,2024,2025-03-21,Romania,Bosnia & Herzegovina,1,0,1,1,1,1
+1323251,32,World Cup - Qualification Europe,2024,2025-03-24,Bosnia & Herzegovina,Cyprus,1,0,1,1,1,1
+1323274,32,World Cup - Qualification Europe,2024,2025-06-10,Finland,Poland,1,0,1,1,1,1
+1323308,32,World Cup - Qualification Europe,2024,2025-09-09,Cyprus,Romania,1,1,1,1,1,1
+1323322,32,World Cup - Qualification Europe,2024,2025-10-11,Latvia,Andorra,1,1,1,1,1,1
+1323331,32,World Cup - Qualification Europe,2024,2025-10-12,Romania,Austria,1,1,1,1,1,1
+1323346,32,World Cup - Qualification Europe,2024,2025-11-13,Andorra,Albania,1,1,1,1,1,1
+1323350,32,World Cup - Qualification Europe,2024,2025-11-14,Gibraltar,Montenegro,1,1,1,1,1,1
+1323374,32,World Cup - Qualification Europe,2024,2025-11-18,Wales,FYR Macedonia,1,1,1,1,1,1
+1366274,32,World Cup - Qualification Europe,2024,2025-06-06,Gibraltar,Croatia,1,0,1,1,1,1
+1366278,32,World Cup - Qualification Europe,2024,2025-06-10,Netherlands,Malta,1,0,1,1,1,1
+1366280,32,World Cup - Qualification Europe,2024,2025-09-04,Bulgaria,Spain,1,1,1,1,1,1
+1366296,32,World Cup - Qualification Europe,2024,2025-10-09,Malta,Netherlands,1,1,1,1,1,1
+1366301,32,World Cup - Qualification Europe,2024,2025-10-11,Portugal,Rep. Of Ireland,1,1,1,1,1,1
+1366304,32,World Cup - Qualification Europe,2024,2025-10-12,Denmark,Greece,1,1,1,1,1,1
+1366314,32,World Cup - Qualification Europe,2024,2025-11-14,Luxembourg,Germany,1,1,1,1,1,1
+1366321,32,World Cup - Qualification Europe,2024,2025-11-16,Italy,Norway,1,1,1,1,1,1
+1487922,32,World Cup - Qualification Europe,2024,2026-03-26,Türkiye,Romania,1,0,1,1,1,1
+1487925,32,World Cup - Qualification Europe,2024,2026-03-26,Italy,Northern Ireland,1,0,1,1,1,1
+1537579,32,World Cup - Qualification Europe,2024,2026-03-31,Czechia,Denmark,1,0,1,1,1,1
