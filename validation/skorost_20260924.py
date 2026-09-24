@@ -156,7 +156,7 @@ def measure(prognozi_path, st_path, db_path, label, csv_path=None):
     return out
 
 
-def compare(pa, sa, pb, sb, db_path):
+def compare(pa, sa, pb, sb, db_path, out_csv=None):
     """Еднакви ли са HTML отговорите на стария и новия код върху една база."""
     a = make_app(pa, sa, db_path, "a").test_client()
     b = make_app(pb, sb, db_path, "b").test_client()
@@ -186,35 +186,125 @@ def compare(pa, sa, pb, sb, db_path):
         else:
             diffs.append(u)
     print(f"еднакви: {n_same}/{len(urls)}")
+    if out_csv:
+        with open(out_csv, "w", newline="", encoding="utf-8") as f:
+            w = csv.writer(f)
+            w.writerow(["url", "еднакви"])
+            for u in urls:
+                w.writerow([u, u not in diffs])
     for u in diffs:
         print("  РАЗЛИКА:", u)
     return n_same, len(urls), diffs, urls
 
 
 def compare_after_change(pa, sa, pb, sb, db_path):
-    """Кешът на новия код се обновява ли, когато дневникът се промени?
-    Загрява двата кода, после сменя status на уредени редове на последния
-    уреден мач (won<->lost) в ТЕСТОВАТА база и сравнява отново. Базата
-    трябва да е копие - променя се."""
-    assert "predictions.db" not in os.path.basename(db_path) or "/tmp/" in db_path
+    """Кешът на новия код следи ли дневника? Загрява двата кода, после в
+    ТЕСТОВАТА база (копие - променя се) прави поред: (1) won<->lost на
+    уредените редове на последния уреден мач, (2) нов уреден мач (копие на
+    редовете на друг мач с нов fixture_id и по-късна дата), (3) изтрива
+    мач, (4) нов предстоящ ред (pending) - след всяка промяна сравнява."""
+    assert db_path.startswith("/tmp/")
     a = make_app(pa, sa, db_path, "ca").test_client()
     b = make_app(pb, sb, db_path, "cb").test_client()
-    urls = ["/prognozi", "/prognozi?status=finished", "/prognozi?status=finished&limit=2000"]
+    urls = ["/prognozi", "/prognozi?status=finished", "/prognozi?status=finished&limit=2000",
+            "/prognozi?status=finished&league=bulgaria2"]
     for u in urls:
         a.get(u), b.get(u)
     c = sqlite3.connect(db_path)
-    fid = c.execute("SELECT fixture_id FROM predictions_log WHERE status IN ('won','lost') "
-                    "GROUP BY fixture_id ORDER BY MAX(match_date) DESC LIMIT 1").fetchone()[0]
-    c.execute("UPDATE predictions_log SET status = CASE status WHEN 'won' THEN 'lost' ELSE 'won' END "
-              "WHERE fixture_id=? AND status IN ('won','lost')", (fid,))
-    c.commit()
+    last = [r[0] for r in c.execute(
+        "SELECT fixture_id FROM predictions_log WHERE status IN ('won','lost') "
+        "GROUP BY fixture_id ORDER BY MAX(match_date) DESC LIMIT 3")]
+    cols = [r[1] for r in c.execute("PRAGMA table_info(predictions_log)") if r[1] != "id"]
+    steps = [
+        ("won<->lost", "UPDATE predictions_log SET status = CASE status WHEN 'won' THEN 'lost' ELSE 'won' END "
+                       f"WHERE fixture_id={last[0]} AND status IN ('won','lost')"),
+        ("нов уреден мач", f"INSERT INTO predictions_log ({', '.join(cols)}) SELECT "
+                           + ", ".join("fixture_id + 900000000" if x == "fixture_id" else
+                                       "'2026-09-23 21:00'" if x == "match_date" else x for x in cols)
+                           + f" FROM predictions_log WHERE fixture_id={last[1]}"),
+        ("изтрит мач", f"DELETE FROM predictions_log WHERE fixture_id={last[2]}"),
+        ("нов предстоящ ред", f"INSERT INTO predictions_log (league, fixture_id, match_date, home_team, away_team, "
+                              f"market_code, pick_label, pick_pct, status) VALUES ('bulgaria2', 777, "
+                              f"'2026-09-30 18:00', 'A', 'B', 'home_win', '1', 50.0, 'pending')"),
+    ]
+    total_same = total = 0
+    for name, sql in steps:
+        c.execute(sql)
+        c.commit()
+        same = 0
+        for u in urls:
+            ra, rb = a.get(u), b.get(u)
+            same += ra.data == rb.data
+        total_same += same
+        total += len(urls)
+        print(f"след промяна '{name}': еднакви {same}/{len(urls)}")
     c.close()
-    same = 0
-    for u in urls:
-        ra, rb = a.get(u), b.get(u)
-        same += ra.data == rb.data
-    print(f"след промяна в дневника (мач {fid}): еднакви {same}/{len(urls)}")
-    return same, len(urls)
+    return total_same, total
+
+
+def _multiply_log(src_db, dst_db, factor):
+    """КОПИЕ на базата с дневник, умножен factor пъти: всеки мач се повтаря с
+    нов fixture_id (+k*10^9), същите пазари/статуси/дати. Живата база не се пипа."""
+    s = sqlite3.connect(f"file:{src_db}?mode=ro", uri=True)
+    d = sqlite3.connect(dst_db)
+    s.backup(d)
+    s.close()
+    cols = [r[1] for r in d.execute("PRAGMA table_info(predictions_log)") if r[1] != "id"]
+    col_sql = ", ".join(cols)
+    sel = ", ".join(f"fixture_id + {{k}}" if c == "fixture_id" else c for c in cols)
+    for k in range(1, factor):
+        d.execute(f"INSERT INTO predictions_log ({col_sql}) SELECT {sel.format(k=k * 10**9)} "
+                  f"FROM predictions_log WHERE fixture_id < 1000000000")
+    d.commit()
+    n = d.execute("SELECT COUNT(*) FROM predictions_log").fetchone()[0]
+    d.close()
+    return n
+
+
+def scale(prognozi_path, st_path, src_db, label, csv_path=None, factors="1,5,20"):
+    """Расте ли времето с дневника? За всеки множител: първа заявка на нов
+    процес (при новия код - пълното пресмятане), загрят кеш (медиана от
+    N_RUNS) и студен (първа заявка след промяна на един ред в дневника)."""
+    out = []
+    for factor in [int(x) for x in factors.split(",")]:
+        db = f"/tmp/skorost_scale_x{factor}.db"
+        if os.path.exists(db):
+            os.remove(db)
+        n = _multiply_log(src_db, db, factor)
+        app = make_app(prognozi_path, st_path, db, f"s{factor}_{label}")
+        client = app.test_client()
+        first = {}
+        for url in ["/prognozi?day=3", "/prognozi?status=finished"]:
+            t0 = time.perf_counter()
+            client.get(url)
+            first[url] = (time.perf_counter() - t0) * 1000
+            warm = []
+            for _ in range(N_RUNS):
+                t0 = time.perf_counter()
+                client.get(url)
+                warm.append((time.perf_counter() - t0) * 1000)
+            cold = []
+            for _ in range(3):
+                c = sqlite3.connect(db)
+                c.execute("UPDATE predictions_log SET logged_at = logged_at WHERE id = (SELECT MAX(id) FROM predictions_log)")
+                c.commit()
+                c.close()
+                t0 = time.perf_counter()
+                client.get(url)
+                cold.append((time.perf_counter() - t0) * 1000)
+            rec = {"label": label, "factor": factor, "log_rows": n, "url": url,
+                   "first_request_ms": round(first[url], 1),
+                   "warm_median_ms": round(statistics.median(warm), 1),
+                   "cold_median_ms": round(statistics.median(cold), 1)}
+            out.append(rec)
+            print(rec)
+        os.remove(db)
+    if csv_path:
+        with open(csv_path, "w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=list(out[0].keys()))
+            w.writeheader()
+            w.writerows(out)
+    return out
 
 
 def profile(prognozi_path, st_path, db_path, url):
@@ -235,8 +325,10 @@ if __name__ == "__main__":
     if cmd == "measure":
         measure(*sys.argv[2:6], csv_path=sys.argv[6] if len(sys.argv) > 6 else None)
     elif cmd == "compare":
-        compare(*sys.argv[2:7])
+        compare(*sys.argv[2:7], out_csv=sys.argv[7] if len(sys.argv) > 7 else None)
     elif cmd == "compare_after_change":
         compare_after_change(*sys.argv[2:7])
+    elif cmd == "scale":
+        scale(*sys.argv[2:6], csv_path=sys.argv[6] if len(sys.argv) > 6 else None)
     elif cmd == "profile":
         profile(*sys.argv[2:6])

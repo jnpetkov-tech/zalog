@@ -58,6 +58,9 @@ def get_conn():
     return conn
 
 
+CHANGES_KEEP = 200000
+
+
 def init_db():
     conn = get_conn()
     conn.execute("""
@@ -277,27 +280,49 @@ def init_db():
         "CREATE INDEX IF NOT EXISTS idx_predictions_snapshot_computed_at ON predictions_snapshot(computed_at)",
     ]:
         conn.execute(idx_sql)
-    # ZADACHA_GOLQMA.md, Етап 1.3: брояч на промените в predictions_log -
-    # тригерите го вдигат при всеки реален INSERT/UPDATE/DELETE (INSERT OR
-    # IGNORE, който нищо не вмъква, не го вдига). /prognozi пази в паметта
-    # си сметките върху целия дневник (отчета, списъка "Приключили") и ги
-    # смята наново САМО когато броячът се е променил - иначе всяко
-    # зареждане четеше целия дневник (виж validation/skorost_20260924.md).
+    # ZADACHA_GOLQMA.md, Етап 1.3-1.4: дневник на промените в predictions_log -
+    # тригерите записват fixture_id-то на всеки реално вмъкнат/променен/
+    # изтрит ред (INSERT OR IGNORE, който нищо не вмъква, не записва нищо).
+    # /prognozi пази в паметта си публикуваната прогноза на всеки уреден мач
+    # и при промяна преизчислява САМО променените мачове, вместо да чете
+    # целия дневник при всяко зареждане (validation/skorost_20260924.md).
+    # Пази се последните CHANGES_KEEP записа; читател, изостанал повече,
+    # просто смята всичко наново.
+    # (Първата версия от 1.3 - общ брояч table_versions - се маха.)
+    for event in ("insert", "update", "delete"):
+        conn.execute(f"DROP TRIGGER IF EXISTS trg_predictions_log_version_{event}")
+    conn.execute("DROP TABLE IF EXISTS table_versions")
     conn.execute("""
-        CREATE TABLE IF NOT EXISTS table_versions (
-            name TEXT PRIMARY KEY,
-            version INTEGER NOT NULL DEFAULT 0
+        CREATE TABLE IF NOT EXISTS predictions_log_changes (
+            seq INTEGER PRIMARY KEY AUTOINCREMENT,
+            fixture_id INTEGER
         )
     """)
-    conn.execute("INSERT OR IGNORE INTO table_versions (name, version) VALUES ('predictions_log', 0)")
-    for event in ("INSERT", "UPDATE", "DELETE"):
-        conn.execute(f"""
-            CREATE TRIGGER IF NOT EXISTS trg_predictions_log_version_{event.lower()}
-            AFTER {event} ON predictions_log
-            BEGIN
-                UPDATE table_versions SET version = version + 1 WHERE name = 'predictions_log';
-            END
-        """)
+    conn.execute("""
+        CREATE TRIGGER IF NOT EXISTS trg_predictions_log_changes_insert
+        AFTER INSERT ON predictions_log
+        BEGIN
+            INSERT INTO predictions_log_changes (fixture_id) VALUES (NEW.fixture_id);
+        END
+    """)
+    conn.execute("""
+        CREATE TRIGGER IF NOT EXISTS trg_predictions_log_changes_update
+        AFTER UPDATE ON predictions_log
+        BEGIN
+            INSERT INTO predictions_log_changes (fixture_id) VALUES (NEW.fixture_id);
+            INSERT INTO predictions_log_changes (fixture_id)
+                SELECT OLD.fixture_id WHERE OLD.fixture_id IS NOT NEW.fixture_id;
+        END
+    """)
+    conn.execute("""
+        CREATE TRIGGER IF NOT EXISTS trg_predictions_log_changes_delete
+        AFTER DELETE ON predictions_log
+        BEGIN
+            INSERT INTO predictions_log_changes (fixture_id) VALUES (OLD.fixture_id);
+        END
+    """)
+    conn.execute("DELETE FROM predictions_log_changes WHERE seq <= "
+                 "(SELECT MAX(seq) FROM predictions_log_changes) - ?", (CHANGES_KEEP,))
     conn.commit()
     conn.close()
 
@@ -812,12 +837,21 @@ def get_settled_fixture_ids(fixture_ids):
     return {r[0] for r in rows}
 
 
-def get_table_version(name):
-    """Брояч на промените (виж table_versions в init_db); None, ако липсва."""
+def get_log_changes_since(seq):
+    """ZADACHA_GOLQMA.md 1.4: (последен seq, мачове, променени след seq).
+    Мачовете са None, ако seq е None или по-стар от най-стария пазен запис -
+    тогава викащият трябва да смята всичко наново. Последният seq е 0 при
+    празен дневник на промените."""
     conn = get_conn()
-    row = conn.execute("SELECT version FROM table_versions WHERE name=?", (name,)).fetchone()
+    lo, hi = conn.execute("SELECT MIN(seq), MAX(seq) FROM predictions_log_changes").fetchone()
+    hi = hi or 0
+    if seq is None or seq > hi or (lo is not None and lo > seq + 1):
+        conn.close()
+        return hi, None
+    rows = conn.execute("SELECT DISTINCT fixture_id FROM predictions_log_changes WHERE seq > ?",
+                        (seq,)).fetchall()
     conn.close()
-    return row[0] if row else None
+    return hi, {r[0] for r in rows}
 
 
 def get_predictions_for_fixture(fixture_id):

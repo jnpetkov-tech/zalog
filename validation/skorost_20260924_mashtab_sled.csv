@@ -1,0 +1,7 @@
+label,factor,log_rows,url,first_request_ms,warm_median_ms,cold_median_ms
+СЛЕД_1.4,1,25684,/prognozi?day=3,434.8,13.0,54.7
+СЛЕД_1.4,1,25684,/prognozi?status=finished,48.7,26.4,76.0
+СЛЕД_1.4,5,128420,/prognozi?day=3,1681.3,18.2,167.1
+СЛЕД_1.4,5,128420,/prognozi?status=finished,35.4,34.3,154.8
+СЛЕД_1.4,20,513680,/prognozi?day=3,6628.0,27.8,465.7
+СЛЕД_1.4,20,513680,/prognozi?status=finished,47.1,45.7,484.7

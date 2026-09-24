@@ -1,0 +1,13 @@
+label,factor,log_rows,url,warm_median_ms,cold_median_ms
+ПРЕДИ (стар код),1,25684,/prognozi?day=3,460.3,486.0
+ПРЕДИ (стар код),1,25684,/prognozi?status=finished,489.3,471.4
+ПРЕДИ (стар код),5,128420,/prognozi?day=3,2619.0,2567.6
+ПРЕДИ (стар код),5,128420,/prognozi?status=finished,2773.3,2716.9
+ПРЕДИ (стар код),20,513680,/prognozi?day=3,11086.4,10732.5
+ПРЕДИ (стар код),20,513680,/prognozi?status=finished,10582.5,10517.4
+СЛЕД_1.3 (кеш по брояч),1,25684,/prognozi?day=3,12.8,395.4
+СЛЕД_1.3 (кеш по брояч),1,25684,/prognozi?status=finished,24.1,397.8
+СЛЕД_1.3 (кеш по брояч),5,128420,/prognozi?day=3,9.8,1418.7
+СЛЕД_1.3 (кеш по брояч),5,128420,/prognozi?status=finished,17.0,1467.8
+СЛЕД_1.3 (кеш по брояч),20,513680,/prognozi?day=3,10.9,6047.4
+СЛЕД_1.3 (кеш по брояч),20,513680,/prognozi?status=finished,17.9,5712.6

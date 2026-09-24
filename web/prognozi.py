@@ -167,7 +167,7 @@ def _day_tab(d, today, match_count=0):
 
 # ZADACHA_GOLQMA.md, Етап 1.3 (24.09.2026): колоните от дневника, нужни за
 # отчета и "Приключили" (evaluation.summary/published_picks + редът в списъка).
-HISTORY_COLUMNS = ["fixture_id", "league", "match_date", "home_team", "away_team", "market_code",
+HISTORY_COLUMNS = ["id", "fixture_id", "league", "match_date", "home_team", "away_team", "market_code",
                    "pick_pct", "status", "market_odds", "our_fair_odds",
                    "actual_home_goals", "actual_away_goals"]
 
@@ -184,30 +184,63 @@ def register_prognozi_routes(app, ctx):
     prognozi_bp = Blueprint("prognozi", __name__)
 
     # ZADACHA_GOLQMA.md, Етап 1.3-1.4 (24.09.2026): всичко, което зависи от
-    # ЦЕЛИЯ дневник (трите числа горе, "Вчера", списъкът "Приключили"), се
-    # смята веднъж и се пази в паметта, докато дневникът или доверието
-    # (trust_derived) не се сменят. Преди всяко зареждане четеше целия
+    # ЦЕЛИЯ дневник (трите числа горе, "Вчера", списъкът "Приключили"), вече
+    # не се смята при всяко зареждане. Преди всяка заявка четеше целия
     # predictions_log и два пъти избираше публикуваната прогноза за всеки мач
-    # (~0.5 с при 25 хил. реда, растящо с дневника). Ключът: броячът на
-    # промените в predictions_log (тригери, system_tracker.init_db) +
-    # статусите от trust_derived, с които policy реално работи в момента.
-    history_cache = {"key": None, "state": None}
+    # (~0.5 с при 25 хил. реда, растящо с дневника).
+    # Сега в паметта стои публикуваната прогноза на всеки уреден мач; при
+    # промяна в дневника (predictions_log_changes, тригери - system_tracker.
+    # init_db) се преизбира САМО за променените мачове. Всичко наново се
+    # смята само при първа заявка след старт или смяна на доверието
+    # (trust_derived статусите, с които policy работи в момента).
+    history_cache = {"policy": None, "seq": None, "picks": {}, "order": {}, "state": None}
 
     def _policy_fingerprint():
         use_derived = bool(getattr(policy, "USE_DERIVED_TRUST", False))
         derived = policy._get_derived() if use_derived else {}
         return use_derived, tuple(sorted((k, (v or {}).get("status")) for k, v in derived.items()))
 
+    def _add_fixtures(rows, picks, order):
+        """rows - всички редове на няколко мача, подредени като дневника
+        (match_date DESC, id DESC). Влизат само мачове с уреден ред (същото
+        като list_predictions(only_settled_fixtures=True))."""
+        groups = {}
+        for r in rows:
+            groups.setdefault(r["fixture_id"], []).append(r)
+        settled = [r for fid, g in groups.items() if any(x["status"] in ("won", "lost") for x in g) for r in g]
+        for fid, g in groups.items():
+            if any(x["status"] in ("won", "lost") for x in g):
+                # мястото на мача в стария общ списък = първият му ред в дневника
+                order[fid] = (g[0]["match_date"] or "", g[0]["id"])
+        for p in evaluation.published_picks(settled, policy):
+            picks[p["fixture_id"]] = p
+
     def _history_state():
-        version = st.get_table_version("predictions_log")
-        key = (version, _policy_fingerprint())
-        if version is not None and history_cache["key"] == key:
+        fp = _policy_fingerprint()
+        seq = history_cache["seq"] if history_cache["policy"] == fp else None
+        new_seq, changed = st.get_log_changes_since(seq)
+        if changed is None:
+            picks, order = {}, {}
+            _add_fixtures(st.list_predictions(only_settled_fixtures=True, columns=HISTORY_COLUMNS),
+                          picks, order)
+        elif not changed and history_cache["state"] is not None:
+            history_cache["seq"] = new_seq
             return history_cache["state"]
-        # Само мачовете с поне един уреден ред (SQL) - прогнозата на мач без
-        # уреден ред не може да е уредена, а отчетът/списъкът са само за уредени.
-        predictions = st.list_predictions(only_settled_fixtures=True, columns=HISTORY_COLUMNS)
-        scorecard = evaluation.summary(predictions, policy)
-        published = evaluation.published_picks(predictions, policy)
+        else:
+            picks, order = dict(history_cache["picks"]), dict(history_cache["order"])
+            for fid in changed:
+                picks.pop(fid, None)
+                order.pop(fid, None)
+            _add_fixtures(st.list_predictions(fixture_ids=changed, columns=HISTORY_COLUMNS), picks, order)
+
+        # Същият ред като преди (мачовете по първия си ред в дневника) - от
+        # него зависят равенствата при сортиране и сборовете в отчета.
+        published = [picks[fid] for fid in sorted(order, key=order.get, reverse=True) if fid in picks]
+        # summary() избира публикуваната прогноза сама; подаден ѝ е вече
+        # избраният списък (по един ред на мач) - изборът върху един ред връща
+        # същия ред, числата са същите (проверено), без втори избор върху
+        # целия дневник.
+        scorecard = evaluation.summary(published, policy)
         finished = [p for p in published if p["status"] in ("won", "lost")]
         # най-скоро уредените отгоре; sort-ът е стабилен - при еднаква дата
         # остава редът на published, както и преди.
@@ -220,7 +253,7 @@ def register_prognozi_routes(app, ctx):
             day["correct"] += p["status"] == "won"
         state = {"scorecard": scorecard, "finished": finished,
                  "finished_by_league": by_league, "by_day": by_day}
-        history_cache["key"], history_cache["state"] = key, state
+        history_cache.update(policy=fp, seq=new_seq, picks=picks, order=order, state=state)
         return state
 
     # Смяна на входните точки (01.09.2026, задача от Дака): "/" вече е
