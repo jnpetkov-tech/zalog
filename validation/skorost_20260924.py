@@ -76,8 +76,14 @@ def make_app(prognozi_path, st_path, db_path, tag):
     import pick_selection as ps
     import evaluation
     from bg_names import to_cyrillic
-    st = _load(st_path, f"st_{tag}")
-    st.DB_PATH = db_path
+    # DB_PATH се подменя в изходния текст ПРЕДИ изпълнението - init_db() тече
+    # при импорт и иначе би пипнал живата predictions.db, не тестовата.
+    src = open(st_path, encoding="utf-8").read()
+    assert src.count('DB_PATH = "predictions.db"') == 1
+    st_src_path = f"/tmp/skorost_st_{tag}_{os.getpid()}.py"
+    with open(st_src_path, "w", encoding="utf-8") as f:
+        f.write(src.replace('DB_PATH = "predictions.db"', f"DB_PATH = {db_path!r}"))
+    st = _load(st_src_path, f"st_{tag}")
     st_live.DB_PATH = db_path
     _count_rows(st)
     m = _load(prognozi_path, f"prognozi_{tag}")
@@ -185,6 +191,32 @@ def compare(pa, sa, pb, sb, db_path):
     return n_same, len(urls), diffs, urls
 
 
+def compare_after_change(pa, sa, pb, sb, db_path):
+    """Кешът на новия код се обновява ли, когато дневникът се промени?
+    Загрява двата кода, после сменя status на уредени редове на последния
+    уреден мач (won<->lost) в ТЕСТОВАТА база и сравнява отново. Базата
+    трябва да е копие - променя се."""
+    assert "predictions.db" not in os.path.basename(db_path) or "/tmp/" in db_path
+    a = make_app(pa, sa, db_path, "ca").test_client()
+    b = make_app(pb, sb, db_path, "cb").test_client()
+    urls = ["/prognozi", "/prognozi?status=finished", "/prognozi?status=finished&limit=2000"]
+    for u in urls:
+        a.get(u), b.get(u)
+    c = sqlite3.connect(db_path)
+    fid = c.execute("SELECT fixture_id FROM predictions_log WHERE status IN ('won','lost') "
+                    "GROUP BY fixture_id ORDER BY MAX(match_date) DESC LIMIT 1").fetchone()[0]
+    c.execute("UPDATE predictions_log SET status = CASE status WHEN 'won' THEN 'lost' ELSE 'won' END "
+              "WHERE fixture_id=? AND status IN ('won','lost')", (fid,))
+    c.commit()
+    c.close()
+    same = 0
+    for u in urls:
+        ra, rb = a.get(u), b.get(u)
+        same += ra.data == rb.data
+    print(f"след промяна в дневника (мач {fid}): еднакви {same}/{len(urls)}")
+    return same, len(urls)
+
+
 def profile(prognozi_path, st_path, db_path, url):
     app = make_app(prognozi_path, st_path, db_path, "p")
     client = app.test_client()
@@ -204,5 +236,7 @@ if __name__ == "__main__":
         measure(*sys.argv[2:6], csv_path=sys.argv[6] if len(sys.argv) > 6 else None)
     elif cmd == "compare":
         compare(*sys.argv[2:7])
+    elif cmd == "compare_after_change":
+        compare_after_change(*sys.argv[2:7])
     elif cmd == "profile":
         profile(*sys.argv[2:6])

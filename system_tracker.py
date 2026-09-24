@@ -277,6 +277,27 @@ def init_db():
         "CREATE INDEX IF NOT EXISTS idx_predictions_snapshot_computed_at ON predictions_snapshot(computed_at)",
     ]:
         conn.execute(idx_sql)
+    # ZADACHA_GOLQMA.md, Етап 1.3: брояч на промените в predictions_log -
+    # тригерите го вдигат при всеки реален INSERT/UPDATE/DELETE (INSERT OR
+    # IGNORE, който нищо не вмъква, не го вдига). /prognozi пази в паметта
+    # си сметките върху целия дневник (отчета, списъка "Приключили") и ги
+    # смята наново САМО когато броячът се е променил - иначе всяко
+    # зареждане четеше целия дневник (виж validation/skorost_20260924.md).
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS table_versions (
+            name TEXT PRIMARY KEY,
+            version INTEGER NOT NULL DEFAULT 0
+        )
+    """)
+    conn.execute("INSERT OR IGNORE INTO table_versions (name, version) VALUES ('predictions_log', 0)")
+    for event in ("INSERT", "UPDATE", "DELETE"):
+        conn.execute(f"""
+            CREATE TRIGGER IF NOT EXISTS trg_predictions_log_version_{event.lower()}
+            AFTER {event} ON predictions_log
+            BEGIN
+                UPDATE table_versions SET version = version + 1 WHERE name = 'predictions_log';
+            END
+        """)
     conn.commit()
     conn.close()
 
@@ -735,12 +756,68 @@ def log_all_markets(league, fixture_id, match_date, home, away, groups, real_odd
     return count
 
 
-def list_predictions():
+def list_predictions(fixture_ids=None, only_settled_fixtures=False, columns=None):
+    """Редовете от predictions_log, най-новите първи (match_date DESC, id DESC).
+
+    Без аргументи - целият дневник, точно както преди (admin, /results,
+    /daily, validation/ разчитат на това). ZADACHA_GOLQMA.md 1.3 -
+    филтрирането става в SQL, не в Python:
+      fixture_ids - само тези мачове (празен списък -> []);
+      only_settled_fixtures - само мачове с поне един уреден (won/lost) ред -
+        всички редове на такъв мач, вкл. pending/no_data (изборът на
+        публикуваната прогноза гледа всички редове на мача);
+      columns - само тези колони (по-малко работа при голям дневник)."""
+    if fixture_ids is not None and not fixture_ids:
+        return []
+    cols = "*"
+    if columns:
+        allowed = {"id", "logged_at", "league", "fixture_id", "match_date", "home_team", "away_team",
+                   "market_code", "pick_label", "pick_pct", "status", "actual_home_goals",
+                   "actual_away_goals", "market_odds", "our_fair_odds", "odds_logged_at",
+                   "model_pct", "market_pct"}
+        bad = [c for c in columns if c not in allowed]
+        if bad:
+            raise ValueError(f"непозната колона: {bad}")
+        cols = ", ".join(columns)
+    where, params = [], []
+    if fixture_ids is not None:
+        fixture_ids = list(fixture_ids)
+        where.append(f"fixture_id IN ({','.join('?' for _ in fixture_ids)})")
+        params += fixture_ids
+    if only_settled_fixtures:
+        where.append("fixture_id IN (SELECT fixture_id FROM predictions_log WHERE status IN ('won','lost'))")
+    sql = f"SELECT {cols} FROM predictions_log"
+    if where:
+        sql += " WHERE " + " AND ".join(where)
+    sql += " ORDER BY match_date DESC, id DESC"
     conn = get_conn()
     conn.row_factory = sqlite3.Row
-    rows = conn.execute("SELECT * FROM predictions_log ORDER BY match_date DESC, id DESC").fetchall()
+    rows = conn.execute(sql, params).fetchall()
     conn.close()
     return [dict(r) for r in rows]
+
+
+def get_settled_fixture_ids(fixture_ids):
+    """ZADACHA_GOLQMA.md 1.3: кои от тези мачове имат поне един уреден
+    (won/lost) ред в дневника - индексирано (status, fixture_id), не
+    зависи от размера на дневника."""
+    fixture_ids = list(fixture_ids)
+    if not fixture_ids:
+        return set()
+    conn = get_conn()
+    rows = conn.execute(
+        f"SELECT DISTINCT fixture_id FROM predictions_log WHERE status IN ('won','lost') "
+        f"AND fixture_id IN ({','.join('?' for _ in fixture_ids)})", fixture_ids).fetchall()
+    conn.close()
+    return {r[0] for r in rows}
+
+
+def get_table_version(name):
+    """Брояч на промените (виж table_versions в init_db); None, ако липсва."""
+    conn = get_conn()
+    row = conn.execute("SELECT version FROM table_versions WHERE name=?", (name,)).fetchone()
+    conn.close()
+    return row[0] if row else None
 
 
 def get_predictions_for_fixture(fixture_id):

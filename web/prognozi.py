@@ -165,6 +165,13 @@ def _day_tab(d, today, match_count=0):
             "count": match_count}
 
 
+# ZADACHA_GOLQMA.md, Етап 1.3 (24.09.2026): колоните от дневника, нужни за
+# отчета и "Приключили" (evaluation.summary/published_picks + редът в списъка).
+HISTORY_COLUMNS = ["fixture_id", "league", "match_date", "home_team", "away_team", "market_code",
+                   "pick_pct", "status", "market_odds", "our_fair_odds",
+                   "actual_home_goals", "actual_away_goals"]
+
+
 def register_prognozi_routes(app, ctx):
     ALL_LEAGUES = ctx["ALL_LEAGUES"]
     LEAGUE_FLAGS = ctx["LEAGUE_FLAGS"]
@@ -175,6 +182,46 @@ def register_prognozi_routes(app, ctx):
     to_cyrillic = ctx["to_cyrillic"]
 
     prognozi_bp = Blueprint("prognozi", __name__)
+
+    # ZADACHA_GOLQMA.md, Етап 1.3-1.4 (24.09.2026): всичко, което зависи от
+    # ЦЕЛИЯ дневник (трите числа горе, "Вчера", списъкът "Приключили"), се
+    # смята веднъж и се пази в паметта, докато дневникът или доверието
+    # (trust_derived) не се сменят. Преди всяко зареждане четеше целия
+    # predictions_log и два пъти избираше публикуваната прогноза за всеки мач
+    # (~0.5 с при 25 хил. реда, растящо с дневника). Ключът: броячът на
+    # промените в predictions_log (тригери, system_tracker.init_db) +
+    # статусите от trust_derived, с които policy реално работи в момента.
+    history_cache = {"key": None, "state": None}
+
+    def _policy_fingerprint():
+        use_derived = bool(getattr(policy, "USE_DERIVED_TRUST", False))
+        derived = policy._get_derived() if use_derived else {}
+        return use_derived, tuple(sorted((k, (v or {}).get("status")) for k, v in derived.items()))
+
+    def _history_state():
+        version = st.get_table_version("predictions_log")
+        key = (version, _policy_fingerprint())
+        if version is not None and history_cache["key"] == key:
+            return history_cache["state"]
+        # Само мачовете с поне един уреден ред (SQL) - прогнозата на мач без
+        # уреден ред не може да е уредена, а отчетът/списъкът са само за уредени.
+        predictions = st.list_predictions(only_settled_fixtures=True, columns=HISTORY_COLUMNS)
+        scorecard = evaluation.summary(predictions, policy)
+        published = evaluation.published_picks(predictions, policy)
+        finished = [p for p in published if p["status"] in ("won", "lost")]
+        # най-скоро уредените отгоре; sort-ът е стабилен - при еднаква дата
+        # остава редът на published, както и преди.
+        finished.sort(key=lambda p: p["match_date"], reverse=True)
+        by_league, by_day = {}, {}
+        for p in finished:
+            by_league.setdefault(p["league"], []).append(p)
+            day = by_day.setdefault(p["match_date"][:10], {"total": 0, "correct": 0})
+            day["total"] += 1
+            day["correct"] += p["status"] == "won"
+        state = {"scorecard": scorecard, "finished": finished,
+                 "finished_by_league": by_league, "by_day": by_day}
+        history_cache["key"], history_cache["state"] = key, state
+        return state
 
     # Смяна на входните точки (01.09.2026, задача от Дака): "/" вече е
     # публичната начална страница - СЪЩАТА view функция, два маршрута
@@ -229,9 +276,8 @@ def register_prognozi_routes(app, ctx):
         # калибрацията няма нужда от коефициент - стъпва на всички уредени
         # публикувани прогнози. summary_priced_only() остава в evaluation.py
         # непокътната, просто вече не се вика оттук.
-        predictions = st.list_predictions()
-        scorecard = evaluation.summary(predictions, policy)
-        published = evaluation.published_picks(predictions, policy)
+        history = _history_state()
+        scorecard = history["scorecard"]
 
         # Б1 (ZADACHA_PAT.md, 20.09.2026): "Вчера" ред - вчерашната дата по
         # софийско време (СЪЩИЯТ SOFIA_TZ като _now_sofia_str по-горе, не
@@ -241,12 +287,7 @@ def register_prognozi_routes(app, ctx):
         # една уредена прогноза, `yesterday` остава None и редът не се
         # показва изобщо (решение на шаблона).
         yesterday_str = (datetime.now(SOFIA_TZ).date() - timedelta(days=1)).isoformat()
-        yesterday_settled = [p for p in published
-                              if p["status"] in ("won", "lost") and p["match_date"][:10] == yesterday_str]
-        yesterday = None
-        if yesterday_settled:
-            yesterday = {"total": len(yesterday_settled),
-                         "correct": sum(1 for p in yesterday_settled if p["status"] == "won")}
+        yesterday = history["by_day"].get(yesterday_str)
 
         notes_map = st.get_all_match_notes()
 
@@ -280,7 +321,7 @@ def register_prognozi_routes(app, ctx):
         # неуреден. settled_fixture_ids - всеки уреден ред в лога (не само
         # published), за да не остане мач без публикувана топ прогноза
         # завинаги "в ход".
-        settled_fixture_ids = {p["fixture_id"] for p in predictions if p["status"] in ("won", "lost")}
+        settled_fixture_ids = st.get_settled_fixture_ids(snap_by_fixture.keys())
         now_sofia_str = _now_sofia_str()
 
         upcoming_rows, skipped_rows, in_progress_rows, settled_days = [], [], [], []
@@ -379,17 +420,27 @@ def register_prognozi_routes(app, ctx):
         # разлика от predictions_snapshot - clear_stale_snapshot по-долу) -
         # затова логата остават достъпни и за отдавна приключили мачове,
         # веднъж записани, докато е бил предстоящ.
-        finished_meta = st.get_fixture_meta_for_fixtures([p["fixture_id"] for p in published])
+        #
+        # ZADACHA_GOLQMA.md 1.4: списъкът (сортиран, по лига) идва от
+        # history_state; картата с пазари, логата и редовете от дневника се
+        # четат САМО за мачовете, които реално ще се покажат (finished_limit),
+        # не за цялата история.
+        finished_all = (history["finished_by_league"].get(league_filter, []) if league_ok
+                        else history["finished"])
+        finished_total = len(finished_all)
+        # Редовете се показват само в таб "Приключили" - в "Предстоящи" трябва
+        # само броят (finished_total), затова там не четем нищо повече.
+        finished_page = finished_all[:finished_limit] if status_tab == "finished" else []
+        page_ids = [p["fixture_id"] for p in finished_page]
+        finished_meta = st.get_fixture_meta_for_fixtures(page_ids)
         # ЧАСТ В: при приключилите - резултатът и трите числа 1/X/2 (от
         # логнатите редове за мача, същата build_market_sections), без
         # ✓/✗ оценка на избран залог.
         log_by_fixture = {}
-        for r in predictions:
+        for r in st.list_predictions(fixture_ids=page_ids):
             log_by_fixture.setdefault(r["fixture_id"], []).append(r)
         finished_rows = []
-        for p in published:
-            if p["status"] not in ("won", "lost"):
-                continue
+        for p in finished_page:
             league = p["league"]
             fixture_id = p["fixture_id"]
             f_meta = finished_meta.get(fixture_id)
@@ -419,7 +470,7 @@ def register_prognozi_routes(app, ctx):
         # смятано ПРЕДИ league_filter да отреже списъците по-долу, иначе
         # менюто би показвало само една лига (избраната).
         if status_tab == "finished":
-            tab_leagues = {r["league"] for r in finished_rows}
+            tab_leagues = set(history["finished_by_league"])
         elif status_tab == "skipped":
             tab_leagues = {r["league"] for r in skipped_rows}
         else:
@@ -429,7 +480,6 @@ def register_prognozi_routes(app, ctx):
 
         if league_filter != "all" and league_filter in ALL_LEAGUES:
             upcoming_rows = [r for r in upcoming_rows if r["league"] == league_filter]
-            finished_rows = [r for r in finished_rows if r["league"] == league_filter]
             skipped_rows = [r for r in skipped_rows if r["league"] == league_filter]
             in_progress_rows = [r for r in in_progress_rows if r["league"] == league_filter]
         else:
@@ -437,12 +487,9 @@ def register_prognozi_routes(app, ctx):
 
         upcoming_rows.sort(key=lambda r: r["date"])
 
-        finished_rows.sort(key=lambda r: r["date"], reverse=True)  # най-скоро уредените отгоре
         # A2: пълният брой се пази ЗА ПОКАЗВАНЕ (броячът на таба, "Показани X
-        # от Y") - режем чак тук, след сортирането и след league филтъра, за
-        # да е "последните X от избраната лига".
-        finished_total = len(finished_rows)
-        finished_rows = finished_rows[:finished_limit]
+        # от Y") - рязането е по-горе, след сортирането и league филтъра
+        # (history_state), за да е "последните X от избраната лига".
         finished_has_more = finished_total > len(finished_rows)
         finished_next_limit = finished_limit + FINISHED_PAGE_SIZE
         skipped_rows.sort(key=lambda r: r["date"])
