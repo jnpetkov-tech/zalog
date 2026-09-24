@@ -1,0 +1,4 @@
+league,n,matches,brier_market,brier_logged,brier_cur,brier_new,brier_cur_raw,brier_new_raw,gap_logged,gap_cur,gap_new,gap_cur_raw,gap_new_raw
+champions_league,308,30,0.1776,0.18824,0.19813,0.16699,0.19838,0.16707,0.01064,0.02053,-0.01061,0.02078,-0.01053
+europa_league,428,46,0.22406,0.2328,0.22719,0.22011,0.22735,0.21936,0.00874,0.00313,-0.00396,0.00328,-0.0047
+conference_league,689,85,0.19998,0.227,0.22009,0.20304,0.22019,0.20356,0.02702,0.02011,0.00306,0.02021,0.00358
