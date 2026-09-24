@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
@@ -676,3 +677,163 @@ def live_match_probs_v2(lam_ht, mu_ht, lam_2h, mu_2h, minutes_elapsed, current_h
         "remaining_lam": remaining_lam, "remaining_mu": remaining_mu,
         "remaining_minutes": remaining_minutes,
     }
+
+
+# --- ZADACHA_TRI.md, ЧАСТ В (24.09.2026): общ модел за евротурнирите --------------------------
+# Всеки евротурнир се учеше само от своите мачове (6-10 на отбор на сезон). Сега: ЕДНО фитване
+# върху трите турнира + седемте ни първи дивизии; сила на отбора = сила на държавата му (учи се
+# от всички европейски мачове на отборите от нея) + собствено отклонение (учи се и от домашното
+# първенство). Доказателство и избор на настройките по турнир: validation/tri_v_20260924.md.
+# Копие на validation/tri_v_euro.py (проверено - еднакви очаквани голове).
+EURO_CUPS = ["champions_league", "europa_league", "conference_league"]
+EURO_DOMESTIC = {"bulgaria": "Bulgaria", "england": "England", "germany": "Germany", "spain": "Spain",
+                 "france": "France", "italy": "Italy", "portugal": "Portugal"}
+EURO_HIST_FROM = pd.Timestamp("2022-01-01")
+# team -> държава; тегли се с archive/fetch_euro_team_countries_20260924.py (15 заявки, веднъж
+# на сезон). Без файла (или отбор, който го няма в него) - общата група "?".
+EURO_COUNTRIES_CSV = "euro_team_countries.csv"
+EURO_COUNTRIES_FALLBACK = "validation/tri_v_team_countries_20260924.csv"
+
+
+def _euro_load_all():
+    frames, group = [], {}
+    path = EURO_COUNTRIES_CSV if os.path.exists(EURO_COUNTRIES_CSV) else EURO_COUNTRIES_FALLBACK
+    countries = dict(pd.read_csv(path).values) if os.path.exists(path) else {}
+    for lg, ctry in EURO_DOMESTIC.items():
+        d = load_league_data(lg)
+        d = d[d["date"] >= EURO_HIST_FROM]
+        for t in set(d.home_team) | set(d.away_team):
+            group[t] = ctry
+        frames.append(d.assign(comp=lg))
+    for cup in EURO_CUPS:
+        frames.append(load_league_data(cup).assign(comp=cup))
+    cols = ["fixture_id", "date", "home_team", "away_team", "home_goals", "away_goals", "comp"]
+    allm = pd.concat([f[cols] for f in frames], ignore_index=True)
+    for t in set(allm.home_team) | set(allm.away_team):
+        if t not in group:
+            group[t] = countries.get(t, "?")
+    return allm, group
+
+
+class _EuroIndex:
+    def __init__(self, allm, group):
+        self.teams = sorted(set(allm.home_team) | set(allm.away_team))
+        self.ti = {t: i for i, t in enumerate(self.teams)}
+        self.groups = sorted(set(group[t] for t in self.teams))
+        self.gi = {g: i for i, g in enumerate(self.groups)}
+        self.tg = np.array([self.gi[group[t]] for t in self.teams])
+        self.comps = list(EURO_DOMESTIC) + EURO_CUPS
+        self.ci = {c: i for i, c in enumerate(self.comps)}
+        self.nt, self.ng, self.nc = len(self.teams), len(self.groups), len(self.comps)
+
+
+def _fit_euro_params(hist, ref_date, ix, w_dom=1.0, reg_S=1.0, reg_T=30.0, tempo_mult=1.0, xi=0.0018,
+                     reg_strength=3.0, low_data_extra_reg=15.0):
+    """атака = S_g + T_g + a_i, защита = S_g - T_g + d_i (g - държавата на отбора);
+    log lam = c_comp + H_comp + атака_дом - защита_гост, log mu = c_comp + атака_гост - защита_дом;
+    Поасон + Dixon-Coles rho. w_dom - тегло на домашния мач; reg_S/reg_T - регуларизация на
+    S_g/T_g; отборите - reg_strength + low_data_extra_reg/(тегло+1), темпото на отбора x tempo_mult
+    (както fit_goals_model). Точен градиент, L-BFGS-B."""
+    v = hist.dropna(subset=["home_goals", "away_goals"])
+    h = v["home_team"].map(ix.ti).to_numpy()
+    a = v["away_team"].map(ix.ti).to_numpy()
+    gh, ga = ix.tg[h], ix.tg[a]
+    cm = v["comp"].map(ix.ci).to_numpy()
+    hg = v["home_goals"].to_numpy(float)
+    ag = v["away_goals"].to_numpy(float)
+    w = np.exp(-xi * np.clip((ref_date - v["date"]).dt.days.to_numpy(), 0, None))
+    dom = cm < len(EURO_DOMESTIC)
+    w = np.where(dom, w * w_dom, w)
+    keep = w > 0
+    h, a, gh, ga, cm, hg, ag, w = h[keep], a[keep], gh[keep], ga[keep], cm[keep], hg[keep], ag[keep], w[keep]
+    nt, ng, nc = ix.nt, ix.ng, ix.nc
+    tw = np.zeros(nt)
+    np.add.at(tw, h, w)
+    np.add.at(tw, a, w)
+    reg_vec = reg_strength + low_data_extra_reg / (tw + 1.0)
+    const = (w * (gammaln(hg + 1) + gammaln(ag + 1))).sum()
+    o_a, o_d, o_S, o_T, o_c, o_H = 0, nt, 2 * nt, 2 * nt + ng, 2 * nt + 2 * ng, 2 * nt + 2 * ng + nc
+    i_r = 2 * nt + 2 * ng + 2 * nc
+    npar = i_r + 1
+    m00 = (hg == 0) & (ag == 0)
+    m01 = (hg == 0) & (ag == 1)
+    m10 = (hg == 1) & (ag == 0)
+    m11 = (hg == 1) & (ag == 1)
+
+    def f(p):
+        att, de = p[o_a:o_d], p[o_d:o_S]
+        S, T, c, H, rho = p[o_S:o_T], p[o_T:o_c], p[o_c:o_H], p[o_H:i_r], p[i_r]
+        eh = c[cm] + H[cm] + att[h] + S[gh] + T[gh] - de[a] - S[ga] + T[ga]
+        ea = c[cm] + att[a] + S[ga] + T[ga] - de[h] - S[gh] + T[gh]
+        lam, mu = np.exp(eh), np.exp(ea)
+        ll = w * (hg * eh - lam + ag * ea - mu)
+        glam = w * (hg - lam)
+        gmu = w * (ag - mu)
+        tau = np.ones_like(lam)
+        tau[m00] = 1 - lam[m00] * mu[m00] * rho
+        tau[m01] = 1 + lam[m01] * rho
+        tau[m10] = 1 + mu[m10] * rho
+        tau[m11] = 1 - rho
+        tc = np.clip(tau, 1e-10, None)
+        ll = ll + w * np.log(tc)
+        ok = tau > 1e-10
+        g = np.zeros_like(lam)
+        s = m00 & ok
+        glam[s] += w[s] * (-lam[s] * mu[s] * rho) / tc[s]
+        gmu[s] += w[s] * (-lam[s] * mu[s] * rho) / tc[s]
+        g[s] = -lam[s] * mu[s] / tc[s]
+        s = m01 & ok
+        glam[s] += w[s] * lam[s] * rho / tc[s]
+        g[s] = lam[s] / tc[s]
+        s = m10 & ok
+        gmu[s] += w[s] * mu[s] * rho / tc[s]
+        g[s] = mu[s] / tc[s]
+        s = m11 & ok
+        g[s] = -1 / tc[s]
+        ss, tt = (att + de) / 2, (att - de) / 2
+        val = (-ll.sum() + const + np.sum(2 * reg_vec * (ss ** 2 + tempo_mult * tt ** 2))
+               + reg_S * np.sum(S ** 2) + reg_T * np.sum(T ** 2))
+        gr = np.zeros(npar)
+        np.add.at(gr, o_a + h, -glam)
+        np.add.at(gr, o_a + a, -gmu)
+        np.add.at(gr, o_d + a, glam)
+        np.add.at(gr, o_d + h, gmu)
+        gr[o_a:o_d] += 2 * reg_vec * (ss + tempo_mult * tt)
+        gr[o_d:o_S] += 2 * reg_vec * (ss - tempo_mult * tt)
+        np.add.at(gr, o_S + gh, -(glam - gmu))
+        np.add.at(gr, o_S + ga, -(gmu - glam))
+        np.add.at(gr, o_T + gh, -(glam + gmu))
+        np.add.at(gr, o_T + ga, -(glam + gmu))
+        gr[o_S:o_T] += 2 * reg_S * S
+        gr[o_T:o_c] += 2 * reg_T * T
+        np.add.at(gr, o_c + cm, -(glam + gmu))
+        np.add.at(gr, o_H + cm, -glam)
+        gr[i_r] = -(w * g).sum()
+        return val, gr
+
+    bounds = [(None, None)] * (npar - 1) + [(-0.9, 0.9)]
+    r = minimize(f, np.zeros(npar), jac=True, method="L-BFGS-B", bounds=bounds, options={"maxiter": 5000})
+    p = r.x
+    return {"att": p[o_a:o_d], "de": p[o_d:o_S], "S": p[o_S:o_T], "T": p[o_T:o_c], "c": p[o_c:o_H],
+            "H": p[o_H:i_r], "rho": float(p[i_r])}
+
+
+def fit_euro_model(cup, team_idx, n, **cfg):
+    """ft_model за евротурнир `cup` от общия модел - в пространството на team_idx на турнира
+    (get_lambdas() работи без промяна): attack/defence на отбора вече включват силата и темпото
+    на държавата му, c/home_adv - на турнира. cfg - настройките от tri_v_20260924.md."""
+    allm, group = _euro_load_all()
+    ix = _EuroIndex(allm, group)
+    fin = allm.dropna(subset=["home_goals", "away_goals"])
+    ref_date = fin["date"].max()
+    m = _fit_euro_params(fin, ref_date, ix, **cfg)
+    ci = ix.ci[cup]
+    attack, defence = np.zeros(n), np.zeros(n)
+    for t, i in team_idx.items():
+        j = ix.ti[t]
+        g = ix.tg[j]
+        attack[i] = m["S"][g] + m["T"][g] + m["att"][j]
+        defence[i] = m["S"][g] - m["T"][g] + m["de"][j]
+    return {"attack": attack, "defence": defence, "home_adv": float(m["H"][ci]), "c": float(m["c"][ci]),
+            "beta": 0.0, "use_covariate": False, "rho": m["rho"], "euro_model": True,
+            "euro_country_strength": dict(zip(ix.groups, np.round(m["S"], 4)))}

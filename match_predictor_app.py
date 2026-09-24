@@ -192,6 +192,28 @@ def _ft_fit_kwargs(league, direct):
             kw["low_data_extra_reg"] = 15.0 * m
     return kw
 
+
+# ZADACHA_TRI.md (24.09.2026), ЧАСТ В: ft_model за евротурнирите = общият модел
+# (fl.fit_euro_model) - трите турнира + седемте първи дивизии заедно, сила на отбора = сила на
+# държавата му + собствено отклонение. Настройки по турнир, избрани на ранната половина,
+# проверени на късната и срещу пазара - validation/tri_v_20260924.md. Редовете на europa_league/
+# conference_league във FT_FIT_SETTINGS вече не се ползват за ft_model (остават за справка).
+EURO_FIT_SETTINGS = {
+    "champions_league": {"w_dom": 0.5, "reg_S": 0.3, "reg_T": 3.0, "tempo_mult": 10.0, "xi": 0.0018},
+    "europa_league": {"w_dom": 0.0, "reg_S": 0.3, "reg_T": 30.0, "tempo_mult": 10.0, "xi": 0.0018},
+    "conference_league": {"w_dom": 1.0, "reg_S": 3.0, "reg_T": 30.0, "tempo_mult": 10.0, "xi": 0.0018},
+}
+
+
+def _model_inputs_mtime(league):
+    """Най-новият mtime на файловете, от които се учи моделът на лигата - за евротурнир и
+    домашните първенства + файла с държавите (общият модел), иначе само CSV-то на лигата."""
+    paths = [f"{league}_merged_full.csv"]
+    if league in EURO_FIT_SETTINGS:
+        paths = ([f"{lg}_merged_full.csv" for lg in list(fl.EURO_DOMESTIC) + fl.EURO_CUPS]
+                 + [fl.EURO_COUNTRIES_CSV])
+    return max(os.path.getmtime(p) for p in paths if os.path.exists(p))
+
 # "logo" (НОЩ 02.09.2026, задача 2): дръпнати ЕДНОКРАТНО от API-Football
 # (/leagues?id=<id>, 17 заявки общо, виж archive/fetch_league_logos_20260902.py) -
 # хардкоднати литерали тук, скриптът не се пуска на цикъл. Браузърът на
@@ -292,7 +314,7 @@ def get_models(league):
         cache_path = os.path.join(MODEL_CACHE_DIR, f"{league}.pkl")
 
         if os.path.exists(cache_path) and os.path.exists(csv_path):
-            if os.path.getmtime(cache_path) > os.path.getmtime(csv_path):
+            if os.path.getmtime(cache_path) > _model_inputs_mtime(league):
                 try:
                     with open(cache_path, "rb") as cf:
                         _model_cache[league] = pickle.load(cf)
@@ -305,7 +327,9 @@ def get_models(league):
         ref_date = df["date"].max()
         league_xi = fl.LEAGUE_XI.get(league, fl.XI)
         has_injuries = ("home_injuries" in df.columns) and (league not in NO_INJURY_MODEL_LEAGUES)
-        if has_injuries:
+        if league in EURO_FIT_SETTINGS:
+            ft_model = fl.fit_euro_model(league, team_idx, n, **EURO_FIT_SETTINGS[league])
+        elif has_injuries:
             ft_model = fl.fit_goals_direct_covariate(df, ref_date, team_idx, n, "home_injuries", "away_injuries", xi=league_xi,
                                                      **_ft_fit_kwargs(league, True))
         else:
