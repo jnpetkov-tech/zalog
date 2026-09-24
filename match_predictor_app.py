@@ -513,8 +513,7 @@ def _model_market_probs(lam, mu, rho, league):
     калибрирани); cal - след policy.calibrate()."""
     max_g = 10
     pm = np.outer(poisson.pmf(range(max_g), lam), poisson.pmf(range(max_g), mu))
-    if rho:
-        pm = fl.dc_adjust_matrix(pm, lam, mu, rho)
+    pm = fl.adjust_matrix(pm, lam, mu, rho)
     btts_p, ou_p = fl.btts_ou_probs(lam, mu, rho=rho)
     extra = fl.extra_markets_probs(lam, mu, rho=rho)
     raw = {"home_win": np.sum(np.tril(pm, -1)), "draw": np.sum(np.diag(pm)), "away_win": np.sum(np.triu(pm, 1)),
@@ -691,8 +690,7 @@ def compute_grouped_markets(league, home, away, home_inj=0, away_inj=0, real_odd
 
     def probs_1x2_ou(l, m, rho=0.0):
         pm = np.outer(poisson.pmf(range(max_g), l), poisson.pmf(range(max_g), m))
-        if rho:
-            pm = fl.dc_adjust_matrix(pm, l, m, rho)
+        pm = fl.adjust_matrix(pm, l, m, rho)
         hw = np.sum(np.tril(pm, -1))
         dr = np.sum(np.diag(pm))
         aw = np.sum(np.triu(pm, 1))

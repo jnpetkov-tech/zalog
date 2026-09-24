@@ -358,7 +358,10 @@ CALIBRATION_ENABLED = True
 # ZADACHA_TRI.md, ЧАСТ Б: корнерите (новият модел от удари/владение) - a и b от ранната половина,
 # validation/tri_b_20260923.md. Прилага се в compute_grouped_markets() (корнерите не минават през
 # _model_market_probs()).
-CALIBRATION_A = {"1x2": 1.103, "btts": 0.772, "ou25": 0.931, "team_total": 0.997, "corners": 0.855}
+# 24.09.2026 (ZADACHA_FINAL.md, ЧАСТ А): a фитнати наново върху модела със зависимостта "и двата
+# вкарват" (fl.score_dependence_adjust) + общия евро модел - validation/final_a_20260924.md. Предишни a:
+# 1x2 1.103, btts 0.772, ou25 0.931, team_total 0.997.
+CALIBRATION_A = {"1x2": 1.070, "btts": 1.003, "ou25": 1.028, "team_total": 0.980, "corners": 0.855}
 CALIBRATION_BASE = {
     "home_win": 0.445122, "draw": 0.255759, "away_win": 0.299119,
     "over25": 0.506775, "under25": 0.493225,

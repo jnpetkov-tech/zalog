@@ -60,6 +60,41 @@ def dc_adjust_matrix(pm, lam, mu, rho):
     return pm
 
 
+# ZADACHA_FINAL.md, ЧАСТ А (24.09.2026): зависимост "и двата вкарват" при малко очаквани голове.
+# Поотделно "домакинът вкарва"/"гостът вкарва" са калибрирани, но в мачовете с малък очакван сбор
+# двата отбора вкарват заедно по-често (реално повече 2-1/1-2/2-2, по-малко 0-0/1-0/0-1/2-0), а 1X2
+# е точен. Част f от всеки резултат с нула за някой отбор (x-0, 0-y, 0-0) се мести в (x+1, y+1) -
+# същата голова разлика: f = f0 + f1*ln((lam+mu)/T0), между 0 и 0.9. Параметрите - от ранната
+# половина на мерилото; validation/final_a_20260924.md (двата отбора: a 0.77 -> 0.99 на късната).
+SCORE_DEP_F0 = 0.025
+SCORE_DEP_F1 = -0.221
+SCORE_DEP_T0 = 2.6
+
+
+def score_dependence_adjust(pm, lam, mu):
+    """Виж SCORE_DEP_*. Сумата на матрицата и 1X2 не се променят (клетките, чието (x+1, y+1) е
+    извън матрицата, не се местят)."""
+    f = min(max(SCORE_DEP_F0 + SCORE_DEP_F1 * np.log((lam + mu) / SCORE_DEP_T0), 0.0), 0.9)
+    if f <= 0.0:
+        return pm
+    mv = np.zeros_like(pm)
+    mv[0, :] = pm[0, :] * f
+    mv[1:, 0] = pm[1:, 0] * f
+    mv[-1, 0] = 0.0
+    mv[0, -1] = 0.0
+    out = pm - mv
+    out[1:, 1:] += mv[:-1, :-1]
+    return out
+
+
+def adjust_matrix(pm, lam, mu, rho):
+    """Независимата Поасон матрица -> матрицата на резултата: Dixon-Coles (ако rho) + зависимостта
+    при малко голове. Единствената точка за това - вика се навсякъде, където се смятат пазарите."""
+    if rho:
+        pm = dc_adjust_matrix(pm, lam, mu, rho)
+    return score_dependence_adjust(pm, lam, mu)
+
+
 def _team_params(params, n, reg_vec, tempo_mult):
     """(attack, defence, регуларизация). tempo_mult == 1: параметрите са
     атака/защита направо - точно старото. Иначе оптимизаторът работи със сила s
@@ -254,8 +289,7 @@ def get_lambdas(model, team_idx, home, away):
 
 def btts_ou_probs(lam, mu, max_g=10, rho=0.0):
     pm = np.outer(poisson.pmf(range(max_g), lam), poisson.pmf(range(max_g), mu))
-    if rho:
-        pm = dc_adjust_matrix(pm, lam, mu, rho)
+    pm = adjust_matrix(pm, lam, mu, rho)
     btts_yes = sum(pm[x, y] for x in range(max_g) for y in range(max_g) if x >= 1 and y >= 1)
     over25 = sum(pm[x, y] for x in range(max_g) for y in range(max_g) if x + y > 2.5)
     return btts_yes, over25
@@ -304,8 +338,7 @@ def backtest_covariate(df, team_idx, n, cov_home_col, cov_away_col, retrain_ever
 
 def extra_markets_probs(lam, mu, max_g=10, rho=0.0):
     pm = np.outer(poisson.pmf(range(max_g), lam), poisson.pmf(range(max_g), mu))
-    if rho:
-        pm = dc_adjust_matrix(pm, lam, mu, rho)
+    pm = adjust_matrix(pm, lam, mu, rho)
 
     home_clean_sheet = sum(pm[x, 0] for x in range(max_g))
     away_clean_sheet = sum(pm[0, y] for y in range(max_g))
@@ -381,8 +414,7 @@ def backtest_extra_markets(df, team_idx, n, retrain_every=15):
 def select_best_pick(lam, mu, ht_ft_probs=None, rho=0.0):
     max_g = 10
     pm = np.outer(poisson.pmf(range(max_g), lam), poisson.pmf(range(max_g), mu))
-    if rho:
-        pm = dc_adjust_matrix(pm, lam, mu, rho)
+    pm = adjust_matrix(pm, lam, mu, rho)
     home_win = np.sum(np.tril(pm, -1))
     draw = np.sum(np.diag(pm))
     away_win = np.sum(np.triu(pm, 1))
