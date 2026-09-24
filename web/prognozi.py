@@ -61,6 +61,23 @@ BG_WEEKDAYS_SHORT = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"]
 BG_MONTHS_SHORT = ["яну", "фев", "мар", "апр", "май", "юни",
                     "юли", "авг", "сеп", "окт", "ное", "дек"]
 
+# ZADACHA_PRAZNO.md (24.09.2026): в международните паузи страницата стоеше
+# празна без обяснение. Колко дни напред гледаме в снимката, за да кажем
+# "следващите мачове са в ..." - ако в тези дни няма нито един мач, текстът
+# е "още не са изчислени" (различно от "почиват").
+EMPTY_LOOKAHEAD_DAYS = 14
+# "в петък, 26 септември" - с предлога ("във вторник"), както се казва.
+BG_WEEKDAYS_ON = ["в понеделник", "във вторник", "в сряда", "в четвъртък",
+                  "в петък", "в събота", "в неделя"]
+BG_MONTHS_GEN = ["януари", "февруари", "март", "април", "май", "юни", "юли",
+                 "август", "септември", "октомври", "ноември", "декември"]
+
+
+def _next_day_phrase(d, today):
+    """ZADACHA_PRAZNO.md: "в петък, 26 септември" / "утре, 25 септември"."""
+    when = "утре" if d == today + timedelta(days=1) else BG_WEEKDAYS_ON[d.weekday()]
+    return f"{when}, {d.day} {BG_MONTHS_GEN[d.month - 1]}"
+
 
 # ZADACHA_PAZARI.md, ЧАСТ Б (22.09.2026): страницата на мача е карта с
 # пазари - всеки пазар с ВСИЧКИТЕ си изходи един до друг, в този ред.
@@ -136,7 +153,7 @@ def x12_from_sections(sections):
     return None
 
 
-def _day_tab(d, today):
+def _day_tab(d, today, match_count=0):
     if d == today:
         label = "Днес"
     elif d == today + timedelta(days=1):
@@ -144,7 +161,8 @@ def _day_tab(d, today):
     else:
         label = BG_WEEKDAYS_SHORT[d.weekday()]
     return {"offset": (d - today).days, "date": d.isoformat(), "label": label,
-            "short": f"{d.day} {BG_MONTHS_SHORT[d.month - 1]}"}
+            "short": f"{d.day} {BG_MONTHS_SHORT[d.month - 1]}",
+            "count": match_count}
 
 
 def register_prognozi_routes(app, ctx):
@@ -166,15 +184,15 @@ def register_prognozi_routes(app, ctx):
     @prognozi_bp.route("/prognozi")
     def prognozi():
         today = date.today()
+        # ZADACHA_PRAZNO.md т.1: дали посетителят е избрал ден ИЗРИЧНО
+        # (?day= в адреса). Ако не е и днес няма мачове - отваряме на първия
+        # ден с мачове по-долу; ако е - уважаваме избора му.
+        day_explicit = "day" in request.args
         try:
             day_offset = int(request.args.get("day", "0"))
         except ValueError:
             day_offset = 0
         day_offset = max(0, min(DAY_TAB_COUNT - 1, day_offset))
-        selected_date = today + timedelta(days=day_offset)
-        selected_date_str = selected_date.isoformat()
-
-        day_tabs = [_day_tab(today + timedelta(days=i), today) for i in range(DAY_TAB_COUNT)]
 
         league_filter = request.args.get("league", "all")
         status_tab = request.args.get("status", "upcoming")
@@ -233,7 +251,12 @@ def register_prognozi_routes(app, ctx):
         notes_map = st.get_all_match_notes()
 
         # ---- Предстоящи / Пропуснати: от predictions_snapshot (т.2.10) ----
-        snap_rows = st.get_snapshot_rows_for_date_range(selected_date_str, selected_date_str)
+        # ZADACHA_PRAZNO.md: четем EMPTY_LOOKAHEAD_DAYS дни наведнъж (не само
+        # избрания ден) - за броя мачове до всеки ден в лентата и за "кога са
+        # следващите мачове". Същото едно четене, същият подбор по-долу -
+        # броят в лентата е точно броят редове, които денят ще покаже.
+        range_end_str = (today + timedelta(days=EMPTY_LOOKAHEAD_DAYS - 1)).isoformat()
+        snap_rows = st.get_snapshot_rows_for_date_range(today.isoformat(), range_end_str)
         snap_by_fixture = {}
         for r in snap_rows:
             snap_by_fixture.setdefault(r["fixture_id"], []).append(r)
@@ -260,7 +283,7 @@ def register_prognozi_routes(app, ctx):
         settled_fixture_ids = {p["fixture_id"] for p in predictions if p["status"] in ("won", "lost")}
         now_sofia_str = _now_sofia_str()
 
-        upcoming_rows, skipped_rows, in_progress_rows = [], [], []
+        upcoming_rows, skipped_rows, in_progress_rows, settled_days = [], [], [], []
         for fixture_id, rows in snap_by_fixture.items():
             league = rows[0]["league"]
             meta = fixture_meta.get(fixture_id)
@@ -289,7 +312,49 @@ def register_prognozi_routes(app, ctx):
                 upcoming_rows.append(card)
             elif fixture_id not in settled_fixture_ids:
                 in_progress_rows.append(card)
-            # else: започнал И уреден -> в "Приключили" по-долу.
+            else:
+                # започнал И уреден -> в "Приключили" по-долу. Пазим само
+                # деня - за текста "мачовете за този ден приключиха".
+                settled_days.append(base["date"][:10])
+
+        # ZADACHA_PRAZNO.md т.1-2: брой мачове по ден = това, което денят
+        # реално показва (предстоящи + в ход), след филтъра по лига.
+        league_ok = league_filter != "all" and league_filter in ALL_LEAGUES
+        counts_by_day = {}
+        for r in upcoming_rows + in_progress_rows:
+            if not league_ok or r["league"] == league_filter:
+                counts_by_day[r["date"][:10]] = counts_by_day.get(r["date"][:10], 0) + 1
+
+        # т.1: без ?day= и днес празно -> първият ден с мачове в лентата.
+        # Само за "Предстоящи" (в "Приключили" денят няма значение).
+        if not day_explicit and status_tab == "upcoming" and not counts_by_day.get(today.isoformat()):
+            for i in range(1, DAY_TAB_COUNT):
+                if counts_by_day.get((today + timedelta(days=i)).isoformat()):
+                    day_offset = i
+                    break
+        selected_date = today + timedelta(days=day_offset)
+        selected_date_str = selected_date.isoformat()
+        day_tabs = [_day_tab(today + timedelta(days=i), today,
+                             counts_by_day.get((today + timedelta(days=i)).isoformat(), 0))
+                    for i in range(DAY_TAB_COUNT)]
+
+        # т.3: текст за празен ден - следващият ден с мачове СЛЕД избрания
+        # (до EMPTY_LOOKAHEAD_DAYS от днес). Ако няма такъв, но другаде в
+        # снимката има мачове (друга лига/по-ранен ден) - друг текст; ако
+        # няма нито един мач - "още не са изчислени" (не бъркаме почивка
+        # със спряла снимка).
+        next_match_phrase = None
+        for d_str in sorted(counts_by_day):
+            if d_str > selected_date_str:
+                next_match_phrase = _next_day_phrase(date.fromisoformat(d_str), today)
+                break
+        any_match_ahead = bool(upcoming_rows or in_progress_rows)
+        selected_day_finished = selected_date_str in settled_days
+
+        # Оттук надолу - само избраният ден, както преди.
+        upcoming_rows = [r for r in upcoming_rows if r["date"][:10] == selected_date_str]
+        in_progress_rows = [r for r in in_progress_rows if r["date"][:10] == selected_date_str]
+        skipped_rows = [r for r in skipped_rows if r["date"][:10] == selected_date_str]
 
         # ---- Приключили: т.3, преглед на Дака (01.09.2026) - "два филтъра,
         # една таблица". Преди тази поправка тук се групираше predictions_log
@@ -417,6 +482,8 @@ def register_prognozi_routes(app, ctx):
             in_progress_rows=in_progress_rows,
             snapshot_empty=snapshot_empty, snapshot_stale_note=snapshot_stale_note,
             yesterday=yesterday,
+            next_match_phrase=next_match_phrase, any_match_ahead=any_match_ahead,
+            selected_day_finished=selected_day_finished,
         )
 
     # Публична страница на мача (01.09.2026, задача от Дака, т.2). Изричен

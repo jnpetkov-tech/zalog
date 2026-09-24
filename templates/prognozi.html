@@ -77,6 +77,10 @@
   .daystrip a span{color:var(--text-faint); font-size:12.5px;}
   .daystrip a.active{color:var(--text); border-bottom-color:var(--accent); font-weight:600;}
   .daystrip a.active span{color:var(--accent);}
+  /* ZADACHA_PRAZNO.md т.2: броят мачове до деня; дни без мачове - бледи. */
+  .daystrip a .dcount{font-size:11.5px; color:var(--text-faint); font-variant-numeric:tabular-nums;}
+  .daystrip a.nomatch{opacity:0.4;}
+  .daystrip a.nomatch.active{opacity:0.75;}
 
   .controls{ display:flex; gap:10px; align-items:center; margin-bottom:26px; flex-wrap:wrap; }
   .chip-select{
@@ -264,7 +268,7 @@
 
     <div class="daystrip">
       {% for d in day_tabs %}
-      <a href="/prognozi?day={{ d.offset }}&status={{ status_tab }}&league={{ league_filter }}" class="{{ 'active' if d.offset == day_offset else '' }}">{{ d.label }} <span>{{ d.short }}</span></a>
+      <a href="/prognozi?day={{ d.offset }}&status={{ status_tab }}&league={{ league_filter }}" class="{{ 'active' if d.offset == day_offset else '' }}{{ ' nomatch' if not d.count else '' }}">{{ d.label }} <span>{{ d.short }}</span> <span class="dcount">· {{ d.count }}</span></a>
       {% endfor %}
     </div>
 
@@ -293,7 +297,20 @@
       <div class="empty-note">Прогнозите за този ден още не са готови.</div>
       {% else %}
         {% if not upcoming_rows and not in_progress_rows %}
-        <div class="empty-note">Няма прогнози за този ден.</div>
+        {# ZADACHA_PRAZNO.md т.3: защо е празно и кога се връщат мачовете -
+           датата идва от снимката (next_match_phrase, web/prognozi.py). #}
+        <div class="empty-note">
+          {% if next_match_phrase %}
+            {% if selected_day_finished %}Мачовете за този ден приключиха.{% elif league_filter != 'all' %}В тази лига няма мачове този ден.{% else %}Първенствата почиват.{% endif %}
+            Следващите мачове са {{ next_match_phrase }}.
+          {% elif not any_match_ahead %}
+            Прогнозите за следващите дни още не са изчислени.
+          {% elif league_filter != 'all' %}
+            В тази лига няма мачове за този и следващите дни.
+          {% else %}
+            Няма мачове за този и следващите дни.
+          {% endif %}
+        </div>
         {% endif %}
         {% if upcoming_rows %}
         <div class="colheader"><div>Час</div><div>Мач</div><div class="x12h"><span>1</span><span>X</span><span>2</span></div></div>
