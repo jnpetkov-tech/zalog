@@ -26,7 +26,8 @@ unit няма в тази сесия - виж validation/nacionalni_model_202609
    24ч преди мача, 360 мин до 72ч, 1440 мин по-нататък; плюс 45 мин в
    последните 3ч) ->
    odds_cache (st.set_cached_odds, чете се само по fixture_id - нищо не се
-   показва) + national_odds_log (само добавяне, пази всяко теглене, за да
+   показва) + national_odds_log (само добавяне, пази всяко теглене - и
+   празните, с odds_json NULL, за праговете - за да
    имаме последните коефициенти преди мача дори ако нещо презапише
    odds_cache).
 """
@@ -226,10 +227,17 @@ def collect_friendlies(season, lo, today):
 
 
 def odds_needs_refresh(fixture_id, minutes_to_kickoff):
+    # последният опит - успешен (odds_cache) или празен (national_odds_log с odds_json NULL),
+    # за да не се пита мач без коефициенти на всеки пуск
+    conn = st.get_conn()
+    last = conn.execute("SELECT MAX(fetched_at) FROM national_odds_log WHERE fixture_id=?",
+                        (fixture_id,)).fetchone()[0]
+    conn.close()
     cached = st.get_cached_odds(fixture_id)
-    if not cached or not cached.get("fetched_at"):
+    stamps = [t for t in (last, (cached or {}).get("fetched_at")) if t]
+    if not stamps:
         return True
-    age = (datetime.now() - datetime.fromisoformat(cached["fetched_at"])).total_seconds() / 60
+    age = (datetime.now() - datetime.fromisoformat(max(stamps))).total_seconds() / 60
     # Последните 3 часа - по-често от клубните: последните коефициенти преди
     # мача са мерилото, срещу което после ще сравняваме.
     if minutes_to_kickoff <= 180:
@@ -260,6 +268,10 @@ def refresh_odds(rows):
         present = {k: v for k, v in (odds or {}).items() if v is not None}
         if not present:
             empty += 1
+            conn.execute("INSERT INTO national_odds_log (fixture_id, fetched_at, kickoff_utc, "
+                         "minutes_to_kickoff, odds_json) VALUES (?,?,?,?,NULL)",
+                         (r["fixture_id"], datetime.now().isoformat(), r["date"], round(mins, 1)))
+            conn.commit()
             continue
         st.set_cached_odds(r["fixture_id"], odds)
         conn.execute("INSERT INTO national_odds_log (fixture_id, fetched_at, kickoff_utc, "
