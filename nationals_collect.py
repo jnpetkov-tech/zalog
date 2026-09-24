@@ -33,6 +33,7 @@ unit няма в тази сесия - виж validation/nacionalni_model_202609
 import csv
 import json
 import os
+import re
 import sqlite3
 import sys
 from datetime import date, datetime, timedelta, timezone
@@ -52,6 +53,12 @@ NATIONAL_LEAGUES = {
     4: "Euro Championship",
     1: "World Cup",
 }
+# Приятелските: само резултати (данни за обучение, не се показват, без
+# коефициенти), веднъж на ден в пуска около 03:20, само сеньорски мачове между
+# два национални отбора, които вече ги има в nationals_merged_full.csv.
+FRIENDLIES_ID = 10
+FRIENDLIES_HOUR = 3
+YOUTH = re.compile(r"\bU-?\s?(1[5-9]|2[0-3])\b|Olymp", re.I)
 DAYS_BACK = 3
 DAYS_AHEAD = 7
 SEASONS_CACHE = os.path.join(BASE_DIR, "nationals_seasons.json")
@@ -121,7 +128,7 @@ def current_seasons():
     seasons = {}
     for item in data.get("response", []):
         lid = item["league"]["id"]
-        if lid not in NATIONAL_LEAGUES:
+        if lid not in NATIONAL_LEAGUES and lid != FRIENDLIES_ID:
             continue
         for s in item.get("seasons", []):
             if s.get("current"):
@@ -197,6 +204,27 @@ def append_results(rows):
     return len(new)
 
 
+def collect_friendlies(season, lo, today):
+    known = set()
+    if os.path.exists(RESULTS_CSV):
+        with open(RESULTS_CSV, newline="", encoding="utf-8") as fh:
+            for x in csv.DictReader(fh):
+                known.update((x["home_id"], x["away_id"]))
+    r = af._api_get("/fixtures", params={
+        "league": FRIENDLIES_ID, "season": season, "from": lo.isoformat(), "to": today.isoformat(),
+        "timezone": "UTC"}, timeout=30)
+    data = r.json()
+    if data.get("errors"):
+        log(f"ГРЕШКА /fixtures приятелски: {data['errors']}")
+        return 0
+    rows = [fixture_row(f) for f in data.get("response", [])]
+    senior = [x for x in rows if not YOUTH.search(x["home_team"]) and not YOUTH.search(x["away_team"])
+              and str(x["home_id"]) in known and str(x["away_id"]) in known]
+    added = append_results(senior)
+    log(f"Приятелски: {len(rows)} мача, сеньорски между национални {len(senior)}, нови в CSV {added}")
+    return added
+
+
 def odds_needs_refresh(fixture_id, minutes_to_kickoff):
     cached = st.get_cached_odds(fixture_id)
     if not cached or not cached.get("fetched_at"):
@@ -267,6 +295,8 @@ def main():
         rows.extend(got)
     save_fixtures(rows)
     added = append_results(rows)
+    if datetime.now().hour == FRIENDLIES_HOUR and FRIENDLIES_ID in seasons:
+        added += collect_friendlies(seasons[FRIENDLIES_ID][0], lo, today)
     checked, saved, empty, markets = refresh_odds(rows)
     log(f"РЕЗЮМЕ: мачове в прозореца {len(rows)}, нови резултати в CSV {added}, "
         f"коефициенти питани {checked}, записани {saved} мача ({markets} пазара от "
