@@ -261,6 +261,22 @@ def init_db():
             fetched_at TEXT
         )
     """)
+    # ZADACHA_GOLQMA.md, Етап 1.2 (24.09.2026): индекси за реално
+    # изпълняваните заявки (EXPLAIN QUERY PLAN - validation/skorost_20260924.md).
+    # Уникалният idx_predictions_fixture_market е създаден ръчно по-рано
+    # (archive/fix_dup_and_index.py) - повторен тук, за да е записан в кода.
+    # (status, fixture_id): уредените мачове за /prognozi и check_results();
+    # (match_date): прозорецът за коефициенти, /value;
+    # predictions_snapshot(match_date)/(computed_at): диапазонът по дни и
+    # "кога е смятана снимката" на /prognozi.
+    for idx_sql in [
+        "CREATE UNIQUE INDEX IF NOT EXISTS idx_predictions_fixture_market ON predictions_log(fixture_id, market_code)",
+        "CREATE INDEX IF NOT EXISTS idx_predictions_log_status_fixture ON predictions_log(status, fixture_id)",
+        "CREATE INDEX IF NOT EXISTS idx_predictions_log_match_date ON predictions_log(match_date)",
+        "CREATE INDEX IF NOT EXISTS idx_predictions_snapshot_match_date ON predictions_snapshot(match_date)",
+        "CREATE INDEX IF NOT EXISTS idx_predictions_snapshot_computed_at ON predictions_snapshot(computed_at)",
+    ]:
+        conn.execute(idx_sql)
     conn.commit()
     conn.close()
 
@@ -516,16 +532,21 @@ def get_snapshot_rows_for_date_range(from_date, to_date):
     суров списък редове (dict-ове), викащият групира по fixture_id (по
     образец на get_snapshot_picks_for_fixtures, само за диапазон дати
     вместо конкретни fixture_id-та - тук нямаме предварителен списък
-    мачове от API, за да го подадем)."""
+    мачове от API, за да го подадем).
+
+    ZADACHA_GOLQMA.md 1.2: условието е match_date >= from И < деня след
+    to_date - същото като substr(match_date,1,10) BETWEEN from AND to за
+    низове "YYYY-MM-DD HH:MM", но ползва индекса по match_date."""
+    to_next = (datetime.strptime(to_date, "%Y-%m-%d") + timedelta(days=1)).strftime("%Y-%m-%d")
     conn = get_conn()
     conn.row_factory = sqlite3.Row
     rows = conn.execute("""
         SELECT fixture_id, league, match_date, home_team, away_team, market_code,
                pick_label, pick_pct, fair_odds, ev, computed_at, model_version, is_candidate
         FROM predictions_snapshot
-        WHERE substr(match_date,1,10) BETWEEN ? AND ?
+        WHERE match_date >= ? AND match_date < ?
         ORDER BY match_date, fixture_id, pick_pct DESC
-    """, (from_date, to_date)).fetchall()
+    """, (from_date, to_next)).fetchall()
     conn.close()
     return [dict(r) for r in rows]
 

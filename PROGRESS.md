@@ -13,7 +13,13 @@
   реда (990 мача), predictions_snapshot 444. Профил: 80% от времето е
   evaluation.published_picks() - вика се ДВА пъти (summary + published) върху целия
   дневник; ~25% е самото четене (SELECT * ... ORDER BY - пълно сканиране + сортиране).
-- [ ] 1.2 Индекси
+- [x] 1.2 Индекси (EXPLAIN QUERY PLAN): липсваха за status (check_results, /value, уредените),
+  match_date в дневника (прозорец за коефициенти), match_date/computed_at в снимката
+  (диапазонът по дни беше `substr(match_date,1,10) BETWEEN` - не може да ползва индекс,
+  пренаписан като `match_date >= от AND < деня след`). 4 нови индекса в `init_db()`
+  на system_tracker.py; вече СЪЗДАДЕНИ и в живата база (init_db тече при всеки импорт).
+  След: 425-480 мс - индексите не решават главното (пълното четене + двойното
+  published_picks), очаквано.
 - [ ] 1.3 list_predictions -> SQL
 - [ ] 1.4 Останалото бавно
 - [ ] 1.5 Старо = ново

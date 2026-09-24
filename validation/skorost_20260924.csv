@@ -13,3 +13,17 @@ label,url,what,status,median_ms,min_ms,max_ms,rows_read,rows_detail
 ПРЕДИ,/prognozi/match/1571568,приключил мач (от дневника),200,2.5,2.3,2.9,21,get_fixture_meta_for_fixtures=1;get_predictions_for_fixture=20;get_snapshot_rows_for_fixture=0
 ПРЕДИ,/prognozi/match/1571565,приключил мач (от дневника),200,2.7,2.4,3.3,21,get_fixture_meta_for_fixtures=1;get_predictions_for_fixture=20;get_snapshot_rows_for_fixture=0
 ПРЕДИ,/prognozi/match/1,несъществуващ мач,404,1.6,1.5,1.9,0,get_predictions_for_fixture=0;get_snapshot_rows_for_fixture=0
+СЛЕД_1.2_индекси,/prognozi,по подразбиране (днес празно -> първия ден с мачове),200,456.1,438.3,497.2,26606,get_all_match_notes=1;get_fixture_meta_for_fixtures=477;get_snapshot_rows_for_date_range=444;list_predictions=25684
+СЛЕД_1.2_индекси,/prognozi?day=0,празен ден (днес),200,458.6,442.2,468.2,26606,get_all_match_notes=1;get_fixture_meta_for_fixtures=477;get_snapshot_rows_for_date_range=444;list_predictions=25684
+СЛЕД_1.2_индекси,/prognozi?day=3,ден с мачове,200,433.0,418.8,492.7,26606,get_all_match_notes=1;get_fixture_meta_for_fixtures=477;get_snapshot_rows_for_date_range=444;list_predictions=25684
+СЛЕД_1.2_индекси,/prognozi?day=2,ден с мачове 2,200,442.8,424.8,452.7,26606,get_all_match_notes=1;get_fixture_meta_for_fixtures=477;get_snapshot_rows_for_date_range=444;list_predictions=25684
+СЛЕД_1.2_индекси,/prognozi?status=finished,таб Приключили,200,426.4,411.8,436.4,26606,get_all_match_notes=1;get_fixture_meta_for_fixtures=477;get_snapshot_rows_for_date_range=444;list_predictions=25684
+СЛЕД_1.2_индекси,/prognozi?status=finished&limit=100,"таб Приключили, 100 реда",200,425.3,410.6,636.4,26606,get_all_match_notes=1;get_fixture_meta_for_fixtures=477;get_snapshot_rows_for_date_range=444;list_predictions=25684
+СЛЕД_1.2_индекси,/prognozi?status=finished&league=conference_league,"Приключили, филтър лига",200,465.1,409.5,486.6,26606,get_all_match_notes=1;get_fixture_meta_for_fixtures=477;get_snapshot_rows_for_date_range=444;list_predictions=25684
+СЛЕД_1.2_индекси,/prognozi?day=3&league=bulgaria2,"ден с мачове, филтър лига",200,479.1,455.9,486.1,26606,get_all_match_notes=1;get_fixture_meta_for_fixtures=477;get_snapshot_rows_for_date_range=444;list_predictions=25684
+СЛЕД_1.2_индекси,/prognozi/match/1569941,мач от снимката,200,2.0,1.9,3.2,25,get_fixture_meta_for_fixtures=1;get_snapshot_rows_for_fixture=24
+СЛЕД_1.2_индекси,/prognozi/match/1569939,мач от снимката,200,2.2,2.0,2.9,25,get_fixture_meta_for_fixtures=1;get_snapshot_rows_for_fixture=24
+СЛЕД_1.2_индекси,/prognozi/match/1571579,мач от снимката,200,2.0,1.9,2.3,21,get_fixture_meta_for_fixtures=1;get_snapshot_rows_for_fixture=20
+СЛЕД_1.2_индекси,/prognozi/match/1571568,приключил мач (от дневника),200,2.8,2.6,3.7,21,get_fixture_meta_for_fixtures=1;get_predictions_for_fixture=20;get_snapshot_rows_for_fixture=0
+СЛЕД_1.2_индекси,/prognozi/match/1571571,приключил мач (от дневника),200,3.0,2.8,4.4,21,get_fixture_meta_for_fixtures=1;get_predictions_for_fixture=20;get_snapshot_rows_for_fixture=0
+СЛЕД_1.2_индекси,/prognozi/match/1,несъществуващ мач,404,1.8,1.7,2.1,0,get_predictions_for_fixture=0;get_snapshot_rows_for_fixture=0
