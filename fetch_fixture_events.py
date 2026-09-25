@@ -7,7 +7,8 @@
 
 Мачове: изиграните от сезон 2024 нататък (двата сезона на мерилото + текущия)
 за всичките 17 лиги - първо основните 10, после вторите дивизии. Тръгва едва след като
-fetch_player_stats.py е догонил основните 10 лиги (приоритет, обща дневна квота).
+fetch_player_stats.py е изпразнил цялата си опашка (приоритет, обща дневна квота;
+от 25.09.2026 - преди това чакаше само основните 10 лиги).
 
 Файлове на лига (извън git):
 - {лига}_events.csv - по един ред на събитие:
@@ -80,19 +81,20 @@ def build_jobs():
 
 
 def player_catchup_pending():
-    """Приоритет (24.09.2026): догонването на статистиката по играчи за 10-те основни
-    лиги е по-важно - събитията чакат, докато то приключи (иначе изяждат общата
-    дневна квота преди него)."""
+    """Приоритет (ZADACHA_TEGLENE.md т.2, 25.09.2026): цялата опашка на
+    fetch_player_stats.py (нови мачове, удари за 10-те лиги, втори дивизии) е
+    преди събитията - обща дневна квота, иначе събитията я изяждат първи.
+    (До 25.09 чакаха само догонването на 10-те лиги.)"""
     import fetch_player_stats as fps
     jobs, _ = fps.build_jobs()
-    return sum(len(todo) for league, todo, mode in jobs if mode == "both" and league in bc.MAIN_LEAGUES)
+    return sum(len(todo) for league, todo, mode in jobs)
 
 
 def main(dry_run=False, max_items=None):
     fetcher = bc.Fetcher(LOG_PATH)
     pending = player_catchup_pending()
     if pending and not dry_run and max_items is None:
-        fetcher.log(f"чакам: догонването по играчи (10 основни лиги) има още {pending} мача - пропускам пуска")
+        fetcher.log(f"чакам: тегленето по играчи (fetch_player_stats.py) има още {pending} мача - пропускам пуска")
         return
     jobs, dates = build_jobs()
     fetcher.log(f"опашка: {dict((l, len(t)) for l, t in jobs)}")

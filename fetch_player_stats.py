@@ -16,11 +16,11 @@ backfill_common.py за правилата).
   отделен файл, за да не се чупи горният формат
 - {лига}_player_stats_extra_progress.txt
 
-Ред на работа (приоритет):
-1. десетте основни лиги, сезон 2024+ - догонване след 07.08 (Етап 2);
-2. седемте втори дивизии, сезон 2024+ (Етап 3.1);
-3. допълнителните полета (удари) за мачовете от т.1, теглени преди,
-   когато удари не са се пазели.
+Ред на работа (приоритет, от 25.09.2026 - ZADACHA_TEGLENE.md т.2):
+1. десетте основни лиги, сезон 2024+ - новите мачове;
+2. допълнителните полета (удари) за старите мачове на 10-те основни лиги,
+   теглени преди, когато удари не са се пазели;
+3. седемте втори дивизии, сезон 2024+ (Етап 3.1).
 
 Пускане на ръка: venv/bin/python3 fetch_player_stats.py [--dry-run] [--limit=N]
 """
@@ -106,23 +106,34 @@ def paths(league):
 
 def build_jobs():
     """[(league, [fixture_id...], mode)] по приоритет; mode 'both' пише двата
-    CSV-та, 'extra' - само допълнителния (главният вече има мача)."""
+    CSV-та, 'extra' - само допълнителния (главният вече има мача).
+
+    Ред (ZADACHA_TEGLENE.md т.2, 25.09.2026):
+    1. новите мачове на 10-те основни лиги ('both') - по няколко на ден,
+       player_props.py ги ползва;
+    2. ударите ('extra') за старите мачове (2024-2025) на 10-те основни лиги -
+       те решават дали силата на играч работи;
+    3. седемте втори дивизии ('both').
+    Събитията (fetch_fixture_events.py) чакат, докато 1-3 свършат."""
     jobs = []
     dates = {}
-    for group in (bc.MAIN_LEAGUES, bc.SECOND_DIVISIONS):
-        for league in group:
-            p = paths(league)
-            done = bc.read_done(p["main_progress"])
-            fx = bc.finished_fixtures(league, MIN_SEASON)
-            for f, _, d in fx:
-                dates[f] = d
-            jobs.append((league, [f for f, _, _ in fx if f not in done], "both"))
+    fx_of = {}
+    for league in bc.MAIN_LEAGUES + bc.SECOND_DIVISIONS:
+        fx_of[league] = bc.finished_fixtures(league, MIN_SEASON)
+        for f, _, d in fx_of[league]:
+            dates[f] = d
+    for league in bc.MAIN_LEAGUES:
+        done = bc.read_done(paths(league)["main_progress"])
+        jobs.append((league, [f for f, _, _ in fx_of[league] if f not in done], "both"))
     for league in bc.MAIN_LEAGUES:
         p = paths(league)
         done_main = bc.read_done(p["main_progress"])
         done_extra = bc.read_done(p["extra_progress"])
-        fx = bc.finished_fixtures(league, MIN_SEASON)
-        jobs.append((league, [f for f, _, _ in fx if f in done_main and f not in done_extra], "extra"))
+        jobs.append((league, [f for f, _, _ in fx_of[league] if f in done_main and f not in done_extra],
+                     "extra"))
+    for league in bc.SECOND_DIVISIONS:
+        done = bc.read_done(paths(league)["main_progress"])
+        jobs.append((league, [f for f, _, _ in fx_of[league] if f not in done], "both"))
     return jobs, dates
 
 
