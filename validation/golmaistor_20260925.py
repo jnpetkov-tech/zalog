@@ -182,6 +182,23 @@ def rezultati():
     L = pd.DataFrame(rows)
     L.to_csv(OUT_CSV.replace(".csv", "_leagues.csv"), index=False, float_format="%.4f")
     print(L.to_string(index=False, float_format=lambda v: f"{v:.3f}"))
+    # разрез (добавен след първите резултати - проверка за устойчивост, не нова хипотеза):
+    # 2+ срещу 0 по половини на мерилото (граница 2025-09-23, както в Етап 4) и първенства/турнири
+    G["половина"] = np.where(G.date < "2025-09-23", "ранна", "късна")
+    G["вид_лига"] = np.where(G.league.str.contains("league"), "евротурнири", "първенства")
+    rows = []
+    for by in ("половина", "вид_лига"):
+        for key, s in G.groupby(by):
+            for kind, col, r in (("атака", "att_abs", "r_att"), ("отбрана", "def_abs", "r_def")):
+                grp = s[col].clip(upper=2)
+                a, b = s[grp == 0][r], s[grp == 2][r]
+                d = b.mean() - a.mean()
+                se = np.sqrt(a.var() / len(a) + b.var() / len(b))
+                rows.append({"разрез": key, "вид": kind, "n0": len(a), "n2+": len(b),
+                             "2+_минус_0": d, "2.5": d - 1.96 * se, "97.5": d + 1.96 * se})
+    Z = pd.DataFrame(rows)
+    Z.to_csv(OUT_CSV.replace(".csv", "_razrez.csv"), index=False, float_format="%.4f")
+    print(Z.to_string(index=False, float_format=lambda v: f"{v:.3f}"))
 
 
 if __name__ == "__main__":
