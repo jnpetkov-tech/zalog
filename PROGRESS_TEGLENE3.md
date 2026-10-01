@@ -19,3 +19,12 @@
 - Б4 (05:05 UTC): `fetch_api_sets.py` (15 набора, самостоятелен, в crontab :27/:57 с flock, без рестарт), tmux `sets` тегли сега. Готово: fixtures,
   injuries, standings, teams. Опашка след това: tops, players_season, team_stats, coachs, transfers, squads, fixtures_full, sidelined, predictions, profiles, trophies
   (~90 хил. заявки; част минава в утрешния ден — cron продължава сам след 00:00 UTC).
+
+### Б4 — състояние 06:00 UTC
+- Готови: fixtures 29 467 мача (85 заявки; 91.6% имат съдия), injuries 92 628 записа (49), standings, teams, tops, players_season 93 282 реда, team_stats 2 962,
+  coachs, transfers 350 019 реда, squads, **fixtures_full: 25 038 мача (1 291 заявки през `ids=`)** → състави 1 034 061 реда (25 036 мача),
+  пълна статистика 23 455 мача, събития 2022–23: 12 174 мача, играчи 2022–23: 9 452 мача.
+- Върви: sidelined (17 244 играча). Опашка: predictions 12 864, profiles 17 244, trophies 17 244 (cron :27/:57 продължава сам след изчерпване на квотата).
+- 0 пъти 429/пауза/грешка; журнал на приложението чист; /prognozi 33 мс. Проверка: `validation/api_teglene_20261001.csv`.
+- Дубликати: контузии 4 384 точни копия — идват от самото API (двоен запис в отговора), оставени в суровия CSV (при съединяване — drop_duplicates);
+  състави 316 „по ключ" = стари мачове с играчи без id (bulgaria 2018), не са двоен запис.
