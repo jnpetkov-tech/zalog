@@ -52,6 +52,16 @@ def _row_ev_pct(row):
     return (odds / fair - 1) * 100.0
 
 
+def _row_guard(row):
+    """Вътрешен предпазител БЕЗ пазарен коефициент (internal_guard.py): +inf (над MAX_TRUSTWORTHY_EV -> изключен) за флагнат кандидат, иначе None
+    (приема се). Заменя _row_ev_pct като get_ev на rank_logged_rows(); _row_ev_pct остава непокътната за връщане назад (един ред)."""
+    try:
+        import internal_guard
+        return float("inf") if internal_guard.flagged(row) else None
+    except Exception:
+        return None
+
+
 def _eligible(items, league, policy, get_pct, get_code, allow_weak, get_ev=None):
     return [it for it in items
             if get_pct(it) < MAX_PUBLISHABLE_PCT
@@ -144,7 +154,7 @@ def rank_logged_rows(rows, league, policy, n=3):
         rows, league, policy,
         get_pct=lambda r: r["pick_pct"] or 0,
         get_code=lambda r: r["market_code"],
-        get_ev=_row_ev_pct,
+        get_ev=_row_guard,          # преди: _row_ev_pct (пазарен коефициент) - решение на Дака 01.10.2026: пазарът е само мерило
         n=n, full_fallback=False,
     )
 
