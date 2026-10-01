@@ -1,0 +1,125 @@
+diff --git a/internal_guard.py b/internal_guard.py
+new file mode 100644
+index 0000000..859d0a8
+--- /dev/null
++++ b/internal_guard.py
+@@ -0,0 +1,76 @@
++"""internal_guard.py - вътрешен предпазител при избора на публикувана прогноза, БЕЗ пазарен коефициент (ZADACHA_TABLICA ст.5а, 01.10.2026).
++
++Заменя MAX_TRUSTWORTHY_EV в pick_selection.rank_logged_rows(): преди изборът изключваше кандидат с implied EV > 40% (т.е. ползваше пазарния
++коефициент). Пазарът е само мерило - изборът да не зависи от него. Основание: validation/pazar_vun_osnovanie_20261001.md (уверените прогнози
++при малко история са преувеличени: обещано 0.744, реално 0.723 при К<10) и validation/pazar_vun_20261001.md (симулация).
++
++Правило: кандидат с pick_pct >= HI_PCT на мач, в който най-малкият брой изиграни мачове на двата отбора в последните 365 дни (всички 17 лиги,
++{лига}_fixtures.csv от fetch_api_sets.py) е под K_MIN, се изключва от избора (мачът запазва по-предпазлива прогноза, ако има такава).
++Чисто четене на CSV; кеш в паметта (презарежда се на 15 мин). Липсващи данни -> не флагва (предпазителят никога не спъва избор, който не може да прецени).
++Незадължително (X): ако редът носи lam и mu (не са в predictions_log днес), екстремно ядро (извън [0.35; 3.2]) също флагва.
++"""
++import bisect
++import csv
++import os
++import time
++
++ROOT = os.path.dirname(os.path.abspath(__file__))
++LEAGUES = ["bulgaria", "england", "germany", "spain", "france", "italy", "portugal", "champions_league", "europa_league",
++           "conference_league", "france2", "spain2", "italy2", "portugal2", "bulgaria2", "england2", "germany2"]
++K_MIN = 10
++HI_PCT = 65.0
++LAM_RANGE = (0.35, 3.2)
++RELOAD_SECONDS = 900
++FINISHED = {"FT", "AET", "PEN"}
++_cache = {"at": 0.0, "min_prior": {}}
++
++
++def _load():
++    latest = {}
++    for lg in LEAGUES:
++        path = os.path.join(ROOT, f"{lg}_fixtures.csv")
++        if not os.path.exists(path):
++            continue
++        with open(path, newline="", encoding="utf-8") as f:
++            for r in csv.DictReader(f):
++                if not r.get("timestamp"):
++                    continue
++                prev = latest.get(r["fixture_id"])
++                if prev is None or r.get("fetched_at", "") >= prev.get("fetched_at", ""):
++                    latest[r["fixture_id"]] = r
++    by_team = {}
++    for r in latest.values():
++        if r["status"] in FINISHED:
++            for t in (r["home_id"], r["away_id"]):
++                by_team.setdefault(t, []).append(int(float(r["timestamp"])))
++    for t in by_team:
++        by_team[t].sort()
++    out = {}
++    for fid, r in latest.items():
++        ts = int(float(r["timestamp"]))
++
++        def n_prior(team):
++            lst = by_team.get(team, [])
++            return bisect.bisect_left(lst, ts) - bisect.bisect_left(lst, ts - 365 * 86400)
++        out[int(float(fid))] = min(n_prior(r["home_id"]), n_prior(r["away_id"]))
++    _cache.update(at=time.time(), min_prior=out)
++
++
++def min_prior(fixture_id):
++    if time.time() - _cache["at"] > RELOAD_SECONDS:
++        try:
++            _load()
++        except Exception:
++            _cache["at"] = time.time()
++    return _cache["min_prior"].get(int(fixture_id))
++
++
++def flagged(row):
++    """True -> кандидатът се изключва от избора на публикувана прогноза."""
++    if (row.get("pick_pct") or 0) < HI_PCT:
++        return False
++    lam, mu = row.get("lam"), row.get("mu")
++    if lam is not None and mu is not None and not (LAM_RANGE[0] <= lam <= LAM_RANGE[1] and LAM_RANGE[0] <= mu <= LAM_RANGE[1]):
++        return True
++    n = min_prior(row["fixture_id"])
++    return n is not None and n < K_MIN
+diff --git a/pick_selection.py b/pick_selection.py
+index 3dd20f3..9bcf44d 100644
+--- a/pick_selection.py
++++ b/pick_selection.py
+@@ -52,6 +52,16 @@ def _row_ev_pct(row):
+     return (odds / fair - 1) * 100.0
+ 
+ 
++def _row_guard(row):
++    """Вътрешен предпазител БЕЗ пазарен коефициент (internal_guard.py): +inf (над MAX_TRUSTWORTHY_EV -> изключен) за флагнат кандидат, иначе None
++    (приема се). Заменя _row_ev_pct като get_ev на rank_logged_rows(); _row_ev_pct остава непокътната за връщане назад (един ред)."""
++    try:
++        import internal_guard
++        return float("inf") if internal_guard.flagged(row) else None
++    except Exception:
++        return None
++
++
+ def _eligible(items, league, policy, get_pct, get_code, allow_weak, get_ev=None):
+     return [it for it in items
+             if get_pct(it) < MAX_PUBLISHABLE_PCT
+@@ -144,7 +154,7 @@ def rank_logged_rows(rows, league, policy, n=3):
+         rows, league, policy,
+         get_pct=lambda r: r["pick_pct"] or 0,
+         get_code=lambda r: r["market_code"],
+-        get_ev=_row_ev_pct,
++        get_ev=_row_guard,          # преди: _row_ev_pct (пазарен коефициент) - решение на Дака 01.10.2026: пазарът е само мерило
+         n=n, full_fallback=False,
+     )
+ 
+diff --git a/templates/prognozi.html b/templates/prognozi.html
+index 981a3d5..7cc3ae1 100644
+--- a/templates/prognozi.html
++++ b/templates/prognozi.html
+@@ -433,7 +433,7 @@
+ 
+         <div class="box warn">
+           <h2 style="margin-top:0;">⚠️ Честно казано засега</h2>
+-          <p>Системата няма доказано предимство пред пазарните коефициенти. Проверявали сме и дали следването на тези прогнози би било печелившо — не би било: измерено върху всички публикувани прогнози, резултатът е отрицателен и вече не се обяснява със случайност. Затова тук няма съвети за залагане, а само статистика: колко вероятен смятаме даден изход и какво казва пазарът за същия мач.</p>
++          <p>Числата са оценка на нашия статистически модел и могат да грешат. Проверявали сме и дали следването на тези прогнози би било печелившо — не би било: измерено върху всички публикувани прогнози, резултатът е отрицателен и вече не се обяснява със случайност. Затова тук няма съвети за залагане, а само статистика: колко вероятен смятаме даден изход.</p>
+           <p style="margin-bottom:0;">Затова числата тук са <b>описателни</b> — показват какво сме измерили до момента. Не са съвет какво да правиш.</p>
+         </div>
+ 
