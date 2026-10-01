@@ -1,0 +1,272 @@
+endpoint,params,sample,http,results,paging_total,errors,n_fields,raw
+/fixtures,"{""id"": 1379133}",england,200,1,1,,120,api_raw/probe/001_fixtures_england.json.gz
+/fixtures,"{""id"": 1386820}",england2,200,1,1,,120,api_raw/probe/002_fixtures_england2.json.gz
+/fixtures,"{""id"": 1451535}",bulgaria,200,1,1,,120,api_raw/probe/003_fixtures_bulgaria.json.gz
+/fixtures,"{""id"": 1451067}",champions_league,200,1,1,,120,api_raw/probe/004_fixtures_champions_league.json.gz
+/fixtures,"{""id"": 1451795}",bulgaria2,200,1,1,,72,api_raw/probe/005_fixtures_bulgaria2.json.gz
+/fixtures/statistics,"{""fixture"": 1379133}",england,200,2,1,,5,api_raw/probe/006_fixtures_statistics_england.json.gz
+/fixtures/events,"{""fixture"": 1379133}",england,200,20,1,,12,api_raw/probe/007_fixtures_events_england.json.gz
+/fixtures/lineups,"{""fixture"": 1379133}",england,200,2,1,,23,api_raw/probe/008_fixtures_lineups_england.json.gz
+/fixtures/players,"{""fixture"": 1379133}",england,200,2,1,,40,api_raw/probe/009_fixtures_players_england.json.gz
+/fixtures/headtohead,"{""h2h"": ""36-65""}",england,200,23,1,,40,api_raw/probe/010_fixtures_headtohead_england.json.gz
+/fixtures/rounds,"{""league"": 39, ""season"": 2025}",england,200,38,1,,1,api_raw/probe/011_fixtures_rounds_england.json.gz
+/fixtures,"{""league"": 39, ""season"": 2025}",england,200,380,1,,40,api_raw/probe/012_fixtures_england.json.gz
+/injuries,"{""league"": 39, ""season"": 2025}",england,200,3417,1,,18,api_raw/probe/013_injuries_england.json.gz
+/injuries,"{""fixture"": 1379133}",england,200,10,1,,18,api_raw/probe/014_injuries_england.json.gz
+/predictions,"{""fixture"": 1379133}",england,200,1,1,,359,api_raw/probe/015_predictions_england.json.gz
+/odds,"{""fixture"": 1379133}",england,200,0,1,,0,api_raw/probe/016_odds_england.json.gz
+/odds,"{""league"": 39, ""page"": 1, ""season"": 2025}",england,200,0,1,,0,api_raw/probe/017_odds_england.json.gz
+/teams,"{""league"": 39, ""season"": 2025}",england,200,20,1,,14,api_raw/probe/018_teams_england.json.gz
+/teams/statistics,"{""league"": 39, ""season"": 2025, ""team"": 36}",england,200,11,1,,142,api_raw/probe/019_teams_statistics_england.json.gz
+/teams/seasons,"{""team"": 36}",england,200,17,1,,1,api_raw/probe/020_teams_seasons_england.json.gz
+/standings,"{""league"": 39, ""season"": 2025}",england,200,1,1,,35,api_raw/probe/021_standings_england.json.gz
+/players,"{""league"": 39, ""page"": 1, ""season"": 2025}",england,200,20,34,,59,api_raw/probe/022_players_england.json.gz
+/players/squads,"{""team"": 36}",england,200,1,1,,9,api_raw/probe/023_players_squads_england.json.gz
+/players/topscorers,"{""league"": 39, ""season"": 2025}",england,200,20,1,,59,api_raw/probe/024_players_topscorers_england.json.gz
+/players/topassists,"{""league"": 39, ""season"": 2025}",england,200,20,1,,59,api_raw/probe/025_players_topassists_england.json.gz
+/players/topyellowcards,"{""league"": 39, ""season"": 2025}",england,200,20,1,,59,api_raw/probe/026_players_topyellowcards_england.json.gz
+/players/topredcards,"{""league"": 39, ""season"": 2025}",england,200,20,1,,59,api_raw/probe/027_players_topredcards_england.json.gz
+/transfers,"{""team"": 36}",england,200,321,1,,11,api_raw/probe/028_transfers_england.json.gz
+/coachs,"{""team"": 36}",england,200,1,1,,20,api_raw/probe/029_coachs_england.json.gz
+/players,"{""id"": 1438, ""season"": 2025}",england,200,1,1,,59,api_raw/probe/030_players_england.json.gz
+/players/seasons,"{""player"": 1438}",england,200,18,1,,1,api_raw/probe/031_players_seasons_england.json.gz
+/players/teams,"{""player"": 1438}",england,200,9,1,,4,api_raw/probe/032_players_teams_england.json.gz
+/players/profiles,"{""player"": 1438}",england,200,1,1,,14,api_raw/probe/033_players_profiles_england.json.gz
+/sidelined,"{""player"": 1438}",england,200,4,1,,3,api_raw/probe/034_sidelined_england.json.gz
+/transfers,"{""player"": 1438}",england,200,1,1,,11,api_raw/probe/035_transfers_england.json.gz
+/trophies,"{""player"": 1438}",england,200,14,1,,4,api_raw/probe/036_trophies_england.json.gz
+/sidelined,"{""coach"": 25679}",england,200,0,1,,0,api_raw/probe/037_sidelined_england.json.gz
+/trophies,"{""coach"": 25679}",england,200,0,1,,0,api_raw/probe/038_trophies_england.json.gz
+/venues,"{""id"": 535}",england,200,1,1,,8,api_raw/probe/039_venues_england.json.gz
+/fixtures/statistics,"{""fixture"": 1386820}",england2,200,2,1,,5,api_raw/probe/040_fixtures_statistics_england2.json.gz
+/fixtures/events,"{""fixture"": 1386820}",england2,200,12,1,,12,api_raw/probe/041_fixtures_events_england2.json.gz
+/fixtures/lineups,"{""fixture"": 1386820}",england2,200,2,1,,23,api_raw/probe/042_fixtures_lineups_england2.json.gz
+/fixtures/players,"{""fixture"": 1386820}",england2,200,2,1,,40,api_raw/probe/043_fixtures_players_england2.json.gz
+/fixtures/headtohead,"{""h2h"": ""58-57""}",england2,200,18,1,,40,api_raw/probe/044_fixtures_headtohead_england2.json.gz
+/fixtures/rounds,"{""league"": 40, ""season"": 2025}",england2,200,48,1,,1,api_raw/probe/045_fixtures_rounds_england2.json.gz
+/fixtures,"{""league"": 40, ""season"": 2025}",england2,200,558,1,,40,api_raw/probe/046_fixtures_england2.json.gz
+/injuries,"{""league"": 40, ""season"": 2025}",england2,200,6002,1,,18,api_raw/probe/047_injuries_england2.json.gz
+/injuries,"{""fixture"": 1386820}",england2,200,12,1,,18,api_raw/probe/048_injuries_england2.json.gz
+/predictions,"{""fixture"": 1386820}",england2,200,1,1,,359,api_raw/probe/049_predictions_england2.json.gz
+/odds,"{""fixture"": 1386820}",england2,200,0,1,,0,api_raw/probe/050_odds_england2.json.gz
+/odds,"{""league"": 40, ""page"": 1, ""season"": 2025}",england2,200,0,1,,0,api_raw/probe/051_odds_england2.json.gz
+/teams,"{""league"": 40, ""season"": 2025}",england2,200,24,1,,14,api_raw/probe/052_teams_england2.json.gz
+/teams/statistics,"{""league"": 40, ""season"": 2025, ""team"": 58}",england2,200,11,1,,142,api_raw/probe/053_teams_statistics_england2.json.gz
+/teams/seasons,"{""team"": 58}",england2,200,16,1,,1,api_raw/probe/054_teams_seasons_england2.json.gz
+/standings,"{""league"": 40, ""season"": 2025}",england2,200,1,1,,35,api_raw/probe/055_standings_england2.json.gz
+/players,"{""league"": 40, ""page"": 1, ""season"": 2025}",england2,200,20,48,,59,api_raw/probe/056_players_england2.json.gz
+/players/squads,"{""team"": 58}",england2,200,1,1,,9,api_raw/probe/057_players_squads_england2.json.gz
+/players/topscorers,"{""league"": 40, ""season"": 2025}",england2,200,20,1,,59,api_raw/probe/058_players_topscorers_england2.json.gz
+/players/topassists,"{""league"": 40, ""season"": 2025}",england2,200,20,1,,59,api_raw/probe/059_players_topassists_england2.json.gz
+/players/topyellowcards,"{""league"": 40, ""season"": 2025}",england2,200,20,1,,59,api_raw/probe/060_players_topyellowcards_england2.json.gz
+/players/topredcards,"{""league"": 40, ""season"": 2025}",england2,200,20,1,,59,api_raw/probe/061_players_topredcards_england2.json.gz
+/transfers,"{""team"": 58}",england2,200,280,1,,11,api_raw/probe/062_transfers_england2.json.gz
+/coachs,"{""team"": 58}",england2,200,3,1,,20,api_raw/probe/063_coachs_england2.json.gz
+/players,"{""id"": 18110, ""season"": 2025}",england2,200,1,1,,59,api_raw/probe/064_players_england2.json.gz
+/players/seasons,"{""player"": 18110}",england2,200,16,1,,1,api_raw/probe/065_players_seasons_england2.json.gz
+/players/teams,"{""player"": 18110}",england2,200,13,1,,4,api_raw/probe/066_players_teams_england2.json.gz
+/players/profiles,"{""player"": 18110}",england2,200,1,1,,14,api_raw/probe/067_players_profiles_england2.json.gz
+/sidelined,"{""player"": 18110}",england2,200,1,1,,3,api_raw/probe/068_sidelined_england2.json.gz
+/transfers,"{""player"": 18110}",england2,200,1,1,,11,api_raw/probe/069_transfers_england2.json.gz
+/trophies,"{""player"": 18110}",england2,200,2,1,,4,api_raw/probe/070_trophies_england2.json.gz
+/sidelined,"{""coach"": 93}",england2,200,0,1,,0,api_raw/probe/071_sidelined_england2.json.gz
+/trophies,"{""coach"": 93}",england2,200,2,1,,4,api_raw/probe/072_trophies_england2.json.gz
+/venues,"{""id"": 559}",england2,200,1,1,,8,api_raw/probe/073_venues_england2.json.gz
+/fixtures/statistics,"{""fixture"": 1451535}",bulgaria,200,2,1,,5,api_raw/probe/074_fixtures_statistics_bulgaria.json.gz
+/fixtures/events,"{""fixture"": 1451535}",bulgaria,200,17,1,,12,api_raw/probe/075_fixtures_events_bulgaria.json.gz
+/fixtures/lineups,"{""fixture"": 1451535}",bulgaria,200,2,1,,23,api_raw/probe/076_fixtures_lineups_bulgaria.json.gz
+/fixtures/players,"{""fixture"": 1451535}",bulgaria,200,2,1,,40,api_raw/probe/077_fixtures_players_bulgaria.json.gz
+/fixtures/headtohead,"{""h2h"": ""1416-634""}",bulgaria,200,16,1,,40,api_raw/probe/078_fixtures_headtohead_bulgaria.json.gz
+/fixtures/rounds,"{""league"": 172, ""season"": 2025}",bulgaria,200,51,1,,1,api_raw/probe/079_fixtures_rounds_bulgaria.json.gz
+/fixtures,"{""league"": 172, ""season"": 2025}",bulgaria,200,294,1,,40,api_raw/probe/080_fixtures_bulgaria.json.gz
+/injuries,"{""league"": 172, ""season"": 2025}",bulgaria,200,44,1,,18,api_raw/probe/081_injuries_bulgaria.json.gz
+/injuries,"{""fixture"": 1451535}",bulgaria,200,0,1,,0,api_raw/probe/082_injuries_bulgaria.json.gz
+/predictions,"{""fixture"": 1451535}",bulgaria,200,1,1,,359,api_raw/probe/083_predictions_bulgaria.json.gz
+/odds,"{""fixture"": 1451535}",bulgaria,200,0,1,,0,api_raw/probe/084_odds_bulgaria.json.gz
+/odds,"{""league"": 172, ""page"": 1, ""season"": 2025}",bulgaria,200,0,1,,0,api_raw/probe/085_odds_bulgaria.json.gz
+/teams,"{""league"": 172, ""season"": 2025}",bulgaria,200,17,1,,14,api_raw/probe/086_teams_bulgaria.json.gz
+/teams/statistics,"{""league"": 172, ""season"": 2025, ""team"": 1416}",bulgaria,200,11,1,,142,api_raw/probe/087_teams_statistics_bulgaria.json.gz
+/teams/seasons,"{""team"": 1416}",bulgaria,200,11,1,,1,api_raw/probe/088_teams_seasons_bulgaria.json.gz
+/standings,"{""league"": 172, ""season"": 2025}",bulgaria,200,1,1,,35,api_raw/probe/089_standings_bulgaria.json.gz
+/players,"{""league"": 172, ""page"": 1, ""season"": 2025}",bulgaria,200,20,26,,59,api_raw/probe/090_players_bulgaria.json.gz
+/players/squads,"{""team"": 1416}",bulgaria,200,1,1,,9,api_raw/probe/091_players_squads_bulgaria.json.gz
+/players/topscorers,"{""league"": 172, ""season"": 2025}",bulgaria,200,20,1,,59,api_raw/probe/092_players_topscorers_bulgaria.json.gz
+/players/topassists,"{""league"": 172, ""season"": 2025}",bulgaria,200,20,1,,59,api_raw/probe/093_players_topassists_bulgaria.json.gz
+/players/topyellowcards,"{""league"": 172, ""season"": 2025}",bulgaria,200,20,1,,59,api_raw/probe/094_players_topyellowcards_bulgaria.json.gz
+/players/topredcards,"{""league"": 172, ""season"": 2025}",bulgaria,200,20,1,,59,api_raw/probe/095_players_topredcards_bulgaria.json.gz
+/transfers,"{""team"": 1416}",bulgaria,200,174,1,,11,api_raw/probe/096_transfers_bulgaria.json.gz
+/coachs,"{""team"": 1416}",bulgaria,200,8,1,,20,api_raw/probe/097_coachs_bulgaria.json.gz
+/players,"{""id"": 78199, ""season"": 2025}",bulgaria,200,1,1,,59,api_raw/probe/098_players_bulgaria.json.gz
+/players/seasons,"{""player"": 78199}",bulgaria,200,9,1,,1,api_raw/probe/099_players_seasons_bulgaria.json.gz
+/players/teams,"{""player"": 78199}",bulgaria,200,8,1,,4,api_raw/probe/100_players_teams_bulgaria.json.gz
+/players/profiles,"{""player"": 78199}",bulgaria,200,1,1,,14,api_raw/probe/101_players_profiles_bulgaria.json.gz
+/sidelined,"{""player"": 78199}",bulgaria,200,0,1,,0,api_raw/probe/102_sidelined_bulgaria.json.gz
+/transfers,"{""player"": 78199}",bulgaria,200,1,1,,11,api_raw/probe/103_transfers_bulgaria.json.gz
+/trophies,"{""player"": 78199}",bulgaria,200,0,1,,0,api_raw/probe/104_trophies_bulgaria.json.gz
+/sidelined,"{""coach"": 205}",bulgaria,200,0,1,,0,api_raw/probe/105_sidelined_bulgaria.json.gz
+/trophies,"{""coach"": 205}",bulgaria,200,0,1,,0,api_raw/probe/106_trophies_bulgaria.json.gz
+/venues,"{""id"": 1883}",bulgaria,200,1,1,,8,api_raw/probe/107_venues_bulgaria.json.gz
+/fixtures/statistics,"{""fixture"": 1451067}",champions_league,200,2,1,,5,api_raw/probe/108_fixtures_statistics_champions_league.json.gz
+/fixtures/events,"{""fixture"": 1451067}",champions_league,200,10,1,,12,api_raw/probe/109_fixtures_events_champions_league.json.gz
+/fixtures/lineups,"{""fixture"": 1451067}",champions_league,200,2,1,,23,api_raw/probe/110_fixtures_lineups_champions_league.json.gz
+/fixtures/players,"{""fixture"": 1451067}",champions_league,200,2,1,,40,api_raw/probe/111_fixtures_players_champions_league.json.gz
+/fixtures/headtohead,"{""h2h"": ""91-47""}",champions_league,200,5,1,,40,api_raw/probe/112_fixtures_headtohead_champions_league.json.gz
+/fixtures/rounds,"{""league"": 2, ""season"": 2025}",champions_league,200,17,1,,1,api_raw/probe/113_fixtures_rounds_champions_league.json.gz
+/fixtures,"{""league"": 2, ""season"": 2025}",champions_league,200,281,1,,40,api_raw/probe/114_fixtures_champions_league.json.gz
+/injuries,"{""league"": 2, ""season"": 2025}",champions_league,200,2317,1,,18,api_raw/probe/115_injuries_champions_league.json.gz
+/injuries,"{""fixture"": 1451067}",champions_league,200,16,1,,18,api_raw/probe/116_injuries_champions_league.json.gz
+/predictions,"{""fixture"": 1451067}",champions_league,200,1,1,,359,api_raw/probe/117_predictions_champions_league.json.gz
+/odds,"{""fixture"": 1451067}",champions_league,200,0,1,,0,api_raw/probe/118_odds_champions_league.json.gz
+/odds,"{""league"": 2, ""page"": 1, ""season"": 2025}",champions_league,200,0,1,,0,api_raw/probe/119_odds_champions_league.json.gz
+/teams,"{""league"": 2, ""season"": 2025}",champions_league,200,82,1,,14,api_raw/probe/120_teams_champions_league.json.gz
+/teams/statistics,"{""league"": 2, ""season"": 2025, ""team"": 91}",champions_league,200,11,1,,144,api_raw/probe/121_teams_statistics_champions_league.json.gz
+/teams/seasons,"{""team"": 91}",champions_league,200,17,1,,1,api_raw/probe/122_teams_seasons_champions_league.json.gz
+/standings,"{""league"": 2, ""season"": 2025}",champions_league,200,1,1,,35,api_raw/probe/123_standings_champions_league.json.gz
+/players,"{""league"": 2, ""page"": 1, ""season"": 2025}",champions_league,200,20,83,,59,api_raw/probe/124_players_champions_league.json.gz
+/players/squads,"{""team"": 91}",champions_league,200,1,1,,9,api_raw/probe/125_players_squads_champions_league.json.gz
+/players/topscorers,"{""league"": 2, ""season"": 2025}",champions_league,200,20,1,,59,api_raw/probe/126_players_topscorers_champions_league.json.gz
+/players/topassists,"{""league"": 2, ""season"": 2025}",champions_league,200,20,1,,59,api_raw/probe/127_players_topassists_champions_league.json.gz
+/players/topyellowcards,"{""league"": 2, ""season"": 2025}",champions_league,200,20,1,,59,api_raw/probe/128_players_topyellowcards_champions_league.json.gz
+/players/topredcards,"{""league"": 2, ""season"": 2025}",champions_league,200,20,1,,59,api_raw/probe/129_players_topredcards_champions_league.json.gz
+/transfers,"{""team"": 91}",champions_league,200,319,1,,11,api_raw/probe/130_transfers_champions_league.json.gz
+/coachs,"{""team"": 91}",champions_league,200,2,1,,20,api_raw/probe/131_coachs_champions_league.json.gz
+/players,"{""id"": 7313, ""season"": 2025}",champions_league,200,1,1,,59,api_raw/probe/132_players_champions_league.json.gz
+/players/seasons,"{""player"": 7313}",champions_league,200,12,1,,1,api_raw/probe/133_players_seasons_champions_league.json.gz
+/players/teams,"{""player"": 7313}",champions_league,200,9,1,,4,api_raw/probe/134_players_teams_champions_league.json.gz
+/players/profiles,"{""player"": 7313}",champions_league,200,1,1,,14,api_raw/probe/135_players_profiles_champions_league.json.gz
+/sidelined,"{""player"": 7313}",champions_league,200,7,1,,3,api_raw/probe/136_sidelined_champions_league.json.gz
+/transfers,"{""player"": 7313}",champions_league,200,1,1,,11,api_raw/probe/137_transfers_champions_league.json.gz
+/trophies,"{""player"": 7313}",champions_league,200,15,1,,4,api_raw/probe/138_trophies_champions_league.json.gz
+/sidelined,"{""coach"": 1542}",champions_league,200,0,1,,0,api_raw/probe/139_sidelined_champions_league.json.gz
+/trophies,"{""coach"": 1542}",champions_league,200,17,1,,4,api_raw/probe/140_trophies_champions_league.json.gz
+/fixtures/statistics,"{""fixture"": 1451795}",bulgaria2,200,0,1,,0,api_raw/probe/141_fixtures_statistics_bulgaria2.json.gz
+/fixtures/events,"{""fixture"": 1451795}",bulgaria2,200,18,1,,12,api_raw/probe/142_fixtures_events_bulgaria2.json.gz
+/fixtures/lineups,"{""fixture"": 1451795}",bulgaria2,200,2,1,,18,api_raw/probe/143_fixtures_lineups_bulgaria2.json.gz
+/fixtures/players,"{""fixture"": 1451795}",bulgaria2,200,0,1,,0,api_raw/probe/144_fixtures_players_bulgaria2.json.gz
+/fixtures/headtohead,"{""h2h"": ""21836-8540""}",bulgaria2,200,4,1,,40,api_raw/probe/145_fixtures_headtohead_bulgaria2.json.gz
+/fixtures/rounds,"{""league"": 173, ""season"": 2025}",bulgaria2,200,34,1,,1,api_raw/probe/146_fixtures_rounds_bulgaria2.json.gz
+/fixtures,"{""league"": 173, ""season"": 2025}",bulgaria2,200,272,1,,40,api_raw/probe/147_fixtures_bulgaria2.json.gz
+/injuries,"{""league"": 173, ""season"": 2025}",bulgaria2,200,40,1,,18,api_raw/probe/148_injuries_bulgaria2.json.gz
+/injuries,"{""fixture"": 1451795}",bulgaria2,200,0,1,,0,api_raw/probe/149_injuries_bulgaria2.json.gz
+/predictions,"{""fixture"": 1451795}",bulgaria2,200,1,1,,357,api_raw/probe/150_predictions_bulgaria2.json.gz
+/odds,"{""fixture"": 1451795}",bulgaria2,200,0,1,,0,api_raw/probe/151_odds_bulgaria2.json.gz
+/odds,"{""league"": 173, ""page"": 1, ""season"": 2025}",bulgaria2,200,0,1,,0,api_raw/probe/152_odds_bulgaria2.json.gz
+/teams,"{""league"": 173, ""season"": 2025}",bulgaria2,200,17,1,,14,api_raw/probe/153_teams_bulgaria2.json.gz
+/teams/statistics,"{""league"": 173, ""season"": 2025, ""team"": 21836}",bulgaria2,200,11,1,,141,api_raw/probe/154_teams_statistics_bulgaria2.json.gz
+/teams/seasons,"{""team"": 21836}",bulgaria2,200,4,1,,1,api_raw/probe/155_teams_seasons_bulgaria2.json.gz
+/standings,"{""league"": 173, ""season"": 2025}",bulgaria2,200,1,1,,35,api_raw/probe/156_standings_bulgaria2.json.gz
+/players,"{""league"": 173, ""page"": 1, ""season"": 2025}",bulgaria2,200,5,1,,59,api_raw/probe/157_players_bulgaria2.json.gz
+/players/squads,"{""team"": 21836}",bulgaria2,200,1,1,,9,api_raw/probe/158_players_squads_bulgaria2.json.gz
+/players/topscorers,"{""league"": 173, ""season"": 2025}",bulgaria2,200,5,1,,59,api_raw/probe/159_players_topscorers_bulgaria2.json.gz
+/players/topassists,"{""league"": 173, ""season"": 2025}",bulgaria2,200,5,1,,59,api_raw/probe/160_players_topassists_bulgaria2.json.gz
+/players/topyellowcards,"{""league"": 173, ""season"": 2025}",bulgaria2,200,5,1,,59,api_raw/probe/161_players_topyellowcards_bulgaria2.json.gz
+/players/topredcards,"{""league"": 173, ""season"": 2025}",bulgaria2,200,5,1,,59,api_raw/probe/162_players_topredcards_bulgaria2.json.gz
+/transfers,"{""team"": 21836}",bulgaria2,200,71,1,,11,api_raw/probe/163_transfers_bulgaria2.json.gz
+/coachs,"{""team"": 21836}",bulgaria2,200,3,1,,20,api_raw/probe/164_coachs_bulgaria2.json.gz
+/sidelined,"{""coach"": 13261}",bulgaria2,200,0,1,,0,api_raw/probe/165_sidelined_bulgaria2.json.gz
+/trophies,"{""coach"": 13261}",bulgaria2,200,0,1,,0,api_raw/probe/166_trophies_bulgaria2.json.gz
+/odds/live,{},global,200,0,1,,0,api_raw/probe/167_odds_live_global.json.gz
+/odds/live/bets,{},global,200,266,1,,2,api_raw/probe/168_odds_live_bets_global.json.gz
+/odds/bookmakers,{},global,200,33,1,,2,api_raw/probe/169_odds_bookmakers_global.json.gz
+/odds/bets,{},global,200,338,1,,2,api_raw/probe/170_odds_bets_global.json.gz
+/odds/mapping,"{""page"": 1}",global,200,100,26,,6,api_raw/probe/171_odds_mapping_global.json.gz
+/leagues/seasons,{},global,200,20,1,,1,api_raw/probe/172_leagues_seasons_global.json.gz
+/teams/countries,{},global,200,234,1,,3,api_raw/probe/173_teams_countries_global.json.gz
+/fixtures,"{""league"": 39, ""season"": 2008}",england_s2008,200,0,1,,0,api_raw/probe/174_fixtures_england_s2008.json.gz
+/standings,"{""league"": 39, ""season"": 2008}",england_s2008,200,0,1,,0,api_raw/probe/175_standings_england_s2008.json.gz
+/players/topscorers,"{""league"": 39, ""season"": 2008}",england_s2008,200,0,1,,0,api_raw/probe/176_players_topscorers_england_s2008.json.gz
+/teams,"{""league"": 39, ""season"": 2008}",england_s2008,200,0,1,,0,api_raw/probe/177_teams_england_s2008.json.gz
+/injuries,"{""league"": 39, ""season"": 2008}",england_s2008,200,0,1,,0,api_raw/probe/178_injuries_england_s2008.json.gz
+/players,"{""league"": 39, ""page"": 1, ""season"": 2008}",england_s2008,200,20,29,,59,api_raw/probe/179_players_england_s2008.json.gz
+/odds,"{""league"": 39, ""page"": 1, ""season"": 2008}",england_s2008,200,0,1,,0,api_raw/probe/180_odds_england_s2008.json.gz
+/fixtures,"{""league"": 39, ""season"": 2010}",england_s2010,200,380,1,,40,api_raw/probe/181_fixtures_england_s2010.json.gz
+/standings,"{""league"": 39, ""season"": 2010}",england_s2010,200,1,1,,35,api_raw/probe/182_standings_england_s2010.json.gz
+/players/topscorers,"{""league"": 39, ""season"": 2010}",england_s2010,200,20,1,,59,api_raw/probe/183_players_topscorers_england_s2010.json.gz
+/teams,"{""league"": 39, ""season"": 2010}",england_s2010,200,20,1,,14,api_raw/probe/184_teams_england_s2010.json.gz
+/injuries,"{""league"": 39, ""season"": 2010}",england_s2010,200,0,1,,0,api_raw/probe/185_injuries_england_s2010.json.gz
+/players,"{""league"": 39, ""page"": 1, ""season"": 2010}",england_s2010,200,20,35,,59,api_raw/probe/186_players_england_s2010.json.gz
+/odds,"{""league"": 39, ""page"": 1, ""season"": 2010}",england_s2010,200,0,1,,0,api_raw/probe/187_odds_england_s2010.json.gz
+/fixtures/statistics,"{""fixture"": 194387}",england_s2010,200,0,1,,0,api_raw/probe/188_fixtures_statistics_england_s2010.json.gz
+/fixtures/events,"{""fixture"": 194387}",england_s2010,200,9,1,,12,api_raw/probe/189_fixtures_events_england_s2010.json.gz
+/fixtures/lineups,"{""fixture"": 194387}",england_s2010,200,2,1,,17,api_raw/probe/190_fixtures_lineups_england_s2010.json.gz
+/fixtures/players,"{""fixture"": 194387}",england_s2010,200,0,1,,0,api_raw/probe/191_fixtures_players_england_s2010.json.gz
+/predictions,"{""fixture"": 194387}",england_s2010,200,1,1,,318,api_raw/probe/192_predictions_england_s2010.json.gz
+/odds,"{""fixture"": 194387}",england_s2010,200,0,1,,0,api_raw/probe/193_odds_england_s2010.json.gz
+/fixtures,"{""league"": 39, ""season"": 2012}",england_s2012,200,380,1,,40,api_raw/probe/194_fixtures_england_s2012.json.gz
+/standings,"{""league"": 39, ""season"": 2012}",england_s2012,200,1,1,,35,api_raw/probe/195_standings_england_s2012.json.gz
+/players/topscorers,"{""league"": 39, ""season"": 2012}",england_s2012,200,20,1,,59,api_raw/probe/196_players_topscorers_england_s2012.json.gz
+/teams,"{""league"": 39, ""season"": 2012}",england_s2012,200,20,1,,14,api_raw/probe/197_teams_england_s2012.json.gz
+/injuries,"{""league"": 39, ""season"": 2012}",england_s2012,200,0,1,,0,api_raw/probe/198_injuries_england_s2012.json.gz
+/players,"{""league"": 39, ""page"": 1, ""season"": 2012}",england_s2012,200,20,34,,59,api_raw/probe/199_players_england_s2012.json.gz
+/odds,"{""league"": 39, ""page"": 1, ""season"": 2012}",england_s2012,200,0,1,,0,api_raw/probe/200_odds_england_s2012.json.gz
+/fixtures/statistics,"{""fixture"": 193629}",england_s2012,200,0,1,,0,api_raw/probe/201_fixtures_statistics_england_s2012.json.gz
+/fixtures/events,"{""fixture"": 193629}",england_s2012,200,8,1,,12,api_raw/probe/202_fixtures_events_england_s2012.json.gz
+/fixtures/lineups,"{""fixture"": 193629}",england_s2012,200,2,1,,17,api_raw/probe/203_fixtures_lineups_england_s2012.json.gz
+/fixtures/players,"{""fixture"": 193629}",england_s2012,200,0,1,,0,api_raw/probe/204_fixtures_players_england_s2012.json.gz
+/predictions,"{""fixture"": 193629}",england_s2012,200,1,1,,357,api_raw/probe/205_predictions_england_s2012.json.gz
+/odds,"{""fixture"": 193629}",england_s2012,200,0,1,,0,api_raw/probe/206_odds_england_s2012.json.gz
+/fixtures,"{""league"": 39, ""season"": 2014}",england_s2014,200,380,1,,40,api_raw/probe/207_fixtures_england_s2014.json.gz
+/standings,"{""league"": 39, ""season"": 2014}",england_s2014,200,1,1,,35,api_raw/probe/208_standings_england_s2014.json.gz
+/players/topscorers,"{""league"": 39, ""season"": 2014}",england_s2014,200,20,1,,59,api_raw/probe/209_players_topscorers_england_s2014.json.gz
+/teams,"{""league"": 39, ""season"": 2014}",england_s2014,200,20,1,,14,api_raw/probe/210_teams_england_s2014.json.gz
+/injuries,"{""league"": 39, ""season"": 2014}",england_s2014,200,0,1,,0,api_raw/probe/211_injuries_england_s2014.json.gz
+/players,"{""league"": 39, ""page"": 1, ""season"": 2014}",england_s2014,200,20,36,,59,api_raw/probe/212_players_england_s2014.json.gz
+/odds,"{""league"": 39, ""page"": 1, ""season"": 2014}",england_s2014,200,0,1,,0,api_raw/probe/213_odds_england_s2014.json.gz
+/fixtures/statistics,"{""fixture"": 192867}",england_s2014,200,2,1,,5,api_raw/probe/214_fixtures_statistics_england_s2014.json.gz
+/fixtures/events,"{""fixture"": 192867}",england_s2014,200,6,1,,12,api_raw/probe/215_fixtures_events_england_s2014.json.gz
+/fixtures/lineups,"{""fixture"": 192867}",england_s2014,200,2,1,,17,api_raw/probe/216_fixtures_lineups_england_s2014.json.gz
+/fixtures/players,"{""fixture"": 192867}",england_s2014,200,0,1,,0,api_raw/probe/217_fixtures_players_england_s2014.json.gz
+/predictions,"{""fixture"": 192867}",england_s2014,200,1,1,,357,api_raw/probe/218_predictions_england_s2014.json.gz
+/odds,"{""fixture"": 192867}",england_s2014,200,0,1,,0,api_raw/probe/219_odds_england_s2014.json.gz
+/fixtures,"{""league"": 39, ""season"": 2016}",england_s2016,200,380,1,,40,api_raw/probe/220_fixtures_england_s2016.json.gz
+/standings,"{""league"": 39, ""season"": 2016}",england_s2016,200,1,1,,35,api_raw/probe/221_standings_england_s2016.json.gz
+/players/topscorers,"{""league"": 39, ""season"": 2016}",england_s2016,200,20,1,,59,api_raw/probe/222_players_topscorers_england_s2016.json.gz
+/teams,"{""league"": 39, ""season"": 2016}",england_s2016,200,20,1,,14,api_raw/probe/223_teams_england_s2016.json.gz
+/injuries,"{""league"": 39, ""season"": 2016}",england_s2016,200,0,1,,0,api_raw/probe/224_injuries_england_s2016.json.gz
+/players,"{""league"": 39, ""page"": 1, ""season"": 2016}",england_s2016,200,20,35,,59,api_raw/probe/225_players_england_s2016.json.gz
+/odds,"{""league"": 39, ""page"": 1, ""season"": 2016}",england_s2016,200,0,1,,0,api_raw/probe/226_odds_england_s2016.json.gz
+/fixtures/statistics,"{""fixture"": 17506}",england_s2016,200,2,1,,5,api_raw/probe/227_fixtures_statistics_england_s2016.json.gz
+/fixtures/events,"{""fixture"": 17506}",england_s2016,200,9,1,,12,api_raw/probe/228_fixtures_events_england_s2016.json.gz
+/fixtures/lineups,"{""fixture"": 17506}",england_s2016,200,2,1,,18,api_raw/probe/229_fixtures_lineups_england_s2016.json.gz
+/fixtures/players,"{""fixture"": 17506}",england_s2016,200,2,1,,40,api_raw/probe/230_fixtures_players_england_s2016.json.gz
+/predictions,"{""fixture"": 17506}",england_s2016,200,1,1,,359,api_raw/probe/231_predictions_england_s2016.json.gz
+/odds,"{""fixture"": 17506}",england_s2016,200,0,1,,0,api_raw/probe/232_odds_england_s2016.json.gz
+/fixtures,"{""league"": 39, ""season"": 2018}",england_s2018,200,380,1,,40,api_raw/probe/233_fixtures_england_s2018.json.gz
+/standings,"{""league"": 39, ""season"": 2018}",england_s2018,200,1,1,,35,api_raw/probe/234_standings_england_s2018.json.gz
+/players/topscorers,"{""league"": 39, ""season"": 2018}",england_s2018,200,20,1,,59,api_raw/probe/235_players_topscorers_england_s2018.json.gz
+/teams,"{""league"": 39, ""season"": 2018}",england_s2018,200,20,1,,14,api_raw/probe/236_teams_england_s2018.json.gz
+/injuries,"{""league"": 39, ""season"": 2018}",england_s2018,200,0,1,,0,api_raw/probe/237_injuries_england_s2018.json.gz
+/players,"{""league"": 39, ""page"": 1, ""season"": 2018}",england_s2018,200,20,30,,59,api_raw/probe/238_players_england_s2018.json.gz
+/odds,"{""league"": 39, ""page"": 1, ""season"": 2018}",england_s2018,200,0,1,,0,api_raw/probe/239_odds_england_s2018.json.gz
+/fixtures/statistics,"{""fixture"": 258}",england_s2018,200,2,1,,5,api_raw/probe/240_fixtures_statistics_england_s2018.json.gz
+/fixtures/events,"{""fixture"": 258}",england_s2018,200,10,1,,12,api_raw/probe/241_fixtures_events_england_s2018.json.gz
+/fixtures/lineups,"{""fixture"": 258}",england_s2018,200,2,1,,18,api_raw/probe/242_fixtures_lineups_england_s2018.json.gz
+/fixtures/players,"{""fixture"": 258}",england_s2018,200,2,1,,40,api_raw/probe/243_fixtures_players_england_s2018.json.gz
+/predictions,"{""fixture"": 258}",england_s2018,200,1,1,,359,api_raw/probe/244_predictions_england_s2018.json.gz
+/odds,"{""fixture"": 258}",england_s2018,200,0,1,,0,api_raw/probe/245_odds_england_s2018.json.gz
+/fixtures,"{""league"": 39, ""season"": 2020}",england_s2020,200,380,1,,40,api_raw/probe/246_fixtures_england_s2020.json.gz
+/standings,"{""league"": 39, ""season"": 2020}",england_s2020,200,1,1,,35,api_raw/probe/247_standings_england_s2020.json.gz
+/players/topscorers,"{""league"": 39, ""season"": 2020}",england_s2020,200,20,1,,59,api_raw/probe/248_players_topscorers_england_s2020.json.gz
+/teams,"{""league"": 39, ""season"": 2020}",england_s2020,200,20,1,,14,api_raw/probe/249_teams_england_s2020.json.gz
+/injuries,"{""league"": 39, ""season"": 2020}",england_s2020,200,598,1,,18,api_raw/probe/250_injuries_england_s2020.json.gz
+/players,"{""league"": 39, ""page"": 1, ""season"": 2020}",england_s2020,200,20,37,,59,api_raw/probe/251_players_england_s2020.json.gz
+/odds,"{""league"": 39, ""page"": 1, ""season"": 2020}",england_s2020,200,0,1,,0,api_raw/probe/252_odds_england_s2020.json.gz
+/fixtures/statistics,"{""fixture"": 592336}",england_s2020,200,2,1,,5,api_raw/probe/253_fixtures_statistics_england_s2020.json.gz
+/fixtures/events,"{""fixture"": 592336}",england_s2020,200,8,1,,12,api_raw/probe/254_fixtures_events_england_s2020.json.gz
+/fixtures/lineups,"{""fixture"": 592336}",england_s2020,200,2,1,,18,api_raw/probe/255_fixtures_lineups_england_s2020.json.gz
+/fixtures/players,"{""fixture"": 592336}",england_s2020,200,2,1,,40,api_raw/probe/256_fixtures_players_england_s2020.json.gz
+/predictions,"{""fixture"": 592336}",england_s2020,200,1,1,,320,api_raw/probe/257_predictions_england_s2020.json.gz
+/odds,"{""fixture"": 592336}",england_s2020,200,0,1,,0,api_raw/probe/258_odds_england_s2020.json.gz
+/fixtures,"{""league"": 39, ""season"": 2022}",england_s2022,200,380,1,,40,api_raw/probe/259_fixtures_england_s2022.json.gz
+/standings,"{""league"": 39, ""season"": 2022}",england_s2022,200,1,1,,35,api_raw/probe/260_standings_england_s2022.json.gz
+/players/topscorers,"{""league"": 39, ""season"": 2022}",england_s2022,200,20,1,,59,api_raw/probe/261_players_topscorers_england_s2022.json.gz
+/teams,"{""league"": 39, ""season"": 2022}",england_s2022,200,20,1,,14,api_raw/probe/262_teams_england_s2022.json.gz
+/injuries,"{""league"": 39, ""season"": 2022}",england_s2022,200,3056,1,,18,api_raw/probe/263_injuries_england_s2022.json.gz
+/players,"{""league"": 39, ""page"": 1, ""season"": 2022}",england_s2022,200,20,45,,59,api_raw/probe/264_players_england_s2022.json.gz
+/odds,"{""league"": 39, ""page"": 1, ""season"": 2022}",england_s2022,200,0,1,,0,api_raw/probe/265_odds_england_s2022.json.gz
+/fixtures/statistics,"{""fixture"": 868146}",england_s2022,200,2,1,,5,api_raw/probe/266_fixtures_statistics_england_s2022.json.gz
+/fixtures/events,"{""fixture"": 868146}",england_s2022,200,14,1,,12,api_raw/probe/267_fixtures_events_england_s2022.json.gz
+/fixtures/lineups,"{""fixture"": 868146}",england_s2022,200,2,1,,23,api_raw/probe/268_fixtures_lineups_england_s2022.json.gz
+/fixtures/players,"{""fixture"": 868146}",england_s2022,200,2,1,,40,api_raw/probe/269_fixtures_players_england_s2022.json.gz
+/predictions,"{""fixture"": 868146}",england_s2022,200,1,1,,359,api_raw/probe/270_predictions_england_s2022.json.gz
+/odds,"{""fixture"": 868146}",england_s2022,200,0,1,,0,api_raw/probe/271_odds_england_s2022.json.gz

@@ -159,6 +159,7 @@ class Fetcher:
         self.daily_limit = DAILY_LIMIT     # сменя се от /status (check_quota_now)
         self.minute_limit = MINUTE_LIMIT   # сменя се от x-ratelimit-limit
         self.interval = self.fast_interval()
+        self.rate_limited = False      # вдига се при 429/rateLimit - извикващият скрипт спира всичко
         self.last_usage_update = time.monotonic()
         self.floor = RESERVE_MAX       # сменя се в run_queue() от live_reserve()
 
@@ -216,6 +217,7 @@ class Fetcher:
             return None
         if r.status_code == 429:
             self.log(f"  HTTP 429 {path} {params} - спирам пуска")
+            self.rate_limited = True
             raise RateLimited("HTTP 429")
         self._read_limits(r.headers)
         rem = r.headers.get("x-ratelimit-requests-remaining")
@@ -242,6 +244,7 @@ class Fetcher:
             self.log(f"  API грешка {path} {params}: {errors}")
             if isinstance(errors, dict):
                 if "rateLimit" in errors:
+                    self.rate_limited = True
                     raise RateLimited(str(errors))
                 if "requests" in errors:
                     raise QuotaExhausted(0)
