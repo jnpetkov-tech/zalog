@@ -83,7 +83,32 @@ def parse(fixture_id, data):
     return main_rows, extra_rows
 
 
+_present = {}   # път на CSV -> {fixture_id, ...}, вече записани в него (прочита се веднъж на пуск)
+
+
+def _fixtures_in(path):
+    if path not in _present:
+        ids = set()
+        if os.path.exists(path) and os.path.getsize(path) > 0:
+            with open(path, newline="", encoding="utf-8") as f:
+                rd = csv.reader(f)
+                next(rd, None)
+                ids = {int(r[0]) for r in rd if r and r[0].lstrip("-").isdigit()}
+        _present[path] = ids
+    return _present[path]
+
+
 def _append(path, fields, rows):
+    """Пази се от повторен запис на мач (01.10.2026, dubliakti_20261001.md): ако
+    fixture_id вече е в CSV-то, редовете не се добавят (стари пускове, преди 24.09,
+    бяха записали цели мачове по два пъти)."""
+    if rows:
+        present = _fixtures_in(path)
+        fixture_id = int(rows[0]["fixture_id"])
+        if fixture_id in present:
+            print(f"  {os.path.basename(path)}: мач {fixture_id} вече е записан - не го добавям втори път", flush=True)
+            return
+        present.add(fixture_id)
     new = not os.path.exists(path) or os.path.getsize(path) == 0
     with open(path, "a", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=fields)
