@@ -1,0 +1,12 @@
+code,b_early
+home_win,0.445122
+draw,0.255759
+away_win,0.299119
+over25,0.506775
+under25,0.493225
+btts_yes,0.519986
+btts_no,0.480014
+home_over15,0.431572
+home_under15,0.568428
+away_over15,0.333164
+away_under15,0.666836
