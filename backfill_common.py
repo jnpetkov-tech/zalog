@@ -19,11 +19,18 @@
   Квотата се нулира в 00:00 UTC; всички тегления гледат едно и също
   оставащо число, т.е. общо харчат най-много 7500 - резерва на ден.
   (До 25.09.2026 резервът беше твърд - 5000.)
-- Темпо: най-много една заявка в секунда (60/мин от 300 разрешени) и пауза,
-  ако заглавката за минутата покаже, че някой друг (живият сайт) натоварва.
+- Лимитите идват от API-то, не са твърди (01.10.2026, Ultra план): дневният от
+  /status (limit_day), минутният от заглавката x-ratelimit-limit (Pro: 300,
+  Ultra: 450). DAILY_LIMIT/MINUTE_LIMIT по-долу са само резерва, ако /status не отговори.
+- Темпо (от 01.10.2026): до 4 заявки в секунда, но не повече от 60% от лимита
+  на минута. Стъпаловидно по заглавката x-ratelimit-remaining (оставащи в
+  минутата): над 30% от лимита - бързо; 20-30% - 1 заявка/сек; под 20% -
+  пауза 60 с (някой друг - живият сайт - натоварва). 429 или API грешка за
+  лимит - СПИРАМЕ пуска (RateLimited), записваме какво е станало.
 - Продължаване: всеки мач се записва в *_progress.txt веднага след като е
   записан в CSV-то - спиране по средата не губи нищо и не тегли два пъти.
-- Един пуск трае най-много MAX_RUN_SECONDS - таймерът е на 30 минути, два
+- Един пуск трае най-много MAX_RUN_SECONDS (25 мин; за ръчно дълго пускане -
+  променливата BACKFILL_MAX_RUN_SECONDS) - таймерът е на 30 минути, два
   пуска на един и същи скрипт не се застъпват (плюс flock в crontab).
 """
 import os
@@ -36,7 +43,8 @@ import pandas as pd
 import api_football
 
 REPO = os.path.dirname(os.path.abspath(__file__))
-DAILY_LIMIT = 7500
+DAILY_LIMIT = 7500         # само резерва, ако /status не отговори (реалният идва от /status)
+MINUTE_LIMIT = 300         # същото - реалният идва от x-ratelimit-limit
 RESERVE_MARGIN = 1000      # запас над най-тежкия ден
 RESERVE_MIN = 2500
 RESERVE_MAX = 6000
@@ -47,9 +55,14 @@ DAILY_USAGE_CSV = os.path.join(REPO, "api_daily_usage.csv")
 BACKFILL_CALLER = "backfill_request"
 OLD_BACKFILL_CALLERS = {"get", "check_quota_now"}      # само 24-25.09.2026
 OLD_BACKFILL_DAYS = {"2026-09-24", "2026-09-25"}
-MINUTE_FLOOR = 60          # под толкова свободни за минутата -> пауза 60 с
-MIN_SECONDS_BETWEEN = 1.0
-MAX_RUN_SECONDS = 25 * 60
+MAX_RATE_PER_SEC = 4.0     # таван на темпото
+MAX_SHARE_OF_MINUTE = 0.6  # и не повече от 60% от лимита на минута (запас за сайта)
+SLOW_INTERVAL = 1.0        # темпо при 20-30% свободни за минутата
+PAUSE_BELOW = 0.20         # под толкова от лимита свободни в минутата -> пауза
+SLOW_BELOW = 0.30          # под толкова -> бавно темпо
+PAUSE_SECONDS = 60
+USAGE_REFRESH_SECONDS = 300   # дневните суми се допълват в хода на пуска (api_calls.log се срязва при 5MB)
+MAX_RUN_SECONDS = int(os.environ.get("BACKFILL_MAX_RUN_SECONDS", 25 * 60))
 
 MAIN_LEAGUES = ["bulgaria", "england", "germany", "spain", "france", "italy", "portugal",
                 "champions_league", "europa_league", "conference_league"]
@@ -128,6 +141,10 @@ class QuotaExhausted(Exception):
     pass
 
 
+class RateLimited(Exception):
+    """429 или API грешка за лимит на минута/ден - пускът спира (не повтаря)."""
+
+
 class Fetcher:
     """Тегли през _api_get със спирачките по-горе. .get() връща JSON-а или
     None при грешка (мачът тогава НЕ се отбелязва като готов - опитва се
@@ -139,7 +156,25 @@ class Fetcher:
         self.last_call = 0.0
         self.calls = 0
         self.remaining_day = None
+        self.daily_limit = DAILY_LIMIT     # сменя се от /status (check_quota_now)
+        self.minute_limit = MINUTE_LIMIT   # сменя се от x-ratelimit-limit
+        self.interval = self.fast_interval()
+        self.last_usage_update = time.monotonic()
         self.floor = RESERVE_MAX       # сменя се в run_queue() от live_reserve()
+
+    def fast_interval(self):
+        """Секунди между заявките при свободна минута: до MAX_RATE_PER_SEC/сек,
+        но не над MAX_SHARE_OF_MINUTE от лимита на минута."""
+        per_sec = min(MAX_RATE_PER_SEC, MAX_SHARE_OF_MINUTE * self.minute_limit / 60.0)
+        return 1.0 / per_sec
+
+    def _read_limits(self, headers):
+        lim = headers.get("x-ratelimit-limit")
+        if lim is not None and lim.isdigit() and int(lim) > 0:
+            self.minute_limit = int(lim)
+        lim_day = headers.get("x-ratelimit-requests-limit")
+        if lim_day is not None and lim_day.isdigit() and int(lim_day) > 0:
+            self.daily_limit = int(lim_day)
 
     def log(self, msg):
         line = f"{datetime.now().isoformat(timespec='seconds')} {msg}"
@@ -154,36 +189,62 @@ class Fetcher:
         """/status не се брои в дневната квота (API-Football)."""
         r = backfill_request("/status", timeout=15)
         req = r.json()["response"]["requests"]
+        self.daily_limit = req["limit_day"]
         self.remaining_day = req["limit_day"] - req["current"]
+        self._read_limits(r.headers)
+        self.interval = self.fast_interval()
         return self.remaining_day
 
     def get(self, path, params):
         if self.remaining_day is not None and self.remaining_day < self.floor:
             raise QuotaExhausted(self.remaining_day)
-        wait = MIN_SECONDS_BETWEEN - (time.monotonic() - self.last_call)
+        wait = self.interval - (time.monotonic() - self.last_call)
         if wait > 0:
             time.sleep(wait)
         self.last_call = time.monotonic()
         self.calls += 1
+        if self.last_call - self.last_usage_update > USAGE_REFRESH_SECONDS:
+            self.last_usage_update = self.last_call
+            try:
+                update_daily_usage()
+            except Exception as e:
+                self.log(f"  дневните суми не можаха да се допълнят ({e})")
         try:
             r = backfill_request(path, params=params, timeout=20)
         except Exception as e:
             self.log(f"  грешка {path} {params}: {e}")
             return None
+        if r.status_code == 429:
+            self.log(f"  HTTP 429 {path} {params} - спирам пуска")
+            raise RateLimited("HTTP 429")
+        self._read_limits(r.headers)
         rem = r.headers.get("x-ratelimit-requests-remaining")
         if rem is not None and rem.lstrip("-").isdigit():
             self.remaining_day = int(rem)
         rem_min = r.headers.get("x-ratelimit-remaining")
-        if rem_min is not None and rem_min.isdigit() and int(rem_min) < MINUTE_FLOOR:
-            self.log(f"  минутният лимит е натоварен ({rem_min} свободни) - пауза 60 с")
-            time.sleep(60)
+        if rem_min is not None and rem_min.isdigit():
+            share = int(rem_min) / self.minute_limit
+            if share < PAUSE_BELOW:
+                self.log(f"  минутният лимит е натоварен ({rem_min} от {self.minute_limit} свободни) - пауза {PAUSE_SECONDS} с")
+                time.sleep(PAUSE_SECONDS)
+                self.interval = SLOW_INTERVAL
+            elif share < SLOW_BELOW:
+                self.interval = SLOW_INTERVAL
+            else:
+                self.interval = self.fast_interval()
         try:
             data = r.json()
         except ValueError:
             self.log(f"  невалиден JSON {path} {params} (HTTP {r.status_code})")
             return None
-        if data.get("errors"):
-            self.log(f"  API грешка {path} {params}: {data.get('errors')}")
+        errors = data.get("errors")
+        if errors:
+            self.log(f"  API грешка {path} {params}: {errors}")
+            if isinstance(errors, dict):
+                if "rateLimit" in errors:
+                    raise RateLimited(str(errors))
+                if "requests" in errors:
+                    raise QuotaExhausted(0)
             return None
         return data
 
@@ -218,7 +279,9 @@ def run_queue(fetcher, jobs, process_one, max_items=None):
             fetcher.floor, peak, peak_day = RESERVE_MAX, None, None
             fetcher.log(f"  резервът не можа да се сметне ({e}) - ползвам {RESERVE_MAX}")
         fetcher.check_quota_now()
-        fetcher.log(f"старт: оставащи заявки днес {fetcher.remaining_day}, резерв за сайта {fetcher.floor} "
+        fetcher.log(f"старт: оставащи заявки днес {fetcher.remaining_day} от {fetcher.daily_limit}, "
+                    f"лимит на минута {fetcher.minute_limit}, темпо до {1 / fetcher.interval:.1f}/сек, "
+                    f"резерв за сайта {fetcher.floor} "
                     f"(най-тежък ден на сайта {peak} на {peak_day} + {RESERVE_MARGIN})")
         if fetcher.remaining_day < fetcher.floor:
             raise QuotaExhausted(fetcher.remaining_day)
@@ -243,6 +306,9 @@ def run_queue(fetcher, jobs, process_one, max_items=None):
                         break
     except QuotaExhausted as e:
         fetcher.log(f"таван: оставащи {e.args[0]} < {fetcher.floor} - спирам до утре (00:00 UTC)")
+    except RateLimited as e:
+        fetcher.log(f"ЛИМИТ НА МИНУТА/429 ({e.args[0]}) - спирам пуска; нужно е ръчно да се прегледа, "
+                    f"оставащи днес {fetcher.remaining_day}")
     finally:
         fetcher.log(f"край на пуска: готови мачове {done_count}, заявки {fetcher.calls}, "
                     f"оставащи днес {fetcher.remaining_day}")
