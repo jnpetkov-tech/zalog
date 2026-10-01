@@ -27,6 +27,7 @@ import subprocess
 import time
 from datetime import date
 
+import layer_live
 import match_predictor_app as mpa
 import system_tracker as st
 
@@ -42,6 +43,11 @@ def get_model_version():
         return "unknown"
 
 
+def _model_version_for(model_version, m):
+    """ZADACHA_ZHIVO: мач, минал през слоя, носи версията му в model_version (напр. 'a1b2c3d+слой:20261001_7d29039'); на ядрото - само git hash."""
+    return f"{model_version}+слой:{m['layer_version']}" if m.get("layer_version") else model_version
+
+
 def _extra_market_rows(league, m, model_version):
     """НОЩ 02.09.2026 (задача 3, NOSHT2.md): compute_grouped_markets() вече
     смята до 24 пазара за всеки мач (нула нови API заявки - real_odds идва
@@ -54,7 +60,7 @@ def _extra_market_rows(league, m, model_version):
     cached_odds = st.get_cached_odds(m["fixture_id"])
     groups, _ = mpa.compute_grouped_markets(
         league, m["home"], m["away"], m.get("home_inj", 0), m.get("away_inj", 0),
-        real_odds=cached_odds,
+        real_odds=cached_odds, fixture_id=m["fixture_id"],
     )
     if not groups:
         return []
@@ -83,6 +89,10 @@ def build():
     # лиги нарочно - филтърът по бисквитка си остава на мястото, където му
     # е мястото: при ЧЕТЕНЕ от таблицата в /daily (Стъпка 4), не тук.
     leagues = list(mpa.ALL_LEAGUES.keys())
+    if layer_live.enabled():
+        # ZADACHA_ZHIVO: слоят смята очакваните голове на предстоящите мачове ПРЕДИ цикъла (грешка вътре -> мачовете падат на ядрото, не гърми)
+        n_rows, n_sched, secs = layer_live.refresh()
+        print(f"[слой] {n_rows}/{n_sched} мача през слоя, {secs:.1f}s", flush=True)
     total_rows = 0
     total_matches = 0
     t0 = time.time()
@@ -110,10 +120,10 @@ def build():
                     "fixture_id": m["fixture_id"], "league": league,
                     "match_date": m["date"], "home_team": m["home"], "away_team": m["away"],
                     "market_code": p["code"], "pick_label": p["label"], "pick_pct": p["pct"],
-                    "fair_odds": p["odds"], "ev": None, "model_version": model_version,
+                    "fair_odds": p["odds"], "ev": None, "model_version": _model_version_for(model_version, m),
                     "is_candidate": 1,
                 })
-            for extra_row in _extra_market_rows(league, m, model_version):
+            for extra_row in _extra_market_rows(league, m, _model_version_for(model_version, m)):
                 if extra_row["market_code"] in candidate_codes:
                     continue  # вече записан по-горе от m["picks"] - същата формула/число
                 rows.append(extra_row)

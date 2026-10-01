@@ -56,3 +56,8 @@ API_KEY = _require("API_FOOTBALL_KEY")
 LOGIN_PASSWORD = _require("LOGIN_PASSWORD")
 REFRESH_TOKEN = _require("REFRESH_TOKEN")
 FLASK_SECRET_KEY = _require("FLASK_SECRET_KEY")
+
+# ZADACHA_ZHIVO (01.10.2026): превключвател за обучения слой в живата прогноза (layer_live.py). 1 = слоят влиза; 0/липсва = точно старото
+# поведение (ядрото). Незадължителен (за разлика от тайните по-горе). Чете се еднократно при старт на процеса (Flask - след рестарт;
+# build_predictions_snapshot.py - при всеки пуск).
+LAYER_LIVE = _values.get("LAYER_LIVE", "0").strip() == "1"

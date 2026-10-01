@@ -103,7 +103,8 @@ def register_match_routes(app, ctx):
                         "total_teams": standings["total_teams"] if standings else None,
                     }
                     st.set_cached_form_standings(int(fixture_id), form_standings)
-        groups, extra_info = compute_grouped_markets(league, home, away, home_inj, away_inj, real_odds=real_odds)
+        groups, extra_info = compute_grouped_markets(league, home, away, home_inj, away_inj, real_odds=real_odds,
+                                                    fixture_id=int(fixture_id) if fixture_id else None)
         if lineups_confirmed and extra_info:
             try:
                 lineup_full = fetch_fixture_lineups_full(int(fixture_id))

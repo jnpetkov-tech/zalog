@@ -24,6 +24,7 @@ import prediction_policy as policy
 import pick_selection as ps
 import evaluation
 import config
+import layer_live
 
 app = Flask(__name__)
 
@@ -399,6 +400,16 @@ def get_ft_lambdas(ft_model, team_idx, home, away, home_inj=0, away_inj=0):
     return lam, mu
 
 
+def get_ft_lambdas_live(fixture_id, ft_model, team_idx, home, away, home_inj=0, away_inj=0):
+    """ZADACHA_ZHIVO (01.10.2026): get_ft_lambdas() + обученият слой (layer_live.py), ЕДНА точка. -> (lam, mu, layer_version|None).
+    layer_version=None = мачът не е минал през слоя (LAYER_LIVE=0, няма ред, грешка) - lam/mu са точно тези на ядрото. Самата get_ft_lambdas()
+    остава непроменена (layer_shadow.py я вика за ядрото)."""
+    lam, mu = get_ft_lambdas(ft_model, team_idx, home, away, home_inj, away_inj)
+    if fixture_id is None or lam is None:
+        return lam, mu, None
+    return layer_live.apply(fixture_id, lam, mu)
+
+
 def fair_odds(pct):
     if pct <= 0:
         return None
@@ -500,7 +511,7 @@ def _blend_with_market(home_win, draw, away_win, ou_p, market_odds):
     return home_win, draw, away_win, ou_p
 
 
-def _model_market_probs(lam, mu, rho, league):
+def _model_market_probs(lam, mu, rho, league, layer=False):
     """ZADACHA_KALIBRACIQ.md (23.09.2026), ЧАСТ А: ЕДИНСТВЕНОТО място, където
     от очакваните голове (lam, mu, rho) стават вероятностите на пазарите,
     които публикуваме. Викат го _raw_candidates() (главната прогноза/топ N)
@@ -521,11 +532,13 @@ def _model_market_probs(lam, mu, rho, league):
            "home_over15": extra["home_over15"], "home_under15": 1 - extra["home_over15"],
            "away_over15": extra["away_over15"], "away_under15": 1 - extra["away_over15"],
            "home_clean_sheet": extra["home_clean_sheet"], "away_clean_sheet": extra["away_clean_sheet"]}
-    cal = {code: policy.calibrate(p * 100, league, code) / 100 for code, p in raw.items()}
+    # layer=True (ZADACHA_ZHIVO): lam/mu са минали през обучения слой -> коефициентите за ядро+слой (layer_live.LAYER_CALIBRATION_A)
+    cal_fn = (lambda p, code: layer_live.calibrate(p, code)) if layer else (lambda p, code: policy.calibrate(p, league, code))
+    cal = {code: cal_fn(p * 100, code) / 100 for code, p in raw.items()}
     return raw, cal
 
 
-def _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds=None, rho=0.0, league=None):
+def _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds=None, rho=0.0, league=None, layer=False):
     """Суровите candidates (label, prob_0_1, code) от Poisson + пазарен
     blend - БЕЗ policy филтриране/дедупликация/класиране. Тази логика вече
     е в pick_selection.py (Фаза I.1), за да не се разминава между
@@ -534,7 +547,7 @@ def _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds=None, rho=0.0,
     rho: Фаза K.1 (20.08.2026) - Dixon-Coles параметър от ft_model["rho"],
     подаден от викащия. 0.0 (по подразбиране) = без корекция, старо
     поведение точно."""
-    _raw, cal = _model_market_probs(lam, mu, rho, league)
+    _raw, cal = _model_market_probs(lam, mu, rho, league, layer=layer)
     home_win, draw, away_win, ou_p = cal["home_win"], cal["draw"], cal["away_win"], cal["over25"]
     extra = {"home_over15": cal["home_over15"]}
     best_htft = max(ht_ft_probs.items(), key=lambda x: x[1])
@@ -559,19 +572,19 @@ def _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds=None, rho=0.0,
     return candidates, used_market
 
 
-def top_pick_with_code(lam, mu, home, away, ht_ft_probs, league, market_odds=None, rho=0.0):
-    candidates, used_market = _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds, rho=rho, league=league)
+def top_pick_with_code(lam, mu, home, away, ht_ft_probs, league, market_odds=None, rho=0.0, layer=False):
+    candidates, used_market = _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds, rho=rho, league=league, layer=layer)
     label, pct, code = ps.rank_candidates(candidates, league, policy, n=1)[0]
     return label, pct, code, used_market
 
 
-def top_picks_with_code(lam, mu, home, away, ht_ft_probs, league, market_odds=None, n=3, rho=0.0):
+def top_picks_with_code(lam, mu, home, away, ht_ft_probs, league, market_odds=None, n=3, rho=0.0, layer=False):
     """Топ N picks (Фаза F3) - сега през каноничния
     pick_selection.rank_candidates() (Фаза I.1) вместо собствена копирана
     fallback/дедупликационна логика. НОВО спрямо преди Фаза I.1: вече
     отхвърля и тук >=95% кандидати (pick_selection.MAX_PUBLISHABLE_PCT) -
     съзнателна унификация, виж claude/ACTION_PLAN.md Фаза I.1."""
-    candidates, used_market = _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds, rho=rho, league=league)
+    candidates, used_market = _raw_candidates(lam, mu, home, away, ht_ft_probs, market_odds, rho=rho, league=league, layer=layer)
     ranked = ps.rank_candidates(candidates, league, policy, n=n)
     return ranked, used_market
 
@@ -670,7 +683,7 @@ def build_diff_row(picks, market_odds):
     return make_row(max(picks, key=lambda p: p["pct"]))
 
 
-def compute_grouped_markets(league, home, away, home_inj=0, away_inj=0, real_odds=None):
+def compute_grouped_markets(league, home, away, home_inj=0, away_inj=0, real_odds=None, fixture_id=None):
     (teams, team_idx, ft_model, ht_model, h2_model,
      corners_model, cards_model, offsides_model,
      recent_model, recent_matches_count, has_injuries) = get_models(league)
@@ -678,7 +691,9 @@ def compute_grouped_markets(league, home, away, home_inj=0, away_inj=0, real_odd
     if home not in team_idx or away not in team_idx:
         return None, None
 
-    lam, mu = get_ft_lambdas(ft_model, team_idx, home, away, home_inj, away_inj)
+    # ZADACHA_ZHIVO: fixture_id=None (ръчна форма /manual) -> само ядро; иначе слоят (ако е включен и мачът има ред)
+    lam, mu, layer_ver = get_ft_lambdas_live(fixture_id, ft_model, team_idx, home, away, home_inj, away_inj)
+    layered = layer_ver is not None
     lam_ht, mu_ht = fl.get_lambdas(ht_model, team_idx, home, away)
     lam_2h, mu_2h = fl.get_lambdas(h2_model, team_idx, home, away)
     # Фаза K.1 (20.08.2026): Dixon-Coles rho, фитнат в fit_goals_model()
@@ -700,7 +715,7 @@ def compute_grouped_markets(league, home, away, home_inj=0, away_inj=0, real_odd
     # ZADACHA_KALIBRACIQ.md (23.09.2026): основните вероятности - от
     # единственото място _model_market_probs() (калибрацията е там);
     # probs_1x2_ou() остава само за формата (recent_model) по-долу.
-    raw_ft, cal_ft = _model_market_probs(lam, mu, rho_ft, league)
+    raw_ft, cal_ft = _model_market_probs(lam, mu, rho_ft, league, layer=layered)
     home_win, draw, away_win = cal_ft["home_win"], cal_ft["draw"], cal_ft["away_win"]
     btts_p, ou_p = cal_ft["btts_yes"], cal_ft["over25"]
     # Задача 2 (нощна сесия 24.08.2026): смесеното число (модел+пазар) е
@@ -732,7 +747,7 @@ def compute_grouped_markets(league, home, away, home_inj=0, away_inj=0, real_odd
         form_data = {"home_win": hw_r * 100, "draw": dr_r * 100, "away_win": aw_r * 100,
                       "over25": ou_r * 100, "under25": (1 - ou_r) * 100, "n": recent_matches_count}
 
-    top_label, top_pct, top_code, _ = top_pick_with_code(lam, mu, home, away, ht_ft_probs, league, market_odds=None, rho=rho_ft)
+    top_label, top_pct, top_code, _ = top_pick_with_code(lam, mu, home, away, ht_ft_probs, league, market_odds=None, rho=rho_ft, layer=layered)
     home_cy, away_cy = to_cyrillic(home, league), to_cyrillic(away, league)
 
     groups = []
@@ -1405,7 +1420,8 @@ def _predict_matches_for_league_impl(league, from_date, to_date, use_fixture_cac
             else:
                 inj_note = "Няма данни за контузии за този мач (все още)"
 
-        lam, mu = get_ft_lambdas(ft_model, team_idx, home, away, home_inj, away_inj)
+        lam, mu, layer_ver = get_ft_lambdas_live(fixture_id, ft_model, team_idx, home, away, home_inj, away_inj)
+        layered = layer_ver is not None
         lam_ht, mu_ht = fl.get_lambdas(ht_model, team_idx, home, away)
         lam_2h, mu_2h = fl.get_lambdas(h2_model, team_idx, home, away)
         ht_ft_probs = predict_ht_ft(lam_ht, mu_ht, lam_2h, mu_2h)
@@ -1428,7 +1444,7 @@ def _predict_matches_for_league_impl(league, from_date, to_date, use_fixture_cac
         # трябва да вижда ВСИЧКИ доверени кандидати, за да намери реално
         # най-стойностния по EV, не само измежду топ 3 по вероятност. picks_raw[0]
         # остава идентичен на преди (сортирано низходящо, независимо от n).
-        picks_raw, used_market = top_picks_with_code(lam, mu, home, away, ht_ft_probs, league, market_odds=cached_odds, n=8, rho=rho_ft)
+        picks_raw, used_market = top_picks_with_code(lam, mu, home, away, ht_ft_probs, league, market_odds=cached_odds, n=8, rho=rho_ft, layer=layered)
         pick, pct, code = picks_raw[0]
         picks_list = [
             {"label": p_label, "pct": p_pct, "code": p_code, "odds": fair_odds(p_pct)}
@@ -1451,7 +1467,7 @@ def _predict_matches_for_league_impl(league, from_date, to_date, use_fixture_cac
             # показва /daily - иначе predictions_log.pick_pct винаги оставаше чист
             # модел (виж validation/blend_vs_raw_audit_20260824.md, т.2), а /value
             # и началната страница четат точно pick_pct от лога за класирането си.
-            groups_for_log, _ = compute_grouped_markets(league, home, away, home_inj, away_inj, real_odds=cached_odds)
+            groups_for_log, _ = compute_grouped_markets(league, home, away, home_inj, away_inj, real_odds=cached_odds, fixture_id=fixture_id)
             if groups_for_log:
                 # Хотфикс 12.08.2026: премахнато живо API извикване тук - точно
                 # това причиняваше rate limit/524 при /daily?league=all (до 8
@@ -1465,7 +1481,7 @@ def _predict_matches_for_league_impl(league, from_date, to_date, use_fixture_cac
                 # (real_odds=None -> _blend_with_market() не смесва нищо) дава
                 # числото на чистия модел за всеки код -> невидимата колона
                 # model_pct; market_pct идва от _market_info_for_pick().
-                model_groups, _ = compute_grouped_markets(league, home, away, home_inj, away_inj, real_odds=None)
+                model_groups, _ = compute_grouped_markets(league, home, away, home_inj, away_inj, real_odds=None, fixture_id=fixture_id)
                 model_pcts = {row[3]: row[1] for _t, items, _h in (model_groups or [])
                               for row in items if len(row) > 3 and row[3]}
                 st.log_all_markets(league, fixture_id, match_date, home, away, groups_for_log, real_odds=cached_odds,
@@ -1509,6 +1525,7 @@ def _predict_matches_for_league_impl(league, from_date, to_date, use_fixture_cac
             # допълнителните 16+ пазара биха тръгнали от инжектирано 0/0,
             # разминаващо се тихо с pick/pct в същия ред).
             "home_inj": home_inj, "away_inj": away_inj,
+            "layer_version": layer_ver,   # ZADACHA_ZHIVO: None = мачът е на ядрото
         })
     return matches, api_error
 
