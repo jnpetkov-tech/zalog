@@ -33,6 +33,9 @@ import football_lib as fl  # noqa: E402
 import razpredelenie_b_20260923 as rb  # noqa: E402
 
 TABLE = os.path.join(ROOT, "features", "features_table.csv.gz")
+ALL_LEAGUES_17 = ["bulgaria", "england", "germany", "spain", "france", "italy", "portugal", "champions_league", "europa_league",
+                  "conference_league", "france2", "spain2", "italy2", "portugal2", "bulgaria2", "england2", "germany2"]
+LEAGUE_CODES = {l: i for i, l in enumerate(sorted(ALL_LEAGUES_17))}     # фиксиран (същият като sorted(unique) в таблицата) - слоят и сянката го делят
 EVAL_START = "2024-08-28"      # началото на мерилото (11 823 мача)
 EARLY_END = "2025-09-23"       # ранна половина: дата < това; късна: >= това (като final_b/final_v)
 NEW_AFTER = "2026-09-21"       # мачовете след тази дата (последният мач на мерилото) са "новите изтеглени"
@@ -76,7 +79,7 @@ def load_table():
     t["d"] = pd.to_datetime(t["date"])
     t["week"] = t["d"] - pd.to_timedelta(t["d"].dt.weekday, unit="D")
     t = t.sort_values(["d", "fixture_id"]).reset_index(drop=True)
-    t["league_code"] = t["league"].map({l: i for i, l in enumerate(sorted(t["league"].unique()))}).astype(float)
+    t["league_code"] = t["league"].map(LEAGUE_CODES).astype(float)
     bench = set(pd.read_csv(BENCH, usecols=["fixture_id"])["fixture_id"])
     # ТЕСТОВ НАБОР = мачовете на мерилото (11 823) + новите след 21.09.2026; останалите редове са само за обучение
     t["is_eval"] = t["fixture_id"].isin(bench) | (t["date"] > NEW_AFTER)
@@ -232,3 +235,23 @@ def boot_ci(x, n=2000, seed=42):
     idx = rng.integers(0, len(x), size=(n, len(x)))
     m = x[idx].mean(1)
     return float(x.mean()), float(np.percentile(m, 2.5)), float(np.percentile(m, 97.5))
+
+
+# ----------------------------------------------------------------------------------------------- за режима "в сянка" (ZADACHA_SYANKA)
+def fit_final(long, cfg):
+    """Едно обучение от ВСИЧКИ редове в long (всички вече изиграни мачове) -> booster. Ползва се седмично от features/layer_train.py."""
+    import lightgbm as lgb
+    cols = feature_columns(cfg["fset"])
+    X = long[cols].to_numpy(np.float32)
+    ds = lgb.Dataset(X, label=long["y"].to_numpy(), init_score=np.log(np.maximum(long["own_lam"].to_numpy(), 1e-6)),
+                     feature_name=cols, categorical_feature=["league_code"], free_raw_data=True)
+    return lgb.train(lgb_params(cfg), ds, num_boost_round=cfg["n_est"])
+
+
+def predict_corrected(bst, fset, t, shrink):
+    """t: таблица на мачове (както load_table, без hg/ag да е нужно) -> (lam', mu') от обучения слой."""
+    long = to_long(t)
+    cols = feature_columns(fset)
+    raw = bst.predict(long[cols].to_numpy(np.float32), raw_score=True)
+    n = len(t)
+    return corrected(t, raw[:n], raw[n:], shrink)

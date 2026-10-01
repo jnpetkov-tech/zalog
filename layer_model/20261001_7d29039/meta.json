@@ -1,0 +1,44 @@
+{
+ "version": "20261001_7d29039",
+ "trained_at": "2026-10-01T08:56:31",
+ "git": "7d29039",
+ "trained_through": "2026-09-28",
+ "n_matches": 18435,
+ "league_codes": {
+  "bulgaria": 0,
+  "bulgaria2": 1,
+  "champions_league": 2,
+  "conference_league": 3,
+  "england": 4,
+  "england2": 5,
+  "europa_league": 6,
+  "france": 7,
+  "france2": 8,
+  "germany": 9,
+  "germany2": 10,
+  "italy": 11,
+  "italy2": 12,
+  "portugal": 13,
+  "portugal2": 14,
+  "spain": 15,
+  "spain2": 16
+ },
+ "models": {
+  "AB": {
+   "depth": 3,
+   "min_child": 300,
+   "l2": 100,
+   "n_est": 200,
+   "shrink": 1.0,
+   "fset": "AB"
+  },
+  "ABC": {
+   "depth": 4,
+   "min_child": 100,
+   "l2": 100,
+   "n_est": 300,
+   "shrink": 1.0,
+   "fset": "ABC"
+  }
+ }
+}
