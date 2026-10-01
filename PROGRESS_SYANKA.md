@@ -10,7 +10,8 @@
   `match_predictor_app` и ползва `rank_candidates`, който не е променен. `internal_guard` се зарежда лениво в try/except — не може да счупи избор. Следващ пуск на снимката: 09:15 UTC — резултатът е записан по-долу.
 - 1.2 РЕЗУЛТАТ: снимката от 09:15 UTC (`build-predictions-snapshot.service`, версия `a7aea1a`) мина без грешка (12 мача, 284 реда, 17 лиги, 6.3 с).
 - 1.3: комитнато (`7d29039`), съобщено „готово за рестарт“ — **чака рестарт от Дака** (`sudo systemctl restart match-predictor-app`). Бекъп на оригиналите: `data_backups/20261001_pazar_vun/`.
-- 1.4: (след рестарта) — ще се запише по-долу.
+- 1.4 (след рестарта): `match-predictor-app` рестартиран 01.10.2026 10:18:15 UTC, active; `journalctl` от рестарта — 0 реда error/traceback.
+  На живо: `/` 200, `/prognozi` 200, `/prognozi/match/1569953` 200; в HTML на `/prognozi` — 0 пъти „пазар"/„коефициент". `pazar_vun.patch` (`7d29039`) е в живия Flask; `build_trust_derived` го е поемал и преди това.
 
 ## ЧАСТ 2 — режим „в сянка" (нищо публично) — работи от 09:04 UTC на 01.10.2026
 - 2.1 Таблица `layer_shadow` в `predictions.db` (само добавя; създава се от `layer_shadow.py`): fixture_id, league, match_date (UTC), kickoff_ts, computed_at, mode (pre/final), feature_set (AB/ABC),
