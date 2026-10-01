@@ -1,0 +1,13 @@
+{
+ "depth": 4,
+ "min_child": 100,
+ "l2": 100,
+ "fset": "ABC",
+ "n_est": 300,
+ "shrink": 1.0,
+ "lr": 0.03,
+ "selected_on": "ранна половина (дата < 2025-09-23), 5904 мача",
+ "early_brier_core": 0.22352777907631804,
+ "early_brier_layer": 0.22240856781889654,
+ "layer_beats_core_on_early": true
+}

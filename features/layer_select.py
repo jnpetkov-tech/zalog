@@ -18,9 +18,11 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 from features import layer_lib as L  # noqa: E402
 
-DEPTHS, MINCH, L2S = [2, 3, 4], [100, 300], [10, 100]
-FSETS = ["A", "AB", "ABC", "ABCD"]
-N_LIST, SHRINKS = [50, 100, 200], [0.5, 1.0]
+ROUND2 = "--round2" in sys.argv       # кръг 2 (Допълнение 1 в sloy_nastroyki_20261001.md): по-дълбоко/повече дървета
+if ROUND2:
+    DEPTHS, MINCH, L2S, FSETS, N_LIST, SHRINKS = [4, 5, 6], [50, 100], [100, 300], ["ABC", "ABCD"], [200, 300, 400], [1.0]
+else:
+    DEPTHS, MINCH, L2S, FSETS, N_LIST, SHRINKS = [2, 3, 4], [100, 300], [10, 100], ["A", "AB", "ABC", "ABCD"], [50, 100, 200], [0.5, 1.0]
 T = LONG = MASK = Y = P0 = None
 
 
@@ -63,7 +65,11 @@ def main():
     df = pd.DataFrame([r for p in parts for r in p])
     df["d_all"] = df["brier_all"] - base["brier_all"]
     df = df.sort_values("brier_all").reset_index(drop=True)
-    df.round(6).to_csv(os.path.join(ROOT, "validation", "sloy_rana_20261001.csv"), index=False)
+    out_csv = os.path.join(ROOT, "validation", "sloy_rana2_20261001.csv" if ROUND2 else "sloy_rana_20261001.csv")
+    df.round(6).to_csv(out_csv, index=False)
+    if ROUND2:     # избор върху обединението на двата кръга
+        r1 = pd.read_csv(os.path.join(ROOT, "validation", "sloy_rana_20261001.csv"))
+        df = pd.concat([r1, df], ignore_index=True).sort_values("brier_all").reset_index(drop=True)
     best = df.iloc[0]
     near = df[df["brier_all"] <= best["brier_all"] + 2e-5].copy()
     near["fs_len"] = near["fset"].str.len()
@@ -82,13 +88,15 @@ def main():
     for r in df.head(10).itertuples():
         Lm.append(f"| {r.depth} | {r.min_child} | {r.l2} | {r.n_est} | {r.shrink} | {r.fset} | {r.brier_all:.5f} | {r.d_all:+.5f} |")
     Lm += ["", "## Най-добрата по набор признаци", "", "| набор | най-добър Brier | разлика спрямо ядрото |", "|---|---|---|"]
-    for fs in FSETS:
+    for fs in ["A", "AB", "ABC", "ABCD"]:
+        if not (df["fset"] == fs).any():
+            continue
         r = df[df["fset"] == fs].iloc[0]
         Lm.append(f"| {fs} | {r.brier_all:.5f} | {r.d_all:+.5f} |")
     Lm += ["", "## Колко настройки са по-добри от ядрото на ранната половина", "",
            f"{int((df['d_all'] < 0).sum())} от {len(df)} (разлика < 0).", "",
-           "## Избрана настройка (правилото: най-малък Brier; при разлика < 0.00002 — по-простата)", "", "```json", json.dumps(cfg, ensure_ascii=False, indent=1), "```", ""]
-    open(os.path.join(ROOT, "validation", "sloy_rana_20261001.md"), "w", encoding="utf-8").write("\n".join(Lm))
+           "## Избрана настройка" + (" (обединение на двата кръга)" if ROUND2 else "") + " (правилото: най-малък Brier; при разлика < 0.00002 — по-простата)", "", "```json", json.dumps(cfg, ensure_ascii=False, indent=1), "```", ""]
+    open(os.path.join(ROOT, "validation", "sloy_rana2_20261001.md" if ROUND2 else "sloy_rana_20261001.md"), "w", encoding="utf-8").write("\n".join(Lm))
     print("\n".join(Lm))
 
 
