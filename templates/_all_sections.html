@@ -1,6 +1,6 @@
 {# ZADACHA_VSICHKO: всички пазари с етикет (SHOW_ALL=1) - web/prognozi.py build_all_sections #}
     <style>.mbadge{ font-size:11px; color:var(--sub); margin:0 0 4px 2px; } .mbadge.ok{ color:var(--text); font-weight:600; } .mnote{ font-size:13px; color:var(--sub); margin:0 0 8px 2px; }</style>
-    <div class="mnote">Показваме всичко, което моделът смята. „Проверен“ — пазарът е минал проверката на минали мачове; „експериментален“ — не е минал или още няма история.</div>
+    <div class="mnote">Показваме всичко, което моделът смята. „Проверен“ — прогнозата е минала проверката на минали мачове; „експериментален“ — не е минал или още няма история.</div>
     {% for sec in sections %}
     <div class="msection">
       <div class="msection-title">{{ sec.title }}</div>
