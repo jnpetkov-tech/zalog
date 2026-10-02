@@ -177,6 +177,35 @@ def build_detail_rows_team_goals(rows):
     return detail
 
 
+# (diffs, n_boot, seed) -> интервал; едни и същи данни дават един и същи интервал (raw/blend често съвпадат, презареждане)
+_CI_CACHE = {}
+
+
+def _fast_bootstrap_means(diffs, n_boot, seed):
+    """ZADACHA_RAZVITIE т.7 (02.10.2026): /results отговаряше за ~20 с, 18 от тях тук (чист Python, 5000 x n). Същите n_boot средни като чистия Python цикъл, бит по бит: random.Random(seed).randrange(n) = поток от 32-битови
+    думи на MT19937, от всяка се взимат горните k бита, отхвърлят се >= n - приетите стойности, в ред, са индексите.
+    numpy.random.MT19937 със същото състояние дава същия поток; сумата е последователна (cumsum), както s += ...."""
+    import numpy as np
+    n = len(diffs)
+    k = n.bit_length()
+    st = random.Random(seed).getstate()[1]
+    bg = np.random.MT19937()
+    bg.state = {"bit_generator": "MT19937", "state": {"key": np.array(st[:624], dtype=np.uint32), "pos": int(st[624])}}
+    need = n_boot * n
+    idx = np.empty(0, dtype=np.int64)
+    while len(idx) < need:
+        words = bg.random_raw(max(int((need - len(idx)) * (2 ** k / n) * 1.05) + 64, 1024)).astype(np.uint64)
+        r = (words >> np.uint64(32 - k)).astype(np.int64)
+        idx = np.concatenate([idx, r[r < n]])
+    idx = idx[:need].reshape(n_boot, n)
+    d = np.asarray(diffs, dtype=float)
+    out = np.empty(n_boot)
+    step = max(1, 2_000_000 // n)
+    for i in range(0, n_boot, step):
+        out[i:i + step] = np.cumsum(d[idx[i:i + step]], axis=1)[:, -1]     # cumsum = последователно, като s += ...
+    return (out / n).tolist()
+
+
 def bootstrap_ci(diffs, n_boot=N_BOOT, seed=SEED):
     """Paired bootstrap на средната разлика (market_brier - нашия_brier) -
     положително = нашето число е по-точно (по-нисък Brier). None ако n<5
@@ -184,6 +213,17 @@ def bootstrap_ci(diffs, n_boot=N_BOOT, seed=SEED):
     n = len(diffs)
     if n < 5:
         return None
+    try:
+        key = (tuple(diffs), n_boot, seed)
+        if key not in _CI_CACHE:
+            means = _fast_bootstrap_means(diffs, n_boot, seed)
+            means.sort()
+            if len(_CI_CACHE) > 2000:
+                _CI_CACHE.clear()
+            _CI_CACHE[key] = (means[int(0.025 * n_boot)], means[min(n_boot - 1, int(0.975 * n_boot))])
+        return _CI_CACHE[key]
+    except Exception:
+        pass        # падане към стария цикъл - същият резултат, само бавно
     rng = random.Random(seed)
     means = []
     for _ in range(n_boot):

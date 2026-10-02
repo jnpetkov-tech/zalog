@@ -259,6 +259,28 @@ def register_results_view(app, ctx):
 
     results_bp = Blueprint("results", __name__)
 
+    # ZADACHA_RAZVITIE т.7 (02.10.2026): първото отваряне на /results струваше ~20 с (bootstrap-ът в brier_vs_market - вече на
+    # numpy, същите числа - и еднократното зареждане на internal_guard). Малко след старта един фонов поток смята изгледа по
+    # подразбиране веднъж: пълни кеша на интервалите (bm._CI_CACHE) и на internal_guard. Превключвател RESULTS_WARMUP в .env
+    # (0 = без загряване); всяка грешка се гълта - страницата смята както преди.
+    try:
+        from config import RESULTS_WARMUP
+    except Exception:
+        RESULTS_WARMUP = False
+    if RESULTS_WARMUP:
+        import threading
+        import time as _time
+
+        def _warm():
+            _time.sleep(10)
+            try:
+                rows = apply_filters(load_rows(st, bt, "all"), {}, to_cyrillic)
+                group_by_match(rows, to_cyrillic)
+                brier_vs_market_table(rows, ALL_LEAGUES, LEAGUE_FLAGS, market_label)
+            except Exception:
+                pass
+        threading.Thread(target=_warm, name="results-warmup", daemon=True).start()
+
     @results_bp.route("/results")
     def results_view():
         args = request.args
