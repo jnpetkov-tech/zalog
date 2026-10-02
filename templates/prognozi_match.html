@@ -75,7 +75,7 @@
     <div class="match-hero">
       <div class="hero-meta">
         {% if league_logo %}<img class="league-logo" src="{{ league_logo }}" alt="" onerror="this.style.display='none'">{% endif %}
-        {{ flag }} {{ league_name }} · {{ date[8:10] }}.{{ date[5:7] }} {{ date[-5:] }} ч.
+        {{ flag }} {{ league_name }} · {% set _d = date|bg_day %}{% if _d %}{{ _d }}, {% endif %}{{ date[8:10] }}.{{ date[5:7] }} {{ date[-5:] }} ч.
       </div>
       <div class="hero-teams">
         <div class="hero-team">

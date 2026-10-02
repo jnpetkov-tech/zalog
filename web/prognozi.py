@@ -79,6 +79,19 @@ def _next_day_phrase(d, today):
     return f"{when}, {d.day} {BG_MONTHS_GEN[d.month - 1]}"
 
 
+def bg_day_label(match_date, enabled=True):
+    """ZADACHA_RAZVITIE т.1: "Нд, 4 окт" от match_date ("YYYY-MM-DD HH:MM", вече
+    българско време). При изключен превключвател или всяка грешка - "" (шаблонът
+    не рисува реда, страницата е като преди)."""
+    if not enabled:
+        return ""
+    try:
+        d = datetime.strptime(str(match_date)[:10], "%Y-%m-%d").date()
+        return f"{BG_WEEKDAYS_SHORT[d.weekday()]}, {d.day} {BG_MONTHS_SHORT[d.month - 1]}"
+    except Exception:
+        return ""
+
+
 # ZADACHA_PAZARI.md, ЧАСТ Б (22.09.2026): страницата на мача е карта с
 # пазари - всеки пазар с ВСИЧКИТЕ си изходи един до друг, в този ред.
 # (заглавие на секция, [(код, етикет на изхода), ...] на пазар, сбор на
@@ -182,6 +195,12 @@ def register_prognozi_routes(app, ctx):
     to_cyrillic = ctx["to_cyrillic"]
 
     prognozi_bp = Blueprint("prognozi", __name__)
+
+    try:
+        from config import SHOW_MATCH_DAY as _show_day
+    except Exception:
+        _show_day = False
+    app.jinja_env.filters["bg_day"] = lambda v: bg_day_label(v, _show_day)
 
     # ZADACHA_GOLQMA.md, Етап 1.3-1.4 (24.09.2026): всичко, което зависи от
     # ЦЕЛИЯ дневник (трите числа горе, "Вчера", списъкът "Приключили"), вече

@@ -61,3 +61,7 @@ FLASK_SECRET_KEY = _require("FLASK_SECRET_KEY")
 # поведение (ядрото). Незадължителен (за разлика от тайните по-горе). Чете се еднократно при старт на процеса (Flask - след рестарт;
 # build_predictions_snapshot.py - при всеки пуск).
 LAYER_LIVE = _values.get("LAYER_LIVE", "0").strip() == "1"
+
+# ZADACHA_RAZVITIE т.1 (02.10.2026): малък ред с деня ("Нд, 4 окт") над часа на картата на мача. 1 = показва се (по подразбиране);
+# 0 = точно старото. Чете се при старт на Flask.
+SHOW_MATCH_DAY = _values.get("SHOW_MATCH_DAY", "1").strip() != "0"
