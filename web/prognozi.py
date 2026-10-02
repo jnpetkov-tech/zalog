@@ -128,6 +128,31 @@ MARKET_SECTIONS = [
 # 100%, правилото остава само като предпазител (validation/blend_off_impact_20260923.txt).
 MARKET_SUM_TOLERANCE_PCT = 3.0
 
+# ZADACHA_RAZVITIE т.5 (02.10.2026): новите пазари (extra_markets.py, само страницата на мача) - само минатите проверката
+# (validation/pazar_goli_20261002.md, pazar_poluvreme_20261002.md). Превключвател EXTRA_MARKETS; при 0 - MARKET_SECTIONS непроменени.
+try:
+    from config import EXTRA_MARKETS as _EXTRA_MARKETS
+except Exception:
+    _EXTRA_MARKETS = False
+EXTRA_GOALS_MARKET = ([("over15", "Над 1.5"), ("under15", "Под 1.5")], 100)
+EXTRA_SECTIONS = [
+    ("Полувреме", [([("ht:1", "1"), ("ht:X", "X"), ("ht:2", "2")], 100)]),
+    ("Пръв гол", [([("first:home", "{home}"), ("first:none", "Никой"), ("first:away", "{away}")], 100)]),
+]
+CS_TOP_N = 6        # точен резултат: най-вероятните N резултата (всеки поотделно е проверен - калибрацията е по всичките 17 изхода)
+# Производен пазар се показва само ако основният му (от същите очаквани голове) е публикуем за лигата - иначе нов код без история (група
+# "other") би се показал там, където доверието по реалните резултати вече е отхвърлило основния (напр. над/под 2.5 в spain2).
+EXTRA_PARENT = {"over15": "over25", "under15": "over25", "cs:": "over25", "ht:": "home_win", "first:": "home_win"}
+
+
+def _extra_parent_ok(league, code, policy):
+    for prefix, parent in EXTRA_PARENT.items():
+        if code == prefix or (prefix.endswith(":") and code.startswith(prefix)):
+            return policy.is_publishable(league, parent)
+    return True
+if _EXTRA_MARKETS:
+    MARKET_SECTIONS = [(t, ([EXTRA_GOALS_MARKET] + m) if t == "Голове" else m) for t, m in MARKET_SECTIONS] + EXTRA_SECTIONS
+
 
 def build_market_sections(rows, league, policy, max_pct, home_cy, away_cy):
     """Редовете (predictions_snapshot или predictions_log) за един мач ->
@@ -144,6 +169,8 @@ def build_market_sections(rows, league, policy, max_pct, home_cy, away_cy):
                 continue
             if not all(policy.is_publishable(league, code) for code, _ in outcomes):
                 continue
+            if _EXTRA_MARKETS and not all(_extra_parent_ok(league, code, policy) for code, _ in outcomes):
+                continue
             total = sum(pcts) * 100.0 / expected_sum
             if abs(total - 100.0) > MARKET_SUM_TOLERANCE_PCT:
                 continue
@@ -151,6 +178,13 @@ def build_market_sections(rows, league, policy, max_pct, home_cy, away_cy):
                           for (code, label), p in zip(outcomes, pcts)])
         if shown:
             sections.append({"title": title, "markets": shown})
+    if _EXTRA_MARKETS:
+        try:
+            cs = sorted(((c, p) for c, p in pct_by_code.items() if c.startswith("cs:") and c != "cs:other"), key=lambda x: -x[1])[:CS_TOP_N]
+            if len(cs) == CS_TOP_N and all(p < max_pct and policy.is_publishable(league, c) and _extra_parent_ok(league, c, policy) for c, p in cs):
+                sections.append({"title": "Точен резултат", "markets": [[{"code": c, "label": c[3:].replace("-", ":"), "pct": p} for c, p in cs]]})
+        except Exception:
+            pass
     return sections
 
 
@@ -617,6 +651,12 @@ def register_prognozi_routes(app, ctx):
         rows = st.get_snapshot_rows_for_fixture(fixture_id)
         if not rows:
             rows = st.get_predictions_for_fixture(fixture_id)
+        elif _EXTRA_MARKETS:
+            try:
+                import extra_markets
+                rows = rows + extra_markets.rows_for_fixture(fixture_id)     # ZADACHA_RAZVITIE т.5 - само предстоящи (в снимката)
+            except Exception:
+                pass
         if not rows:
             # Тест преди commit: невалиден/несъществуващ fixture_id не бива
             # да гърми със stack trace пред публика - чиста страница.

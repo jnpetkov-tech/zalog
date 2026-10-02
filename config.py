@@ -75,3 +75,7 @@ RESULTS_WARMUP = _values.get("RESULTS_WARMUP", "1").strip() != "0"
 # ZADACHA_RAZVITIE т.4 (02.10.2026): окончателна прогноза по съставите (набор ABC от layer_shadow 'final') в живата прогноза - layer_live.py.
 # 1 = да (само ако и LAYER_LIVE=1); 0/липсва = точно старото. Flask - след рестарт; снимката - при следващия цикъл.
 LAYER_FINAL_LIVE = _values.get("LAYER_FINAL_LIVE", "0").strip() == "1"
+
+# ZADACHA_RAZVITIE т.5 (02.10.2026): новите пазари на страницата на мача (extra_markets.py; над/под 1.5, точен резултат, полувреме, пръв гол).
+# 1 = показват се; 0/липсва = точно старото. Снимката (самостоятелна) - при следващия цикъл; Flask (шаблонът) - след рестарт.
+EXTRA_MARKETS = _values.get("EXTRA_MARKETS", "0").strip() == "1"

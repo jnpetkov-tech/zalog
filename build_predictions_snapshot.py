@@ -48,6 +48,27 @@ def _model_version_for(model_version, m):
     return f"{model_version}+слой:{m['layer_version']}" if m.get("layer_version") else model_version
 
 
+def _new_market_rows(league, m, model_version):
+    """ZADACHA_RAZVITIE т.5: новите пазари (extra_markets.py) - от СЪЩИТЕ lam/mu като compute_grouped_markets() (ядро + слой, контузиите
+    на мача) и rho на модела -> extra_markets_snapshot (отделна таблица, само страницата на мача). Връща винаги [] - в
+    predictions_snapshot не влиза нищо ново. EXTRA_MARKETS=0 или грешка -> нищо не се записва."""
+    import extra_markets
+    if not extra_markets.enabled():
+        return []
+    try:
+        teams, team_idx, ft_model = mpa.get_models(league)[:3]
+        if m["home"] not in team_idx or m["away"] not in team_idx:
+            return []
+        lam, mu, _ver = mpa.get_ft_lambdas_live(m["fixture_id"], ft_model, team_idx, m["home"], m["away"],
+                                                m.get("home_inj", 0), m.get("away_inj", 0))
+        items = extra_markets.compute(league, lam, mu, ft_model.get("rho", 0.0),
+                                      mpa.to_cyrillic(m["home"], league), mpa.to_cyrillic(m["away"], league))
+        extra_markets.save_snapshot(m["fixture_id"], league, m["date"], items, model_version)
+    except Exception as e:
+        print(f"[нови пазари] {league} {m.get('fixture_id')}: {type(e).__name__}: {e}", flush=True)
+    return []      # нищо в predictions_snapshot - новите пазари живеят в extra_markets_snapshot (виж extra_markets.py)
+
+
 def _extra_market_rows(league, m, model_version):
     """НОЩ 02.09.2026 (задача 3, NOSHT2.md): compute_grouped_markets() вече
     смята до 24 пазара за всеки мач (нула нови API заявки - real_odds идва
@@ -78,6 +99,7 @@ def _extra_market_rows(league, m, model_version):
                 "fair_odds": fair, "ev": None, "model_version": model_version,
                 "is_candidate": 0,
             })
+    rows += _new_market_rows(league, m, model_version)
     return rows
 
 
