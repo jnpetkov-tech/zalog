@@ -48,7 +48,7 @@ def _model_version_for(model_version, m):
     return f"{model_version}+слой:{m['layer_version']}" if m.get("layer_version") else model_version
 
 
-def _new_market_rows(league, m, model_version):
+def _new_market_rows(league, m, model_version, std_rows=None):
     """ZADACHA_RAZVITIE т.5: новите пазари (extra_markets.py) - от СЪЩИТЕ lam/mu като compute_grouped_markets() (ядро + слой, контузиите
     на мача) и rho на модела -> extra_markets_snapshot (отделна таблица, само страницата на мача). Връща винаги [] - в
     predictions_snapshot не влиза нищо ново. EXTRA_MARKETS=0 или грешка -> нищо не се записва."""
@@ -56,14 +56,35 @@ def _new_market_rows(league, m, model_version):
     if not extra_markets.enabled():
         return []
     try:
-        teams, team_idx, ft_model = mpa.get_models(league)[:3]
+        models = mpa.get_models(league)
+        teams, team_idx, ft_model = models[:3]
         if m["home"] not in team_idx or m["away"] not in team_idx:
             return []
         lam, mu, _ver = mpa.get_ft_lambdas_live(m["fixture_id"], ft_model, team_idx, m["home"], m["away"],
                                                 m.get("home_inj", 0), m.get("away_inj", 0))
+        corners = htft = None
+        if extra_markets.show_all():
+            # ZADACHA_VSICHKO: същите модели като compute_grouped_markets() - корнерите (corners_model), полувреме/край (ht/2h модели)
+            try:
+                ht_model, h2_model, corners_model = models[3], models[4], models[5]
+                if corners_model and "glm" in corners_model:
+                    lc, mc = mpa.fl.corners_pressure_lambdas(corners_model, team_idx, m["home"], m["away"])
+                    if lc is not None:
+                        corners = (lc, mc, corners_model["alpha"])
+                lh, mh = mpa.fl.get_lambdas(ht_model, team_idx, m["home"], m["away"])
+                l2, m2 = mpa.fl.get_lambdas(h2_model, team_idx, m["home"], m["away"])
+                htft = mpa.predict_ht_ft(lh, mh, l2, m2)
+            except Exception as e:
+                print(f"[всички пазари] {league} {m.get('fixture_id')}: {type(e).__name__}: {e}", flush=True)
         items = extra_markets.compute(league, lam, mu, ft_model.get("rho", 0.0),
-                                      mpa.to_cyrillic(m["home"], league), mpa.to_cyrillic(m["away"], league))
+                                      mpa.to_cyrillic(m["home"], league), mpa.to_cyrillic(m["away"], league),
+                                      home=m["home"], away=m["away"], corners=corners, htft=htft)
         extra_markets.save_snapshot(m["fixture_id"], league, m["date"], items, model_version)
+        if extra_markets.show_all() and std_rows:
+            # т.4: всеки показан пазар - веднъж в дневника (и стандартните редове на мача, вкл. непубликуемите)
+            extra_markets.log_first(m["fixture_id"], league, m["date"],
+                                    [(r["market_code"], r["pick_label"], r["pick_pct"]) for r in std_rows
+                                     if r["fixture_id"] == m["fixture_id"] and r["pick_pct"] is not None], model_version)
     except Exception as e:
         print(f"[нови пазари] {league} {m.get('fixture_id')}: {type(e).__name__}: {e}", flush=True)
     return []      # нищо в predictions_snapshot - новите пазари живеят в extra_markets_snapshot (виж extra_markets.py)
@@ -99,7 +120,7 @@ def _extra_market_rows(league, m, model_version):
                 "fair_odds": fair, "ev": None, "model_version": model_version,
                 "is_candidate": 0,
             })
-    rows += _new_market_rows(league, m, model_version)
+    rows += _new_market_rows(league, m, model_version, std_rows=rows)
     return rows
 
 

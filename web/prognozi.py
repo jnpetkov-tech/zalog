@@ -145,6 +145,133 @@ CS_TOP_N = 6        # точен резултат: най-вероятните N
 EXTRA_PARENT = {"over15": "over25", "under15": "over25", "cs:": "over25", "ht:": "home_win", "first:": "home_win"}
 
 
+try:
+    from config import SHOW_ALL as _SHOW_ALL
+except Exception:
+    _SHOW_ALL = False
+
+# ZADACHA_VSICHKO (02.10.2026): статус на пазара по проверките (validation/*): (проверен?, една дума защо не е).
+# Ключ - код или префикс (завършва на ":" или "_"). Доверието по лиги (prediction_policy/trust_derived) - само за етикета, не за скриване.
+MARKET_STATUS = [
+    (("home_win", "draw", "away_win"), True, ""),                         # 1X2: калибрация 1.07/слой 0.996 (final_v, sloy)
+    (("dc_",), False, "не е мерен"),                                      # двоен шанс: суров сбор от 1X2, никога не е мерен отделно
+    (("over25", "under25"), True, ""),
+    (("over15", "under15"), True, ""),                                    # pazar_goli_20261002: a 1.020
+    (("over35", "under35"), False, "прекалено уверен"),                   # pazar_goli_20261002: a 0.884
+    (("btts_",), True, ""),
+    (("home_over15", "home_under15", "away_over15", "away_under15"), True, ""),
+    (("home_clean_sheet", "away_clean_sheet"), False, "на ръба"),         # final_v: a 1.10 - на границата, не се калибрира
+    (("cs:",), True, ""),                                                 # pazar_goli_20261002: a 0.924
+    (("ht:",), True, ""),                                                 # pazar_poluvreme_20261002: a 1.058
+    (("first:",), True, ""),                                              # pazar_poluvreme_20261002: a 1.008
+    (("htft:", "htftall:"), False, "не е мерен"),
+    (("corners_total_over_9.5", "corners_total_under_9.5"), True, ""),   # final_v: показваното 1.01 след калибрация
+    (("corners_", "cornall:"), False, "не е мерен"),
+    (("cardall:",), False, "не е мерен"),                                 # жив модел на картони няма; pazar_kartoni_20261002 (друг модел): плах
+]
+# основен пазар за доверието по лиги (производните нямат собствена история в trust_derived)
+STATUS_PARENT = {"over15": "over25", "under15": "over25", "over35": "over25", "under35": "over25", "cs:": "over25",
+                 "ht:": "home_win", "first:": "home_win", "htftall:": "home_win", "cornall:": "corners_total_over_9.5",
+                 "cardall:": None}
+
+
+def _prefix_get(table, code):
+    for k, v in table.items():
+        if code == k or ((k.endswith(":") or k.endswith("_")) and code.startswith(k)):
+            return v, True
+    return None, False
+
+
+def market_badge(league, code, policy):
+    """-> (етикет, причина): ("проверен", "") или ("експериментален", "прекалено уверен"/"плах"/"не е мерен"/"слаб в лигата"/"малко данни")."""
+    ok, why = False, "не е мерен"
+    for keys, verified, reason in MARKET_STATUS:
+        if any(code == k or ((k.endswith(":") or k.endswith("_")) and code.startswith(k)) for k in keys):
+            ok, why = verified, reason
+            break
+    parent, found = _prefix_get(STATUS_PARENT, code)
+    tier_code = parent if found else code
+    if tier_code:
+        try:
+            t = policy.tier(league, tier_code)
+            if t == policy.REJECTED:
+                return "експериментален", "слаб в лигата"
+            if t in (policy.UNVERIFIED, getattr(policy, "NO_DATA", "no_data")) and ok:
+                return "експериментален", "малко данни"
+        except Exception:
+            pass
+    return ("проверен", "") if ok else ("експериментален", why)
+
+
+ALL_SECTIONS = [
+    ("Краен резултат", [[("home_win", "1"), ("draw", "X"), ("away_win", "2")]]),
+    ("Двоен шанс", [[("dc_1x", "1X"), ("dc_12", "12"), ("dc_x2", "X2")]]),
+    ("Голове", [[("over15", "Над 1.5"), ("under15", "Под 1.5")], [("over25", "Над 2.5"), ("under25", "Под 2.5")],
+                [("over35", "Над 3.5"), ("under35", "Под 3.5")]]),
+    ("Двата отбора отбелязват", [[("btts_yes", "Да"), ("btts_no", "Не")]]),
+    ("Голове на отбор", [[("home_over15", "{home} над 1.5"), ("home_under15", "{home} под 1.5")],
+                         [("away_over15", "{away} над 1.5"), ("away_under15", "{away} под 1.5")]]),
+    ("Чиста мрежа", [[("home_clean_sheet", "{home} не допуска")], [("away_clean_sheet", "{away} не допуска")]]),
+    ("Полувреме", [[("ht:1", "1"), ("ht:X", "X"), ("ht:2", "2")]]),
+    ("Полувреме / край", [[(f"htftall:{a}/{b}", f"{a}/{b}") for b in ("1", "X", "2")] for a in ("1", "X", "2")]),
+    ("Пръв гол", [[("first:home", "{home}"), ("first:none", "Никой"), ("first:away", "{away}")]]),
+]
+CORNER_LINES_TOTAL = [7.5, 8.5, 9.5, 10.5, 11.5, 12.5]
+CORNER_LINES_TEAM = [3.5, 4.5, 5.5, 6.5]
+CARD_LINES_TOTAL = [2.5, 3.5, 4.5, 5.5, 6.5]
+# пазари с изходи, които се събират до 100% (за проверката на сбора); чиста мрежа - един изход
+SUM_CHECK_SKIP = ("home_clean_sheet", "away_clean_sheet")
+
+
+def build_all_sections(rows, league, policy, max_pct, home_cy, away_cy):
+    """ZADACHA_VSICHKO: всички пазари на мача, независимо от доверието; всеки пазар с етикет. Липсващ пазар -> не се рисува;
+    корнери/картони без модел (няма данни в лигата) -> секция с бележка "няма данни". Сбор на изходите извън 100±3% -> пазарът не се рисува
+    (числа, които не се събират, не се показват и тук)."""
+    pct = {r["market_code"]: r["pick_pct"] for r in rows if r.get("pick_pct") is not None}
+    sections = []
+
+    def add_market(shown, outcomes, sum_check=True):
+        ps_ = [pct.get(c) for c, _ in outcomes]
+        if any(p is None for p in ps_):
+            return
+        expected = 200.0 if outcomes[0][0].startswith("dc_") else 100.0      # двоен шанс: всеки изход покрива два от трите
+        if sum_check and len(outcomes) > 1 and abs(sum(ps_) - expected) > MARKET_SUM_TOLERANCE_PCT * expected / 100.0:
+            return
+        badge, why = market_badge(league, outcomes[0][0], policy)
+        shown.append({"outcomes": [{"code": c, "label": l.format(home=home_cy, away=away_cy), "pct": p} for (c, l), p in zip(outcomes, ps_)],
+                      "badge": badge, "why": why})
+
+    for title, markets in ALL_SECTIONS:
+        shown = []
+        for outcomes in markets:
+            add_market(shown, outcomes, sum_check=not (title == "Полувреме / край" or outcomes[0][0] in SUM_CHECK_SKIP))
+        if title == "Полувреме / край" and shown and abs(sum(o["pct"] for m in shown for o in m["outcomes"]) - 100.0) > MARKET_SUM_TOLERANCE_PCT:
+            shown = []
+        if shown:
+            sections.append({"title": title, "markets": shown})
+    cs = sorted(((c, p) for c, p in pct.items() if c.startswith("cs:") and c != "cs:other"), key=lambda x: -x[1])[:CS_TOP_N]
+    if cs:
+        badge, why = market_badge(league, "cs:0-0", policy)
+        sections.append({"title": "Точен резултат (най-вероятните)", "markets": [
+            {"outcomes": [{"code": c, "label": c[3:].replace("-", ":"), "pct": p} for c, p in cs], "badge": badge, "why": why}]})
+    # корнери: проверената 9.5 (калибрирана, от снимката) + всички линии (суров модел)
+    shown = []
+    add_market(shown, [("corners_total_over_9.5", "Над 9.5"), ("corners_total_under_9.5", "Под 9.5")])
+    for line in CORNER_LINES_TOTAL:
+        if line == 9.5 and shown:
+            continue            # проверената (калибрирана) 9.5 вече е показана - суровата не се дублира
+        add_market(shown, [(f"cornall:total_over_{line}", f"Над {line}"), (f"cornall:total_under_{line}", f"Под {line}")])
+    for side, cy in (("home", "{home}"), ("away", "{away}")):
+        for line in CORNER_LINES_TEAM:
+            add_market(shown, [(f"cornall:{side}_over_{line}", f"{cy} над {line}"), (f"cornall:{side}_under_{line}", f"{cy} под {line}")])
+    sections.append({"title": "Корнери", "markets": shown} if shown else {"title": "Корнери", "markets": [], "note": "няма данни"})
+    shown = []
+    for line in CARD_LINES_TOTAL:
+        add_market(shown, [(f"cardall:total_over_{line}", f"Над {line}"), (f"cardall:total_under_{line}", f"Под {line}")])
+    sections.append({"title": "Картони", "markets": shown} if shown else {"title": "Картони", "markets": [], "note": "няма данни"})
+    return sections
+
+
 def _extra_parent_ok(league, code, policy):
     for prefix, parent in EXTRA_PARENT.items():
         if code == prefix or (prefix.endswith(":") and code.startswith(prefix)):
@@ -651,7 +778,7 @@ def register_prognozi_routes(app, ctx):
         rows = st.get_snapshot_rows_for_fixture(fixture_id)
         if not rows:
             rows = st.get_predictions_for_fixture(fixture_id)
-        elif _EXTRA_MARKETS:
+        elif _EXTRA_MARKETS or _SHOW_ALL:
             try:
                 import extra_markets
                 rows = rows + extra_markets.rows_for_fixture(fixture_id)     # ZADACHA_RAZVITIE т.5 - само предстоящи (в снимката)
@@ -674,9 +801,16 @@ def register_prognozi_routes(app, ctx):
         # без бележка, без брояч на скритото, без етикет за доверие.
         home_cy, away_cy = to_cyrillic(home, league), to_cyrillic(away, league)
         sections = build_market_sections(rows, league, policy, ps.MAX_PUBLISHABLE_PCT, home_cy, away_cy)
+        all_view = False
+        if _SHOW_ALL:
+            try:
+                sections = build_all_sections(rows, league, policy, ps.MAX_PUBLISHABLE_PCT, home_cy, away_cy)
+                all_view = True
+            except Exception:
+                pass            # падане към обичайния изглед
 
         return render_template(
-            "prognozi_match.html", active_page="prognozi", found=True,
+            "prognozi_match.html", all_view=all_view, active_page="prognozi", found=True,
             fixture_id=fixture_id, league=league,
             league_name=ALL_LEAGUES.get(league, {}).get("name", league),
             league_logo=ALL_LEAGUES.get(league, {}).get("logo"),

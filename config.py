@@ -79,3 +79,7 @@ LAYER_FINAL_LIVE = _values.get("LAYER_FINAL_LIVE", "0").strip() == "1"
 # ZADACHA_RAZVITIE т.5 (02.10.2026): новите пазари на страницата на мача (extra_markets.py; над/под 1.5, точен резултат, полувреме, пръв гол).
 # 1 = показват се; 0/липсва = точно старото. Снимката (самостоятелна) - при следващия цикъл; Flask (шаблонът) - след рестарт.
 EXTRA_MARKETS = _values.get("EXTRA_MARKETS", "0").strip() == "1"
+
+# ZADACHA_VSICHKO (02.10.2026): страницата на мача показва ВСИЧКИ пазари, които моделът смята, с етикет "проверен"/"експериментален"
+# (web/prognozi.py build_all_sections, extra_markets.py). 1 = да; 0/липсва = точно старото. Снимката - при следващия цикъл; Flask - след рестарт.
+SHOW_ALL = _values.get("SHOW_ALL", "0").strip() == "1"

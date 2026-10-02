@@ -92,7 +92,7 @@
       </div>
     </div>
 
-    {% if sections %}
+    {% if all_view %}{% include "_all_sections.html" %}{% elif sections %}
     {% for sec in sections %}
     <div class="msection">
       <div class="msection-title">{{ sec.title }}</div>
