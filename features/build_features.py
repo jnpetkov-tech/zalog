@@ -30,6 +30,8 @@ INVOLVE_N = 20         # колко предишни мача за дела на
 USUAL_SHARE = 0.5      # започвал в >= 50% от последните LINEUP_N мача = обичаен титуляр
 REF_MIN = 1
 REST_CAP = 60.0        # дни; по-дълга пауза (нов отбор в данните, междусезоние) се реже до 60
+# ZADACHA_RAZVITIE т.3 (02.10.2026): допълнителни папки със същите имена на файлове (историята 2019-2021 в hist/). Празно = както преди.
+EXTRA_DIRS = []
 
 
 # ----------------------------------------------------------------------------------------------- зареждане
@@ -41,9 +43,10 @@ def load_raw():
     def cat(pattern, **kw):
         parts = []
         for l in LEAGUES:
-            f = pattern.format(l=l)
-            if os.path.exists(f) and os.path.getsize(f) > 0:
-                parts.append(pd.read_csv(f, low_memory=False, **kw))
+            for d in [""] + EXTRA_DIRS:
+                f = os.path.join(d, pattern.format(l=l)) if d else pattern.format(l=l)
+                if os.path.exists(f) and os.path.getsize(f) > 0:
+                    parts.append(pd.read_csv(f, low_memory=False, **kw))
         return pd.concat(parts, ignore_index=True) if parts else pd.DataFrame()
 
     fx = cat("{l}_fixtures.csv")
@@ -496,10 +499,16 @@ def build(core, raw, progress=False):
 
 def main():
     core = pd.read_csv(os.path.join(ROOT, "features", "core_lam_mu.csv"))
+    out = os.path.join(ROOT, "features", "features_table.csv.gz")
+    if "--hist" in sys.argv:
+        # ZADACHA_RAZVITIE т.3: таблица САМО за мачовете от удълженото назад ядро (features/core_lam_mu_hist.csv), с данните от hist/
+        # отгоре на живите. Сегашната таблица не се пипа.
+        EXTRA_DIRS.append(os.path.join(ROOT, "hist"))
+        core = pd.read_csv(os.path.join(ROOT, "features", "core_lam_mu_hist.csv"))
+        out = os.path.join(ROOT, "features", "features_table_hist.csv.gz")
     raw = index_raw(load_raw())
     print("данни:", {k: len(v) for k, v in raw.items() if hasattr(v, "__len__") and k != "idx"}, flush=True)
     tab = build(core, raw, progress=True)
-    out = os.path.join(ROOT, "features", "features_table.csv.gz")
     tab.to_csv(out, index=False)
     print(len(tab), "реда,", len(tab.columns), "колони ->", out)
 
