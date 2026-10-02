@@ -65,3 +65,6 @@ LAYER_LIVE = _values.get("LAYER_LIVE", "0").strip() == "1"
 # ZADACHA_RAZVITIE т.1 (02.10.2026): малък ред с деня ("Нд, 4 окт") над часа на картата на мача. 1 = показва се (по подразбиране);
 # 0 = точно старото. Чете се при старт на Flask.
 SHOW_MATCH_DAY = _values.get("SHOW_MATCH_DAY", "1").strip() != "0"
+
+# ZADACHA_RAZVITIE т.2 (02.10.2026): история на коефициентите (odds_history_collect.py, само вътрешно мерило). 1 = записва; 0/липсва = нищо.
+ODDS_LOG = _values.get("ODDS_LOG", "0").strip() == "1"
