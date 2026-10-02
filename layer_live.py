@@ -41,14 +41,25 @@ CREATE TABLE IF NOT EXISTS layer_live (
     league TEXT, match_date TEXT, computed_at TEXT NOT NULL, feature_set TEXT, layer_version TEXT,
     lam_core REAL, mu_core REAL, lam_layer REAL, mu_layer REAL)"""
 
+# ZADACHA_RAZVITIE т.4 (02.10.2026): окончателна прогноза по съставите. Когато layer_shadow.py (самостоятелен, на 15 мин) запише 'final' ред
+# (набор ABC, след излизане на съставите, 15-100 мин преди началото), apply() ползва ОТНОШЕНИЕТО на този ред вместо на AB реда от layer_live.
+# Превключвател LAYER_FINAL_LIVE в .env (0/липсва = точно старото). Калибрацията - същата LAYER_CALIBRATION_A (фитната е с набор ABC,
+# features/layer_config.json -> features/layer_calibration.py). Падане към AB реда: няма final ред, по-стар от FINAL_MAX_AGE_H, след началото
+# на мача, отношение извън рамката, грешка.
+FINAL_MAX_AGE_H = 3
+
 _lock = threading.Lock()
-_cache = {"at": 0.0, "rows": {}}
+_cache = {"at": 0.0, "rows": {}, "final": {}}
 _logged = set()
 CACHE_TTL = 60
 
 
 def enabled():
     return bool(getattr(config, "LAYER_LIVE", False))
+
+
+def final_enabled():
+    return enabled() and bool(getattr(config, "LAYER_FINAL_LIVE", False))
 
 
 def log(msg):
@@ -80,14 +91,67 @@ def _load_rows():
                 con.close()
         except Exception as e:                      # няма таблица/заключена база -> всичко пада на ядрото
             log(f"четене на layer_live: {e}")
-        _cache.update(at=now, rows=rows)
+        final = {}
+        if final_enabled():
+            try:
+                con = _connect()
+                try:
+                    cut = (datetime.utcnow() - timedelta(hours=FINAL_MAX_AGE_H)).isoformat(timespec="seconds")
+                    for r in con.execute("SELECT fixture_id, computed_at, layer_version, lam_core, mu_core, lam_layer, mu_layer, kickoff_ts "
+                                         "FROM layer_shadow WHERE mode='final' AND computed_at >= ? ORDER BY computed_at", (cut,)):
+                        final[int(r[0])] = r[1:]     # по-късният ред за мача печели
+                finally:
+                    con.close()
+            except Exception as e:
+                log(f"четене на layer_shadow (final): {e}")
+        _cache.update(at=now, rows=rows, final=final)
         return rows
+
+
+def _final_row(fixture_id):
+    """Валиден 'final' ред за мача или None (само при включен LAYER_FINAL_LIVE)."""
+    if not final_enabled():
+        return None
+    _load_rows()
+    r = _cache["final"].get(int(fixture_id))
+    if r is None:
+        return None
+    computed_at, version, lam_c, mu_c, lam_l, mu_l, kickoff_ts = r
+    if kickoff_ts and computed_at >= datetime.utcfromtimestamp(int(kickoff_ts)).isoformat(timespec="seconds"):
+        return None
+    if (datetime.utcnow() - datetime.fromisoformat(computed_at)).total_seconds() / 3600 > FINAL_MAX_AGE_H:
+        return None
+    return r
+
+
+def final_time(fixture_id):
+    """UTC datetime на окончателната прогноза (след съставите), ако се ползва за мача; иначе None. За надписа на картата."""
+    try:
+        r = _final_row(fixture_id)
+        if r is None:
+            return None
+        rh, ra = r[4] / r[2], r[5] / r[3]
+        if not (RATIO_RANGE[0] <= rh <= RATIO_RANGE[1] and RATIO_RANGE[0] <= ra <= RATIO_RANGE[1]):
+            return None
+        return datetime.fromisoformat(r[0])
+    except Exception:
+        return None
 
 
 def apply(fixture_id, lam, mu):
     """-> (lam, mu, layer_version|None). None = мачът НЕ е минал през слоя (изключен, няма ред, стар ред, грешка) - входът е върнат непроменен."""
     if not enabled() or fixture_id is None or lam is None or mu is None:
         return lam, mu, None
+    try:
+        fr = _final_row(fixture_id)
+        if fr is not None:
+            computed_at, version, lam_c, mu_c, lam_l, mu_l, _ko = fr
+            rh, ra = lam_l / lam_c, mu_l / mu_c
+            if RATIO_RANGE[0] <= rh <= RATIO_RANGE[1] and RATIO_RANGE[0] <= ra <= RATIO_RANGE[1]:
+                return lam * rh, mu * ra, f"{version}+ABC"
+            _note(fixture_id, f"final: отношение извън рамката {rh:.2f}/{ra:.2f} - остава AB")
+    except Exception as e:
+        _note(fixture_id, f"final: грешка {e} - остава AB")
     try:
         row = _load_rows().get(int(fixture_id))
         if row is None:

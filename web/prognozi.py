@@ -202,6 +202,21 @@ def register_prognozi_routes(app, ctx):
         _show_day = False
     app.jinja_env.filters["bg_day"] = lambda v: bg_day_label(v, _show_day)
 
+    def _lineup_note(fixture_id, rows):
+        """ZADACHA_RAZVITIE т.4: "HH:MM" (българско време), ако показаните проценти вече са окончателните по съставите -
+        т.е. има валиден final ред (layer_live.final_time) И снимката е смятана след него. Иначе/при грешка - None (без надпис)."""
+        try:
+            import layer_live
+            ft = layer_live.final_time(fixture_id)
+            if ft is None:
+                return None
+            snap_at = rows[0].get("computed_at") if rows else None
+            if not snap_at or datetime.fromisoformat(str(snap_at)[:19]) < ft:
+                return None
+            return ft.replace(tzinfo=ZoneInfo("UTC")).astimezone(SOFIA_TZ).strftime("%H:%M")
+        except Exception:
+            return None
+
     # ZADACHA_GOLQMA.md, Етап 1.3-1.4 (24.09.2026): всичко, което зависи от
     # ЦЕЛИЯ дневник (трите числа горе, "Вчера", списъкът "Приключили"), вече
     # не се смята при всяко зареждане. Преди всяка заявка четеше целия
@@ -399,7 +414,7 @@ def register_prognozi_routes(app, ctx):
                                              base["home_cy"], base["away_cy"])
             if not sections:
                 continue
-            card = {**base, "x12": x12_from_sections(sections)}
+            card = {**base, "x12": x12_from_sections(sections), "lineup_at": _lineup_note(fixture_id, rows)}
 
             if base["date"] > now_sofia_str:
                 upcoming_rows.append(card)
@@ -629,7 +644,7 @@ def register_prognozi_routes(app, ctx):
             home_cy=home_cy, away_cy=away_cy,
             home_logo=meta.get("home_logo") if meta else None,
             away_logo=meta.get("away_logo") if meta else None,
-            date=match_date, sections=sections,
+            date=match_date, sections=sections, lineup_at=_lineup_note(fixture_id, rows),
         )
 
     app.register_blueprint(prognozi_bp)
