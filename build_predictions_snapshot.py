@@ -21,8 +21,13 @@ model_version = кратък git commit hash на HEAD в момента на с
 позволява по-късно честно сравнение какво е казвал моделът преди/след
 бъдеща промяна, от реални данни, без ръчно поддържан version string.
 
+Заключване (ZADACHA_SASTAVI_BARZO, 02.10.2026): пълната снимка (systemd, на 30 мин) и бързата (snapshot_final.py - само мачовете с нов
+final ред по съставите, crontab на 5 мин) пишат в едни и същи таблици - build() взема общ файлов ключ SNAPSHOT_LOCK, двете никога не
+вървят едновременно; по-късно започналата смята и пише последна, т.е. с по-новите данни.
+
 Употреба: python3 build_predictions_snapshot.py
 """
+import fcntl
 import subprocess
 import time
 from datetime import date
@@ -124,7 +129,27 @@ def _extra_market_rows(league, m, model_version):
     return rows
 
 
-def build():
+SNAPSHOT_LOCK = "/tmp/predictions_snapshot_build.lock"
+
+
+def acquire_lock(wait_seconds):
+    """Общият ключ на пълната и бързата снимка. -> отворен файл (държи ключа до затваряне/край на процеса) или None след wait_seconds."""
+    f = open(SNAPSHOT_LOCK, "a")
+    t0 = time.time()
+    while True:
+        try:
+            fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            return f
+        except OSError:
+            if time.time() - t0 >= wait_seconds:
+                f.close()
+                return None
+            time.sleep(2)
+
+
+def build(only_fixtures=None):
+    """only_fixtures=None - пълната снимка (както винаги). Множество fixture_id - бързият режим (snapshot_final.py): само лигите на тези мачове,
+    записват се САМО техните редове; без слоя AB (layer_live.refresh), без clear_stale_snapshot. Ключът се взема от извикващия."""
     model_version = get_model_version()
     # mpa.get_leagues() филтрира по бисквитка от браузъра (кой Дака е
     # избрал да вижда) - няма HTTP заявка тук, за да я прочете, пада с
@@ -132,7 +157,10 @@ def build():
     # лиги нарочно - филтърът по бисквитка си остава на мястото, където му
     # е мястото: при ЧЕТЕНЕ от таблицата в /daily (Стъпка 4), не тук.
     leagues = list(mpa.ALL_LEAGUES.keys())
-    if layer_live.enabled():
+    if only_fixtures is not None:
+        leagues = sorted({lg for _fid, lg in only_fixtures.items()}, key=leagues.index)
+        layer_live._cache["at"] = 0.0              # final редовете - прочетени наново, не от кеша на процеса
+    if layer_live.enabled() and only_fixtures is None:
         # ZADACHA_ZHIVO: слоят смята очакваните голове на предстоящите мачове ПРЕДИ цикъла (грешка вътре -> мачовете падат на ядрото, не гърми)
         n_rows, n_sched, secs = layer_live.refresh()
         print(f"[слой] {n_rows}/{n_sched} мача през слоя, {secs:.1f}s", flush=True)
@@ -142,6 +170,8 @@ def build():
     for league in leagues:
         t_lg = time.time()
         matches, api_error = mpa._predict_matches_for_league_impl(league, None, None, use_fixture_cache=True)
+        if only_fixtures is not None:
+            matches = [m for m in matches if m["fixture_id"] in only_fixtures]
         rows = []
         meta_rows = []
         for m in matches:
@@ -178,10 +208,14 @@ def build():
         total_rows += len(rows)
         total_matches += len(matches)
 
-    st.clear_stale_snapshot(date.today().isoformat())
+    if only_fixtures is None:
+        st.clear_stale_snapshot(date.today().isoformat())
     print(f"\nОбщо: {total_matches} мача, {total_rows} реда, {len(leagues)} лиги, "
           f"{time.time()-t0:.1f}s, model_version={model_version}")
 
 
 if __name__ == "__main__":
+    _lk = acquire_lock(300)
+    if _lk is None:
+        print("ключът на снимката е зает над 300 с (бързата снимка?) - продължавам без него", flush=True)
     build()

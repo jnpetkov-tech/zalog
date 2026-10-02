@@ -15,7 +15,13 @@
 идват от fetch_api_sets.py/fetch_fixture_events.py (ids= батчове) по cron.
 Заявките минават през backfill_common.Fetcher (резерв за сайта, спиране при 429), броят се в layer_shadow_log.txt.
 
-Употреба: venv/bin/python3 layer_shadow.py [--dry-run] [--now 2026-10-02T09:00] [--force-pre]
+Бързо търсене на съставите (ZADACHA_SASTAVI_BARZO, 02.10.2026): --final-only (crontab на 5 мин) търси САМО final, за мачовете в следващите
+FAST_MAX минути без final ред, с /fixtures?ids= (до 20 мача в 1 заявка - отговорът носи и съставите) вместо /fixtures/lineups по мач.
+Щом има пълни състави - същият final ред (набор ABC, predict_rows), + /injuries?fixture= веднъж за мача (както досега). --pre-only (старият
+ред на 15 мин) прави само pre. Без флаг - старото поведение (pre + final по стария начин), за ръчно пускане.
+Бюджет и мерене: validation/sastavi_budzhet_20261002.md.
+
+Употреба: venv/bin/python3 layer_shadow.py [--dry-run] [--now 2026-10-02T09:00] [--force-pre] [--pre-only | --final-only]
 """
 import json
 import os
@@ -43,6 +49,9 @@ MODEL_DIR = os.path.join(ROOT, "layer_model")
 PRE_HOUR_UTC = 7
 PRE_HORIZON_H = 72
 FINAL_MIN, FINAL_MAX = 15, 100          # минути до началото
+FAST_MIN, FAST_MAX = 1, 75              # --final-only: минути до началото (final след началото не се ползва - layer_live)
+IDS_BATCH = 20                          # /fixtures?ids= приема до 20 мача
+FAST_FLOOR = 500                        # --final-only спира под толкова оставащи за деня (не под резерва на тегленията - това е за сайта)
 SEASON = 2026
 LEAGUE_IDS = {"bulgaria": 172, "england": 39, "germany": 78, "spain": 140, "france": 61, "champions_league": 2, "europa_league": 3,
               "conference_league": 848, "italy": 135, "portugal": 94, "france2": 62, "spain2": 141, "italy2": 136, "portugal2": 95,
@@ -135,7 +144,10 @@ def make_fetcher():
         f.floor, _, _ = bc.live_reserve()
     except Exception:
         f.floor = bc.RESERVE_MAX
-    f.check_quota_now()
+    try:
+        f.check_quota_now()
+    except Exception as e:                             # без мрежа/API - заявките по-долу връщат None, пускът само пише в лога
+        log(f"/status: {type(e).__name__}: {e}")
     return f
 
 
@@ -178,6 +190,43 @@ def fetch_lineups_and_injuries(fetcher, fas, fx_rows):
             fas.raw_append("injuries_live", f"{lg}_{SEASON}", {"fixture": int(r.fixture_id)}, inj)
             fas.write_rows(fas.csv_path("injuries", lg), fas.rows_injuries({"league": lg}, inj), ts, dedupe_by_fixture=True)
         have.add(int(r.fixture_id))
+    return have
+
+
+def fetch_lineups_batch(fetcher, fas, fx_rows):
+    """--final-only: състави за мачовете в прозореца с /fixtures?ids= (до IDS_BATCH на заявка) + контузени по мача (1 заявка, само при нови
+    пълни състави - както fetch_lineups_and_injuries). Същите редове в {лига}_lineups.csv / {лига}_injuries.csv. -> мачове със състави."""
+    have = set()
+    league_of = {}
+    todo = []
+    for r in fx_rows.itertuples():
+        if str(r.fixture_id) in fas.fixtures_in(fas.csv_path("lineups", r.league)):
+            have.add(int(r.fixture_id))
+        else:
+            league_of[int(r.fixture_id)] = r.league
+            todo.append(int(r.fixture_id))
+    for i in range(0, len(todo), IDS_BATCH):
+        ids = todo[i:i + IDS_BATCH]
+        params = {"ids": "-".join(map(str, ids))}
+        data = fetcher.get("/fixtures", params)
+        if data is None:
+            continue                                   # грешка - пак след 5 мин
+        fas.raw_append("lineups_live", f"ids_{SEASON}", params, data)
+        ts = datetime.utcnow().isoformat(timespec="seconds")
+        for x in data.get("response") or []:
+            fid = int(x["fixture"]["id"])
+            lg = league_of.get(fid)
+            if lg is None or not x.get("lineups"):
+                continue                               # още няма състави
+            rows = fas.rows_lineups({"fixture": fid}, {"response": x.get("lineups")})
+            if sum(1 for y in rows if y["starter"] == "1" or y["starter"] == 1) < 18:
+                continue                               # непълен състав
+            fas.write_rows(fas.csv_path("lineups", lg), rows, ts, dedupe_by_fixture=True)
+            inj = fetcher.get("/injuries", {"fixture": fid})
+            if inj is not None:
+                fas.raw_append("injuries_live", f"{lg}_{SEASON}", {"fixture": fid}, inj)
+                fas.write_rows(fas.csv_path("injuries", lg), fas.rows_injuries({"league": lg}, inj), ts, dedupe_by_fixture=True)
+            have.add(fid)
     return have
 
 
@@ -250,7 +299,8 @@ def insert(con, rows):
 
 
 def main():
-    args = {"dry": "--dry-run" in sys.argv, "force_pre": "--force-pre" in sys.argv}
+    args = {"dry": "--dry-run" in sys.argv, "force_pre": "--force-pre" in sys.argv,
+            "pre_only": "--pre-only" in sys.argv, "final_only": "--final-only" in sys.argv}
     if "--now" in sys.argv:
         args["now"] = sys.argv[sys.argv.index("--now") + 1]
     now = now_utc(args)
@@ -261,8 +311,13 @@ def main():
     state = load_state()
     today = now.strftime("%Y-%m-%d")
     fx = load_fixtures()
-    do_pre = (args["force_pre"] or (now.hour >= PRE_HOUR_UTC and state.get("pre_done") != today))
-    fin = upcoming(fx, now, FINAL_MIN / 60, FINAL_MAX / 60)
+    do_pre = (args["force_pre"] or (now.hour >= PRE_HOUR_UTC and state.get("pre_done") != today)) and not args["final_only"]
+    if args["final_only"]:
+        fin = upcoming(fx, now, FAST_MIN / 60, FAST_MAX / 60)
+    elif args["pre_only"]:
+        fin = fx.iloc[0:0]
+    else:
+        fin = upcoming(fx, now, FINAL_MIN / 60, FINAL_MAX / 60)
     done_final = {r[0] for r in con.execute("SELECT fixture_id FROM layer_shadow WHERE mode='final'")}
     fin = fin[~fin["fixture_id"].astype(int).isin(done_final)]
     if not do_pre and fin.empty:
@@ -271,6 +326,8 @@ def main():
     fas = importlib.import_module("fetch_api_sets")
     from features import build_features as bf
     fetcher = make_fetcher()
+    if args["final_only"]:
+        fetcher.floor = FAST_FLOOR
     version, meta, boosters = load_models()
     all_rows = []
     try:
@@ -287,7 +344,7 @@ def main():
             if not args["dry"]:
                 state["pre_done"] = today
         if not fin.empty:
-            have = fetch_lineups_and_injuries(fetcher, fas, fin)
+            have = (fetch_lineups_batch if args["final_only"] else fetch_lineups_and_injuries)(fetcher, fas, fin)
             ready = fin[fin["fixture_id"].astype(int).isin(have)]
             log(f"final: {len(fin)} мача в прозореца, със състави {len(ready)}")
             if len(ready):
@@ -309,7 +366,8 @@ def main():
     if all_rows:
         insert(con, all_rows)
         log(f"записани {len(all_rows)} реда в layer_shadow")
-    save_state(state)
+    if not args["final_only"]:
+        save_state(state)
 
 
 if __name__ == "__main__":
