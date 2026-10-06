@@ -150,6 +150,43 @@ try:
 except Exception:
     _SHOW_ALL = False
 
+# ZADACHA_TEKST (06.10.2026): SHOW_EXP_IN_LIST - 1X2 без проверка в списъка (бледо, "експ."); MATCH_TEXT - текстът на мача (match_text.py,
+# смятан в снимката; тук само се чете). При 0 - страниците байт по байт старите.
+try:
+    from config import SHOW_EXP_IN_LIST as _SHOW_EXP_IN_LIST
+except Exception:
+    _SHOW_EXP_IN_LIST = False
+try:
+    from config import MATCH_TEXT as _MATCH_TEXT
+except Exception:
+    _MATCH_TEXT = False
+
+
+def exp_x12(rows, max_pct):
+    """ZADACHA_TEKST, част 1: трите числа 1/X/2 на мач, чието 1X2 НЕ е проверено за лигата (не минава is_publishable) - същите проценти от
+    снимката и същите предпазители като build_market_sections (налични, под прага за артефакт, сбор 100±3%), само без проверката на
+    доверието. Само за показване в списъка (бледо, "експ."); изборът на главната прогноза, дневникът и отчетът не го виждат. Иначе None."""
+    try:
+        pct = {r["market_code"]: r["pick_pct"] for r in rows if r.get("pick_pct") is not None}
+        ps_ = [pct.get(c) for c in ("home_win", "draw", "away_win")]
+        if any(p is None or p >= max_pct for p in ps_) or abs(sum(ps_) - 100.0) > MARKET_SUM_TOLERANCE_PCT:
+            return None
+        top = max(ps_)
+        return [{"code": c, "label": l, "pct": p, "top": p == top} for (c, l), p in zip((("home_win", "1"), ("draw", "X"), ("away_win", "2")), ps_)]
+    except Exception:
+        return None
+
+
+def _match_texts(fixture_ids):
+    """ZADACHA_TEKST, част 2: {fixture_id: [изречения]} от таблица match_text; изключено/грешка -> {} (без текст, страницата е като преди)."""
+    if not _MATCH_TEXT or not fixture_ids:
+        return {}
+    try:
+        import match_text
+        return match_text.get_texts(fixture_ids)
+    except Exception:
+        return {}
+
 # ZADACHA_VSICHKO (02.10.2026): статус на пазара по проверките (validation/*): (проверен?, една дума защо не е).
 # Ключ - код или префикс (завършва на ":" или "_"). Доверието по лиги (prediction_policy/trust_derived) - само за етикета, не за скриване.
 MARKET_STATUS = [
@@ -551,6 +588,7 @@ def register_prognozi_routes(app, ctx):
         # завинаги "в ход".
         settled_fixture_ids = st.get_settled_fixture_ids(snap_by_fixture.keys())
         now_sofia_str = _now_sofia_str()
+        texts_map = _match_texts(list(snap_by_fixture.keys()))
 
         upcoming_rows, skipped_rows, in_progress_rows, settled_days = [], [], [], []
         for fixture_id, rows in snap_by_fixture.items():
@@ -576,6 +614,11 @@ def register_prognozi_routes(app, ctx):
             if not sections:
                 continue
             card = {**base, "x12": x12_from_sections(sections), "lineup_at": _lineup_note(fixture_id, rows)}
+            if card["x12"] is None and _SHOW_EXP_IN_LIST:
+                card["x12"] = exp_x12(rows, ps.MAX_PUBLISHABLE_PCT)
+                card["x12_exp"] = card["x12"] is not None
+            if fixture_id in texts_map:
+                card["text1"] = texts_map[fixture_id][0]
 
             if base["date"] > now_sofia_str:
                 upcoming_rows.append(card)
@@ -759,6 +802,7 @@ def register_prognozi_routes(app, ctx):
             yesterday=yesterday,
             next_match_phrase=next_match_phrase, any_match_ahead=any_match_ahead,
             selected_day_finished=selected_day_finished,
+            exp_on=_SHOW_EXP_IN_LIST, text_on=_MATCH_TEXT,
         )
 
     # Публична страница на мача (01.09.2026, задача от Дака, т.2). Изричен
@@ -819,6 +863,7 @@ def register_prognozi_routes(app, ctx):
             home_logo=meta.get("home_logo") if meta else None,
             away_logo=meta.get("away_logo") if meta else None,
             date=match_date, sections=sections, lineup_at=_lineup_note(fixture_id, rows),
+            match_text=_match_texts([fixture_id]).get(fixture_id),
         )
 
     app.register_blueprint(prognozi_bp)

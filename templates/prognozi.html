@@ -229,7 +229,15 @@
     .team-logo{width:32px; height:32px;}
     .crest-fallback{width:32px; height:32px; font-size:11px;}
   }
-</style>
+</style>{# ZADACHA_TEKST: стиловете на новите неща - само при включен превключвател (при 0 страницата е байт по байт старата). #}{% if exp_on %}
+<style>
+  .x12.exp .op{ color:var(--text-faint); }
+  .x12.exp .o.top .op{ font-weight:600; color:var(--sub); }
+  .exp-tag{ font-size:10.5px; color:var(--text-faint); border:1px dashed var(--border); border-radius:6px; padding:1px 6px; cursor:help; white-space:nowrap; }
+</style>{% endif %}{% if text_on %}
+<style>
+  .pred-text{ flex-basis:100%; font-size:12.5px; font-weight:400; color:var(--sub); line-height:1.45; margin-top:2px; }
+</style>{% endif %}
 </head>
 <body>
 
@@ -238,7 +246,7 @@
 {% macro crest(logo, name) %}{% if logo %}<img class="team-logo" src="{{ logo }}" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">{% endif %}<span class="crest-fallback"{% if not logo %} style="display:flex;"{% endif %}>{{ (name or '')[:3]|upper }}</span>{% endmacro %}
 
 {# ZADACHA_PAZARI.md, ЧАСТ В: 1/X/2; ако 1X2 не е публикуем - празно, без текст. #}
-{% macro x12(m) %}{% if m.x12 %}<div class="x12">{% for o in m.x12 %}<div class="o{{ ' top' if o.top else '' }}"><span class="ol">{{ o.label }}</span><span class="op">{{ "%.0f"|format(o.pct) }}%</span></div>{% endfor %}</div>{% endif %}{% endmacro %}
+{% macro x12(m) %}{% if m.x12 %}<div class="x12{{ ' exp' if m.x12_exp else '' }}">{% for o in m.x12 %}<div class="o{{ ' top' if o.top else '' }}"><span class="ol">{{ o.label }}</span><span class="op">{{ "%.0f"|format(o.pct) }}%</span></div>{% endfor %}</div>{% if m.x12_exp %}<span class="exp-tag" title="експериментална прогноза - за тази лига не е минала проверката">експ.</span>{% endif %}{% endif %}{% endmacro %}
 
   <div class="shell">
 
@@ -339,7 +347,7 @@
           {% for m in group_rows %}
           <a class="predrow" href="/prognozi/match/{{ m.fixture_id }}">
             <div class="pred-timecol">{% set _d = m.date|bg_day %}{% if _d %}<div class="pred-day">{{ _d }}</div>{% endif %}<div class="pred-time-hour">{{ m.date[-5:] }}</div></div>
-            <div class="pred-match">{{ crest(m.home_logo, m.home_cy) }}{{ m.home_cy }} — {{ m.away_cy }}{{ crest(m.away_logo, m.away_cy) }}{% if m.lineup_at %}<div class="pred-lineup">обновено след съставите {{ m.lineup_at }}</div>{% endif %}</div>
+            <div class="pred-match">{{ crest(m.home_logo, m.home_cy) }}{{ m.home_cy }} — {{ m.away_cy }}{{ crest(m.away_logo, m.away_cy) }}{% if m.lineup_at %}<div class="pred-lineup">обновено след съставите {{ m.lineup_at }}</div>{% endif %}{% if m.text1 %}<div class="pred-text">{{ m.text1 }}</div>{% endif %}</div>
             <div class="pred-pick">{{ x12(m) }}</div>
           </a>
           {% endfor %}
@@ -353,7 +361,7 @@
           {% for m in in_progress_rows %}
           <a class="predrow" href="/prognozi/match/{{ m.fixture_id }}">
             <div class="pred-timecol">{% set _d = m.date|bg_day %}{% if _d %}<div class="pred-day">{{ _d }}</div>{% endif %}<div class="pred-time-hour">{{ m.date[-5:] }}</div><div class="pred-league">{% if m.league_logo %}<img class="league-logo" src="{{ m.league_logo }}" alt="" onerror="this.style.display='none'">{% endif %}{{ m.flag }} {{ m.league_name }}</div></div>
-            <div class="pred-match">{{ crest(m.home_logo, m.home_cy) }}{{ m.home_cy }} — {{ m.away_cy }}{{ crest(m.away_logo, m.away_cy) }}{% if m.lineup_at %}<div class="pred-lineup">обновено след съставите {{ m.lineup_at }}</div>{% endif %}</div>
+            <div class="pred-match">{{ crest(m.home_logo, m.home_cy) }}{{ m.home_cy }} — {{ m.away_cy }}{{ crest(m.away_logo, m.away_cy) }}{% if m.lineup_at %}<div class="pred-lineup">обновено след съставите {{ m.lineup_at }}</div>{% endif %}{% if m.text1 %}<div class="pred-text">{{ m.text1 }}</div>{% endif %}</div>
             <div class="pred-pick">{{ x12(m) }}<span class="badge inprogress">резултатът се проверява</span></div>
           </a>
           {% endfor %}
@@ -398,7 +406,7 @@
         {% for m in skipped_rows %}
         <div class="predrow">
           <div class="pred-timecol">{% set _d = m.date|bg_day %}{% if _d %}<div class="pred-day">{{ _d }}</div>{% endif %}<div class="pred-time">{{ m.date[-5:] }}</div><div class="pred-league">{% if m.league_logo %}<img class="league-logo" src="{{ m.league_logo }}" alt="" onerror="this.style.display='none'">{% endif %}{{ m.flag }} {{ m.league_name }}</div></div>
-          <div class="pred-match">{{ crest(m.home_logo, m.home_cy) }}{{ m.home_cy }} — {{ m.away_cy }}{{ crest(m.away_logo, m.away_cy) }}{% if m.lineup_at %}<div class="pred-lineup">обновено след съставите {{ m.lineup_at }}</div>{% endif %}</div>
+          <div class="pred-match">{{ crest(m.home_logo, m.home_cy) }}{{ m.home_cy }} — {{ m.away_cy }}{{ crest(m.away_logo, m.away_cy) }}{% if m.lineup_at %}<div class="pred-lineup">обновено след съставите {{ m.lineup_at }}</div>{% endif %}{% if m.text1 %}<div class="pred-text">{{ m.text1 }}</div>{% endif %}</div>
           <div class="pred-pick" style="color:var(--text-faint);font-weight:400;">Изключен от прогнозите</div>
         </div>
         {% endfor %}

@@ -210,6 +210,15 @@ def build(only_fixtures=None):
 
     if only_fixtures is None:
         st.clear_stale_snapshot(date.today().isoformat())
+    # ZADACHA_TEKST: текстът на мача - след като процентите на мачовете са записани (моделът в текста = числата на сайта). Изключен
+    # (MATCH_TEXT=0) -> нищо; грешка -> само в match_text_log.txt, снимката не се засяга.
+    try:
+        import match_text
+        if match_text.enabled():
+            n_txt, secs_txt = match_text.refresh(list(only_fixtures) if only_fixtures is not None else None)
+            print(f"[текст] {n_txt} мача, {secs_txt:.1f}s", flush=True)
+    except Exception as e:
+        print(f"[текст] грешка {type(e).__name__}: {e}", flush=True)
     print(f"\nОбщо: {total_matches} мача, {total_rows} реда, {len(leagues)} лиги, "
           f"{time.time()-t0:.1f}s, model_version={model_version}")
 
