@@ -33,8 +33,7 @@ MAX_SENTENCES = 5
 MIN_SENTENCES = 3            # ако има толкова; при по-малко данни - колкото има (липсващите изречения ги няма)
 FORM_N = 5                   # форма: последните 5 мача
 MIN_FORM = 3                 # под 3 мача история - няма изречение за формата
-USUAL_N = 10                 # обичаен титуляр: започвал в >= 50% от последните 10 мача със състав (= build_features.LINEUP_N/USUAL_SHARE)
-INVOLVE_N = 20               # дял от головете и асистенциите - последните 20 мача със събития (= build_features.INVOLVE_N)
+USUAL_N = 10                 # титуляр: по минутите в последните 10 мача със състав (виж USUAL_MIN)
 MIN_TABLE_PLAYED = 3         # класиране - само след поне 3 изиграни мача и на двата отбора
 MIN_REF = 5                  # съдия - поне 5 предишни мача в базата
 NEW_COACH_MAX = 5            # "нов треньор" - начело от най-много 5 мача (по съставите), а преди него е имало друг
@@ -43,6 +42,9 @@ NAMES_MAX = 4                # колко имена на отсъстващи �
 
 CUP_NAMES = {"champions_league": "Шампионската лига", "europa_league": "Лига Европа", "conference_league": "Лигата на конференциите"}
 CUPS = set(CUP_NAMES)
+BG_LEAGUES = {"bulgaria", "bulgaria2"}
+USUAL_MIN = 45               # ZADACHA_TEKST_2: титуляр = средно >= 45 мин. на мач в последните USUAL_N мача със състав (отсъствията - 0)
+MIN_SCORER = 2               # "голмайсторът на отбора" - най-много голове (сам) в същите мачове, поне 2, при събития за всичките
 
 BANNED = ["букмейк", "коефициент", "пазар", "залог", "залага", "заложи", "сигурн", "гарантира"]
 
@@ -75,8 +77,15 @@ def _connect(db_path=DB_PATH):
 
 
 # ----------------------------------------------------------------------------------------------- Flask (само sqlite)
-def get_texts(fixture_ids, db_path=None):
-    """-> {fixture_id: [изречение, ...]} (най-интересните първи). Изключено/грешка/няма таблица -> {}."""
+def page_order(sentences):
+    """ZADACHA_TEKST_2, т.2: за страницата на мача - изречението за модела ("Моделът дава ...") винаги последно, като извод;
+    останалите - по интересност, както са записани. Картата в списъка ползва записания ред (първото = най-силното)."""
+    return [s for s in sentences if s.get("kind") != "model"] + [s for s in sentences if s.get("kind") == "model"]
+
+
+def get_texts(fixture_ids, db_path=None, page=False):
+    """-> {fixture_id: [изречение, ...]} (най-интересните първи; page=True - изречението за модела последно).
+    Изключено/грешка/няма таблица -> {}."""
     if not enabled() or not fixture_ids:
         return {}
     try:
@@ -88,7 +97,8 @@ def get_texts(fixture_ids, db_path=None):
                 part = ids[i:i + 500]
                 q = f"SELECT fixture_id, sentences FROM match_text WHERE fixture_id IN ({','.join('?' * len(part))})"
                 for fid, js in con.execute(q, part):
-                    texts = [s["text"] for s in json.loads(js or "[]") if s.get("text")]
+                    ss = json.loads(js or "[]")
+                    texts = [s["text"] for s in (page_order(ss) if page else ss) if s.get("text")]
                     if texts:
                         out[int(fid)] = texts
             return out
@@ -183,6 +193,27 @@ class Data:
             for fid, tid, cid, name in zip(lu["fixture_id"], lu["team_id"], lu["coach_id"], lu["coach"]):
                 if tid == tid and isinstance(name, str) and name.strip():
                     self.coach_at[(int(fid), int(tid))] = (clean_name(name), int(cid) if cid == cid else None)
+        # ZADACHA_TEKST_2: българските отбори (играли в bulgaria/bulgaria2) - хората им се пишат на кирилица (bg_names.person_to_cyrillic)
+        self.bg_teams = {int(t) for c in ("home_id", "away_id") for t in fx.loc[fx["league"].isin(BG_LEAGUES), c]}
+        # пълното име от събитията ("Dominik Kajzer" вместо "D. Kajzer") - само за българските отбори (за по-добра транслитерация)
+        self.player_full = {}
+        ev = nr.get("events")
+        if ev is not None and len(ev):
+            for pid, nm in list(zip(ev["player_id"], ev["player"])) + list(zip(ev["assist_id"], ev["assist"])):
+                if pid == pid and isinstance(nm, str) and "." not in nm and nm.strip():
+                    self.player_full[int(pid)] = clean_name(nm)
+        self.name_log = {}           # латиница -> (кирилица, източник) за прегледа на Дака (validation/tekst2_imena_*)
+        # минути и голове по (мач, отбор) - от съставите + смените/червените картони (събитията); без събития - титулярите по 90
+        self.mins, self.goals = {}, {}
+        ix = self.raw["idx"]
+        for fid, teams in ix["lu"].items():
+            evs = ix["ev"].get(fid)
+            for tid, t in teams.items():
+                self.mins[(fid, tid)] = (minutes_from(t["starters"], evs, tid), evs is not None)
+            for typ, detail, team_id, pid, _a, _el in (evs or []):
+                if typ == "Goal" and detail not in ("Missed Penalty", "Own Goal") and team_id == team_id and pid == pid:
+                    g = self.goals.setdefault((fid, int(team_id)), {})
+                    g[int(pid)] = g.get(int(pid), 0) + 1
         inj = nr["injuries"]
         self.inj_by = {}
         if len(inj):
@@ -198,6 +229,63 @@ class Data:
                 pens_by[r["fixture_id"]] = r["pen_for"] + r["pen_against"]
         self.ref_idx = bf.build_referee_index(fx, st_by, pens_by)
         self.fx_ls = {k: g for k, g in fx.groupby(["league", "season"])}
+
+
+    def add_upcoming_injuries(self, db_path):
+        """Контузените/наказаните за предстоящите мачове (injuries_upcoming.py -> таблица injuries_players) - само "Missing Fixture".
+        За мач, който го има там, важи този списък (по-пресен от {лига}_injuries.csv). Няма таблица/грешка -> нищо."""
+        try:
+            con = _connect(db_path)
+            try:
+                rows = con.execute("SELECT fixture_id, team_id, player_id, player, type FROM injuries_players").fetchall()
+            finally:
+                con.close()
+        except Exception:
+            return 0
+        fresh = {}
+        for fid, tid, pid, name, typ in rows:
+            d = fresh.setdefault(int(fid), {})
+            if typ == "Missing Fixture" and tid is not None and pid is not None:
+                d.setdefault(int(tid), {})[int(pid)] = clean_name(name)
+        self.inj_by.update(fresh)
+        return len(fresh)
+
+    def person(self, name, tid, pid=None):
+        """Име на играч/треньор за текста: за българските отбори - на кирилица (bg_names), иначе както е."""
+        if not name or tid is None or int(tid) not in self.bg_teams:
+            return name
+        if pid is not None and pid in self.player_full:
+            full = self.player_full[pid]
+            if _name_tokens(full) and (_name_tokens(full) & _name_tokens(name)):
+                name = full
+        from bg_names import person_to_cyrillic
+        cyr, src = person_to_cyrillic(name)
+        self.name_log[name] = (cyr, src)
+        return cyr
+
+    def player(self, pid, tid):
+        nm = self.player_name.get(pid)
+        return self.person(nm, tid, pid) if nm else None
+
+
+def minutes_from(starters, evs, tid):
+    """{player_id: изиграни минути (0-90)}: титулярите от 0, влезлите от минутата на смяната; излиза при смяна или червен картон.
+    Смяна в API-то: player_id = излизащият, assist_id = влизащият. Без събития -> титулярите по 90."""
+    on = {int(p): 0.0 for p in starters}
+    off = {}
+    for typ, detail, team_id, pid, aid, el in (evs or []):
+        if team_id != team_id or int(team_id) != int(tid):
+            continue
+        e = min(max(float(el), 0.0), 90.0) if el == el and el is not None else 90.0
+        if typ == "subst":
+            if pid == pid and pid is not None and int(pid) in on and int(pid) not in off:
+                off[int(pid)] = e
+            if aid == aid and aid is not None and int(aid) not in on:
+                on[int(aid)] = e
+        elif typ == "Card" and detail in ("Red Card", "Second Yellow card") and pid == pid and pid is not None:
+            if int(pid) in on and int(pid) not in off:
+                off[int(pid)] = e
+    return {p: max(0.0, off.get(p, 90.0) - t) for p, t in on.items()}
 
 
 def _is_nan(x):
@@ -221,35 +309,35 @@ def table_at(fx_ls, ts):
     return order, tab
 
 
-def usual_starters(prior):
-    """Обичайни титуляри (като build_features.block_absent): {player_id: брой стартове в последните n мача със състав}, n, позиции."""
-    pl = [r for r in prior if r["has_lineup"]]
+def usual_by_minutes(D, tid, prior):
+    """ZADACHA_TEKST_2: титулярите по минути в последните USUAL_N мача със състав (същото правило на времето - само минали мачове).
+    -> None (под 3 мача) или {"n", "n_ev", "avg" {играч: средно мин.}, "goals" {играч: голове}, "pos" {играч: G/D/M/F}, "scorer"}."""
+    pl = [r for r in prior if r["has_lineup"]][-USUAL_N:]
     if len(pl) < 3:
-        return None, 0, {}, pl
-    last = pl[-USUAL_N:]
-    starts, pos_votes = {}, {}
-    for r in last:
-        for p in r["starters"]:
-            starts[p] = starts.get(p, 0) + 1
-        for p, s in r["pos"].items():
-            pos_votes.setdefault(p, {}).setdefault(s, 0)
-            pos_votes[p][s] += 1
-    n = len(last)
-    usual = {p: c for p, c in starts.items() if c / n >= 0.5}
+        return None
+    n = len(pl)
+    tot, goals, pos_votes, n_ev = {}, {}, {}, 0
+    for r in pl:
+        mins, _exact = D.mins.get((r["fixture_id"], int(tid)), ({}, False))
+        for p, m in mins.items():
+            tot[p] = tot.get(p, 0.0) + m
+        if r["has_events"]:
+            n_ev += 1
+            for p, g in D.goals.get((r["fixture_id"], int(tid)), {}).items():
+                goals[p] = goals.get(p, 0) + g
+        for p, ps in r["pos"].items():
+            if ps in ("G", "D", "M", "F"):
+                pos_votes.setdefault(p, {}).setdefault(ps, 0)
+                pos_votes[p][ps] += 1
+    avg = {p: int(round(t / n)) for p, t in tot.items() if t / n >= USUAL_MIN}
     pos_of = {p: max(v.items(), key=lambda kv: (kv[1], kv[0]))[0] for p, v in pos_votes.items()}
-    return usual, n, pos_of, pl
-
-
-def involve_share(prior, players):
-    inv = {}
-    ev = [x for x in prior if x["has_events"]][-INVOLVE_N:]
-    for r in ev:
-        for p, c in r.get("involve", {}).items():
-            inv[p] = inv.get(p, 0) + c
-    tot = sum(inv.values())
-    if not tot:
-        return None, len(ev)
-    return sum(inv.get(p, 0) for p in players) / tot, len(ev)
+    scorer = None
+    if n_ev == n and goals:
+        top = max(goals.values())
+        best = [p for p, g in goals.items() if g == top]
+        if top >= MIN_SCORER and len(best) == 1:
+            scorer = best[0]
+    return {"n": n, "n_ev": n_ev, "avg": avg, "goals": goals, "pos": pos_of, "scorer": scorer}
 
 
 # ----------------------------------------------------------------------------------------------- изречения
@@ -489,8 +577,9 @@ def s_coach(D, T, tid, prior, today):
     seq = [D.coach_at.get((int(r["fixture_id"]), int(tid))) for r in pl]
     if today:
         if seq[-1] and same_coach(today, seq[-1]) is False:
-            return {"kind": "coach", "score": 70, "text": f"На пейката на {T} днес е нов треньор — {today[0]}.", "facts": {},
-                    "names": [today[0]]}
+            nm = D.person(today[0], tid)
+            return {"kind": "coach", "score": 70, "text": f"На пейката на {T} днес е нов треньор — {nm}.", "facts": {},
+                    "names": [nm], "tid": int(tid)}
         return None
     if not seq[-1]:
         return None
@@ -502,57 +591,83 @@ def s_coach(D, T, tid, prior, today):
             break
     if k > NEW_COACH_MAX or k == len(seq) or not seq[-k - 1]:
         return None                            # от началото на данните или без запис за предишния - не знаем дали е нов
-    name = seq[-1][0]
+    name = D.person(seq[-1][0], tid)
     text = (f"В последния мач начело на {T} беше {name} — различен треньор от предишните мачове." if k == 1 else
             f"{T} е с нов треньор: {name} води отбора от {k} мача насам.")
-    return {"kind": "coach", "score": 55 if k <= 3 else 35, "facts": {"coach_k": k}, "names": [name], "text": text}
+    return {"kind": "coach", "score": 55 if k <= 3 else 35, "facts": {"coach_k": k}, "names": [name], "text": text, "tid": int(tid)}
 
 
-def _names_list(D, players, usual, n):
-    items = sorted(players, key=lambda p: (-usual[p], D.player_name.get(p, "")))
-    shown = [p for p in items if D.player_name.get(p)][:NAMES_MAX]
-    if not shown:
-        return None, [], {}
-    facts = {"usual_n": n}
-    txt = []
-    for i, p in enumerate(shown):
-        facts[f"starts_{i}"] = usual[p]
-        txt.append(f"{D.player_name[p]} ({usual[p]} от {n})" if i else
-                   f"{D.player_name[p]} (титуляр в {usual[p]} от последните {n} мача)")
-    rest = len(items) - len(shown)
-    if rest:
-        facts["more"] = rest
-        txt.append(f"още {rest}")
-    return join_and(txt), [D.player_name[p] for p in shown], facts
+COUNT_M = {1: "един", 2: "двама", 3: "трима", 4: "четирима", 5: "петима"}
+ROLE = {"D": ("защитник", "защитници"), "M": ("полузащитник", "полузащитници"), "F": ("нападател", "нападатели"),
+        None: ("играч", "играчи")}
 
 
-def s_absent(D, T, tag, prior, missing_ids, after_lineups):
-    """Отсъстващи обичайни титуляри: след съставите - не са в групата за мача; преди - в списъка на контузените/наказаните за мача."""
-    usual, n, pos_of, _pl = usual_starters(prior)
-    if not usual:
+def _roles_phrase(absent, U):
+    """Кого губи отборът, с думи: "титулярния вратар, голмайстора на отбора и двама основни защитници". -> (фраза, facts)."""
+    parts, facts = [], {}
+    gk = [p for p in absent if U["pos"].get(p) == "G"]
+    if len(gk) == 1:
+        parts.append("титулярния вратар")
+    elif gk:
+        parts.append(f"{COUNT_M.get(len(gk), str(len(gk)))} титулярни вратари")
+    if U["scorer"] in absent and U["scorer"] not in gk:
+        parts.append("голмайстора на отбора")
+    for code in ("D", "M", "F", None):
+        k = len([p for p in absent if p not in gk and p != U["scorer"] and (U["pos"].get(p) if U["pos"].get(p) in ("D", "M", "F") else None) == code])
+        if not k:
+            continue
+        one, many = ROLE[code]
+        if k > 5:
+            facts[f"role_{code or 'x'}"] = k
+        parts.append(f"{COUNT_M.get(k, str(k))} основен {one}" if k == 1 else f"{COUNT_M.get(k, str(k))} основни {many}")
+    return join_and(parts), facts
+
+
+def s_absent(D, T, tag, tid, prior, missing_ids, after_lineups):
+    """ZADACHA_TEKST_2. Отсъстващи титуляри (по минути в последните мачове) и колко е важен всеки (вратар/защитник/голмайстор, минути, голове).
+    След съставите - не са в групата за мача; преди - в списъка на контузените/наказаните за мача (където API-то го дава)."""
+    U = usual_by_minutes(D, tid, prior)
+    if not U or not U["avg"]:
         return None
-    absent = [p for p in usual if p in missing_ids]
+    absent = [p for p in U["avg"] if p in missing_ids]
     if not absent:
         return None
-    lst, names, facts = _names_list(D, absent, usual, n)
-    if not lst:
+    absent.sort(key=lambda p: (U["pos"].get(p) != "G", p != U["scorer"], -U["avg"][p], D.player_name.get(p, "")))
+    shown = [p for p in absent if D.player_name.get(p)][:NAMES_MAX]
+    if not shown:
         return None
-    weight = sum(usual[p] / n for p in absent)
-    gk = [p for p in absent if pos_of.get(p) == "G"]
-    one = len(absent) == 1
+    roles, facts = _roles_phrase(absent, U)
+    n = U["n"]
+    facts["usual_n"] = n
+    with_goals = U["n_ev"] == n
+    items, names = [], []
+    for i, p in enumerate(shown):
+        nm = D.player(p, tid)
+        names.append(nm)
+        facts[f"min_{i}"] = U["avg"][p]
+        g = U["goals"].get(p, 0) if with_goals else 0
+        gtxt = ""
+        if g:
+            facts[f"goals_{i}"] = g
+            gtxt = f", {noun(g, 'гол', 'гола')}"
+        items.append(f"{nm} (средно {U['avg'][p]} мин. на мач{gtxt})" if i == 0 else f"{nm} ({U['avg'][p]} мин.{gtxt})")
+    rest = len(absent) - len(shown)
+    if rest:
+        facts["more"] = rest
+        items.append(f"още {rest}")
+    lst = join_and(items)
     if after_lineups:
-        text = f"При {T} в групата за мача {'липсва обичайният титуляр' if one else 'липсват обичайните титуляри'} {lst}"
+        text = f"В групата на {T} за мача няма {roles}: {lst} — по последните {n} мача"
     else:
-        text = f"{T} е без {'обичайния си титуляр' if one else 'обичайните си титуляри'} {lst} — в списъка на отсъстващите за мача"
-    if gk and not one:
-        text += ", включително вратаря"
-    sh, nev = involve_share(prior, absent)
-    if sh is not None and sh >= 0.15:
-        p = round(100 * sh)
-        facts.update({"inv_pct": p, "inv_n": nev})
-        text += (f"; {'той има' if one else 'заедно имат'} {p}% от головете и асистенциите на отбора в последните {noun(nev, 'мач', 'мача')}")
-    score = 40 + 15 * weight + (15 if gk else 0)
-    return {"kind": f"absent_{tag}", "score": score, "text": text + ".", "facts": facts, "names": names}
+        text = f"Според списъка на отсъстващите {T} ще е без {roles}: {lst} — по последните {n} мача"
+        others = len([p for p in missing_ids if p not in U["avg"]])
+        if others:
+            facts["others"] = others
+            text += f"; в списъка има още {noun(others, 'играч', 'играчи')}"
+    gk = any(U["pos"].get(p) == "G" for p in absent)
+    weight = sum(U["avg"][p] / 90.0 for p in absent)
+    score = 40 + 15 * weight + (15 if gk else 0) + (10 if U["scorer"] in absent else 0)
+    return {"kind": f"absent_{tag}", "score": score, "text": text + ".", "facts": facts, "names": names, "pids": shown, "tid": int(tid)}
 
 
 def s_model(H, A, pcts, exp):
@@ -645,13 +760,14 @@ def build_for_fixture(D, fid, pcts, names, exp, model_pre=None, cut_ts=None):
         cands.append(s_coach(D, T, tid, prior, D.coach_at.get((int(fid), int(tid))) if has_lineups else None))
         if has_lineups:
             sq = set(lt["squad"])
-            usual, _n, _pos, pl = usual_starters(prior)
-            missing = {p for p in (usual or {}) if p not in sq}
+            U = usual_by_minutes(D, tid, prior)
+            missing = {p for p in (U["avg"] if U else {}) if p not in sq}
+            pl = [r for r in prior if r["has_lineup"]]
             if pl:
                 xi[tag] = sum(1 for p in lt["starters"] if p not in set(pl[-1]["starters"]))
         else:
             missing = set((D.inj_by.get(fid) or {}).get(tid, {}))
-        s = s_absent(D, T, tag, prior, missing, has_lineups)
+        s = s_absent(D, T, tag, tid, prior, missing, has_lineups)
         absent_any[tag] = bool(s)
         cands.append(s)
     if has_lineups:
@@ -675,6 +791,12 @@ def _snapshot_pcts(con, fids):
     return out, meta
 
 
+def team_name(name, league):
+    """Отбор за текста: на кирилица по bg_names; българският отбор в евротурнир - също (ZADACHA_TEKST_2)."""
+    from bg_names import to_cyrillic, BULGARIA_NAMES
+    return to_cyrillic(name, "bulgaria" if league in CUPS and name in BULGARIA_NAMES else league)
+
+
 def x12_ok(pcts, max_pct=95.0, tol=3.0):
     """Трите числа 1/X/2 стават за показване: всичките налични, под прага за артефакт, сбор 100±3 (като web/prognozi.build_market_sections)."""
     v = [pcts.get(k) for k in ("home_win", "draw", "away_win")] if pcts else [None]
@@ -689,7 +811,6 @@ def refresh(fixture_ids=None, db_path=DB_PATH, data=None):
     n = 0
     try:
         import prediction_policy as policy
-        from bg_names import to_cyrillic
         con = _connect(db_path)
         try:
             con.execute(DDL)
@@ -709,6 +830,7 @@ def refresh(fixture_ids=None, db_path=DB_PATH, data=None):
         if not any(f in meta for f in fids):
             return 0, time.time() - t0               # нито един от мачовете не е в снимката - без тежкото зареждане
         D = data or Data()
+        D.add_upcoming_injuries(db_path)
         stamp = datetime.utcnow().isoformat(timespec="seconds")
         rows = []
         for fid in fids:
@@ -719,7 +841,7 @@ def refresh(fixture_ids=None, db_path=DB_PATH, data=None):
                 p = pcts.get(fid, {})
                 exp = not all(policy.is_publishable(league, c) for c in ("home_win", "draw", "away_win"))
                 model_p = p if x12_ok(p) else {}
-                res = build_for_fixture(D, fid, model_p, (to_cyrillic(ht, league), to_cyrillic(at, league)), exp, pre.get(fid))
+                res = build_for_fixture(D, fid, model_p, (team_name(ht, league), team_name(at, league)), exp, pre.get(fid))
                 if res is None:
                     continue
                 sentences, has_lu = res

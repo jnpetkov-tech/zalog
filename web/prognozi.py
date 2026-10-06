@@ -177,13 +177,14 @@ def exp_x12(rows, max_pct):
         return None
 
 
-def _match_texts(fixture_ids):
-    """ZADACHA_TEKST, част 2: {fixture_id: [изречения]} от таблица match_text; изключено/грешка -> {} (без текст, страницата е като преди)."""
+def _match_texts(fixture_ids, page=False):
+    """ZADACHA_TEKST, част 2: {fixture_id: [изречения]} от таблица match_text; изключено/грешка -> {} (без текст, страницата е като преди).
+    page=True (страницата на мача, ZADACHA_TEKST_2): изречението за модела - последно; иначе (картата) - записаният ред, първото = най-силното."""
     if not _MATCH_TEXT or not fixture_ids:
         return {}
     try:
         import match_text
-        return match_text.get_texts(fixture_ids)
+        return match_text.get_texts(fixture_ids, page=page)
     except Exception:
         return {}
 
@@ -863,7 +864,7 @@ def register_prognozi_routes(app, ctx):
             home_logo=meta.get("home_logo") if meta else None,
             away_logo=meta.get("away_logo") if meta else None,
             date=match_date, sections=sections, lineup_at=_lineup_note(fixture_id, rows),
-            match_text=_match_texts([fixture_id]).get(fixture_id),
+            match_text=_match_texts([fixture_id], page=True).get(fixture_id),
         )
 
     app.register_blueprint(prognozi_bp)
