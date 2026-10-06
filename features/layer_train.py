@@ -3,7 +3,9 @@
 1. нов features/core_lam_mu.csv (ядрото walk-forward върху актуалните CSV); 2. нова features/features_table.csv.gz;
 3. два модела върху ВСИЧКИ вече изиграни мачове (само минали): AB (преди съставите) и ABC (след съставите) със записаните настройки
    (ABC: features/layer_config.json; AB: най-добрата по ранната половина - sloy_vlizane_20261001.md); 4. запис във layer_model/<версия>/ и
-   layer_model/current.json (старите версии остават). Версията = дата + кратък git hash.
+   layer_model/candidate.json. current.json (това, което е на живо) се сменя САМО от features/layer_gate.py след проверка (ZADACHA_PAZACH,
+   06.10.2026) - пуска се в същия cron ред веднага след това. Версията = дата + кратък git hash (+ _2, _3..., ако папката вече съществува -
+   никога не се презаписва съществуваща версия, напр. текущата при второ обучение в същия ден).
 Самостоятелен процес (crontab, flock), без рестарт. Употреба: nice -n 19 venv/bin/python3 features/layer_train.py [--skip-build]
 """
 import json
@@ -40,9 +42,13 @@ def main():
     abc = json.load(open(os.path.join(ROOT, "features", "layer_config.json")))
     t = L.load_table()
     long = L.to_long(t)
-    version = datetime.utcnow().strftime("%Y%m%d") + "_" + git_hash()
+    base_version = datetime.utcnow().strftime("%Y%m%d") + "_" + git_hash()
+    version, k = base_version, 1
+    while os.path.exists(os.path.join(MODEL_DIR, version)):
+        k += 1
+        version = f"{base_version}_{k}"
     out = os.path.join(MODEL_DIR, version)
-    os.makedirs(out, exist_ok=True)
+    os.makedirs(out)
     meta = {"version": version, "trained_at": datetime.utcnow().isoformat(timespec="seconds"), "git": git_hash(),
             "trained_through": str(t["date"].max()), "n_matches": int(len(t)), "league_codes": L.LEAGUE_CODES, "models": {}}
     for name, cfg in (("AB", AB_CFG), ("ABC", {k: abc[k] for k in ("depth", "min_child", "l2", "n_est", "shrink", "fset")})):
@@ -50,9 +56,13 @@ def main():
         bst.save_model(os.path.join(out, f"{name}.txt"))
         meta["models"][name] = {k: cfg[k] for k in ("depth", "min_child", "l2", "n_est", "shrink", "fset")}
         print(name, "обучен върху", len(t), "мача")
-    json.dump(meta, open(os.path.join(out, "meta.json"), "w"), ensure_ascii=False, indent=1)
-    json.dump({"version": version}, open(os.path.join(MODEL_DIR, "current.json"), "w"))
-    print("версия", version, "->", out)
+    with open(os.path.join(out, "meta.json"), "w") as f:
+        json.dump(meta, f, ensure_ascii=False, indent=1)
+    tmp = os.path.join(MODEL_DIR, ".candidate.json.tmp")
+    with open(tmp, "w") as f:
+        json.dump({"version": version}, f)
+    os.replace(tmp, os.path.join(MODEL_DIR, "candidate.json"))
+    print("версия", version, "->", out, "(кандидат; current.json сменя само features/layer_gate.py)")
 
 
 if __name__ == "__main__":

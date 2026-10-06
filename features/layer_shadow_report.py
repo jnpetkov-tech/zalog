@@ -107,6 +107,21 @@ def section(title, d, base, mk):
     return out
 
 
+def live_versions_line(now=None):
+    """ZADACHA_PAZACH т.6: коя версия на слоя е била на живо (layer_model/current.json) през последните 7 дни - от layer_model/history.csv."""
+    from datetime import timedelta
+    from features import layer_gate as G
+    now = now or datetime.utcnow()
+    try:
+        vs = G.live_versions_between(now - timedelta(days=7), now)
+    except Exception as e:
+        return f"Версия на слоя на живо през седмицата: неизвестна (layer_model/history.csv: {type(e).__name__}: {e})."
+    if not vs:
+        return f"Версия на слоя на живо през седмицата: няма запис в layer_model/history.csv (сега current.json = {G.current_version()})."
+    return "Версия на слоя на живо през седмицата (layer_model/history.csv): " + "; ".join(
+        f"**{v}** {a.strftime('%d.%m %H:%M')} – {'сега' if b >= now else b.strftime('%d.%m %H:%M')}" for v, a, b in vs) + " UTC."
+
+
 def main():
     res = load_results()
     d, con = load_shadow(res)
@@ -121,7 +136,8 @@ def main():
     L_ = [f"# Режим „в сянка“ на слоя — седмичен отчет — {datetime.utcnow().strftime('%d.%m.%Y')}", "",
           "Скрипт: `features/layer_shadow_report.py`. Данни: `layer_shadow` в `predictions.db` (записите са излезли ПРЕДИ мачовете; последният преди началото на всеки мач). "
           "Нищо публично не е променено. Критерият от `validation/sloy_nastroyki_20261001.md` се прилага върху тези нови мачове.", "",
-          f"Записани мачове: pre {int(d[d['mode']=='pre']['fixture_id'].nunique())}, final {int(d[d['mode']=='final']['fixture_id'].nunique())}; уредени: pre {n_pre}, final {len(fin)}.", ""]
+          f"Записани мачове: pre {int(d[d['mode']=='pre']['fixture_id'].nunique())}, final {int(d[d['mode']=='final']['fixture_id'].nunique())}; уредени: pre {n_pre}, final {len(fin)}.", "",
+          live_versions_line(), ""]
     if n_pre:
         L_ += section("pre (набор AB, преди състав)", pre, base, mk)
     if len(fin) >= 20:

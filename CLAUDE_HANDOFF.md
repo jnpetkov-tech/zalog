@@ -12,6 +12,19 @@
 
 ---
 
+## ЗА ДАКА КАТО СЕ ВЪРНЕ — сесия 06.10.2026 (`ZADACHA_PAZACH`, `PROGRESS_PAZACH.md`) — БЕЗ рестарт (не е нужен)
+
+- **Връщане назад на слоя (една команда):** `venv/bin/python3 features/layer_gate.py --rollback` — най-горе в `PROGRESS_PAZACH.md`.
+- `features/layer_train.py` вече **не** сменя `layer_model/current.json` — пише `candidate.json`. Нов `features/layer_gate.py` (същия cron ред,
+  пон 05:20 UTC) проверява кандидата срещу текущата (зарежда ли се, крайни числа, сборове 99–101%, отношение 0.5–2, Brier/log-loss не значимо
+  по-лоши, калибрация) и само тогава сменя `current.json` атомарно. Отказ → „ОТХВЪРЛЕНА: …“ в `layer_gate_log.txt`; отчет всеки път в
+  `validation/pazach_<дата>.md` (commit от `syanka_commit_cron.sh` 08:30). История на версиите: `layer_model/history.csv`; пазят се последните 4.
+- Тест (`validation/pazach_test_20261006.txt`, 9/9 OK, на копие): `20261005_d8f9a8b` срещу `20261001_7d29039` минава (в шума); ×5, NaN,
+  повреден файл, липсваща папка — отхвърлени, `current.json` непроменен. Бекъп: `data_backups/20261006_pazach/` (и стария crontab).
+- Седмичният отчет на сянката вече пише коя версия е била на живо през седмицата. Първо истинско пускане на пазача: 12.10.2026 05:20 UTC.
+
+---
+
 ## ЗА ДАКА КАТО СЕ ВЪРНЕ — сесия 02.10.2026 вечер (`ZADACHA_SASTAVI_BARZO`, `PROGRESS_SASTAVI.md`) — БЕЗ рестарт (не е нужен)
 
 - **Съставите на 5 мин:** `layer_shadow.py --final-only` (crontab `*/5`) — мачовете в следващите 75 мин без final, `/fixtures?ids=` до 20 мача
