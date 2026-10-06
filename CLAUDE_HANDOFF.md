@@ -12,6 +12,19 @@
 
 ---
 
+## ЗА ДАКА КАТО СЕ ВЪРНЕ — сесия 06.10.2026 (`ZADACHA_PAZACH_2`, `PROGRESS_PAZACH.md`, втори раздел) — ГОТОВО ЗА РЕСТАРТ (за страницата)
+
+- **`/admin/model`** („🧠 Модел“ в менюто, линк на `/admin` и `/system`, зад паролата): „На живо: версия X, от …, приета защото …“ или
+  „ВНИМАНИЕ: … отхвърлено“; таблица от последната проверка (`layer_model/last_gate.json`, цветове + изречение); история; бутони „Върни
+  предишната версия“ и „Приеми кандидата въпреки това“ (потвърждение, POST, `history.csv` „ръчно от Дака“, само `current.json`, до 30 мин).
+  Логиката — `layer_gate.status/manual_rollback/manual_accept` под ключа `/tmp/layer_train.lock`. **Чака рестарт** (Flask).
+- **Известия** (`notify.py`): решение на пазача, ръчно превключване, грешка в преобучението/пазача. Канал от `.env`
+  (`NOTIFY_CHANNEL=telegram|email`), без него — само `notify_log.txt`. Пробно: `venv/bin/python3 notify.py --test`. Как се включва — стъпки
+  в `PROGRESS_PAZACH.md`. Crontab пон 05:20 → `layer_weekly_cron.sh` (известие при грешка; бекъп: `data_backups/20261006_pazach2/`).
+- Тест на копие (отделно Flask приложение): `validation/pazach2_test_20261006.txt` — 21/21 OK, вкл. стария тест на пазача.
+
+---
+
 ## ЗА ДАКА КАТО СЕ ВЪРНЕ — сесия 06.10.2026 (`ZADACHA_PAZACH`, `PROGRESS_PAZACH.md`) — БЕЗ рестарт (не е нужен)
 
 - **Връщане назад на слоя (една команда):** `venv/bin/python3 features/layer_gate.py --rollback` — най-горе в `PROGRESS_PAZACH.md`.

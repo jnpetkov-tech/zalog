@@ -26,6 +26,11 @@ MIN_UNSEEN (обичайно: при седмичното обучение ка�
   venv/bin/python3 features/layer_gate.py               # проверява candidate.json (crontab, след layer_train.py)
   venv/bin/python3 features/layer_gate.py --rollback    # current.json = предишната приета версия
   --model-dir DIR --report-dir DIR --log FILE           # само за тестове върху копие
+  --notify-log FILE                                     # само за тестове: известията - в този файл, нищо навън
+
+ZADACHA_PAZACH_2 (06.10.2026): при всяко пускане пише и layer_model/last_gate.json (числата от проверката за страницата /admin/model) и
+праща известие (notify.py) при решение и при грешка в пазача. Ръчните действия от /admin/model (manual_rollback, manual_accept) са тук,
+до логиката на версиите, и вземат същия ключ /tmp/layer_train.lock като cron реда - не се застъпват с преобучението/проверката.
 """
 import csv
 import json
@@ -48,9 +53,22 @@ SUM_RANGE = (0.99, 1.01)
 CAL_RANGE = (0.9, 1.1)
 KEEP = 4
 MODELS = ("AB", "ABC")
+LOCK_PATH = "/tmp/layer_train.lock"   # същият ключ като cron реда (flock -n) на layer_train.py + layer_gate.py
+LAST_GATE = "last_gate.json"
+NOTIFY_LOG = None                     # тестове: файл вместо notify_log.txt
+NOTIFY_ENV = None                     # тестове: {} -> нищо не се праща навън
 HIST_COLS = ["at_utc", "action", "version", "previous", "note"]
 SETS_CURRENT = ("НАЧАЛНА", "ПРИЕТА", "ВЪРНАТА")      # действия, след които history.version е текущата
 ACCEPTED = ("НАЧАЛНА", "ПРИЕТА")
+
+
+def notify(text):
+    try:
+        sys.path.insert(0, ROOT)
+        import notify as N
+        return N.send(text, env=NOTIFY_ENV, log_path=NOTIFY_LOG)
+    except Exception as e:                    # известието никога не спира пазача
+        print("известие: грешка", e)
 
 
 def now_iso():
@@ -297,6 +315,7 @@ def run_gate(model_dir, report_dir, log_path):
     reasons = []
     res = {}
     meta_c = meta_k = None
+    eval_note, n_eval = "", 0
     try:
         meta_c, boost_c = load_version(model_dir, cand)
     except Exception as e:
@@ -313,6 +332,7 @@ def run_gate(model_dir, report_dir, log_path):
         import pandas as pd
         from features import layer_lib as L
         t, note = eval_set([meta_c, meta_k])
+        eval_note, n_eval = note, len(t)
         lines += ["## Мачове за проверката", "", note, ""]
         base = dict(pd.read_csv(CAL_BASE).set_index("code")["b_early"])
         for fset in MODELS:
@@ -323,12 +343,13 @@ def run_gate(model_dir, report_dir, log_path):
                 continue
             bad, st = sanity(t, lam_c, mu_c, Pc)
             reasons += [f"{fset}: {b}" for b in bad]
-            r = {"sanity": st}
+            r = {"sanity": st, "bad": bad}
             if meta_k is not None and not bad:
                 _, _, Pk = predict(t, meta_k, boost_k, fset)
                 bad2, cmp_ = compare(t, Pc, Pk, base)
                 reasons += [f"{fset}: {b}" for b in bad2]
                 r["cmp"] = cmp_
+                r["bad_cmp"] = bad2
             res[fset] = r
         lines += report_tables(res, cur)
     verdict = "ПРИЕТА" if not reasons else "ОТХВЪРЛЕНА"
@@ -358,6 +379,12 @@ def run_gate(model_dir, report_dir, log_path):
         os.remove(os.path.join(model_dir, "candidate.json"))
     except FileNotFoundError:
         pass
+    write_last_gate(model_dir, {"at_utc": now_iso(), "candidate": cand, "current_before": cur, "verdict": verdict, "reasons": reasons,
+                                "eval_note": eval_note, "n_matches": n_eval, "models": res})
+    if verdict == "ПРИЕТА":
+        notify(f"Модел: приет нов {cand} (беше {cur or 'няма'}) - пазачът: всички проверки минаха. Сайтът минава на него до 30 мин.")
+    else:
+        notify(f"Модел: ОТХВЪРЛЕН кандидат {cand}, остава {cur or 'няма'} - {'; '.join(reasons)}")
     os.makedirs(report_dir, exist_ok=True)
     out = os.path.join(report_dir, f"pazach_{datetime.utcnow().strftime('%Y%m%d')}.md")
     if os.path.exists(out):                       # второ пускане в същия ден - не презаписва първия отчет
@@ -366,6 +393,14 @@ def run_gate(model_dir, report_dir, log_path):
         f.write("\n".join(lines) + "\n")
     print("отчет:", out)
     return 0 if verdict == "ПРИЕТА" else 2
+
+
+def write_last_gate(model_dir, d):
+    """layer_model/last_gate.json - числата от последната проверка (за /admin/model). Атомарно."""
+    tmp = os.path.join(model_dir, ".last_gate.json.tmp")
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(d, f, ensure_ascii=False, indent=1, default=float)
+    os.replace(tmp, os.path.join(model_dir, LAST_GATE))
 
 
 def report_tables(res, cur):
@@ -402,18 +437,106 @@ def run_rollback(model_dir, log_path):
     write_current(model_dir, target)
     append_history(model_dir, "ВЪРНАТА", target, cur, "ръчно: layer_gate.py --rollback")
     log(f"ВЪРНАТА: {target} (беше {cur})", log_path)
+    notify(f"Модел: ВЪРНАТА версия {target} (беше {cur}) - ръчно с --rollback. Сайтът минава на нея до 30 мин.")
     print("На живо влиза при следващия цикъл на снимката/сянката (самостоятелни процеси) - без рестарт.")
     return 0
 
 
+# ----------------------------------------------------------------------------------------------- ръчно от /admin/model (ZADACHA_PAZACH_2)
+class Busy(Exception):
+    pass
+
+
+def _locked(fn):
+    """Изпълнява fn() под /tmp/layer_train.lock (неблокиращо). Зает -> Busy (тече преобучението или проверката)."""
+    import fcntl
+    fd = os.open(LOCK_PATH, os.O_RDWR | os.O_CREAT, 0o664)
+    try:
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            raise Busy("в момента тече седмичното преобучение/проверка - опитай пак след няколко минути")
+        return fn()
+    finally:
+        os.close(fd)
+
+
+def status(model_dir=MODEL_DIR):
+    """Всичко за страницата /admin/model (само четене, само stdlib)."""
+    hist = read_history(model_dir)
+    cur = current_version(model_dir)
+    since = None
+    for r in hist:
+        if r["action"] in SETS_CURRENT and r["version"] == cur:
+            since = r                                  # последният ред, който е направил текущата текуща
+    last = hist[-1] if hist else None
+    rejected = None
+    if last and last["action"] == "ОТХВЪРЛЕНА" and last["version"] != cur and last.get("previous", "") == (cur or ""):
+        rejected = dict(last, folder_ok=version_ok(model_dir, last["version"]))
+    gate = read_json(os.path.join(model_dir, LAST_GATE))
+    return {"current": cur, "since": since, "last": last, "rejected": rejected, "rollback_to": rollback_target(model_dir),
+            "history": list(reversed(hist)), "gate": gate}
+
+
+def manual_rollback(model_dir=MODEL_DIR, expected_current=None, log_path=LOG_PATH, who="ръчно от Дака (бутон на /admin/model)"):
+    def do():
+        cur = current_version(model_dir)
+        if expected_current is not None and cur != expected_current:
+            raise RuntimeError(f"текущата версия вече е {cur}, не {expected_current} - презареди страницата")
+        target = rollback_target(model_dir)
+        if not target:
+            raise RuntimeError("няма предишна приета версия с налична папка - нищо не е сменено")
+        write_current(model_dir, target)
+        append_history(model_dir, "ВЪРНАТА", target, cur, who)
+        log(f"ВЪРНАТА: {target} (беше {cur}) - {who}", log_path)
+        notify(f"Модел: ВЪРНАТА версия {target} (беше {cur}) - {who}. Сайтът минава на нея до 30 мин.")
+        return target, cur
+    return _locked(do)
+
+
+def manual_accept(model_dir=MODEL_DIR, version=None, expected_current=None, log_path=LOG_PATH, who="ръчно от Дака (бутон на /admin/model)"):
+    """Приема последния ОТХВЪРЛЕН кандидат въпреки пазача. Само ако: последният ред в history.csv е неговото отхвърляне спрямо текущата,
+    папката е пълна и моделите се зареждат (проба в отделен процес)."""
+    def do():
+        st = status(model_dir)
+        cur, rej = st["current"], st["rejected"]
+        if expected_current is not None and cur != expected_current:
+            raise RuntimeError(f"текущата версия вече е {cur}, не {expected_current} - презареди страницата")
+        if not rej or rej["version"] != version:
+            raise RuntimeError(f"{version} не е последният отхвърлен кандидат - нищо не е сменено")
+        if not rej["folder_ok"]:
+            raise RuntimeError(f"папката на {version} липсва или е непълна - нищо не е сменено")
+        for m in MODELS:
+            p = os.path.join(model_dir, version, f"{m}.txt")
+            r = subprocess.run([sys.executable, "-c", "import sys, lightgbm; lightgbm.Booster(model_file=sys.argv[1])", p],
+                               capture_output=True, text=True, timeout=300)
+            if r.returncode != 0:
+                raise RuntimeError(f"{m}.txt на {version} не се зарежда - не може да влезе на живо, нищо не е сменено")
+        write_current(model_dir, version)
+        append_history(model_dir, "ПРИЕТА", version, cur, f"{who}, въпреки отказа на пазача ({rej['note'][:300]})")
+        log(f"ПРИЕТА: {version} (беше {cur}) - {who}, въпреки отказа на пазача", log_path)
+        notify(f"Модел: приет нов {version} (беше {cur}) - {who}, въпреки отказа на пазача. Сайтът минава на него до 30 мин.")
+        return version, cur
+    return _locked(do)
+
+
 def main(argv):
+    global NOTIFY_LOG
     def opt(name, default):
         return argv[argv.index(name) + 1] if name in argv else default
     model_dir = opt("--model-dir", MODEL_DIR)
     log_path = opt("--log", LOG_PATH)
+    NOTIFY_LOG = opt("--notify-log", NOTIFY_LOG)
     if "--rollback" in argv:
         return run_rollback(model_dir, log_path)
-    return run_gate(model_dir, opt("--report-dir", REPORT_DIR), log_path)
+    try:
+        return run_gate(model_dir, opt("--report-dir", REPORT_DIR), log_path)
+    except Exception as e:                    # грешка в пазача - не тихо: лог + известие; current.json остава какъвто е
+        import traceback
+        traceback.print_exc()
+        log(f"ГРЕШКА в пазача: {type(e).__name__}: {e} (current.json непроменен)", log_path)
+        notify(f"Модел: ГРЕШКА в пазача - {type(e).__name__}: {e}. На живо остава {current_version(model_dir)}; виж layer_gate_cron.log")
+        return 3
 
 
 if __name__ == "__main__":

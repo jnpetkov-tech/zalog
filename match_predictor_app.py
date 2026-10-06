@@ -1699,6 +1699,9 @@ register_match_routes(app, {
     "fair_odds": fair_odds, "pp": pp, "bt": bt, "API_KEY": API_KEY, "BASE_URL": BASE_URL, "requests": requests,
     "market_label": market_label,
 })
+# ZADACHA_PAZACH_2 (06.10.2026): /admin/model - коя версия на слоя е на живо и защо, ръчно връщане/приемане (зад паролата, не е в PUBLIC_PATHS)
+from web.model_admin import register_model_admin_routes
+register_model_admin_routes(app, {})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8001)

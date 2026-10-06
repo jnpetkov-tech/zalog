@@ -1,0 +1,148 @@
+
+<!DOCTYPE html><html lang="bg"><head><meta charset="UTF-8"><title>Модел</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap&subset=cyrillic-ext" rel="stylesheet">
+<style>
+:root {
+  /* Партида 2 (01.09.2026): стойностите обновени да съвпадат с
+     design_mockup_prognozi.html (Дака) - едно място за палитрата, вместо
+     макетът и тук да разминават (виж задачата: "макетът печели, обнови
+     токените"). Имената на променливите непипнати - използват се от
+     всичките templates/*.html, само стойностите се сменят. */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --bg:#0d0e10; --panel:#18191c; --panel2:#1b1c20; --sidebar-bg:#18191c; --border:#28292d;
+  --text:#f3f4f5; --sub:#94979d; --accent:#18b98a; --accent-hover:#20cc9a;
+  --green:#18b98a; --green-bg:#0f2a23; --yellow:#eab308; --yellow-bg:#332a10;
+  --grey:#5b6473; --live:#ff5c5c; --red:#ef5b52;
+  /* Нови, само от макета - за /prognozi и бъдеща употреба, не заменят
+     горните, добавени са. */
+  --text-faint:#626468; --line-soft:#202124;
+  --accent-soft:rgba(24,185,138,0.12); --danger-soft:rgba(239,91,82,0.1);
+}
+</style>
+<style>
+  body { font-family: var(--font-sans); background: var(--bg); color: var(--text); margin: 0; padding: 24px; }
+  .container { max-width: 980px; margin: 0 auto; }
+  h1 { font-size: 20px; font-weight: 500; margin-bottom: 12px; color: var(--text); }
+  .group-title { font-size: 12px; color: var(--sub); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; padding-left: 4px; }
+  .match-card { background: var(--panel2); border: 1px solid var(--border); border-radius: 10px; padding: 9px 14px; margin-bottom: 6px; }
+
+  .sidebar { position: fixed; top:0; left:0; bottom:0; width:220px; background:var(--sidebar-bg); border-right:1px solid var(--border); padding:24px 0; overflow-y:auto; z-index:200; }
+  .sidebar-logo { padding:0 20px 20px; font-size:16px; font-weight:600; color:var(--accent); }
+  .sidebar-section { padding:16px 20px 6px; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:#525a68; font-weight:700; }
+  .sidebar a { display:flex; align-items:center; gap:10px; padding:10px 20px; color:var(--sub); text-decoration:none; font-size:13px; }
+  .sidebar a.active { background:rgba(31,174,140,0.15); color:var(--accent); font-weight:500; border-right:3px solid var(--accent); }
+  .sidebar a:hover { background:var(--panel2); }
+  .sidebar-toggle { display:none; position:fixed; top:16px; left:16px; z-index:300; background:var(--panel2); color:var(--text); border:1px solid var(--border); border-radius:8px; width:40px; height:40px; align-items:center; justify-content:center; font-size:18px; cursor:pointer; }
+  body { padding-left:244px; }
+  @media (max-width: 860px) {
+    .sidebar { transform:translateX(-100%); transition:transform 0.2s ease; box-shadow:4px 0 12px rgba(0,0,0,0.4); }
+    .sidebar.open { transform:translateX(0); }
+    .sidebar-toggle { display:flex; }
+    body { padding-left:24px; padding-top:70px; }
+  }
+</style>
+<style>
+  .big { font-size: 22px; font-weight: 700; line-height: 1.4; padding: 18px 20px; border-radius: 12px; margin-bottom: 18px; }
+  .big.ok { background: var(--green-bg); color: var(--green); border: 1px solid var(--green); }
+  .big.warn { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow); }
+  .note { color: var(--sub); font-size: 13px; line-height: 1.6; margin: 0 0 14px; }
+  .msg { padding: 10px 14px; border-radius: 10px; margin-bottom: 14px; font-size: 14px; }
+  .msg.ok { background: var(--green-bg); color: var(--green); }
+  .msg.err { background: var(--danger-soft); color: var(--red); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 18px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--sub); font-weight: 500; font-size: 12px; }
+  .dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; }
+  .dot.green { background: var(--green); } .dot.yellow { background: var(--yellow); } .dot.red { background: var(--red); }
+  tr.red td { background: var(--danger-soft); }
+  .btn { font-size: 14px; padding: 10px 16px; border-radius: 10px; border: 1px solid var(--border); cursor: pointer; background: var(--panel2); color: var(--text); }
+  .btn.warn { border-color: var(--yellow); color: var(--yellow); }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 8px 0 24px; }
+  .tablewrap { overflow-x: auto; }
+  h2 { font-size: 16px; font-weight: 600; margin: 26px 0 8px; }
+</style></head><body>
+<div class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</div>
+<div class="sidebar">
+  <a href="/daily" class="">📅 Днес</a>
+  <a href="/results" class="">📋 Как се справяме</a>
+  <a href="/my_bets" class="">🎯 Моите залози</a>
+  <a href="/how_it_works" class="">❓ Как работи това</a>
+  <div class="sidebar-section">Система</div>
+  <a href="/system" class="">⚙️ Система</a>
+  <a href="/admin/model" class="active">🧠 Модел</a>
+  <div style="margin-top:18px;padding:12px 20px;font-size:10.5px;line-height:1.5;color:var(--sub);border-top:1px solid var(--border);">
+    🔞 Информационно съдържание, не съвет за залагане. Хазартът е забранен за лица под 18 години и може да пристрасти.
+  </div>
+</div>
+<div class="container">
+<h1>Модел на живо</h1>
+
+
+
+<div class="big warn">ВНИМАНИЕ: последното преобучение (20261006_badx5, 06.10.2026 03:52 UTC) е отхвърлено — остава версия 20261005_d8f9a8b, причина: AB: отношение слой/ядро извън 0.5-2.0 в 1910 стойности; AB: сбор 1x2 извън 99-101% в 200 мача; ABC: отношение слой/ядро извън 0.5-2.0 в 1910 стойности; ABC: сбор 1x2 извън 99-101% в 200 мача</div>
+
+<p class="note">„Моделът“ тук е обученият слой, който коригира прогнозите на ядрото. Всеки понеделник в 05:20 UTC се обучава нова версия
+(„кандидат“), а пазачът я сравнява с текущата и я пуска на живо само ако мине всички проверки. Тук виждаш резултата и можеш да решиш
+и сам. Превключването сменя само кой файл се ползва — <b>сайтът ще мине на новата версия до 30 мин</b>, без рестарт.</p>
+
+<div class="actions">
+  
+  <form method="post" action="/admin/model/rollback" onsubmit="return confirm('Да върна ли предишната версия 20261001_7d29039 на мястото на 20261005_d8f9a8b?');">
+    <input type="hidden" name="confirm" value="1"><input type="hidden" name="current" value="20261005_d8f9a8b">
+    <button class="btn" type="submit">⏪ Върни предишната версия (20261001_7d29039)</button>
+  </form>
+  
+  
+    
+  <form method="post" action="/admin/model/accept" onsubmit="return confirm('Пазачът ОТХВЪРЛИ 20261006_badx5. Сигурен ли си, че искаш да я пуснеш на живо въпреки това?');">
+    <input type="hidden" name="confirm" value="1"><input type="hidden" name="current" value="20261005_d8f9a8b">
+    <input type="hidden" name="version" value="20261006_badx5">
+    <button class="btn warn" type="submit">⚠️ Приеми кандидата 20261006_badx5 въпреки това</button>
+  </form>
+    
+  
+</div>
+
+<h2>Последна проверка на пазача</h2>
+
+<p class="note">06.10.2026 03:52 UTC · кандидат <b>20261006_badx5</b> срещу текущата тогава <b>20261005_d8f9a8b</b> ·
+решение: <b>ОТХВЪРЛЕНА</b> — AB: отношение слой/ядро извън 0.5-2.0 в 1910 стойности; AB: сбор 1x2 извън 99-101% в 200 мача; ABC: отношение слой/ядро извън 0.5-2.0 в 1910 стойности; ABC: сбор 1x2 извън 99-101% в 200 мача.<br>
+Бележка: невидени и от двата модела са само 0 мача (&lt; 200) - сравнението е върху най-новите 8 седмици от таблицата с признаци (955 мача, 2026-08-10 – 2026-10-04). И двата модела са виждали (част от) тези мачове при обучение - проверката хваща счупен или странен модел, не пренастройване.</p>
+<p class="note">🟢 наред · 🟡 за внимание, но не блокира · 🔴 проблем (причина за отказ)</p>
+
+<h2 style="font-size:14px;">Прогнозата преди съставите (AB)</h2>
+<div class="tablewrap"><table>
+  <tr><th></th><th>Проверка</th><th>Текуща</th><th>Кандидат</th><th>Какво значи</th></tr>
+  
+  <tr class="red"><td><span class="dot red"></span></td><td>Здрав ли е моделът</td><td></td><td>проблем</td><td>Кандидатът дава странни числа: отношение слой/ядро извън 0.5-2.0 в 1910 стойности; сбор 1x2 извън 99-101% в 200 мача</td></tr>
+  
+</table></div>
+
+<h2 style="font-size:14px;">Прогнозата след съставите (ABC)</h2>
+<div class="tablewrap"><table>
+  <tr><th></th><th>Проверка</th><th>Текуща</th><th>Кандидат</th><th>Какво значи</th></tr>
+  
+  <tr class="red"><td><span class="dot red"></span></td><td>Здрав ли е моделът</td><td></td><td>проблем</td><td>Кандидатът дава странни числа: отношение слой/ядро извън 0.5-2.0 в 1910 стойности; сбор 1x2 извън 99-101% в 200 мача</td></tr>
+  
+</table></div>
+
+
+
+<h2>История на версиите</h2>
+<div class="tablewrap"><table>
+  <tr><th>Кога</th><th>Какво</th><th>Версия</th><th>Преди нея</th><th>Бележка</th></tr>
+  
+  <tr class="red"><td style="white-space:nowrap;">06.10.2026 03:52 UTC</td><td><b>ОТХВЪРЛЕНА</b></td>
+    <td>20261006_badx5</td><td>20261005_d8f9a8b</td><td>AB: отношение слой/ядро извън 0.5-2.0 в 1910 стойности; AB: сбор 1x2 извън 99-101% в 200 мача; ABC: отношение слой/ядро извън 0.5-2.0 в 1910 стойности; ABC: сбор 1x2 извън 99-101% в 200 мача</td></tr>
+  
+  <tr class=""><td style="white-space:nowrap;">06.10.2026 03:52 UTC</td><td><b>ПРИЕТА</b></td>
+    <td>20261005_d8f9a8b</td><td>20261001_7d29039</td><td>пазач: всички проверки минаха</td></tr>
+  
+  <tr class=""><td style="white-space:nowrap;">06.10.2026 03:52 UTC</td><td><b>НАЧАЛНА</b></td>
+    <td>20261001_7d29039</td><td></td><td>тест: първата обучена версия</td></tr>
+  
+</table></div>
+</div>
+</body></html>
