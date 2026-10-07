@@ -8,6 +8,7 @@
   venv/bin/python3 validation/top4_yadro_20261007.py --check   # tri_fit (нови опции) срещу football_lib; А срещу features/core_lam_mu.csv
   venv/bin/python3 validation/top4_yadro_20261007.py --early   # всички варианти, ранната половина -> избор (записва се, commit)
   venv/bin/python3 validation/top4_yadro_20261007.py --late    # А и избраният, късната половина (веднъж) -> отчет
+  venv/bin/python3 validation/top4_yadro_20261007.py --report  # ако няма избран: отчет само от ранната (късната не се пуска)
 Изход: validation/top4_yadro_20261007_{check.txt,early.csv,early.md,late.csv,late_matches.csv}, validation/top4_yadro_20261007.md
 """
 import json
@@ -180,11 +181,11 @@ def check():
         df = fl.load_league_data(league)
         teams, n, ti = fl.get_team_index(df)
         fin = df.dropna(subset=["home_goals", "away_goals"])
-        ref = pd.Timestamp("2025-10-06")
+        ref = pd.Timestamp("2025-10-20")   # понеделник след международната пауза (на 06.10 няма мачове)
         hist = fin[fin["date"] < ref]
         xi = fl.LEAGUE_XI.get(league, fl.XI)
         kw = kw_of(league)
-        for v, flkw in (("Б", dict(use_dc=True, low_data_extra_reg=LDR)),
+        for v, flkw in (("А", dict(intercept=kw["intercept"], tempo_mult=kw["tempo_mult"])), ("Б", dict(use_dc=True, low_data_extra_reg=LDR)),
                         ("Г", dict(use_dc=True, low_data_extra_reg=LDR, intercept=kw["intercept"], tempo_mult=kw["tempo_mult"]))):
             a = fit_variant(v, hist, ref, ti, n, xi, kw, None)
             b = fl.fit_goals_direct_covariate(hist, ref, ti, n, INJ[0], INJ[1], xi=xi, **flkw)
@@ -304,6 +305,45 @@ def write_md(chosen, dA, dX, ci, per_lg, passed, c1, c2, n):
     print("\n".join(L))
 
 
+def report_no_choice():
+    """Ако на ранната няма избран вариант: отчет само от ранната (разлики спрямо А с интервали, по група и лига) - защо и кой е най-близо.
+    Късната половина НЕ се пуска."""
+    sel = json.load(open(SEL))
+    if sel["chosen"]:
+        print("има избран вариант - ползвай --late")
+        return
+    d = pd.read_csv(os.path.join(V, f"top4_yadro_{TAG}_early_matches.csv"))
+    A = d[d.variant == "А"].sort_values("fixture_id").reset_index(drop=True)
+    mA = per_match(A)
+    base = base_freq(A)
+    early_md = open(os.path.join(V, f"top4_yadro_{TAG}_early.md"), encoding="utf-8").read().split("\n", 2)[2]
+    L = ["# ЧАСТ 2 (ZADACHA_MODELI) — ядрото за england / germany / spain / france", "",
+         "**Решение: КРИТЕРИЯТ НЕ Е ИЗПЪЛНЕН — нищо не влиза.** На ранната половина нито един от Б/В/Г не е по-добър от сегашния А, затова "
+         "по записаното правило (`validation/top4_yadro_nastroyki_20261007.md`) няма избран вариант и **късната половина не е пускана**. "
+         "`football_lib.fit_goals_direct_covariate()` има новите параметри (по подразбиране — старото бит по бит, "
+         "`validation/top4_yadro_20261007_default.txt`), но живият код ги не ползва; `TOP4_CORE` не е въведен.", "",
+         "Проверка на бързия фитър: `validation/top4_yadro_20261007_check.txt`. Скрипт: `validation/top4_yadro_20261007.py`. По мач: "
+         "`validation/top4_yadro_20261007_early_matches.csv`.", "", "## Ранна половина (дата < 2025-09-23)", "", early_md.strip(), "",
+         "## Разлика спрямо А на ранната (вариант − А, 95% bootstrap по мач; положително = по-лошо)", "",
+         "| вариант | Brier 11 | Brier 1X2 | log-loss 1X2 | 1x2 | ou25 | btts | team_total |", "|---|---|---|---|---|---|---|---|"]
+    lg_rows = []
+    for v in VARIANTS[1:]:
+        X = d[d.variant == v].sort_values("fixture_id").reset_index(drop=True)
+        mX = per_match(X)
+        c = {k: boot(mX[k] - mA[k]) for k in ("b11", "b1x2", "ll1x2") + tuple(f"b_{g}" for g in GROUPS)}
+        L.append(f"| {v} | {fmt_ci(c['b11'])} | {fmt_ci(c['b1x2'])} | {fmt_ci(c['ll1x2'], 4)} | " +
+                 " | ".join(fmt_ci(c[f'b_{g}']) for g in GROUPS) + " |")
+        for lg in LEAGUES:
+            s = A.league == lg
+            dx, da = describe(X[s], mX[s], base), describe(A[s], mA[s], base)
+            lg_rows.append(f"| {v} | {lg} | {int(s.sum())} | {fmt_ci(boot((mX['b11'] - mA['b11'])[s]))} | {da['draw_model'] * 100:.1f}% → "
+                           f"{dx['draw_model'] * 100:.1f}% (реално {da['draw_real'] * 100:.1f}%) | {X[s].rho.mean():+.3f} |")
+    L += ["", "### По лига (Brier 11, вариант − А)", "", "| вариант | лига | мачове | разлика, 95% | равни модел А → вариант | ср. rho |",
+          "|---|---|---|---|---|---|"] + lg_rows
+    open(os.path.join(V, f"top4_yadro_{TAG}.md"), "w", encoding="utf-8").write("\n".join(L) + "\n")
+    print("\n".join(L))
+
+
 if __name__ == "__main__":
     if "--check" in sys.argv:
         check()
@@ -311,5 +351,7 @@ if __name__ == "__main__":
         early()
     elif "--late" in sys.argv:
         late()
+    elif "--report" in sys.argv:
+        report_no_choice()
     else:
         print(__doc__)

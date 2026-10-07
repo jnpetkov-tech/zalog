@@ -1,0 +1,16 @@
+# Проверка на бързия фитър за новите опции (ZADACHA_МОДЕЛИ, ЧАСТ 2)
+
+- england А (11 мача от 2025-10-20): макс. разлика lam/mu tri_fit − football_lib 3.3e-03; rho 0.0000 / 0.0000
+- england Б (11 мача от 2025-10-20): макс. разлика lam/mu tri_fit − football_lib 5.1e-04; rho -0.0140 / -0.0141
+- england Г (11 мача от 2025-10-20): макс. разлика lam/mu tri_fit − football_lib 1.9e-03; rho -0.0140 / -0.0138
+- germany А (9 мача от 2025-10-20): макс. разлика lam/mu tri_fit − football_lib 2.7e-04; rho 0.0000 / 0.0000
+- germany Б (9 мача от 2025-10-20): макс. разлика lam/mu tri_fit − football_lib 1.3e-06; rho -0.0843 / -0.0843
+- germany Г (9 мача от 2025-10-20): макс. разлика lam/mu tri_fit − football_lib 8.0e-05; rho -0.0837 / -0.0837
+- spain А (10 мача от 2025-10-20): макс. разлика lam/mu tri_fit − football_lib 2.2e-03; rho 0.0000 / 0.0000
+- spain Б (10 мача от 2025-10-20): макс. разлика lam/mu tri_fit − football_lib 2.0e-03; rho 0.0126 / 0.0129
+- spain Г (10 мача от 2025-10-20): макс. разлика lam/mu tri_fit − football_lib 3.3e-03; rho 0.0129 / 0.0129
+- france А (9 мача от 2025-10-20): макс. разлика lam/mu tri_fit − football_lib 2.3e-03; rho 0.0000 / 0.0000
+- france Б (9 мача от 2025-10-20): макс. разлика lam/mu tri_fit − football_lib 5.8e-04; rho -0.0513 / -0.0514
+- france Г (9 мача от 2025-10-20): макс. разлика lam/mu tri_fit − football_lib 3.9e-04; rho -0.0495 / -0.0495
+
+А (ранната половина, 1402 общи мача) срещу features/core_lam_mu.csv: макс. |Δlam| 4.2e-03, макс. |Δmu| 1.4e-03, средно |Δlam| 5.8e-05; rho в core = 0.0 (0 = няма rho, както каза прегледът).
