@@ -22,7 +22,10 @@ validation/pazach_<дата>.md (отчет се пише при всяко пу
     отхвърля се, ако долната граница е > 0 (значимо по-лош);
  в) коефициент на калибрация по група (база - validation/sloy_kalibraciq_base_20261001.csv, като седмичния отчет) в 0.9-1.1,
     или поне |a − 1| не по-голямо от това на текущата;
- г) брой мачове със сменена водеща прогноза (1X2, над/под, двата вкарват) - записва се, не блокира.
+ г) брой мачове със сменена водеща прогноза (1X2, над/под, двата вкарват) - записва се, не блокира;
+ д) (ZADACHA_MODELI_2, 07.10.2026; само в режим holdout) проверочният кандидат срещу ядрото без слой върху 4-те невидени седмици, за AB и ABC
+    поотделно: отхвърля се (цялата версия), ако Brier 11 или log-loss 1X2 (кандидат − ядро) е значимо по-лош (долна граница > 0); по-лош в шума -
+    приема се с бележка. Ако и проверочната текуща рецепта е значимо по-лоша от ядрото - в известието препоръка LAYER_LIVE=0 (само препоръка).
 Без текуща версия (първо пускане) - само (а).
 
 ВЕРСИИ. layer_model/history.csv - коя версия кога е влязла (ПРИЕТА / ОТХВЪРЛЕНА / ЧАКА / ВЪРНАТА / НАЧАЛНА). Пазят се последните KEEP папки
@@ -348,15 +351,15 @@ def calib_dist_ci(Pc, Pk, Y, base, n=2000, seed=42):
 
 # ----------------------------------------------------------------------------------------------- главно
 def vs_core(t, P):
-    """За сведение: проверочният кандидат срещу ядрото без слой (Brier 11 изхода, log-loss) върху същите мачове."""
+    """(д) проверочен модел срещу ядрото без слой върху същите мачове: Brier 11 изхода и log-loss 1X2, разлика модел − ядро по мач, 95%."""
     import numpy as np
     from features import layer_lib as L
     Y = L.y_matrix(t["hg"], t["ag"])
     with np.errstate(all="ignore"):
         P0 = L.probs(t["lam"].to_numpy(), t["mu"].to_numpy(), t["rho"])
     b1, b0 = L.brier_match(P, Y), L.brier_match(P0, Y)
-    l1 = np.mean(list(L.logloss_match(P, Y).values()), axis=0)
-    l0 = np.mean(list(L.logloss_match(P0, Y).values()), axis=0)
+    l1 = L.logloss_match(P, Y)["1x2"]
+    l0 = L.logloss_match(P0, Y)["1x2"]
     return {"brier": (float(b0.mean()), float(b1.mean()), L.boot_ci(b1 - b0)), "logloss": (float(l0.mean()), float(l1.mean()), L.boot_ci(l1 - l0))}
 
 
@@ -420,6 +423,7 @@ def run_gate(model_dir, report_dir, log_path):
                     bad.append(f"проверочният модел не предсказва: {type(e).__name__}: {e}")
             reasons += [f"{fset}: {b}" for b in bad]
             r["bad"] = bad
+            Pkh = None
             if meta_k is not None and not bad:
                 _, _, Pk = predict(t, meta_k, boost_k, fset)
                 if mode == "holdout":
@@ -431,10 +435,26 @@ def run_gate(model_dir, report_dir, log_path):
                 reasons += [f"{fset}: {b}" for b in bad2]
                 r["cmp"] = cmp_
                 r["bad_cmp"] = bad2
-            if Ph is not None:
-                r["vs_core"] = vs_core(t, Ph)
+            if Ph is not None and not bad:
+                v = r["vs_core"] = vs_core(t, Ph)
+                bad_d = [f"(д) слоят е значимо по-лош от ядрото: {nm} {d[2][0]:+.5f} [{d[2][1]:+.5f}; {d[2][2]:+.5f}]"
+                         for nm, d in (("Brier 11", v["brier"]), ("log-loss 1X2", v["logloss"])) if d[2][1] > 0]
+                reasons += [f"{fset}: {b}" for b in bad_d]
+                r["bad_core"] = bad_d
+                if Pkh is not None:
+                    vk = r["vs_core_cur"] = vs_core(t, Pkh)
+                    r["cur_worse_than_core"] = bool(vk["brier"][2][1] > 0 or vk["logloss"][2][1] > 0)
             res[fset] = r
         lines += report_tables(res, cur, mode)
+    core_bad = [f for f, r in res.items() if r.get("bad_core")]
+    core_msg = None
+    if core_bad:
+        core_msg = (f"Модел: ОТХВЪРЛЕН кандидат {cand} - слоят ({', '.join(core_bad)}) е по-лош от ядрото на последните 4 седмици; на живо "
+                    f"остава {cur or 'няма'}.")
+        cur_bad = [f for f, r in res.items() if r.get("cur_worse_than_core")]
+        if cur_bad:
+            core_msg += (f" И текущата е по-лоша от ядрото ({', '.join(cur_bad)}) - препоръка: LAYER_LIVE=0, решава Дака.")
+        lines += ["## Слоят срещу ядрото (д)", "", core_msg.replace("Модел: ", ""), ""]
     if reasons:
         verdict = "ОТХВЪРЛЕНА"
     elif mode == "fallback" and meta_k is not None:
@@ -479,11 +499,14 @@ def run_gate(model_dir, report_dir, log_path):
     write_last_gate(model_dir, {"at_utc": now_iso(), "candidate": cand, "current_before": cur, "verdict": verdict, "reasons": reasons,
                                 "eval_note": eval_note, "n_matches": n_eval, "mode": mode,
                                 "holdout_from": (meta_c or {}).get("holdout_from"),
-                                "same_recipe": ((meta_c or {}).get("holdout") or {}).get("same_recipe"), "models": res})
+                                "same_recipe": ((meta_c or {}).get("holdout") or {}).get("same_recipe"), "core_msg": core_msg,
+                                "models": res})
     if verdict == "ПРИЕТА":
         notify(f"Модел: приет нов {cand} (беше {cur or 'няма'}) - пазачът: всички проверки минаха. Сайтът минава на него до 30 мин.")
     elif verdict == "ЧАКА РЕШЕНИЕ":
         notify(f"Модел: кандидат {cand} ЧАКА твоето решение (пауза - малко мачове за честна проверка); на живо остава {cur}. Виж /admin/model.")
+    elif core_msg:
+        notify(core_msg)
     else:
         notify(f"Модел: ОТХВЪРЛЕН кандидат {cand}, остава {cur or 'няма'} - {'; '.join(reasons)}")
     os.makedirs(report_dir, exist_ok=True)
@@ -527,11 +550,17 @@ def report_tables(res, cur, mode=None):
         elif not cur:
             out += ["Няма текуща версия — само проверка (а).", ""]
         if "vs_core" in r:
-            v = r["vs_core"]
-            out += [f"За сведение (не блокира): проверочният кандидат срещу ядрото без слой върху същите мачове — Brier {v['brier'][0]:.5f} → "
-                    f"{v['brier'][1]:.5f} ({v['brier'][2][0]:+.5f} [{v['brier'][2][1]:+.5f}; {v['brier'][2][2]:+.5f}]); log-loss "
-                    f"{v['logloss'][0]:.5f} → {v['logloss'][1]:.5f} ({v['logloss'][2][0]:+.5f} [{v['logloss'][2][1]:+.5f}; "
-                    f"{v['logloss'][2][2]:+.5f}]).", ""]
+            for key, who in (("vs_core", "проверочният кандидат"), ("vs_core_cur", "проверочната текуща рецепта (за сведение)")):
+                if key not in r:
+                    continue
+                v = r[key]
+                worse = v["brier"][2][1] > 0 or v["logloss"][2][1] > 0
+                verdict = ("ЗНАЧИМО ПО-ЛОШ от ядрото" + (" — причина за отказ" if key == "vs_core" else "") if worse else
+                           "по-лош от ядрото, но в рамките на шума — не блокира" if max(v["brier"][2][0], v["logloss"][2][0]) > 0 else
+                           "не по-лош от ядрото")
+                out += [f"(д) {who} срещу ядрото без слой върху същите мачове — Brier 11 {v['brier'][0]:.5f} → {v['brier'][1]:.5f} "
+                        f"({v['brier'][2][0]:+.5f} [{v['brier'][2][1]:+.5f}; {v['brier'][2][2]:+.5f}]); log-loss 1X2 {v['logloss'][0]:.5f} → "
+                        f"{v['logloss'][1]:.5f} ({v['logloss'][2][0]:+.5f} [{v['logloss'][2][1]:+.5f}; {v['logloss'][2][2]:+.5f}]): {verdict}.", ""]
     if mode == "holdout":
         out += ["(б)/(в) в таблиците: проверочният кандидат срещу проверочната текуща рецепта (без 4-те седмици); (а) — и окончателният, и "
                 "проверочният кандидат; (г) — окончателният кандидат срещу окончателната текуща.", ""]

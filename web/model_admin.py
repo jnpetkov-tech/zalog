@@ -79,7 +79,19 @@ def gate_rows(gate):
                 rows.append({"name": f"Сменена водеща прогноза: {g}", "cur": "", "cand": f"{k} от {n} ({share:.1f}%)", "color": color,
                              "text": f"В толкова мача кандидатът посочва друг най-вероятен изход от текущата. Не блокира - само за сведение"
                                      f"{' (много смени - заслужава поглед)' if color == 'red' else ''}."})
-        else:
+        v = r.get("vs_core")
+        if v:
+            for key, label in (("brier", "Слоят срещу ядрото без слой: Brier 11"), ("logloss", "Слоят срещу ядрото без слой: log-loss 1X2")):
+                core, cand, ci = v[key]
+                s = _sig(ci)
+                color = "red" if s == "worse" else "green" if ci[0] <= 0 else "yellow"
+                text = {"worse": "Слоят греши ЗНАЧИМО повече от самото ядро на последните 4 седмици - причина за отказ.",
+                        "better": "Слоят греши значимо по-малко от самото ядро на последните 4 седмици.",
+                        "noise": ("Разликата е в рамките на шума" + (", слоят е малко по-добър." if ci[0] <= 0 else
+                                                                     ", слоят е малко по-лош, но не значимо - не блокира."))}[s]
+                rows.append({"name": label, "cur": f"ядро {core:.5f}", "cand": f"{cand:.5f}", "color": color,
+                             "text": f"{text} (разлика {ci[0]:+.5f}, 95%: {ci[1]:+.5f} до {ci[2]:+.5f}; проверочният кандидат, невидени мачове)"})
+        if not c:
             for b in r.get("bad_cmp") or []:
                 rows.append({"name": "Сравнение", "cur": "", "cand": "", "color": "red", "text": b})
         out.append({"fset": fset, "title": MODEL_NAMES.get(fset, fset), "rows": rows})

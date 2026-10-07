@@ -1,0 +1,202 @@
+
+<!DOCTYPE html><html lang="bg"><head><meta charset="UTF-8"><title>Модел</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap&subset=cyrillic-ext" rel="stylesheet">
+<style>
+:root {
+  /* Партида 2 (01.09.2026): стойностите обновени да съвпадат с
+     design_mockup_prognozi.html (Дака) - едно място за палитрата, вместо
+     макетът и тук да разминават (виж задачата: "макетът печели, обнови
+     токените"). Имената на променливите непипнати - използват се от
+     всичките templates/*.html, само стойностите се сменят. */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --bg:#0d0e10; --panel:#18191c; --panel2:#1b1c20; --sidebar-bg:#18191c; --border:#28292d;
+  --text:#f3f4f5; --sub:#94979d; --accent:#18b98a; --accent-hover:#20cc9a;
+  --green:#18b98a; --green-bg:#0f2a23; --yellow:#eab308; --yellow-bg:#332a10;
+  --grey:#5b6473; --live:#ff5c5c; --red:#ef5b52;
+  /* Нови, само от макета - за /prognozi и бъдеща употреба, не заменят
+     горните, добавени са. */
+  --text-faint:#626468; --line-soft:#202124;
+  --accent-soft:rgba(24,185,138,0.12); --danger-soft:rgba(239,91,82,0.1);
+}
+</style>
+<style>
+  body { font-family: var(--font-sans); background: var(--bg); color: var(--text); margin: 0; padding: 24px; }
+  .container { max-width: 980px; margin: 0 auto; }
+  h1 { font-size: 20px; font-weight: 500; margin-bottom: 12px; color: var(--text); }
+  .group-title { font-size: 12px; color: var(--sub); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; padding-left: 4px; }
+  .match-card { background: var(--panel2); border: 1px solid var(--border); border-radius: 10px; padding: 9px 14px; margin-bottom: 6px; }
+
+  .sidebar { position: fixed; top:0; left:0; bottom:0; width:220px; background:var(--sidebar-bg); border-right:1px solid var(--border); padding:24px 0; overflow-y:auto; z-index:200; }
+  .sidebar-logo { padding:0 20px 20px; font-size:16px; font-weight:600; color:var(--accent); }
+  .sidebar-section { padding:16px 20px 6px; font-size:11px; text-transform:uppercase; letter-spacing:0.06em; color:#525a68; font-weight:700; }
+  .sidebar a { display:flex; align-items:center; gap:10px; padding:10px 20px; color:var(--sub); text-decoration:none; font-size:13px; }
+  .sidebar a.active { background:rgba(31,174,140,0.15); color:var(--accent); font-weight:500; border-right:3px solid var(--accent); }
+  .sidebar a:hover { background:var(--panel2); }
+  .sidebar-toggle { display:none; position:fixed; top:16px; left:16px; z-index:300; background:var(--panel2); color:var(--text); border:1px solid var(--border); border-radius:8px; width:40px; height:40px; align-items:center; justify-content:center; font-size:18px; cursor:pointer; }
+  body { padding-left:244px; }
+  @media (max-width: 860px) {
+    .sidebar { transform:translateX(-100%); transition:transform 0.2s ease; box-shadow:4px 0 12px rgba(0,0,0,0.4); }
+    .sidebar.open { transform:translateX(0); }
+    .sidebar-toggle { display:flex; }
+    body { padding-left:24px; padding-top:70px; }
+  }
+</style>
+<style>
+  .big { font-size: 22px; font-weight: 700; line-height: 1.4; padding: 18px 20px; border-radius: 12px; margin-bottom: 18px; }
+  .big.ok { background: var(--green-bg); color: var(--green); border: 1px solid var(--green); }
+  .big.warn { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow); }
+  .note { color: var(--sub); font-size: 13px; line-height: 1.6; margin: 0 0 14px; }
+  .msg { padding: 10px 14px; border-radius: 10px; margin-bottom: 14px; font-size: 14px; }
+  .msg.ok { background: var(--green-bg); color: var(--green); }
+  .msg.err { background: var(--danger-soft); color: var(--red); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 18px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--sub); font-weight: 500; font-size: 12px; }
+  .dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; }
+  .dot.green { background: var(--green); } .dot.yellow { background: var(--yellow); } .dot.red { background: var(--red); }
+  tr.red td { background: var(--danger-soft); }
+  .btn { font-size: 14px; padding: 10px 16px; border-radius: 10px; border: 1px solid var(--border); cursor: pointer; background: var(--panel2); color: var(--text); }
+  .btn.warn { border-color: var(--yellow); color: var(--yellow); }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 8px 0 24px; }
+  .tablewrap { overflow-x: auto; }
+  h2 { font-size: 16px; font-weight: 600; margin: 26px 0 8px; }
+</style></head><body>
+<div class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</div>
+<div class="sidebar">
+  <a href="/daily" class="">📅 Днес</a>
+  <a href="/results" class="">📋 Как се справяме</a>
+  <a href="/my_bets" class="">🎯 Моите залози</a>
+  <a href="/how_it_works" class="">❓ Как работи това</a>
+  <div class="sidebar-section">Система</div>
+  <a href="/system" class="">⚙️ Система</a>
+  <a href="/admin/model" class="active">🧠 Модел</a>
+  <div style="margin-top:18px;padding:12px 20px;font-size:10.5px;line-height:1.5;color:var(--sub);border-top:1px solid var(--border);">
+    🔞 Информационно съдържание, не съвет за залагане. Хазартът е забранен за лица под 18 години и може да пристрасти.
+  </div>
+</div>
+<div class="container">
+<h1>Модел на живо</h1>
+
+
+
+<div class="big warn">ВНИМАНИЕ: последното преобучение (20261007_d73ae89_2_polovin_kandidat, 07.10.2026 06:57 UTC) е отхвърлено — остава версия 20261007_d73ae89_2_polovin_tekushta, причина: AB: (д) слоят е значимо по-лош от ядрото: log-loss 1X2 +0.01905 [+0.00546; +0.03284]; ABC: (д) слоят е значимо по-лош от ядрото: log-loss 1X2 +0.02125 [+0.00685; +0.03584]</div>
+
+<p class="note">„Моделът“ тук е обученият слой, който коригира прогнозите на ядрото. Всеки понеделник в 05:20 UTC се обучава нова версия
+(„кандидат“), а пазачът я сравнява с текущата и я пуска на живо само ако мине всички проверки. Тук виждаш резултата и можеш да решиш
+и сам. Превключването сменя само кой файл се ползва — <b>сайтът ще мине на новата версия до 30 мин</b>, без рестарт.</p>
+
+<div class="actions">
+  
+  <form method="post" action="/admin/model/rollback" onsubmit="return confirm('Да върна ли предишната версия 20261007_d73ae89 на мястото на 20261007_d73ae89_2_polovin_tekushta?');">
+    <input type="hidden" name="confirm" value="1"><input type="hidden" name="current" value="20261007_d73ae89_2_polovin_tekushta">
+    <button class="btn" type="submit">⏪ Върни предишната версия (20261007_d73ae89)</button>
+  </form>
+  
+  
+    
+  <form method="post" action="/admin/model/accept" onsubmit="return confirm('Пазачът ОТХВЪРЛИ 20261007_d73ae89_2_polovin_kandidat. Сигурен ли си, че искаш да я пуснеш на живо въпреки това?');">
+    <input type="hidden" name="confirm" value="1"><input type="hidden" name="current" value="20261007_d73ae89_2_polovin_tekushta">
+    <input type="hidden" name="version" value="20261007_d73ae89_2_polovin_kandidat">
+    <button class="btn warn" type="submit">⚠️ Приеми кандидата 20261007_d73ae89_2_polovin_kandidat въпреки това</button>
+  </form>
+    
+  
+</div>
+
+<h2>Последна проверка на пазача</h2>
+
+<p class="note">07.10.2026 06:57 UTC · кандидат <b>20261007_d73ae89_2_polovin_kandidat</b> срещу текущата тогава <b>20261007_d73ae89_2_polovin_tekushta</b> ·
+решение: <b>ОТХВЪРЛЕНА</b> — AB: (д) слоят е значимо по-лош от ядрото: log-loss 1X2 +0.01905 [+0.00546; +0.03284]; ABC: (д) слоят е значимо по-лош от ядрото: log-loss 1X2 +0.02125 [+0.00685; +0.03584].<br>
+Честна проверка: 359 изиграни мача от 2026-09-07 до 2026-10-04 (последните 4 седмици). (б)/(в) сравняват ПРОВЕРОЧНИТЕ модели на кандидата и на рецептата на текущата, обучени без тези мачове (18408 мача до 2026-09-07) - нито един не ги е виждал. (а) и (г) - окончателните модели върху същите мачове. Рецептата на текущата = рецептата на кандидата -&gt; двете проверочни двойки са еднакви (същите данни), разликата в (б)/(в) е 0 по построение; проверката тогава хваща главно счупени данни/признаци (през (а)) - виж и сравнението с ядрото без слой по-долу.<br>В таблиците колоните „Текуща“ и „Кандидат“ за точността и калибрацията са
+проверочните модели (рецептата на текущата и на кандидата, обучени без последните 4 седмици).</p>
+<p class="note">🟢 наред · 🟡 за внимание, но не блокира · 🔴 проблем (причина за отказ)</p>
+
+<h2 style="font-size:14px;">Прогнозата преди съставите (AB)</h2>
+<div class="tablewrap"><table>
+  <tr><th></th><th>Проверка</th><th>Текуща</th><th>Кандидат</th><th>Какво значи</th></tr>
+  
+  <tr class="green"><td><span class="dot green"></span></td><td>Здрав ли е моделът</td><td></td><td>наред</td><td>Зарежда се, числата са смислени (кандидатът мести прогнозата на ядрото между 0.70 и 1.45 пъти; рамка 0.5–2).</td></tr>
+  
+  <tr class="green"><td><span class="dot green"></span></td><td>Точност (Brier, по-малко = по-добре)</td><td>0.22851</td><td>0.22851</td><td>Разликата е в рамките на шума - на практика еднакво точни, кандидатът е малко по-добър. (разлика +0.00000, 95%: +0.00000 до +0.00000)</td></tr>
+  
+  <tr class="green"><td><span class="dot green"></span></td><td>Точност (log-loss, по-малко = по-добре)</td><td>0.79472</td><td>0.79472</td><td>Разликата е в рамките на шума - на практика еднакво точни, кандидатът е малко по-добър. (разлика +0.00000, 95%: +0.00000 до +0.00000)</td></tr>
+  
+  <tr class="yellow"><td><span class="dot yellow"></span></td><td>Калибрация: 1X2 (победа/равен) (1.00 = идеално)</td><td>1.738</td><td>1.738</td><td>Извън рамката 0.9–1.1 (по-плах от реалността), но не по-зле от текущата (1.738) - не блокира.</td></tr>
+  
+  <tr class="yellow"><td><span class="dot yellow"></span></td><td>Калибрация: Над/под 2.5 гола (1.00 = идеално)</td><td>1.421</td><td>1.421</td><td>Извън рамката 0.9–1.1 (по-плах от реалността), но не по-зле от текущата (1.421) - не блокира.</td></tr>
+  
+  <tr class="yellow"><td><span class="dot yellow"></span></td><td>Калибрация: Двата вкарват (1.00 = идеално)</td><td>2.288</td><td>2.288</td><td>Извън рамката 0.9–1.1 (по-плах от реалността), но не по-зле от текущата (2.288) - не блокира.</td></tr>
+  
+  <tr class="yellow"><td><span class="dot yellow"></span></td><td>Калибрация: Голове по отбор (1.00 = идеално)</td><td>1.501</td><td>1.501</td><td>Извън рамката 0.9–1.1 (по-плах от реалността), но не по-зле от текущата (1.501) - не блокира.</td></tr>
+  
+  <tr class="green"><td><span class="dot green"></span></td><td>Сменена водеща прогноза: 1X2</td><td></td><td>0 от 359 (0.0%)</td><td>В толкова мача кандидатът посочва друг най-вероятен изход от текущата. Не блокира - само за сведение.</td></tr>
+  
+  <tr class="green"><td><span class="dot green"></span></td><td>Сменена водеща прогноза: над/под 2.5</td><td></td><td>0 от 359 (0.0%)</td><td>В толкова мача кандидатът посочва друг най-вероятен изход от текущата. Не блокира - само за сведение.</td></tr>
+  
+  <tr class="green"><td><span class="dot green"></span></td><td>Сменена водеща прогноза: двата вкарват</td><td></td><td>0 от 359 (0.0%)</td><td>В толкова мача кандидатът посочва друг най-вероятен изход от текущата. Не блокира - само за сведение.</td></tr>
+  
+  <tr class="yellow"><td><span class="dot yellow"></span></td><td>Слоят срещу ядрото без слой: Brier 11</td><td>ядро 0.22635</td><td>0.22851</td><td>Разликата е в рамките на шума, слоят е малко по-лош, но не значимо - не блокира. (разлика +0.00216, 95%: -0.00039 до +0.00467; проверочният кандидат, невидени мачове)</td></tr>
+  
+  <tr class="red"><td><span class="dot red"></span></td><td>Слоят срещу ядрото без слой: log-loss 1X2</td><td>ядро 1.00778</td><td>1.02682</td><td>Слоят греши ЗНАЧИМО повече от самото ядро на последните 4 седмици - причина за отказ. (разлика +0.01905, 95%: +0.00546 до +0.03284; проверочният кандидат, невидени мачове)</td></tr>
+  
+</table></div>
+
+<h2 style="font-size:14px;">Прогнозата след съставите (ABC)</h2>
+<div class="tablewrap"><table>
+  <tr><th></th><th>Проверка</th><th>Текуща</th><th>Кандидат</th><th>Какво значи</th></tr>
+  
+  <tr class="green"><td><span class="dot green"></span></td><td>Здрав ли е моделът</td><td></td><td>наред</td><td>Зарежда се, числата са смислени (кандидатът мести прогнозата на ядрото между 0.67 и 1.49 пъти; рамка 0.5–2).</td></tr>
+  
+  <tr class="green"><td><span class="dot green"></span></td><td>Точност (Brier, по-малко = по-добре)</td><td>0.22890</td><td>0.22890</td><td>Разликата е в рамките на шума - на практика еднакво точни, кандидатът е малко по-добър. (разлика +0.00000, 95%: +0.00000 до +0.00000)</td></tr>
+  
+  <tr class="green"><td><span class="dot green"></span></td><td>Точност (log-loss, по-малко = по-добре)</td><td>0.79571</td><td>0.79571</td><td>Разликата е в рамките на шума - на практика еднакво точни, кандидатът е малко по-добър. (разлика +0.00000, 95%: +0.00000 до +0.00000)</td></tr>
+  
+  <tr class="yellow"><td><span class="dot yellow"></span></td><td>Калибрация: 1X2 (победа/равен) (1.00 = идеално)</td><td>1.728</td><td>1.728</td><td>Извън рамката 0.9–1.1 (по-плах от реалността), но не по-зле от текущата (1.728) - не блокира.</td></tr>
+  
+  <tr class="yellow"><td><span class="dot yellow"></span></td><td>Калибрация: Над/под 2.5 гола (1.00 = идеално)</td><td>1.413</td><td>1.413</td><td>Извън рамката 0.9–1.1 (по-плах от реалността), но не по-зле от текущата (1.413) - не блокира.</td></tr>
+  
+  <tr class="yellow"><td><span class="dot yellow"></span></td><td>Калибрация: Двата вкарват (1.00 = идеално)</td><td>2.233</td><td>2.233</td><td>Извън рамката 0.9–1.1 (по-плах от реалността), но не по-зле от текущата (2.233) - не блокира.</td></tr>
+  
+  <tr class="yellow"><td><span class="dot yellow"></span></td><td>Калибрация: Голове по отбор (1.00 = идеално)</td><td>1.493</td><td>1.493</td><td>Извън рамката 0.9–1.1 (по-плах от реалността), но не по-зле от текущата (1.493) - не блокира.</td></tr>
+  
+  <tr class="green"><td><span class="dot green"></span></td><td>Сменена водеща прогноза: 1X2</td><td></td><td>0 от 359 (0.0%)</td><td>В толкова мача кандидатът посочва друг най-вероятен изход от текущата. Не блокира - само за сведение.</td></tr>
+  
+  <tr class="green"><td><span class="dot green"></span></td><td>Сменена водеща прогноза: над/под 2.5</td><td></td><td>0 от 359 (0.0%)</td><td>В толкова мача кандидатът посочва друг най-вероятен изход от текущата. Не блокира - само за сведение.</td></tr>
+  
+  <tr class="green"><td><span class="dot green"></span></td><td>Сменена водеща прогноза: двата вкарват</td><td></td><td>0 от 359 (0.0%)</td><td>В толкова мача кандидатът посочва друг най-вероятен изход от текущата. Не блокира - само за сведение.</td></tr>
+  
+  <tr class="yellow"><td><span class="dot yellow"></span></td><td>Слоят срещу ядрото без слой: Brier 11</td><td>ядро 0.22635</td><td>0.22890</td><td>Разликата е в рамките на шума, слоят е малко по-лош, но не значимо - не блокира. (разлика +0.00255, 95%: -0.00003 до +0.00524; проверочният кандидат, невидени мачове)</td></tr>
+  
+  <tr class="red"><td><span class="dot red"></span></td><td>Слоят срещу ядрото без слой: log-loss 1X2</td><td>ядро 1.00778</td><td>1.02903</td><td>Слоят греши ЗНАЧИМО повече от самото ядро на последните 4 седмици - причина за отказ. (разлика +0.02125, 95%: +0.00685 до +0.03584; проверочният кандидат, невидени мачове)</td></tr>
+  
+</table></div>
+
+
+
+<h2>История на версиите</h2>
+<div class="tablewrap"><table>
+  <tr><th>Кога</th><th>Какво</th><th>Версия</th><th>Преди нея</th><th>Бележка</th></tr>
+  
+  <tr class="red"><td style="white-space:nowrap;">07.10.2026 06:57 UTC</td><td><b>ОТХВЪРЛЕНА</b></td>
+    <td>20261007_d73ae89_2_polovin_kandidat</td><td>20261007_d73ae89_2_polovin_tekushta</td><td>AB: (д) слоят е значимо по-лош от ядрото: log-loss 1X2 +0.01905 [+0.00546; +0.03284]; ABC: (д) слоят е значимо по-лош от ядрото: log-loss 1X2 +0.02125 [+0.00685; +0.03584]</td></tr>
+  
+  <tr class=""><td style="white-space:nowrap;">07.10.2026 06:57 UTC</td><td><b>ПРИЕТА</b></td>
+    <td>20261007_d73ae89_2_polovin_tekushta</td><td>20261007_d73ae89</td><td>тест: развалена текуща (ръчно)</td></tr>
+  
+  <tr class="red"><td style="white-space:nowrap;">07.10.2026 06:57 UTC</td><td><b>ОТХВЪРЛЕНА</b></td>
+    <td>20261007_d73ae89_2_polovin</td><td>20261007_d73ae89</td><td>AB: Brier значимо по-лош (+0.00393 [+0.00097; +0.00704]); AB: log-loss значимо по-лош (+0.01142 [+0.00399; +0.01941]); AB: калибрация 1x2 1.738 извън 0.9-1.1 и значимо по-далеч от 1 от текущата (1.155; |a−1| разлика +0.583 [+0.175; +0.865]); AB: (д) слоят е значимо по-лош от ядрото: log-loss 1X2 +0.01905 [+0.00546; +0.03284]; ABC: Brier значимо по-лош (+0.00451 [+0.00132; +0.00793]); ABC: log-loss значимо по-лош (+0.01354 [+0.00559; +0.02252]); ABC: калибрация 1x2 1.728 извън 0.9-1.1 и значимо по-далеч от 1 от текущата (1.115; |a−1| разлика +0.613 [+0.121; +0.923]); ABC: (д) слоят е значимо по-лош от ядрото: log-loss 1X2 +0.02125 [+0.00685; +0.03584]</td></tr>
+  
+  <tr class=""><td style="white-space:nowrap;">07.10.2026 06:56 UTC</td><td><b>ПРИЕТА</b></td>
+    <td>20261007_d73ae89</td><td>20261005_d8f9a8b</td><td>пазач: всички проверки минаха (честна проверка върху 4 невидени седмици)</td></tr>
+  
+  <tr class=""><td style="white-space:nowrap;">05.10.2026 05:22 UTC</td><td><b>ПРИЕТА</b></td>
+    <td>20261005_d8f9a8b</td><td>20261001_7d29039</td><td>автоматично от layer_train.py ПРЕДИ пазача - без проверка; проверена със задна дата 06.10.2026 (validation/pazach_test_20261006.txt т.1: минава)</td></tr>
+  
+  <tr class=""><td style="white-space:nowrap;">01.10.2026 08:56 UTC</td><td><b>НАЧАЛНА</b></td>
+    <td>20261001_7d29039</td><td></td><td>първата обучена версия (ZADACHA_SYANKA); на живо в снимката от 01.10 13:10 UTC (ZADACHA_ZHIVO) - записано със задна дата 06.10.2026</td></tr>
+  
+</table></div>
+</div>
+</body></html>
