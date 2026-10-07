@@ -25,10 +25,13 @@ from scipy.special import gammaln
 
 def fit(hist, ref_date, team_idx, n, xi, kind="goals", reg_strength=3.0, low_data_extra_reg=15.0,
         reg_floor=1.0, reg_mult=1.0, intercept=False, tempo_mult=1.0, x0=None, obs_cols=("home_goals", "away_goals"),
-        cov_cols=None):
+        cov_cols=None, dc=None, direct_low_data_extra_reg=0.0):
     """kind: 'goals' (= fit_goals_model, use_dc=True), 'direct' (= fit_goals_direct_covariate),
-    'xg' (= fit_goals_model(obs_cols=xG, use_dc=False))."""
-    use_dc = kind == "goals"
+    'xg' (= fit_goals_model(obs_cols=xG, use_dc=False)).
+    ZADACHA_MODELI, ЧАСТ 2 (07.10.2026): dc=True/False - Dixon-Coles rho независимо от kind (None = както досега: само за 'goals');
+    direct_low_data_extra_reg > 0 - свиване на отборите с малко данни и за 'direct' (= fit_goals_direct_covariate(use_dc=...,
+    low_data_extra_reg=...)); 0.0 = както досега (еднаква регуларизация)."""
+    use_dc = (kind == "goals") if dc is None else bool(dc)
     need = list(obs_cols) + (list(cov_cols) if cov_cols else [])
     v = hist.dropna(subset=need)
     h = v["home_team"].map(team_idx).to_numpy()
@@ -38,7 +41,13 @@ def fit(hist, ref_date, team_idx, n, xi, kind="goals", reg_strength=3.0, low_dat
     w = np.exp(-xi * np.clip((ref_date - v["date"]).dt.days.to_numpy(), 0, None))
     if kind == "direct":
         hc, ac = v[cov_cols[0]].to_numpy(float), v[cov_cols[1]].to_numpy(float)
-        reg_vec = np.full(n, reg_strength * reg_mult)
+        if direct_low_data_extra_reg:
+            tw = np.zeros(n)
+            np.add.at(tw, h, w)
+            np.add.at(tw, a, w)
+            reg_vec = reg_mult * reg_strength + direct_low_data_extra_reg / (tw + reg_floor)
+        else:
+            reg_vec = np.full(n, reg_strength * reg_mult)
     else:
         hc = ac = None
         tw = np.zeros(n)

@@ -581,9 +581,15 @@ def total_ou_prob(lam, mu, threshold, max_val=25):
 
 
 def fit_goals_direct_covariate(history_df, ref_date, team_idx, n, home_cov_col, away_cov_col, xi=None, reg_strength=3.0,
-                               intercept=False, tempo_mult=1.0):
+                               intercept=False, tempo_mult=1.0, use_dc=False, low_data_extra_reg=0.0, reg_floor=1.0):
     """intercept/tempo_mult - виж fit_goals_model() (ZADACHA_TRI.md, ЧАСТ А); по
-    подразбиране старото поведение точно."""
+    подразбиране старото поведение точно.
+
+    use_dc, low_data_extra_reg, reg_floor (ZADACHA_MODELI, ЧАСТ 2, 07.10.2026) - същата формула като
+    във fit_goals_model(): use_dc=True фитва Dixon-Coles rho (граници -0.9..0.9, tau с clip преди log);
+    low_data_extra_reg > 0 - свиване на отборите с малко данни, reg_vec = reg_strength +
+    low_data_extra_reg / (team_weight + reg_floor). По подразбиране (False, 0.0) - старото поведение
+    точно (rho = 0, еднаква регуларизация)."""
     xi_val = xi if xi is not None else XI
     valid = history_df.dropna(subset=["home_goals", "away_goals", home_cov_col, away_cov_col])
     h_idx = valid["home_team"].map(team_idx).to_numpy()
@@ -594,27 +600,37 @@ def fit_goals_direct_covariate(history_df, ref_date, team_idx, n, home_cov_col, 
     a_cov = valid[away_cov_col].to_numpy()
     days_ago = (ref_date - valid["date"]).dt.days.to_numpy()
     weights = np.exp(-xi_val * np.clip(days_ago, 0, None))
-    reg_vec = np.full(n, reg_strength)
+    team_weight = np.zeros(n)
+    np.add.at(team_weight, h_idx, weights)
+    np.add.at(team_weight, a_idx, weights)
+    if low_data_extra_reg:
+        reg_vec = reg_strength + low_data_extra_reg / (team_weight + reg_floor)
+    else:
+        reg_vec = np.full(n, reg_strength)
+    k = 3 if use_dc else 2          # опашка на параметрите: home_adv, beta[, rho]
 
     def nll(params):
         attack, defence, reg = _team_params(params, n, reg_vec, tempo_mult)
-        home_adv = params[-2]; beta = params[-1]
+        home_adv = params[-k]; beta = params[-k + 1]
         c = params[2 * n] if intercept else 0.0
         lam = np.exp(c + attack[h_idx] - defence[a_idx] + home_adv + beta * h_cov)
         mu = np.exp(c + attack[a_idx] - defence[h_idx] + beta * a_cov)
         ll = poisson.logpmf(hg, lam) + poisson.logpmf(ag, mu)
-        if tempo_mult == 1.0:  # точно старият израз (ред на сумиране)
+        if use_dc:
+            tau = dc_tau(hg, ag, lam, mu, params[-1])
+            ll = ll + np.log(np.clip(tau, 1e-10, None))
+        if tempo_mult == 1.0 and not low_data_extra_reg:  # точно старият израз (ред на сумиране)
             reg = reg_strength * (np.sum(attack ** 2) + np.sum(defence ** 2))
         return -np.sum(ll * weights) + reg
-    x0 = np.zeros(2 * n + 2 + int(intercept))
-    result = minimize(nll, x0, method="L-BFGS-B")
+    n_params = 2 * n + k + int(intercept)
+    x0 = np.zeros(n_params)
+    bounds = [(None, None)] * (n_params - 1) + [(-0.9, 0.9)] if use_dc else None
+    result = minimize(nll, x0, method="L-BFGS-B", bounds=bounds)
     attack_fit, defence_fit, _ = _team_params(result.x, n, reg_vec, tempo_mult)
     return {"attack": attack_fit, "defence": defence_fit,
-            "home_adv": result.x[-2], "beta_direct": result.x[-1],
-            "direct_covariate": True, "c": float(result.x[2 * n]) if intercept else 0.0}
-    return {"attack": result.x[:n], "defence": result.x[n:2 * n],
-            "home_adv": result.x[-2], "beta_direct": result.x[-1],
-            "direct_covariate": True}
+            "home_adv": result.x[-k], "beta_direct": result.x[-k + 1],
+            "direct_covariate": True, "c": float(result.x[2 * n]) if intercept else 0.0,
+            "rho": float(result.x[-1]) if use_dc else 0.0}
 
 
 def get_lambdas_direct(model, team_idx, home, away, h_cov, a_cov):

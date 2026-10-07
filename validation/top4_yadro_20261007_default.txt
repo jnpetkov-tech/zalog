@@ -1,0 +1,11 @@
+# ZADACHA_MODELI ч.2 т.1: новият fit_goals_direct_covariate() с параметри по подразбиране срещу стария (живия до 07.10.2026)
+# скрипт: archive/modeli_20261007/fl_default_check.py <нов football_lib.py> <изход>; стар = data_backups/20261007_modeli/football_lib.py
+# последните 300 изиграни мача на лигата, ref = последната дата; с настройките на лигата и без
+england {'intercept': True, 'tempo_mult': 3.0}: макс. разлика lam/mu 0.00e+00; параметрите бит по бит: True; rho нов 0.0; 5s
+england без настройки: макс. разлика lam/mu 0.00e+00; параметрите бит по бит: True; rho нов 0.0; 5s
+germany {'intercept': True, 'tempo_mult': 3.0}: макс. разлика lam/mu 0.00e+00; параметрите бит по бит: True; rho нов 0.0; 3s
+germany без настройки: макс. разлика lam/mu 0.00e+00; параметрите бит по бит: True; rho нов 0.0; 3s
+spain {'intercept': True, 'tempo_mult': 3.0}: макс. разлика lam/mu 0.00e+00; параметрите бит по бит: True; rho нов 0.0; 5s
+spain без настройки: макс. разлика lam/mu 0.00e+00; параметрите бит по бит: True; rho нов 0.0; 6s
+france {'intercept': True, 'tempo_mult': 1.0}: макс. разлика lam/mu 0.00e+00; параметрите бит по бит: True; rho нов 0.0; 4s
+france без настройки: макс. разлика lam/mu 0.00e+00; параметрите бит по бит: True; rho нов 0.0; 4s
