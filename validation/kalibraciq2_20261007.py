@@ -226,6 +226,20 @@ def late():
     print("\n".join(Ln))
 
 
+def report_no_choice():
+    sel = json.load(open(SEL))
+    if sel["chosen"]:
+        print("има избран вариант - ползвай --late")
+        return
+    early_md = open(os.path.join(V, f"kalibraciq2_{TAG}_early.md"), encoding="utf-8").read().split("\n", 2)[2]
+    Ln = ["# ЧАСТ 3 (ZADACHA_MODELI) — калибрация с отместване", "",
+          "**Решение: КРИТЕРИЯТ НЕ Е ИЗПЪЛНЕН — нищо не влиза.** На ранната половина нито Б, нито В е по-добър от сегашната калибрация А, затова по "
+          "записаното правило (`validation/kalibraciq2_nastroyki_20261007.md`) няма избран вариант и късната половина не е пускана.", "",
+          "## Ранна половина (фит и избор)", "", early_md.strip(), ""]
+    open(os.path.join(V, f"kalibraciq2_{TAG}.md"), "w", encoding="utf-8").write("\n".join(Ln) + "\n")
+    print("\n".join(Ln))
+
+
 if __name__ == "__main__":
     if "--layer" in sys.argv:
         layer()
@@ -233,5 +247,7 @@ if __name__ == "__main__":
         early()
     elif "--late" in sys.argv:
         late()
+    elif "--report" in sys.argv:
+        report_no_choice()
     else:
         print(__doc__)
