@@ -32,6 +32,10 @@ REF_MIN = 1
 REST_CAP = 60.0        # дни; по-дълга пауза (нов отбор в данните, междусезоние) се реже до 60
 # ZADACHA_RAZVITIE т.3 (02.10.2026): допълнителни папки със същите имена на файлове (историята 2019-2021 в hist/). Празно = както преди.
 EXTRA_DIRS = []
+# ТРЕНЬОР (07.10.2026): API-то дава един и същи треньор с различни id (и 0 за различни хора от /fixtures?ids=) -> фалшив coach_new и
+# нулиран coach_tenure_days. True = същият по id ИЛИ по име (_same_coach); False = старото сравнение само по coach_id (за преди/след).
+COACH_BY_NAME = True
+_NAME_PARTICLES = {"van", "von", "der", "den", "del", "dos", "das", "bin"}
 
 
 # ----------------------------------------------------------------------------------------------- зареждане
@@ -84,7 +88,7 @@ def index_raw(raw):
     for r in raw["lineups"].itertuples(index=False):
         if pd.isna(r.team_id):
             continue
-        d = lu_by.setdefault(r.fixture_id, {}).setdefault(int(r.team_id), {"starters": [], "squad": [], "pos": {}, "coach_id": r.coach_id, "formation": r.formation})
+        d = lu_by.setdefault(r.fixture_id, {}).setdefault(int(r.team_id), {"starters": [], "squad": [], "pos": {}, "coach_id": r.coach_id, "coach": r.coach, "formation": r.formation})
         if pd.notna(r.player_id):
             pid = int(r.player_id)
             d["squad"].append(pid)
@@ -232,7 +236,8 @@ def team_match_records(raw):
             t = luf.get(tid)
             if t is not None:
                 rec.update({"starters": tuple(t["starters"]), "squad": tuple(t["squad"]), "pos": t["pos"],
-                            "has_lineup": len(t["starters"]) >= 9, "coach_id": t["coach_id"], "formation": t["formation"]})
+                            "has_lineup": len(t["starters"]) >= 9, "coach_id": t["coach_id"], "coach": t["coach"],
+                            "formation": t["formation"]})
             else:
                 rec["has_lineup"] = False
             recs.append(rec)
@@ -313,6 +318,39 @@ def block_form(prior):
     return out
 
 
+def _name_tokens(name):
+    import unicodedata
+    n = "".join(c for c in unicodedata.normalize("NFKD", str(name).lower()) if not unicodedata.combining(c))
+    return n.replace(".", " ").replace("-", " ").replace("'", " ").split()
+
+
+def _coach_known(cid, name):
+    return (pd.notna(cid) and cid != 0) or (isinstance(name, str) and name.strip() != "")
+
+
+def _same_coach(a, b):
+    """a, b = (coach_id, coach). Един и същи: еднакъв ненулев id; или еднакво име без ударения; или обща фамилия (>= 3 букви, не
+    "van"/"del"..., не първото име на многословно име - "Daniel Ramos"/"Daniel Sousa" са различни) при съвместим инициал на първото име
+    ("M. Carrick"/"Michael Carrick", "G. Gasperini"/"Piero Gasperini Gian"; не "Filipe Martins"/"Vitor Martins")."""
+    (ia, na), (ib, nb) = a, b
+    if not COACH_BY_NAME:
+        return ia == ib
+    if pd.notna(ia) and pd.notna(ib) and ia != 0 and ia == ib:
+        return True
+    if not (isinstance(na, str) and isinstance(nb, str)):
+        return False
+    ta, tb = _name_tokens(na), _name_tokens(nb)
+    if not ta or not tb:
+        return False
+    if ta == tb:
+        return True
+    first = ({ta[0]} if len(ta) > 1 else set()) | ({tb[0]} if len(tb) > 1 else set())
+    shared = {t for t in ta if len(t) >= 3 and t not in _NAME_PARTICLES} & set(tb) - first
+    if not shared:
+        return False
+    return ta[0][0] in {t[0] for t in tb} or tb[0][0] in {t[0] for t in ta}
+
+
 def block_absent(prior, squad_today, starters_today, coach_today, ts):
     """Отсъстващи спрямо обичайния състав. Нужни: състав на ТОЗИ мач (предмачов) + предишни мачове."""
     out = {k: np.nan for k in ("n_usual", "n_absent", "absent_weight", "gk_absent", "def_absent", "mid_absent", "fwd_absent",
@@ -353,12 +391,14 @@ def block_absent(prior, squad_today, starters_today, coach_today, ts):
         out["xi_changes"] = float(sum(1 for p in starters_today if p not in set(prev["starters"])))
         out["xi_experience"] = float(np.mean([starts.get(p, 0) for p in starters_today])) if starters_today else np.nan
     # треньор: нов ли е спрямо предишния мач и колко дни е на този пост (по състави)
-    if coach_today is not None and pd.notna(coach_today):
-        prev_coach = pl[-1]["coach_id"]
-        out["coach_new"] = float(pd.notna(prev_coach) and prev_coach != coach_today)
+    # coach_today = (coach_id, coach); при COACH_BY_NAME=False - старото: само id, 0 се брои за известен
+    if coach_today is not None and (_coach_known(*coach_today) if COACH_BY_NAME else pd.notna(coach_today[0])):
+        prev = (pl[-1]["coach_id"], pl[-1].get("coach"))
+        prev_known = _coach_known(*prev) if COACH_BY_NAME else pd.notna(prev[0])
+        out["coach_new"] = float(prev_known and not _same_coach(prev, coach_today))
         first_ts = ts
         for r in reversed(pl):
-            if r["coach_id"] == coach_today:
+            if _same_coach((r["coach_id"], r.get("coach")), coach_today):
                 first_ts = r["ts"]
             else:
                 break
@@ -466,7 +506,7 @@ def build(core, raw, progress=False):
             squad = starters = coach = None
             t = lu.get(tid) if lu is not None else None
             if t is not None:
-                squad, starters, coach = t["squad"], t["starters"], t["coach_id"]
+                squad, starters, coach = t["squad"], t["starters"], (t["coach_id"], t["coach"])
             row.update({f"{side}_{k}": v for k, v in block_absent(prior, squad, starters, coach, ts).items()})
             # контузени по мача (предмачова информация); NaN, ако за лигата-сезона няма записи изобщо
             if (league, season) in inj_cov:
