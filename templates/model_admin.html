@@ -80,10 +80,10 @@
   {% endif %}
   {% if st.rejected %}
     {% if st.rejected.folder_ok %}
-  <form method="post" action="/admin/model/accept" onsubmit="return confirm('Пазачът ОТХВЪРЛИ {{st.rejected.version}}. Сигурен ли си, че искаш да я пуснеш на живо въпреки това?');">
+  <form method="post" action="/admin/model/accept" onsubmit="return confirm('{% if st.rejected.action == 'ЧАКА' %}Пазачът НЕ можа да провери честно {{st.rejected.version}} (пауза - малко мачове). Сигурен ли си, че искаш да я пуснеш на живо?{% else %}Пазачът ОТХВЪРЛИ {{st.rejected.version}}. Сигурен ли си, че искаш да я пуснеш на живо въпреки това?{% endif %}');">
     <input type="hidden" name="confirm" value="1"><input type="hidden" name="current" value="{{st.current}}">
     <input type="hidden" name="version" value="{{st.rejected.version}}">
-    <button class="btn warn" type="submit">⚠️ Приеми кандидата {{st.rejected.version}} въпреки това</button>
+    <button class="btn warn" type="submit">⚠️ Приеми кандидата {{st.rejected.version}}{% if st.rejected.action != 'ЧАКА' %} въпреки това{% endif %}</button>
   </form>
     {% else %}
   <span class="note" style="margin:0;">Отхвърленият кандидат {{st.rejected.version}} няма пълна папка — не може да бъде приет.</span>
@@ -95,7 +95,8 @@
 {% if gate %}
 <p class="note">{{gate_at}} · кандидат <b>{{gate.candidate}}</b> срещу текущата тогава <b>{{gate.current_before or "—"}}</b> ·
 решение: <b>{{gate.verdict}}</b>{% if gate.reasons %} — {{ gate.reasons|join("; ") }}{% endif %}.<br>
-{{ gate.eval_note|replace("**","") }}</p>
+{{ gate.eval_note|replace("**","") }}{% if gate.mode == "holdout" %}<br>В таблиците колоните „Текуща“ и „Кандидат“ за точността и калибрацията са
+проверочните модели (рецептата на текущата и на кандидата, обучени без последните 4 седмици).{% endif %}</p>
 <p class="note">🟢 наред · 🟡 за внимание, но не блокира · 🔴 проблем (причина за отказ)</p>
 {% for m in models %}
 <h2 style="font-size:14px;">{{m.title}}</h2>
@@ -115,7 +116,7 @@
 <div class="tablewrap"><table>
   <tr><th>Кога</th><th>Какво</th><th>Версия</th><th>Преди нея</th><th>Бележка</th></tr>
   {% for h in st.history %}
-  <tr class="{% if h.action == 'ОТХВЪРЛЕНА' %}red{% endif %}"><td style="white-space:nowrap;">{{fmt_dt(h.at_utc)}}</td><td><b>{{h.action}}</b></td>
+  <tr class="{% if h.action == 'ОТХВЪРЛЕНА' %}red{% elif h.action == 'ЧАКА' %}yellow{% endif %}"><td style="white-space:nowrap;">{{fmt_dt(h.at_utc)}}</td><td><b>{{h.action}}</b></td>
     <td>{{h.version}}</td><td>{{h.previous}}</td><td>{{h.note}}</td></tr>
   {% else %}
   <tr><td colspan="5">Няма записи.</td></tr>

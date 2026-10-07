@@ -105,6 +105,9 @@ def headline(st):
             why = "това е първата обучена версия"
         else:
             why = note
+    if rej and rej["action"] == "ЧАКА":
+        return "warn", (f"ЧАКА ТВОЕТО РЕШЕНИЕ: последното преобучение ({rej['version']}, {_fmt_dt(rej['at_utc'])}) не е прието автоматично — "
+                        f"{rej['note']}. На живо остава версия {cur}.")
     if rej:
         return "warn", (f"ВНИМАНИЕ: последното преобучение ({rej['version']}, {_fmt_dt(rej['at_utc'])}) е отхвърлено — остава версия "
                         f"{cur}, причина: {rej['note']}")

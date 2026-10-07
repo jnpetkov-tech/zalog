@@ -5,9 +5,15 @@ features/layer_train.py вече НЕ сменя layer_model/current.json - об
 current.json = кандидата (атомарно, os.replace). Иначе current.json не се пипа -> "ОТХВЪРЛЕНА: <причина>" в layer_gate_log.txt и в
 validation/pazach_<дата>.md (отчет се пише при всяко пускане).
 
-ВЪРХУ КОИ МАЧОВЕ. Изиграните мачове от таблицата с признаци след trained_through и на двата модела (нито един не ги е виждал). Ако са под
-MIN_UNSEEN (обичайно: при седмичното обучение кандидатът е видял всичко) - най-новите FALLBACK_WEEKS седмици от таблицата, с бележка, че
-и двата модела са ги виждали (тогава проверката хваща счупен/странен модел, не пренастройване).
+ВЪРХУ КОИ МАЧОВЕ (ZADACHA_MODELI, ЧАСТ 1, 07.10.2026 - честна проверка). layer_train.py обучава в папката на кандидата и проверочни
+модели без последните 4 седмици (дата >= meta.holdout_from): {AB,ABC}_holdout.txt (рецептата на кандидата) и {AB,ABC}_holdout_cur.txt
+(рецептата на текущата версия). Ред на избор:
+ 1. "holdout" - ако проверочните файлове ги има (и _cur е за СЕГАШНАТА текуща) и 4-те седмици имат >= MIN_HOLDOUT мача: (б)/(в) сравняват
+    двете проверочни двойки върху 4-те седмици (нито една не ги е виждала); (а) и (г) - окончателните модели върху същите мачове.
+    За сведение (не блокира): проверочният кандидат срещу ядрото без слой върху същите мачове.
+ 2. "unseen" - иначе, изиграни мачове след trained_through и на двата окончателни модела (>= MIN_UNSEEN) - също честно.
+ 3. "fallback" - иначе (международна пауза) най-новите FALLBACK_WEEKS седмици, които моделите са виждали: проверките вървят, но
+    кандидатът НЕ се приема автоматично - решение "ЧАКА РЕШЕНИЕ" (history.csv: ЧАКА), Дака решава от /admin/model.
 
 ПРОВЕРКИ (за всеки от двата модела, AB и ABC):
  а) файловете се зареждат (meta.json, AB.txt, ABC.txt, league_codes = layer_lib.LEAGUE_CODES); lam'/mu' и вероятностите - крайни числа;
@@ -19,7 +25,7 @@ MIN_UNSEEN (обичайно: при седмичното обучение ка�
  г) брой мачове със сменена водеща прогноза (1X2, над/под, двата вкарват) - записва се, не блокира.
 Без текуща версия (първо пускане) - само (а).
 
-ВЕРСИИ. layer_model/history.csv - коя версия кога е влязла (ПРИЕТА / ОТХВЪРЛЕНА / ВЪРНАТА / НАЧАЛНА). Пазят се последните KEEP папки
+ВЕРСИИ. layer_model/history.csv - коя версия кога е влязла (ПРИЕТА / ОТХВЪРЛЕНА / ЧАКА / ВЪРНАТА / НАЧАЛНА). Пазят се последните KEEP папки
 (по име = дата), плюс винаги текущата и тази за връщане. current.json никога не сочи липсваща папка (проверка преди запис).
 
 Употреба:
@@ -47,6 +53,7 @@ LOG_PATH = os.path.join(ROOT, "layer_gate_log.txt")
 CAL_BASE = os.path.join(ROOT, "validation", "sloy_kalibraciq_base_20261001.csv")
 
 MIN_UNSEEN = 200               # мачове, невидени от двата модела, нужни за сравнение върху тях
+MIN_HOLDOUT = 150              # мачове в 4-те проверочни седмици, нужни за честното сравнение (иначе - пауза, чака решение)
 FALLBACK_WEEKS = 8
 RATIO_RANGE = (0.5, 2.0)       # същата рамка като layer_live.RATIO_RANGE
 SUM_RANGE = (0.99, 1.01)
@@ -60,6 +67,7 @@ NOTIFY_ENV = None                     # тестове: {} -> нищо не се
 HIST_COLS = ["at_utc", "action", "version", "previous", "note"]
 SETS_CURRENT = ("НАЧАЛНА", "ПРИЕТА", "ВЪРНАТА")      # действия, след които history.version е текущата
 ACCEPTED = ("НАЧАЛНА", "ПРИЕТА")
+PENDING = ("ОТХВЪРЛЕНА", "ЧАКА")                    # последен ред с тези действия -> кандидатът може да бъде приет ръчно
 
 
 def notify(text):
@@ -171,7 +179,6 @@ def prune(model_dir, keep_extra):
 
 # ----------------------------------------------------------------------------------------------- сметки
 def load_version(model_dir, version):
-    import lightgbm as lgb
     from features import layer_lib as L
     d = os.path.join(model_dir, version)
     meta = read_json(os.path.join(d, "meta.json"))
@@ -183,32 +190,70 @@ def load_version(model_dir, version):
     for m in MODELS:
         if m not in meta.get("models", {}):
             raise RuntimeError(f"meta.json няма модел {m}")
-        p = os.path.join(d, f"{m}.txt")
-        # повреден файл кара LightGBM да убие целия процес (C++ terminate, не изключение) -> първо проба в отделен процес
-        r = subprocess.run([sys.executable, "-c", "import sys, lightgbm; lightgbm.Booster(model_file=sys.argv[1])", p],
-                           capture_output=True, text=True, timeout=300)
-        if r.returncode != 0:
-            tail = (r.stderr or r.stdout).strip().splitlines()
-            raise RuntimeError(f"{m}.txt не се зарежда (код {r.returncode}): {tail[-1][:200] if tail else ''}")
-        boosters[m] = lgb.Booster(model_file=p)
+        boosters[m] = load_booster(os.path.join(d, f"{m}.txt"))
     return meta, boosters
 
 
-def eval_set(metas):
-    import pandas as pd
+def load_booster(p):
+    import lightgbm as lgb
+    # повреден файл кара LightGBM да убие целия процес (C++ terminate, не изключение) -> първо проба в отделен процес
+    r = subprocess.run([sys.executable, "-c", "import sys, lightgbm; lightgbm.Booster(model_file=sys.argv[1])", p],
+                       capture_output=True, text=True, timeout=300)
+    if r.returncode != 0:
+        tail = (r.stderr or r.stdout).strip().splitlines()
+        raise RuntimeError(f"{os.path.basename(p)} не се зарежда (код {r.returncode}): {tail[-1][:200] if tail else ''}")
+    return lgb.Booster(model_file=p)
+
+
+def load_holdout(model_dir, version, meta, cur):
+    """Проверочните модели на кандидата -> ({m: booster}, {m: booster} на текущата рецепта или None, бележка). None, ако ги няма/не важат."""
+    d = os.path.join(model_dir, version)
+    h = meta.get("holdout") or {}
+    if not meta.get("holdout_from") or not all(os.path.isfile(os.path.join(d, f"{m}_holdout.txt")) for m in MODELS):
+        return None, None, "кандидатът няма проверочни модели (обучен преди ЧАСТ 1 или ръчно)"
+    if cur and (h.get("current_version") != cur or not all(os.path.isfile(os.path.join(d, f"{m}_holdout_cur.txt")) for m in MODELS)):
+        return None, None, (f"проверочните модели на текущата рецепта са за {h.get('current_version')}, а текущата сега е {cur} "
+                            f"(или липсват)")
+    hc = {m: load_booster(os.path.join(d, f"{m}_holdout.txt")) for m in MODELS}
+    hk = {m: load_booster(os.path.join(d, f"{m}_holdout_cur.txt")) for m in MODELS} if cur else None
+    return hc, hk, ""
+
+
+def load_played():
     from features import layer_lib as L
     t = L.load_table()
-    t = t[t["hg"].notna() & t["ag"].notna()].reset_index(drop=True)
+    return t[t["hg"].notna() & t["ag"].notna()].reset_index(drop=True)
+
+
+def eval_set(t, metas, meta_c=None, has_holdout=False):
+    """-> (режим, мачове, бележка). Режим: holdout / unseen / fallback (виж най-горе)."""
+    import pandas as pd
+    hold = None
+    if has_holdout:
+        hf, tt = meta_c["holdout_from"], str(meta_c["trained_through"])
+        hold = t[(t["date"] >= hf) & (t["date"] <= tt)].reset_index(drop=True)
+        if len(hold) >= MIN_HOLDOUT:
+            h = meta_c.get("holdout") or {}
+            same = (" Рецептата на текущата = рецептата на кандидата -> двете проверочни двойки са еднакви (същите данни), разликата в (б)/(в) "
+                    "е 0 по построение; проверката тогава хваща главно счупени данни/признаци (през (а)) - виж и сравнението с ядрото без "
+                    "слой по-долу." if h.get("same_recipe") else "")
+            return "holdout", hold, (f"Честна проверка: {len(hold)} изиграни мача от {hf} до {tt} (последните 4 седмици). (б)/(в) сравняват "
+                                     f"ПРОВЕРОЧНИТЕ модели на кандидата и на рецептата на текущата, обучени без тези мачове "
+                                     f"({h.get('n_train_matches', '?')} мача до {hf}) - нито един не ги е виждал. (а) и (г) - окончателните "
+                                     f"модели върху същите мачове." + same)
     cutoff = max(str(m["trained_through"]) for m in metas if m)
     unseen = t[t["date"] > cutoff]
     if len(unseen) >= MIN_UNSEEN:
-        return unseen.reset_index(drop=True), (f"{len(unseen)} изиграни мача след {cutoff} - нито един от двата модела не ги е виждал при "
-                                               f"обучение (out-of-sample).")
+        return "unseen", unseen.reset_index(drop=True), (f"{len(unseen)} изиграни мача след {cutoff} - нито един от двата модела не ги е "
+                                                         f"виждал при обучение (out-of-sample).")
     start = t["d"].max() - pd.Timedelta(weeks=FALLBACK_WEEKS)
     s = t[t["d"] > start].reset_index(drop=True)
-    return s, (f"**Бележка:** невидени и от двата модела са само {len(unseen)} мача (< {MIN_UNSEEN}) - сравнението е върху най-новите "
-               f"{FALLBACK_WEEKS} седмици от таблицата с признаци ({len(s)} мача, {s['date'].min()} – {s['date'].max()}). И двата модела са "
-               f"виждали (част от) тези мачове при обучение - проверката хваща счупен или странен модел, не пренастройване.")
+    why = (f"в 4-те проверочни седмици има само {len(hold)} мача (< {MIN_HOLDOUT}, пауза)" if hold is not None else
+           "кандидатът няма важащи проверочни модели")
+    return "fallback", s, (f"**Бележка:** {why}, а невидени и от двата модела са само {len(unseen)} мача (< {MIN_UNSEEN}) - сравнението е "
+                           f"върху най-новите {FALLBACK_WEEKS} седмици от таблицата с признаци ({len(s)} мача, {s['date'].min()} – "
+                           f"{s['date'].max()}). И двата модела са виждали (част от) тези мачове при обучение - проверката хваща счупен или "
+                           f"странен модел, не по-лош. **Затова кандидатът НЕ се приема автоматично - чака решение на Дака (/admin/model).**")
 
 
 def predict(t, meta, boosters, fset):
@@ -302,6 +347,19 @@ def calib_dist_ci(Pc, Pk, Y, base, n=2000, seed=42):
 
 
 # ----------------------------------------------------------------------------------------------- главно
+def vs_core(t, P):
+    """За сведение: проверочният кандидат срещу ядрото без слой (Brier 11 изхода, log-loss) върху същите мачове."""
+    import numpy as np
+    from features import layer_lib as L
+    Y = L.y_matrix(t["hg"], t["ag"])
+    with np.errstate(all="ignore"):
+        P0 = L.probs(t["lam"].to_numpy(), t["mu"].to_numpy(), t["rho"])
+    b1, b0 = L.brier_match(P, Y), L.brier_match(P0, Y)
+    l1 = np.mean(list(L.logloss_match(P, Y).values()), axis=0)
+    l0 = np.mean(list(L.logloss_match(P0, Y).values()), axis=0)
+    return {"brier": (float(b0.mean()), float(b1.mean()), L.boot_ci(b1 - b0)), "logloss": (float(l0.mean()), float(l1.mean()), L.boot_ci(l1 - l0))}
+
+
 def run_gate(model_dir, report_dir, log_path):
     sys.path.insert(0, ROOT)
     cand_j = read_json(os.path.join(model_dir, "candidate.json"))
@@ -315,7 +373,8 @@ def run_gate(model_dir, report_dir, log_path):
     reasons = []
     res = {}
     meta_c = meta_k = None
-    eval_note, n_eval = "", 0
+    hold_c = hold_k = None
+    eval_note, n_eval, mode = "", 0, None
     try:
         meta_c, boost_c = load_version(model_dir, cand)
     except Exception as e:
@@ -329,9 +388,17 @@ def run_gate(model_dir, report_dir, log_path):
             lines += [cur_note, ""]
             meta_k = None
     if not reasons:
+        try:
+            hold_c, hold_k, hnote = load_holdout(model_dir, cand, meta_c, cur if meta_k is not None else None)
+        except Exception as e:
+            reasons.append(f"проверочните модели на кандидата не се зареждат: {type(e).__name__}: {e}")
+            hnote = ""
+        if hnote:
+            lines += [f"Проверочни модели: {hnote}.", ""]
+    if not reasons:
         import pandas as pd
-        from features import layer_lib as L
-        t, note = eval_set([meta_c, meta_k])
+        t_all = load_played()
+        mode, t, note = eval_set(t_all, [meta_c, meta_k], meta_c, hold_c is not None)
         eval_note, n_eval = note, len(t)
         lines += ["## Мачове за проверката", "", note, ""]
         base = dict(pd.read_csv(CAL_BASE).set_index("code")["b_early"])
@@ -342,31 +409,61 @@ def run_gate(model_dir, report_dir, log_path):
                 reasons.append(f"{fset}: кандидатът не предсказва: {type(e).__name__}: {e}")
                 continue
             bad, st = sanity(t, lam_c, mu_c, Pc)
+            r = {"sanity": st}
+            Ph = None
+            if mode == "holdout":
+                try:
+                    lam_h, mu_h, Ph = predict(t, meta_c, hold_c, fset)
+                    bad_h, _ = sanity(t, lam_h, mu_h, Ph)
+                    bad += [f"проверочен модел: {b}" for b in bad_h]
+                except Exception as e:
+                    bad.append(f"проверочният модел не предсказва: {type(e).__name__}: {e}")
             reasons += [f"{fset}: {b}" for b in bad]
-            r = {"sanity": st, "bad": bad}
+            r["bad"] = bad
             if meta_k is not None and not bad:
                 _, _, Pk = predict(t, meta_k, boost_k, fset)
-                bad2, cmp_ = compare(t, Pc, Pk, base)
+                if mode == "holdout":
+                    _, _, Pkh = predict(t, meta_k, hold_k, fset)
+                    bad2, cmp_ = compare(t, Ph, Pkh, base)
+                    cmp_["top"] = compare(t, Pc, Pk, base)[1]["top"]          # (г) - окончателните модели
+                else:
+                    bad2, cmp_ = compare(t, Pc, Pk, base)
                 reasons += [f"{fset}: {b}" for b in bad2]
                 r["cmp"] = cmp_
                 r["bad_cmp"] = bad2
+            if Ph is not None:
+                r["vs_core"] = vs_core(t, Ph)
             res[fset] = r
-        lines += report_tables(res, cur)
-    verdict = "ПРИЕТА" if not reasons else "ОТХВЪРЛЕНА"
-    if not reasons:
+        lines += report_tables(res, cur, mode)
+    if reasons:
+        verdict = "ОТХВЪРЛЕНА"
+    elif mode == "fallback" and meta_k is not None:
+        verdict = "ЧАКА РЕШЕНИЕ"
+    else:
+        verdict = "ПРИЕТА"
         try:
             write_current(model_dir, cand)
         except Exception as e:
             reasons.append(str(e))
             verdict = "ОТХВЪРЛЕНА"
     if verdict == "ПРИЕТА":
-        append_history(model_dir, "ПРИЕТА", cand, cur, "пазач: всички проверки минаха")
+        append_history(model_dir, "ПРИЕТА", cand, cur, "пазач: всички проверки минаха" + (" (честна проверка върху 4 невидени седмици)"
+                                                                                          if mode == "holdout" else ""))
         target = rollback_target(model_dir)
         gone = prune(model_dir, [cand, target])
         log(f"ПРИЕТА: {cand} (беше {cur}); връщане -> {target}" + (f"; изтрити стари папки: {', '.join(gone)}" if gone else ""), log_path)
         lines += ["## Решение", "", f"**ПРИЕТА** — `current.json` = `{cand}` (атомарно). Предишната `{cur}` остава в папката си; "
                   f"връщане с `venv/bin/python3 features/layer_gate.py --rollback` (-> `{target}`)." +
                   (f" Изтрити стари папки (пазят се последните {KEEP}): {', '.join(gone)}." if gone else ""), ""]
+    elif verdict == "ЧАКА РЕШЕНИЕ":
+        why = ("пауза - малко изиграни мачове за честна проверка; проверките върху виждани мачове минаха, но не доказват, че кандидатът не е "
+               "по-лош - решава Дака от /admin/model")
+        append_history(model_dir, "ЧАКА", cand, cur, why)
+        target = rollback_target(model_dir)
+        gone = prune(model_dir, [cur, target, cand])
+        log(f"ЧАКА РЕШЕНИЕ: {cand}: {why} (current.json непроменен: {cur})", log_path)
+        lines += ["## Решение", "", f"**ЧАКА РЕШЕНИЕ: {why}.**", "", f"`current.json` НЕ е пипан — на живо остава `{cur}`. Кандидатът може да "
+                  f"бъде приет ръчно от `/admin/model` („Приеми кандидата“).", ""]
     else:
         why = "; ".join(reasons)
         append_history(model_dir, "ОТХВЪРЛЕНА", cand, cur, why)
@@ -380,9 +477,13 @@ def run_gate(model_dir, report_dir, log_path):
     except FileNotFoundError:
         pass
     write_last_gate(model_dir, {"at_utc": now_iso(), "candidate": cand, "current_before": cur, "verdict": verdict, "reasons": reasons,
-                                "eval_note": eval_note, "n_matches": n_eval, "models": res})
+                                "eval_note": eval_note, "n_matches": n_eval, "mode": mode,
+                                "holdout_from": (meta_c or {}).get("holdout_from"),
+                                "same_recipe": ((meta_c or {}).get("holdout") or {}).get("same_recipe"), "models": res})
     if verdict == "ПРИЕТА":
         notify(f"Модел: приет нов {cand} (беше {cur or 'няма'}) - пазачът: всички проверки минаха. Сайтът минава на него до 30 мин.")
+    elif verdict == "ЧАКА РЕШЕНИЕ":
+        notify(f"Модел: кандидат {cand} ЧАКА твоето решение (пауза - малко мачове за честна проверка); на живо остава {cur}. Виж /admin/model.")
     else:
         notify(f"Модел: ОТХВЪРЛЕН кандидат {cand}, остава {cur or 'няма'} - {'; '.join(reasons)}")
     os.makedirs(report_dir, exist_ok=True)
@@ -403,7 +504,7 @@ def write_last_gate(model_dir, d):
     os.replace(tmp, os.path.join(model_dir, LAST_GATE))
 
 
-def report_tables(res, cur):
+def report_tables(res, cur, mode=None):
     from features import layer_lib as L
     out = []
     for fset, r in res.items():
@@ -425,6 +526,15 @@ def report_tables(res, cur):
                     "", "(г) мачове със сменена водеща прогноза (не блокира): " + "; ".join(f"{g} {n}" for g, n in c["top"].items()) + ".", ""]
         elif not cur:
             out += ["Няма текуща версия — само проверка (а).", ""]
+        if "vs_core" in r:
+            v = r["vs_core"]
+            out += [f"За сведение (не блокира): проверочният кандидат срещу ядрото без слой върху същите мачове — Brier {v['brier'][0]:.5f} → "
+                    f"{v['brier'][1]:.5f} ({v['brier'][2][0]:+.5f} [{v['brier'][2][1]:+.5f}; {v['brier'][2][2]:+.5f}]); log-loss "
+                    f"{v['logloss'][0]:.5f} → {v['logloss'][1]:.5f} ({v['logloss'][2][0]:+.5f} [{v['logloss'][2][1]:+.5f}; "
+                    f"{v['logloss'][2][2]:+.5f}]).", ""]
+    if mode == "holdout":
+        out += ["(б)/(в) в таблиците: проверочният кандидат срещу проверочната текуща рецепта (без 4-те седмици); (а) — и окончателният, и "
+                "проверочният кандидат; (г) — окончателният кандидат срещу окончателната текуща.", ""]
     return out
 
 
@@ -471,7 +581,7 @@ def status(model_dir=MODEL_DIR):
             since = r                                  # последният ред, който е направил текущата текуща
     last = hist[-1] if hist else None
     rejected = None
-    if last and last["action"] == "ОТХВЪРЛЕНА" and last["version"] != cur and last.get("previous", "") == (cur or ""):
+    if last and last["action"] in PENDING and last["version"] != cur and last.get("previous", "") == (cur or ""):
         rejected = dict(last, folder_ok=version_ok(model_dir, last["version"]))
     gate = read_json(os.path.join(model_dir, LAST_GATE))
     return {"current": cur, "since": since, "last": last, "rejected": rejected, "rollback_to": rollback_target(model_dir),
@@ -495,7 +605,7 @@ def manual_rollback(model_dir=MODEL_DIR, expected_current=None, log_path=LOG_PAT
 
 
 def manual_accept(model_dir=MODEL_DIR, version=None, expected_current=None, log_path=LOG_PATH, who="ръчно от Дака (бутон на /admin/model)"):
-    """Приема последния ОТХВЪРЛЕН кандидат въпреки пазача. Само ако: последният ред в history.csv е неговото отхвърляне спрямо текущата,
+    """Приема последния ОТХВЪРЛЕН или ЧАКАЩ кандидат. Само ако: последният ред в history.csv е неговото отхвърляне/чакане спрямо текущата,
     папката е пълна и моделите се зареждат (проба в отделен процес)."""
     def do():
         st = status(model_dir)
@@ -503,7 +613,7 @@ def manual_accept(model_dir=MODEL_DIR, version=None, expected_current=None, log_
         if expected_current is not None and cur != expected_current:
             raise RuntimeError(f"текущата версия вече е {cur}, не {expected_current} - презареди страницата")
         if not rej or rej["version"] != version:
-            raise RuntimeError(f"{version} не е последният отхвърлен кандидат - нищо не е сменено")
+            raise RuntimeError(f"{version} не е последният отхвърлен/чакащ кандидат - нищо не е сменено")
         if not rej["folder_ok"]:
             raise RuntimeError(f"папката на {version} липсва или е непълна - нищо не е сменено")
         for m in MODELS:
@@ -513,9 +623,10 @@ def manual_accept(model_dir=MODEL_DIR, version=None, expected_current=None, log_
             if r.returncode != 0:
                 raise RuntimeError(f"{m}.txt на {version} не се зарежда - не може да влезе на живо, нищо не е сменено")
         write_current(model_dir, version)
-        append_history(model_dir, "ПРИЕТА", version, cur, f"{who}, въпреки отказа на пазача ({rej['note'][:300]})")
-        log(f"ПРИЕТА: {version} (беше {cur}) - {who}, въпреки отказа на пазача", log_path)
-        notify(f"Модел: приет нов {version} (беше {cur}) - {who}, въпреки отказа на пазача. Сайтът минава на него до 30 мин.")
+        how = "след като пазачът го остави да чака (пауза)" if rej["action"] == "ЧАКА" else "въпреки отказа на пазача"
+        append_history(model_dir, "ПРИЕТА", version, cur, f"{who}, {how} ({rej['note'][:300]})")
+        log(f"ПРИЕТА: {version} (беше {cur}) - {who}, {how}", log_path)
+        notify(f"Модел: приет нов {version} (беше {cur}) - {who}, {how}. Сайтът минава на него до 30 мин.")
         return version, cur
     return _locked(do)
 
