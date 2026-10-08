@@ -1,0 +1,31 @@
+ZADACHA_SKRIVANE - проверка на живия сайт след рестарта (08.10.2026 12:47 UTC), 29 проверки, 29 OK
+
+OK   0. таблица market_visibility на живо - 255 реда; скрити: [('portugal2', '1x2'), ('portugal2', 'ou15'), ('portugal2', 'ou25'), ('europa_league', 'ou35'), ('portugal2', 'ou35'), ('portugal2', 'btts'), ('portugal2', 'home_o15'), ('portugal2', 'away_o15'), ('portugal2', 'home_cs'), ('portugal2', 'away_cs'), ('portugal2', 'cs'), ('portugal2', 'ht'), ('portugal2', 'first'), ('europa_league', 'corners95'), ('portugal2', 'corners95'), ('portugal2', 'dc'), ('*', 'htft'), ('*', 'corners_other'), ('*', 'cards')]
+OK   1. списъкът - всички 200 - 8 страници; не 200: []
+OK   1. списъкът - без „експ.“
+OK   1. списъкът - portugal2 я няма (мачове и меню) - мачове на portugal2 в снимката: 9; виждат се в: []
+OK   1. списъкът - bulgaria2 присъства - дни с мачове на bulgaria2: 3
+OK   2. страниците на мачовете: 200 (portugal2 - 404) - 195 мача; разминавания: []
+OK   2. никъде „mbadge“
+OK   2. никъде „проверен(?![а-я])“
+OK   2. никъде „експериментален“
+OK   2. никъде „Показваме всичко“
+OK   2. никъде „\(експериментално“
+OK   2. никъде „exp-tag“
+OK   2. никъде „експ\.“
+OK   2. никъде „няма данни“
+OK   2. изречението долу на всяка страница - 186 страници; без: []
+OK   2. няма секция „Полувреме / край“
+OK   2. няма секция „Картони“
+OK   2. корнери - само общо 9.5
+OK   2. няма празни секции
+OK   2. europa_league - няма над/под 3.5 - 18 страници; с 3.5: 0
+OK   2. europa_league - няма корнери 9.5 - 18 страници; с корнери: 0
+OK   2. страници с пазари по лиги - 16 лиги: bulgaria, bulgaria2, champions_league, conference_league, england, england2, europa_league, france, france2, germany, germany2, italy, italy2, portugal, spain, spain2
+OK   3. /admin/model с паролата: 200, „Видимост на пазарите“ - код 200
+OK   3. /admin/model без парола - не се показва - код 302
+OK   3. /admin (админ) - 200 - код 200
+OK   3. /results (админ) - 200 - код 200
+OK   3. админската страница на мач (portugal2) - 200, пълният изглед - код 200
+OK   3. админската страница на мач (bulgaria) - 200, пълният изглед - код 200
+OK   3. админската страница на мач (europa_league) - 200, пълният изглед - код 200
