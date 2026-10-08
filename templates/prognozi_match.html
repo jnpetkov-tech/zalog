@@ -37,7 +37,7 @@
      ред е от клетки (изход + наш процент) една до друга. */{% endif %}
   .msection{ margin-bottom:22px; }
   .msection-title{ font-size:12.5px; font-weight:600; color:var(--sub); margin:0 0 8px 2px; }
-  .mrow{ display:grid; grid-auto-flow:column; grid-auto-columns:1fr; gap:8px; margin-bottom:8px; }
+  .mrow{ display:grid; grid-auto-flow:column; grid-auto-columns:minmax(0,1fr); gap:8px; margin-bottom:8px; }
   .mcell{
     border:1px solid var(--border); border-radius:10px; padding:12px 14px;
     display:flex; flex-direction:column; align-items:center; gap:4px; text-align:center;
@@ -60,6 +60,9 @@
     .hero-vs{ padding-top:20px; }
     .mcell{ padding:10px 8px; }
     .mcell .opct{ font-size:16px; }
+  }
+  @media (max-width: 479px){
+    .mrow.many{ grid-auto-flow:row; grid-template-columns:repeat(3, minmax(0,1fr)); }
   }
 </style>{% if match_text %}
 <style>
@@ -108,7 +111,7 @@
     <div class="msection">
       <div class="msection-title">{{ t(sec.title) }}</div>
       {% for market in sec.markets %}
-      <div class="mrow">
+      <div class="mrow{% if market|length > 4 %} many{% endif %}">
         {% for o in market %}
         <div class="mcell"><span class="olabel">{{ o.label }}</span><span class="opct">{{ "%.1f"|format(o.pct) }}%</span></div>
         {% endfor %}
