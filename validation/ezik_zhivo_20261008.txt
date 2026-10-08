@@ -1,0 +1,71 @@
+OK   има мачове в списъка - 5 взети
+OK   bg / 200 - 200
+OK   bg / <html lang=bg>
+OK   bg / бутон БГ|EN
+OK   bg / Vary: Cookie
+OK   bg /prognozi 200 - 200
+OK   bg /prognozi <html lang=bg>
+OK   bg /prognozi бутон БГ|EN
+OK   bg /prognozi Vary: Cookie
+OK   bg /prognozi/match/1571591 200 - 200
+OK   bg /prognozi/match/1571591 <html lang=bg>
+OK   bg /prognozi/match/1571591 бутон БГ|EN
+OK   bg /prognozi/match/1571591 Vary: Cookie
+OK   bg /prognozi/match/1571584 200 - 200
+OK   bg /prognozi/match/1571584 <html lang=bg>
+OK   bg /prognozi/match/1571584 бутон БГ|EN
+OK   bg /prognozi/match/1571584 Vary: Cookie
+OK   bg /prognozi/match/1576189 200 - 200
+OK   bg /prognozi/match/1576189 <html lang=bg>
+OK   bg /prognozi/match/1576189 бутон БГ|EN
+OK   bg /prognozi/match/1576189 Vary: Cookie
+OK   bg /prognozi/match/1576191 200 - 200
+OK   bg /prognozi/match/1576191 <html lang=bg>
+OK   bg /prognozi/match/1576191 бутон БГ|EN
+OK   bg /prognozi/match/1576191 Vary: Cookie
+OK   bg /prognozi/match/1575516 200 - 200
+OK   bg /prognozi/match/1575516 <html lang=bg>
+OK   bg /prognozi/match/1575516 бутон БГ|EN
+OK   bg /prognozi/match/1575516 Vary: Cookie
+OK   en / 200 - 200
+OK   en / <html lang=en>
+OK   en / бутон БГ|EN
+OK   en / Vary: Cookie
+OK   en / без кирилица
+OK   en /prognozi 200 - 200
+OK   en /prognozi <html lang=en>
+OK   en /prognozi бутон БГ|EN
+OK   en /prognozi Vary: Cookie
+OK   en /prognozi без кирилица
+OK   en /prognozi/match/1571591 200 - 200
+OK   en /prognozi/match/1571591 <html lang=en>
+OK   en /prognozi/match/1571591 бутон БГ|EN
+OK   en /prognozi/match/1571591 Vary: Cookie
+OK   en /prognozi/match/1571591 без кирилица
+OK   en /prognozi/match/1571584 200 - 200
+OK   en /prognozi/match/1571584 <html lang=en>
+OK   en /prognozi/match/1571584 бутон БГ|EN
+OK   en /prognozi/match/1571584 Vary: Cookie
+OK   en /prognozi/match/1571584 без кирилица
+OK   en /prognozi/match/1576189 200 - 200
+OK   en /prognozi/match/1576189 <html lang=en>
+OK   en /prognozi/match/1576189 бутон БГ|EN
+OK   en /prognozi/match/1576189 Vary: Cookie
+OK   en /prognozi/match/1576189 без кирилица
+OK   en /prognozi/match/1576191 200 - 200
+OK   en /prognozi/match/1576191 <html lang=en>
+OK   en /prognozi/match/1576191 бутон БГ|EN
+OK   en /prognozi/match/1576191 Vary: Cookie
+OK   en /prognozi/match/1576191 без кирилица
+OK   en /prognozi/match/1575516 200 - 200
+OK   en /prognozi/match/1575516 <html lang=en>
+OK   en /prognozi/match/1575516 бутон БГ|EN
+OK   en /prognozi/match/1575516 Vary: Cookie
+OK   en /prognozi/match/1575516 без кирилица
+OK   ?lang=en пише бисквитка lang=en
+OK   след бисквитката /prognozi без параметър е en
+OK   ?lang=bg връща на bg
+OK   /admin не зависи от lang - 302 / 302
+OK   /login не зависи от lang - 302 / 302
+
+ОБЩО: 69/69 OK
