@@ -19,6 +19,7 @@ committed като спецификация) - числата в макета с
 Регистрира се по същия модел като web/daily.py и др. - register_X(app, ctx),
 за да няма кръгов импорт с match_predictor_app.py.
 """
+import re
 from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 from flask import Blueprint, request, render_template
@@ -160,6 +161,14 @@ try:
     from config import MATCH_TEXT as _MATCH_TEXT
 except Exception:
     _MATCH_TEXT = False
+# ZADACHA_SKRIVANE (08.10.2026): PUBLIC_HIDE - публичните страници без етикети; скритите пазари (market_visibility.py) не се рисуват;
+# скритата лига (portugal2) я няма нито в списъка, нито на страницата на мача. При 0 - страниците байт по байт старите.
+try:
+    from config import PUBLIC_HIDE as _PUBLIC_HIDE
+except Exception:
+    _PUBLIC_HIDE = False
+MODEL_EXP_PREFIX = "Моделът (експериментално за тази лига)"
+OVER25_CLAUSE = re.compile(r"; за над 2,5 гола — \d+%")
 
 
 def exp_x12(rows, max_pct):
@@ -308,6 +317,59 @@ def build_all_sections(rows, league, policy, max_pct, home_cy, away_cy):
         add_market(shown, [(f"cardall:total_over_{line}", f"Над {line}"), (f"cardall:total_under_{line}", f"Под {line}")])
     sections.append({"title": "Картони", "markets": shown} if shown else {"title": "Картони", "markets": [], "note": "няма данни"})
     return sections
+
+
+def _league_hidden(league):
+    try:
+        import market_visibility as mv
+        return mv.league_hidden(league)
+    except Exception:
+        return False
+
+
+def build_public_sections(rows, league, policy, max_pct, home_cy, away_cy):
+    """ZADACHA_SKRIVANE (PUBLIC_HIDE=1): секциите на build_all_sections, но само видимите пазари (market_visibility.visible за всеки изход);
+    секция без нито един видим пазар (вкл. "няма данни") не се рисува. Етикетите остават в данните, шаблонът не ги показва."""
+    import market_visibility as mv
+    vis = mv.table()
+    out = []
+    for sec in build_all_sections(rows, league, policy, max_pct, home_cy, away_cy):
+        shown = [m for m in sec["markets"] if all(mv.visible(league, o["code"], vis) for o in m["outcomes"])]
+        if shown:
+            out.append({"title": sec["title"], "markets": shown})
+    return out
+
+
+def public_x12(sections):
+    """1/X/2 за реда в списъка от публичните секции (видимото 1X2) или None."""
+    for sec in sections:
+        if sec["title"] == "Краен резултат":
+            outcomes = sec["markets"][0]["outcomes"]
+            top = max(o["pct"] for o in outcomes)
+            return [{**o, "top": o["pct"] == top} for o in outcomes]
+    return None
+
+
+def public_texts(texts, league):
+    """ZADACHA_SKRIVANE: текстът на мача за публиката - "Моделът (експериментално за тази лига)" -> "Моделът"; ако 1X2 е скрит за лигата -
+    без изречението за модела и това след съставите (цитират 1X2); ако над/под 2.5 е скрит - без частта за над 2,5 гола."""
+    try:
+        import market_visibility as mv
+        vis = mv.table()
+        x12_ok, ou_ok = mv.visible(league, "home_win", vis), mv.visible(league, "over25", vis)
+        out = []
+        for t in texts:
+            is_model = t.startswith(MODEL_EXP_PREFIX) or t.startswith("Моделът дава")
+            if (is_model or t.startswith("След обявяването на съставите")) and not x12_ok:
+                continue
+            if is_model:
+                t = t.replace(MODEL_EXP_PREFIX, "Моделът", 1)
+                if not ou_ok:
+                    t = OVER25_CLAUSE.sub("", t)
+            out.append(t)
+        return out
+    except Exception:
+        return []
 
 
 def _extra_parent_ok(league, code, policy):
@@ -605,21 +667,32 @@ def register_prognozi_routes(app, ctx):
                 "home_logo": meta.get("home_logo") if meta else None,
                 "away_logo": meta.get("away_logo") if meta else None,
             }
+            if _PUBLIC_HIDE and _league_hidden(league):
+                continue
             note = notes_map.get(fixture_id)
             if note and note["skip"]:
                 skipped_rows.append(base)
                 continue
 
-            sections = build_market_sections(rows, league, policy, ps.MAX_PUBLISHABLE_PCT,
-                                             base["home_cy"], base["away_cy"])
-            if not sections:
-                continue
-            card = {**base, "x12": x12_from_sections(sections), "lineup_at": _lineup_note(fixture_id, rows)}
-            if card["x12"] is None and _SHOW_EXP_IN_LIST:
-                card["x12"] = exp_x12(rows, ps.MAX_PUBLISHABLE_PCT)
-                card["x12_exp"] = card["x12"] is not None
-            if fixture_id in texts_map:
-                card["text1"] = texts_map[fixture_id][0]
+            if _PUBLIC_HIDE:
+                sections = build_public_sections(rows, league, policy, ps.MAX_PUBLISHABLE_PCT, base["home_cy"], base["away_cy"])
+                if not sections:
+                    continue
+                card = {**base, "x12": public_x12(sections), "lineup_at": _lineup_note(fixture_id, rows)}
+                texts = public_texts(texts_map.get(fixture_id, []), league)
+                if texts:
+                    card["text1"] = texts[0]
+            else:
+                sections = build_market_sections(rows, league, policy, ps.MAX_PUBLISHABLE_PCT,
+                                                 base["home_cy"], base["away_cy"])
+                if not sections:
+                    continue
+                card = {**base, "x12": x12_from_sections(sections), "lineup_at": _lineup_note(fixture_id, rows)}
+                if card["x12"] is None and _SHOW_EXP_IN_LIST:
+                    card["x12"] = exp_x12(rows, ps.MAX_PUBLISHABLE_PCT)
+                    card["x12_exp"] = card["x12"] is not None
+                if fixture_id in texts_map:
+                    card["text1"] = texts_map[fixture_id][0]
 
             if base["date"] > now_sofia_str:
                 upcoming_rows.append(card)
@@ -699,6 +772,8 @@ def register_prognozi_routes(app, ctx):
         # не за цялата история.
         finished_all = (history["finished_by_league"].get(league_filter, []) if league_ok
                         else history["finished"])
+        if _PUBLIC_HIDE:
+            finished_all = [p for p in finished_all if not _league_hidden(p["league"])]
         finished_total = len(finished_all)
         # Редовете се показват само в таб "Приключили" - в "Предстоящи" трябва
         # само броят (finished_total), затова там не четем нищо повече.
@@ -717,8 +792,12 @@ def register_prognozi_routes(app, ctx):
             fixture_id = p["fixture_id"]
             f_meta = finished_meta.get(fixture_id)
             home_cy, away_cy = to_cyrillic(p["home_team"], league), to_cyrillic(p["away_team"], league)
-            sections = build_market_sections(log_by_fixture.get(fixture_id, []), league, policy,
-                                             ps.MAX_PUBLISHABLE_PCT, home_cy, away_cy)
+            if _PUBLIC_HIDE:
+                x12 = public_x12(build_public_sections(log_by_fixture.get(fixture_id, []), league, policy,
+                                                       ps.MAX_PUBLISHABLE_PCT, home_cy, away_cy))
+            else:
+                x12 = x12_from_sections(build_market_sections(log_by_fixture.get(fixture_id, []), league, policy,
+                                                              ps.MAX_PUBLISHABLE_PCT, home_cy, away_cy))
             finished_rows.append({
                 "fixture_id": fixture_id, "league": league,
                 "league_name": ALL_LEAGUES.get(league, {}).get("name", league),
@@ -728,7 +807,7 @@ def register_prognozi_routes(app, ctx):
                 "home_cy": home_cy, "away_cy": away_cy,
                 "home_logo": f_meta.get("home_logo") if f_meta else None,
                 "away_logo": f_meta.get("away_logo") if f_meta else None,
-                "x12": x12_from_sections(sections),
+                "x12": x12,
                 # A1 (ZADACHA_FAZA1.md, 19.09.2026): реалният резултат на мача.
                 "hg": p["actual_home_goals"], "ag": p["actual_away_goals"],
             })
@@ -747,6 +826,8 @@ def register_prognozi_routes(app, ctx):
             tab_leagues = {r["league"] for r in skipped_rows}
         else:
             tab_leagues = {r["league"] for r in upcoming_rows} | {r["league"] for r in in_progress_rows}
+        if _PUBLIC_HIDE:
+            tab_leagues = {k for k in tab_leagues if not _league_hidden(k)}
         active_leagues = sorted(tab_leagues, key=lambda k: ALL_LEAGUES.get(k, {}).get("name", k))
         league_options = [(k, ALL_LEAGUES.get(k, {}).get("name", k)) for k in active_leagues]
 
@@ -803,7 +884,7 @@ def register_prognozi_routes(app, ctx):
             yesterday=yesterday,
             next_match_phrase=next_match_phrase, any_match_ahead=any_match_ahead,
             selected_day_finished=selected_day_finished,
-            exp_on=_SHOW_EXP_IN_LIST, text_on=_MATCH_TEXT,
+            exp_on=_SHOW_EXP_IN_LIST and not _PUBLIC_HIDE, text_on=_MATCH_TEXT,
         )
 
     # Публична страница на мача (01.09.2026, задача от Дака, т.2). Изричен
@@ -836,6 +917,8 @@ def register_prognozi_routes(app, ctx):
                                     found=False), 404
 
         league = rows[0]["league"]
+        if _PUBLIC_HIDE and _league_hidden(league):
+            return render_template("prognozi_match.html", active_page="prognozi", found=False), 404
         home, away = rows[0]["home_team"], rows[0]["away_team"]
         match_date = rows[0]["match_date"]
         meta = st.get_fixture_meta_for_fixtures([fixture_id]).get(fixture_id)
@@ -847,7 +930,14 @@ def register_prognozi_routes(app, ctx):
         home_cy, away_cy = to_cyrillic(home, league), to_cyrillic(away, league)
         sections = build_market_sections(rows, league, policy, ps.MAX_PUBLISHABLE_PCT, home_cy, away_cy)
         all_view = False
-        if _SHOW_ALL:
+        match_text = _match_texts([fixture_id], page=True).get(fixture_id)
+        if _PUBLIC_HIDE:
+            try:
+                sections = build_public_sections(rows, league, policy, ps.MAX_PUBLISHABLE_PCT, home_cy, away_cy)
+            except Exception:
+                sections = []           # по-добре без пазари, отколкото със скрити
+            match_text = public_texts(match_text or [], league) or None
+        elif _SHOW_ALL:
             try:
                 sections = build_all_sections(rows, league, policy, ps.MAX_PUBLISHABLE_PCT, home_cy, away_cy)
                 all_view = True
@@ -864,7 +954,7 @@ def register_prognozi_routes(app, ctx):
             home_logo=meta.get("home_logo") if meta else None,
             away_logo=meta.get("away_logo") if meta else None,
             date=match_date, sections=sections, lineup_at=_lineup_note(fixture_id, rows),
-            match_text=_match_texts([fixture_id], page=True).get(fixture_id),
+            match_text=match_text, public_view=_PUBLIC_HIDE,
         )
 
     app.register_blueprint(prognozi_bp)

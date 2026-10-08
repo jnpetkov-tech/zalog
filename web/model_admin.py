@@ -126,6 +126,33 @@ def headline(st):
     return "ok", f"На живо: версия {cur}, от {when}, приета защото {why}."
 
 
+def visibility_view(db_path=None):
+    """ZADACHA_SKRIVANE: таблицата market_visibility за страницата -> речник или None (още не е смятана / грешка)."""
+    try:
+        import market_visibility as mv
+        rows = mv.load(db_path)
+        if not rows:
+            return None
+        markets = [(k, n) for k, n, _c in mv.MARKETS] + [(k, n) for k, n, _c in mv.ALWAYS_HIDDEN]
+        leagues = [mv.ALL] + sorted({lg for lg, _m in rows if lg != mv.ALL})
+        cells = {}
+        for (lg, m), r in rows.items():
+            tip = [f"{r['n']} мача" if r.get("n") is not None else None,
+                   f"D {r['d']:+.4f} [{r['d_lo']:+.4f}; {r['d_hi']:+.4f}]" if r.get("d") is not None and r.get("d_lo") is not None else None,
+                   f"a {r['a']:.2f}" if r.get("a") is not None else None,
+                   f"z {r['z']:+.2f}" if r.get("z") is not None and lg != mv.ALL else None, r.get("reason")]
+            cells[(lg, m)] = {**r, "tip": " · ".join(x for x in tip if x)}
+        hidden = [cells[(lg, m)] for lg in leagues for m, _n in markets
+                  if (lg, m) in cells and not cells[(lg, m)]["visible"] and cells[(lg, m)]["rule"] not in ("г", "винаги")
+                  and not (lg != mv.ALL and cells[(lg, m)]["rule"] == "а")]
+        any_row = next(iter(rows.values()))
+        return {"markets": markets, "leagues": leagues, "cells": cells, "hidden": hidden, "names": mv.MARKET_NAMES, "all": mv.ALL,
+                "hidden_leagues": mv.HIDDEN_LEAGUES, "computed_at": _fmt_dt(any_row.get("computed_at")),
+                "window": f"{any_row.get('window_from')} – {any_row.get('window_to')}"}
+    except Exception:
+        return None
+
+
 def register_model_admin_routes(app, ctx):
     bp = Blueprint("model_admin", __name__)
 
@@ -141,7 +168,8 @@ def register_model_admin_routes(app, ctx):
         kind, text = headline(st)
         gate = st["gate"]
         return render_template("model_admin.html", active_page="model_admin", st=st, kind=kind, headline=text, gate=gate,
-                               gate_at=_fmt_dt(gate["at_utc"]) if gate else None, models=gate_rows(gate), fmt_dt=_fmt_dt)
+                               gate_at=_fmt_dt(gate["at_utc"]) if gate else None, models=gate_rows(gate), fmt_dt=_fmt_dt,
+                               vis=visibility_view(current_app.config.get("VISIBILITY_DB")))
 
     def _do(fn, ok_text):
         try:

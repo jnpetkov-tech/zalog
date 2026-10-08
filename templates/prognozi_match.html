@@ -103,7 +103,7 @@
       {% for t in match_text %}<p>{{ t }}</p>{% endfor %}
       <p class="mtext-note">Текстът е съставен автоматично само от числа в нашата база: формата, почивката и ударите — по мачовете в първенствата и европейските турнири, които следим (без купите); класирането — по резултатите в нея.</p>
     </div>
-    {% endif %}{% if all_view %}{% include "_all_sections.html" %}{% elif sections %}
+    {% endif %}{% if public_view and sections %}{% include "_public_sections.html" %}{% elif all_view %}{% include "_all_sections.html" %}{% elif sections %}
     {% for sec in sections %}
     <div class="msection">
       <div class="msection-title">{{ sec.title }}</div>
@@ -120,7 +120,9 @@
     <div class="empty-note">Няма прогноза за този мач.</div>
     {% endif %}
 
-    <div class="howto-link"><a href="/prognozi#full-report">Искаш повече обяснения? → Как да чета тези числа</a></div>
+    <div class="howto-link"><a href="/prognozi#full-report">Искаш повече обяснения? → Как да чета тези числа</a></div>{% if public_view %}
+
+    <div class="foot-note">Прогнозите са вероятности, изчислени от модел. Не са гаранция за резултат.</div>{% endif %}
 
     <div class="foot-note">
       Прогнозите се основават на статистически модел и не представляват съвет за залагане. Хазартът е забранен за лица под 18 години. Резултатите от миналото не гарантират бъдещи резултати.

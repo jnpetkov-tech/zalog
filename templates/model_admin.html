@@ -122,5 +122,38 @@
   <tr><td colspan="5">Няма записи.</td></tr>
   {% endfor %}
 </table></div>
+
+<h2>Видимост на пазарите</h2>
+{% if vis %}
+<p class="note">Кои пазари виждат посетителите на публичните страници (при <b>PUBLIC_HIDE=1</b> в .env; тук в админа се вижда всичко).
+Преизчислено: <b>{{vis.computed_at}}</b> · мерен период {{vis.window}} · всеки понеделник след пазача.<br>
+D = грешката на модела минус грешката на „средното за лигата“ (отрицателно = моделът е по-добър). ✓ видим · ✗ скрит.
+Задръж мишката върху клетка за брой мачове, D с 95% интервал, калибрация a и причината.
+{% if vis.hidden_leagues %}Изцяло скрити лиги: <b>{{ vis.hidden_leagues|join(", ") }}</b>.{% endif %}</p>
+<div class="tablewrap"><table class="vis">
+  <tr><th>Лига</th>{% for m, name in vis.markets %}<th>{{name}}</th>{% endfor %}</tr>
+  {% for lg in vis.leagues %}
+  <tr><td style="white-space:nowrap;"><b>{{ "всички лиги" if lg == vis.all else lg }}</b></td>
+    {% for m, name in vis.markets %}{% set c = vis.cells.get((lg, m)) %}
+    <td title="{{ c.tip if c else '' }}" style="white-space:nowrap;{% if c and not c.visible %}background:var(--danger-soft);{% endif %}">{% if c %}{{ "✓" if c.visible else "✗" }}{% if c.d is not none %} <span style="color:var(--sub);">{{ "%+.4f"|format(c.d) }}</span>{% endif %}{% if c.n %}<br><span style="color:var(--sub);font-size:11px;">{{c.n}}</span>{% endif %}{% else %}—{% endif %}</td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table></div>
+<h2 style="font-size:14px;">Скрити и защо</h2>
+<div class="tablewrap"><table>
+  <tr><th>Лига</th><th>Пазар</th><th>Мачове</th><th>D [95%]</th><th>a</th><th>Причина</th></tr>
+  {% for c in vis.hidden %}
+  <tr><td>{{ "всички лиги" if c.league == vis.all else c.league }}</td><td>{{ vis.names.get(c.market, c.market) }}</td><td>{{ c.n if c.n is not none else "—" }}</td>
+    <td>{% if c.d is not none %}{{ "%+.4f"|format(c.d) }} [{{ "%+.4f"|format(c.d_lo) }}; {{ "%+.4f"|format(c.d_hi) }}]{% else %}—{% endif %}</td>
+    <td>{{ "%.2f"|format(c.a) if c.a is not none else "—" }}</td><td>{{ c.reason }}</td></tr>
+  {% else %}
+  <tr><td colspan="6">Няма скрити пазари по лиги (освен изцяло скритите лиги и винаги скритите пазари).</td></tr>
+  {% endfor %}
+</table></div>
+{% else %}
+<p class="note">Таблицата на видимостта още не е смятана (или не се чете). Пуска се с <code>venv/bin/python3 market_visibility.py</code>;
+седмично — в понеделник след пазача.</p>
+{% endif %}
 </div>
 </body></html>

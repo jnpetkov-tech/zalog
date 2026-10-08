@@ -1,0 +1,13 @@
+{# ZADACHA_SKRIVANE (PUBLIC_HIDE=1): само видимите пазари, без етикети и без бележка - web/prognozi.py build_public_sections #}
+    {% for sec in sections %}
+    <div class="msection">
+      <div class="msection-title">{{ sec.title }}</div>
+      {% for market in sec.markets %}
+      <div class="mrow">
+        {% for o in market.outcomes %}
+        <div class="mcell"><span class="olabel">{{ o.label }}</span><span class="opct">{{ "%.1f"|format(o.pct) }}%</span></div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
