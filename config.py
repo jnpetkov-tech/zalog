@@ -97,3 +97,8 @@ MATCH_TEXT = _values.get("MATCH_TEXT", "0").strip() == "1"
 # които моделът не смята по-добре от средното за лигата, не се показват (market_visibility.py, таблица market_visibility).
 # 1 = да; 0/липсва = точно старото. Админът не се променя. Само Flask - след рестарт.
 PUBLIC_HIDE = _values.get("PUBLIC_HIDE", "0").strip() == "1"
+
+# ZADACHA_EZIK (08.10.2026): бутон БГ | EN на публичните страници (/, /prognozi, /prognozi/match/<id>) - i18n.py. 1 = бутон и английски
+# по избор (?lang=en, бисквитка); 0/липсва = няма бутон, ?lang= се пренебрегва, страниците точно както досега. Админът - винаги
+# на български. Само Flask - след рестарт.
+LANG_SWITCH = _values.get("LANG_SWITCH", "0").strip() == "1"

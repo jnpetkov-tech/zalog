@@ -1,0 +1,4 @@
+
+    {# ZADACHA_EZIK: бутонът БГ | EN горе вдясно - същият адрес със същите параметри + lang=. „БГ“ е с HTML кодове (&#1041;&#1043;),
+       за да няма кирилица в отговора на английската страница; на екрана е „БГ“. #}
+    <div class="langsw"><a href="{{ lang_url('bg') }}" hreflang="bg" lang="bg"{% if lang == 'bg' %} class="on" aria-current="true"{% endif %}>&#1041;&#1043;</a><span>|</span><a href="{{ lang_url('en') }}" hreflang="en" lang="en"{% if lang == 'en' %} class="on" aria-current="true"{% endif %}>EN</a></div>

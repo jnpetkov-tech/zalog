@@ -24,6 +24,8 @@ from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 from flask import Blueprint, request, render_template
 
+import i18n     # ZADACHA_EZIK (08.10.2026): бутон БГ | EN; при LANG_SWITCH=0 всичко е на български, байт по байт както преди
+
 # Преглед на Дака (01.09.2026), т.3: match_date в predictions_snapshot/
 # predictions_log е Sofia МЕСТНО време като низ "YYYY-MM-DD HH:MM", БЕЗ
 # явен timezone offset (идва от fetch_upcoming_fixtures(timezone=
@@ -169,6 +171,9 @@ except Exception:
     _PUBLIC_HIDE = False
 MODEL_EXP_PREFIX = "Моделът (експериментално за тази лига)"
 OVER25_CLAUSE = re.compile(r"; за над 2,5 гола — \d+%")
+# ZADACHA_EZIK: същите правила за английския текст (match_text.s_model/s_lineups, "text_en")
+MODEL_EXP_PREFIX_EN = "The model (experimental for this league)"
+OVER25_CLAUSE_EN = re.compile(r"; over 2\.5 goals \d+%")
 
 
 def exp_x12(rows, max_pct):
@@ -186,13 +191,16 @@ def exp_x12(rows, max_pct):
         return None
 
 
-def _match_texts(fixture_ids, page=False):
+def _match_texts(fixture_ids, page=False, lang="bg"):
     """ZADACHA_TEKST, част 2: {fixture_id: [изречения]} от таблица match_text; изключено/грешка -> {} (без текст, страницата е като преди).
-    page=True (страницата на мача, ZADACHA_TEKST_2): изречението за модела - последно; иначе (картата) - записаният ред, първото = най-силното."""
+    page=True (страницата на мача, ZADACHA_TEKST_2): изречението за модела - последно; иначе (картата) - записаният ред, първото = най-силното.
+    lang="en" (ZADACHA_EZIK): английските изречения ("text_en"); без тях - без текст (никога български на английската страница)."""
     if not _MATCH_TEXT or not fixture_ids:
         return {}
     try:
         import match_text
+        if lang == "en":
+            return match_text.get_texts(fixture_ids, page=page, lang="en")
         return match_text.get_texts(fixture_ids, page=page)
     except Exception:
         return {}
@@ -350,22 +358,29 @@ def public_x12(sections):
     return None
 
 
-def public_texts(texts, league):
+def public_texts(texts, league, lang="bg"):
     """ZADACHA_SKRIVANE: текстът на мача за публиката - "Моделът (експериментално за тази лига)" -> "Моделът"; ако 1X2 е скрит за лигата -
-    без изречението за модела и това след съставите (цитират 1X2); ако над/под 2.5 е скрит - без частта за над 2,5 гола."""
+    без изречението за модела и това след съставите (цитират 1X2); ако над/под 2.5 е скрит - без частта за над 2,5 гола.
+    lang="en" (ZADACHA_EZIK): същото за английските изречения."""
+    if lang == "en":
+        exp_prefix, plain, model_start, lineups_start, ou_clause = (MODEL_EXP_PREFIX_EN, "The model", "The model gives",
+                                                                    "After the line-ups were announced", OVER25_CLAUSE_EN)
+    else:
+        exp_prefix, plain, model_start, lineups_start, ou_clause = (MODEL_EXP_PREFIX, "Моделът", "Моделът дава",
+                                                                    "След обявяването на съставите", OVER25_CLAUSE)
     try:
         import market_visibility as mv
         vis = mv.table()
         x12_ok, ou_ok = mv.visible(league, "home_win", vis), mv.visible(league, "over25", vis)
         out = []
         for t in texts:
-            is_model = t.startswith(MODEL_EXP_PREFIX) or t.startswith("Моделът дава")
-            if (is_model or t.startswith("След обявяването на съставите")) and not x12_ok:
+            is_model = t.startswith(exp_prefix) or t.startswith(model_start)
+            if (is_model or t.startswith(lineups_start)) and not x12_ok:
                 continue
             if is_model:
-                t = t.replace(MODEL_EXP_PREFIX, "Моделът", 1)
+                t = t.replace(exp_prefix, plain, 1)
                 if not ou_ok:
-                    t = OVER25_CLAUSE.sub("", t)
+                    t = ou_clause.sub("", t)
             out.append(t)
         return out
     except Exception:
@@ -427,7 +442,10 @@ def x12_from_sections(sections):
     return None
 
 
-def _day_tab(d, today, match_count=0):
+def _day_tab(d, today, match_count=0, lang="bg"):
+    if lang == "en":
+        label, short = i18n.day_tab(d, today)
+        return {"offset": (d - today).days, "date": d.isoformat(), "label": label, "short": short, "count": match_count}
     if d == today:
         label = "Днес"
     elif d == today + timedelta(days=1):
@@ -446,6 +464,14 @@ HISTORY_COLUMNS = ["id", "fixture_id", "league", "match_date", "home_team", "awa
                    "actual_home_goals", "actual_away_goals"]
 
 
+def _sections(builder, rows, league, policy, max_pct, home, away, lang):
+    """ZADACHA_EZIK: при en картата се строи с "{home}"/"{away}" и етикетите се превеждат (i18n.localize_sections), после се попълват
+    имената; при bg - точно както преди."""
+    if lang == "en":
+        return i18n.localize_sections(builder(rows, league, policy, max_pct, "{home}", "{away}"), home, away)
+    return builder(rows, league, policy, max_pct, home, away)
+
+
 def register_prognozi_routes(app, ctx):
     ALL_LEAGUES = ctx["ALL_LEAGUES"]
     LEAGUE_FLAGS = ctx["LEAGUE_FLAGS"]
@@ -456,12 +482,13 @@ def register_prognozi_routes(app, ctx):
     to_cyrillic = ctx["to_cyrillic"]
 
     prognozi_bp = Blueprint("prognozi", __name__)
+    i18n.register(prognozi_bp)      # ZADACHA_EZIK: езикът само за публичните страници (този Blueprint); админът - винаги български
 
     try:
         from config import SHOW_MATCH_DAY as _show_day
     except Exception:
         _show_day = False
-    app.jinja_env.filters["bg_day"] = lambda v: bg_day_label(v, _show_day)
+    app.jinja_env.filters["bg_day"] = lambda v: (i18n.day_label(v, _show_day) if i18n.current() == "en" else bg_day_label(v, _show_day))
 
     def _lineup_note(fixture_id, rows):
         """ZADACHA_RAZVITIE т.4: "HH:MM" (българско време), ако показаните проценти вече са окончателните по съставите -
@@ -559,6 +586,9 @@ def register_prognozi_routes(app, ctx):
     @prognozi_bp.route("/prognozi")
     def prognozi():
         today = date.today()
+        lang = i18n.current()
+        # ZADACHA_EZIK: на английски - оригиналните имена на отборите от API-то (без кирилица)
+        disp = (lambda name, _lg: name) if lang == "en" else to_cyrillic
         # ZADACHA_PRAZNO.md т.1: дали посетителят е избрал ден ИЗРИЧНО
         # (?day= в адреса). Ако не е и днес няма мачове - отваряме на първия
         # ден с мачове по-долу; ако е - уважаваме избора му.
@@ -651,7 +681,7 @@ def register_prognozi_routes(app, ctx):
         # завинаги "в ход".
         settled_fixture_ids = st.get_settled_fixture_ids(snap_by_fixture.keys())
         now_sofia_str = _now_sofia_str()
-        texts_map = _match_texts(list(snap_by_fixture.keys()))
+        texts_map = _match_texts(list(snap_by_fixture.keys()), lang=lang)
 
         upcoming_rows, skipped_rows, in_progress_rows, settled_days = [], [], [], []
         for fixture_id, rows in snap_by_fixture.items():
@@ -659,11 +689,11 @@ def register_prognozi_routes(app, ctx):
             meta = fixture_meta.get(fixture_id)
             base = {
                 "fixture_id": fixture_id, "league": league,
-                "league_name": ALL_LEAGUES.get(league, {}).get("name", league),
+                "league_name": i18n.league_name(league, ALL_LEAGUES.get(league, {}).get("name", league)),
                 "league_logo": ALL_LEAGUES.get(league, {}).get("logo"),
                 "flag": LEAGUE_FLAGS.get(league, "⚽"),
                 "date": rows[0]["match_date"], "home": rows[0]["home_team"], "away": rows[0]["away_team"],
-                "home_cy": to_cyrillic(rows[0]["home_team"], league), "away_cy": to_cyrillic(rows[0]["away_team"], league),
+                "home_cy": disp(rows[0]["home_team"], league), "away_cy": disp(rows[0]["away_team"], league),
                 "home_logo": meta.get("home_logo") if meta else None,
                 "away_logo": meta.get("away_logo") if meta else None,
             }
@@ -675,16 +705,16 @@ def register_prognozi_routes(app, ctx):
                 continue
 
             if _PUBLIC_HIDE:
-                sections = build_public_sections(rows, league, policy, ps.MAX_PUBLISHABLE_PCT, base["home_cy"], base["away_cy"])
+                sections = _sections(build_public_sections, rows, league, policy, ps.MAX_PUBLISHABLE_PCT, base["home_cy"], base["away_cy"], lang)
                 if not sections:
                     continue
                 card = {**base, "x12": public_x12(sections), "lineup_at": _lineup_note(fixture_id, rows)}
-                texts = public_texts(texts_map.get(fixture_id, []), league)
+                texts = public_texts(texts_map.get(fixture_id, []), league, lang)
                 if texts:
                     card["text1"] = texts[0]
             else:
-                sections = build_market_sections(rows, league, policy, ps.MAX_PUBLISHABLE_PCT,
-                                                 base["home_cy"], base["away_cy"])
+                sections = _sections(build_market_sections, rows, league, policy, ps.MAX_PUBLISHABLE_PCT,
+                                     base["home_cy"], base["away_cy"], lang)
                 if not sections:
                     continue
                 card = {**base, "x12": x12_from_sections(sections), "lineup_at": _lineup_note(fixture_id, rows)}
@@ -721,7 +751,7 @@ def register_prognozi_routes(app, ctx):
         selected_date = today + timedelta(days=day_offset)
         selected_date_str = selected_date.isoformat()
         day_tabs = [_day_tab(today + timedelta(days=i), today,
-                             counts_by_day.get((today + timedelta(days=i)).isoformat(), 0))
+                             counts_by_day.get((today + timedelta(days=i)).isoformat(), 0), lang)
                     for i in range(DAY_TAB_COUNT)]
 
         # т.3: текст за празен ден - следващият ден с мачове СЛЕД избрания
@@ -732,7 +762,7 @@ def register_prognozi_routes(app, ctx):
         next_match_phrase = None
         for d_str in sorted(counts_by_day):
             if d_str > selected_date_str:
-                next_match_phrase = _next_day_phrase(date.fromisoformat(d_str), today)
+                next_match_phrase = (i18n.next_day_phrase if lang == "en" else _next_day_phrase)(date.fromisoformat(d_str), today)
                 break
         any_match_ahead = bool(upcoming_rows or in_progress_rows)
         selected_day_finished = selected_date_str in settled_days
@@ -791,7 +821,7 @@ def register_prognozi_routes(app, ctx):
             league = p["league"]
             fixture_id = p["fixture_id"]
             f_meta = finished_meta.get(fixture_id)
-            home_cy, away_cy = to_cyrillic(p["home_team"], league), to_cyrillic(p["away_team"], league)
+            home_cy, away_cy = disp(p["home_team"], league), disp(p["away_team"], league)
             if _PUBLIC_HIDE:
                 x12 = public_x12(build_public_sections(log_by_fixture.get(fixture_id, []), league, policy,
                                                        ps.MAX_PUBLISHABLE_PCT, home_cy, away_cy))
@@ -800,7 +830,7 @@ def register_prognozi_routes(app, ctx):
                                                               ps.MAX_PUBLISHABLE_PCT, home_cy, away_cy))
             finished_rows.append({
                 "fixture_id": fixture_id, "league": league,
-                "league_name": ALL_LEAGUES.get(league, {}).get("name", league),
+                "league_name": i18n.league_name(league, ALL_LEAGUES.get(league, {}).get("name", league)),
                 "league_logo": ALL_LEAGUES.get(league, {}).get("logo"),
                 "flag": LEAGUE_FLAGS.get(league, "⚽"),
                 "date": p["match_date"], "home": p["home_team"], "away": p["away_team"],
@@ -828,8 +858,11 @@ def register_prognozi_routes(app, ctx):
             tab_leagues = {r["league"] for r in upcoming_rows} | {r["league"] for r in in_progress_rows}
         if _PUBLIC_HIDE:
             tab_leagues = {k for k in tab_leagues if not _league_hidden(k)}
-        active_leagues = sorted(tab_leagues, key=lambda k: ALL_LEAGUES.get(k, {}).get("name", k))
-        league_options = [(k, ALL_LEAGUES.get(k, {}).get("name", k)) for k in active_leagues]
+        if lang == "en":
+            league_options = sorted(((k, i18n.league_name(k, ALL_LEAGUES.get(k, {}).get("name", k))) for k in tab_leagues), key=lambda kv: kv[1])
+        else:
+            active_leagues = sorted(tab_leagues, key=lambda k: ALL_LEAGUES.get(k, {}).get("name", k))
+            league_options = [(k, ALL_LEAGUES.get(k, {}).get("name", k)) for k in active_leagues]
 
         if league_filter != "all" and league_filter in ALL_LEAGUES:
             upcoming_rows = [r for r in upcoming_rows if r["league"] == league_filter]
@@ -918,6 +951,7 @@ def register_prognozi_routes(app, ctx):
                                     found=False), 404
 
         league = rows[0]["league"]
+        lang = i18n.current()
         if _PUBLIC_HIDE and _league_hidden(league):
             return render_template("prognozi_match.html", active_page="prognozi", found=False), 404
         home, away = rows[0]["home_team"], rows[0]["away_team"]
@@ -928,19 +962,22 @@ def register_prognozi_routes(app, ctx):
         # вероятност" - карта с пазари, всички изходи на пазара един до друг
         # (build_market_sections по-горе). Непубликуем пазар просто липсва -
         # без бележка, без брояч на скритото, без етикет за доверие.
-        home_cy, away_cy = to_cyrillic(home, league), to_cyrillic(away, league)
-        sections = build_market_sections(rows, league, policy, ps.MAX_PUBLISHABLE_PCT, home_cy, away_cy)
+        if lang == "en":
+            home_cy, away_cy = home, away          # ZADACHA_EZIK: оригиналните имена от API-то
+        else:
+            home_cy, away_cy = to_cyrillic(home, league), to_cyrillic(away, league)
+        sections = _sections(build_market_sections, rows, league, policy, ps.MAX_PUBLISHABLE_PCT, home_cy, away_cy, lang)
         all_view = False
-        match_text = _match_texts([fixture_id], page=True).get(fixture_id)
+        match_text = _match_texts([fixture_id], page=True, lang=lang).get(fixture_id)
         if _PUBLIC_HIDE:
             try:
-                sections = build_public_sections(rows, league, policy, ps.MAX_PUBLISHABLE_PCT, home_cy, away_cy)
+                sections = _sections(build_public_sections, rows, league, policy, ps.MAX_PUBLISHABLE_PCT, home_cy, away_cy, lang)
             except Exception:
                 sections = []           # по-добре без пазари, отколкото със скрити
-            match_text = public_texts(match_text or [], league) or None
+            match_text = public_texts(match_text or [], league, lang) or None
         elif _SHOW_ALL:
             try:
-                sections = build_all_sections(rows, league, policy, ps.MAX_PUBLISHABLE_PCT, home_cy, away_cy)
+                sections = _sections(build_all_sections, rows, league, policy, ps.MAX_PUBLISHABLE_PCT, home_cy, away_cy, lang)
                 all_view = True
             except Exception:
                 pass            # падане към обичайния изглед
@@ -948,7 +985,7 @@ def register_prognozi_routes(app, ctx):
         return render_template(
             "prognozi_match.html", all_view=all_view, active_page="prognozi", found=True,
             fixture_id=fixture_id, league=league,
-            league_name=ALL_LEAGUES.get(league, {}).get("name", league),
+            league_name=i18n.league_name(league, ALL_LEAGUES.get(league, {}).get("name", league)),
             league_logo=ALL_LEAGUES.get(league, {}).get("logo"),
             flag=LEAGUE_FLAGS.get(league, "⚽"),
             home_cy=home_cy, away_cy=away_cy,

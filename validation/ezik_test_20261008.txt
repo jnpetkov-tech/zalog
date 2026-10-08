@@ -1,0 +1,62 @@
+ZADACHA_EZIK тест на копие (58 проверки, 58 OK)
+
+OK   0б. PUBLIC_HIDE=0: всички публични страници байт по байт като стария код - 270 страници; различни: []
+OK   0б. PUBLIC_HIDE=1: същите кодове на отговор
+OK   0б. PUBLIC_HIDE=1: никъде „class="summary-line"“
+OK   0б. PUBLIC_HIDE=1: никъде „class="summary-link"“
+OK   0б. PUBLIC_HIDE=1: никъде „#full-report"“
+OK   0б. PUBLIC_HIDE=1: никъде „id="full-report"“
+OK   0б. PUBLIC_HIDE=1: никъде „class="metrics"“
+OK   0б. PUBLIC_HIDE=1: никъде „виж пълния отчет“
+OK   0б. PUBLIC_HIDE=1: никъде „Вчера: познахме“
+OK   0б. PUBLIC_HIDE=1: никъде „Пълен отчет“
+OK   0б. PUBLIC_HIDE=1: никъде „обещахме“
+OK   0б. PUBLIC_HIDE=1: никъде „познахме“
+OK   0б. PUBLIC_HIDE=1: никъде „проверени прогнози“
+OK   0б. PUBLIC_HIDE=1: никъде „Показваме и какво сме познали“
+OK   0б. PUBLIC_HIDE=1: никъде „уредени прогнози до момента“
+OK   0б. PUBLIC_HIDE=1: никъде „колко точни са“
+OK   0б. (за сведение) старият код при PUBLIC_HIDE=1 имаше „обещахме“ на списъка - 68 от 68 страници
+OK   0б. PUBLIC_HIDE=1: освен махнатото (и #howto) - всичко останало е както в стария код (без разлика в празните места)
+OK   0б. PUBLIC_HIDE=1: на страницата на мача „Как да чета“ сочи /prognozi#howto, на списъка има id="howto"
+OK   0б. „Вчера“ в /admin (сметката на web/daily.py) = числото от публичния списък (стария код) - публично: няма; админ: няма
+OK   0б. „Вчера“: двете сметки съвпадат за всеки от последните 30 дни - дни с уредени: 22; различни: []
+OK   0б. PUBLIC_HIDE=1: „Как да чета тези числа“ и табът „Приключили“ остават
+OK   0. текстът на мача пресметнат наново с новия код върху копието - 195 мача
+OK   1. LANG_SWITCH=0, PUBLIC_HIDE=0: всички публични страници байт по байт като стария код - 270 страници; различни: []
+OK   1. LANG_SWITCH=0, PUBLIC_HIDE=0: ?lang=en и бисквитка lang=en се пренебрегват (страниците като старите)
+OK   1. LANG_SWITCH=0, PUBLIC_HIDE=0: без бисквитка и без Vary: Cookie
+OK   1. LANG_SWITCH=0, PUBLIC_HIDE=1: всички публични страници байт по байт като стария код - 270 страници; различни: []
+OK   1. LANG_SWITCH=0, PUBLIC_HIDE=1: ?lang=en и бисквитка lang=en се пренебрегват (страниците като старите)
+OK   1. LANG_SWITCH=0, PUBLIC_HIDE=1: без бисквитка и без Vary: Cookie
+OK   2. LANG_SWITCH=1, bg, PUBLIC_HIDE=1: байт по байт като LANG_SWITCH=0 освен бутона, hreflang и стила му - 271 страници; различни: []
+OK   2. LANG_SWITCH=1, bg, PUBLIC_HIDE=1: бутон, hreflang и <html lang="bg"> на всяка страница
+OK   2. LANG_SWITCH=1, PUBLIC_HIDE=1: Vary: Cookie на всеки публичен отговор (вкл. 404)
+OK   3. en, PUBLIC_HIDE=1: същите кодове на отговор като на български
+OK   3. en, PUBLIC_HIDE=1: нула кирилски символи в 271 отговора (списък по дни, двата таба, лиги, „Покажи още“, всички мачове)
+OK   3. en, PUBLIC_HIDE=1: <html lang="en">
+OK   3. en, PUBLIC_HIDE=1: същите пазари и числа като на български (секции, редове, проценти, 1/X/2, мачовете в списъка)
+OK   3. en: страници на мачове с пазари от поне 4 лиги, вкл. bulgaria2 - 16 лиги: bulgaria, bulgaria2, champions_league, conference_league, england, england2, europa_league, france, france2, germany, germany2, italy, italy2, portugal, spain, spain2
+OK   3. en: мач с текст след съставите - „After the line-ups were announced…“ и надписът „updated after the line-ups HH:MM“ - мач 1571583 (bulgaria2)
+OK   3. bg: същият мач - „След обявяването на съставите“ и „обновено след съставите“
+OK   3. en: текстът на мача е на английските страници там, където е и на българските - en 187 / bg 187
+OK   3. en: /prognozi?day=0 - Predictions, Upcoming, Finished
+OK   3. en: /prognozi?status=finished&limit=50 - Showing, Show 25 more
+OK   2. LANG_SWITCH=1, bg, PUBLIC_HIDE=0: байт по байт като LANG_SWITCH=0 освен бутона, hreflang и стила му - 271 страници; различни: []
+OK   2. LANG_SWITCH=1, bg, PUBLIC_HIDE=0: бутон, hreflang и <html lang="bg"> на всяка страница
+OK   2. LANG_SWITCH=1, PUBLIC_HIDE=0: Vary: Cookie на всеки публичен отговор (вкл. 404)
+OK   3. en, PUBLIC_HIDE=0: същите кодове на отговор като на български
+OK   3. en, PUBLIC_HIDE=0: нула кирилски символи в 271 отговора (списък по дни, двата таба, лиги, „Покажи още“, всички мачове)
+OK   3. en, PUBLIC_HIDE=0: <html lang="en">
+OK   3. en, PUBLIC_HIDE=0: същите пазари и числа като на български (секции, редове, проценти, 1/X/2, мачовете в списъка)
+OK   3. i18n_missing_log празен (няма текст без превод)
+OK   4. ?lang=en -> бисквитка (1 година, SameSite=Lax), после без параметър - английски; ?lang=bg -> обратно - lang=en; Expires=Fri, 08 Oct 2027 13:45:23 GMT; Max-Age=31536000; Path=/; SameSite=Lax
+OK   4. бисквитката важи и между страниците (мач -> начална)
+OK   4. друга стойност (?lang=xx, бисквитка lang=de) -> bg, без бисквитка
+OK   4. бутонът: същият адрес със същите параметри (day, status, league, limit) + lang=, текущият удебелен
+OK   4. бутонът на страницата на мача: същият адрес + lang=
+OK   5. маршрут извън публичните (като админа): с бисквитка lang=en и ?lang=en - байт по байт както без тях, на български - 9,91,82,0.1);
+}
+</style>|Пт, 9 окт|False
+OK   5. админът не получава бисквитка и Vary
+OK   6. всеки t("...") в шаблоните, всяко заглавие на секция, етикет и причина има превод; всеки изход се превежда - t(): 63, заглавия 14, етикети/причини 8, изходи 34; без превод: [] []

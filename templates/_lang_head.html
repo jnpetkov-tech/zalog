@@ -1,0 +1,11 @@
+
+{# ZADACHA_EZIK: само при LANG_SWITCH=1 - двата езикови варианта на страницата и стилът на бутона БГ | EN (токените от _tokens.html). #}
+<link rel="alternate" hreflang="bg" href="{{ lang_url('bg') }}">
+<link rel="alternate" hreflang="en" href="{{ lang_url('en') }}">
+<style>
+  .langsw{ display:flex; justify-content:flex-end; align-items:center; gap:2px; margin:-24px 0 4px; font-size:13px; color:var(--text-faint); }
+  .langsw a{ color:var(--sub); padding:4px 6px; border-radius:6px; }
+  .langsw a.on{ color:var(--text); font-weight:700; }
+  .langsw a:hover{ color:var(--accent); }
+  @media (max-width: 720px){ .langsw{ margin:-16px 0 4px; } }
+</style>

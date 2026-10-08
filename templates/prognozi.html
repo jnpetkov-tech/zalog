@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="bg">
+<html lang="{{ lang }}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SportBG — Прогнози</title>
+<title>{{ t("SportBG — Прогнози") }}</title>{% if lang_switch %}{% include "_lang_head.html" %}{% endif %}
 {% include "_tokens.html" %}
 <style>
-  /* Оформление/структура: design_mockup_prognozi.html (Дака) - имената на
+  {% if lang != 'en' %}/* Оформление/структура: design_mockup_prognozi.html (Дака) - имената на
      CSS променливите тук са преведени към общите токени в _tokens.html
      (т.2.1: "макетът печели, обнови токените" - вече едни и същи
-     стойности, само различни имена заради вече съществуващите templates). */
+     стойности, само различни имена заради вече съществуващите templates). */{% endif %}
   *{box-sizing:border-box;margin:0;padding:0;}
   html{-webkit-font-smoothing:antialiased;}
   body{
@@ -32,10 +32,10 @@
   h1{font-size:30px; font-weight:800; letter-spacing:-0.5px;}
   .heading-sub{font-size:14px; color:var(--sub); margin-top:6px; max-width:48ch;}
 
-  /* Преустройство 02.09.2026 (Дака: горният отчет ядеше 1/3 от първия
+  {% if lang != 'en' %}/* Преустройство 02.09.2026 (Дака: горният отчет ядеше 1/3 от първия
      екран) - тънък ред горе, пълният отчет (стария .metrics) слиза долу
      до "Как да чета тези числа". #full-report - котвата от долу нагоре -
-     scroll-margin-top, за да не опира в самия ръб при скрол. */
+     scroll-margin-top, за да не опира в самия ръб при скрол. */{% endif %}
   .summary-line{
     display:flex; align-items:baseline; flex-wrap:wrap; gap:6px 10px;
     font-size:13px; color:var(--text-faint); margin-bottom:24px;
@@ -43,10 +43,10 @@
   .summary-link{ color:var(--accent); white-space:nowrap; font-weight:600; }
   .report-label{ font-size:13px; font-weight:600; color:var(--text-faint); margin-bottom:10px; }
 
-  /* Б1 (ZADACHA_PAT.md, 20.09.2026): "Вчера" ред - приглушен, под
+  {% if lang != 'en' %}/* Б1 (ZADACHA_PAT.md, 20.09.2026): "Вчера" ред - приглушен, под
      обобщителния ред. Margin-top не се задава нарочно (0) - margin-collapse
      с .summary-line's margin-bottom:24px пази същия отстъп, когато този ред
-     липсва (виж коментара в web/prognozi.py защо може да липсва). */
+     липсва (виж коментара в web/prognozi.py защо може да липсва). */{% endif %}
   .yesterday-line{ font-size:12px; color:var(--text-faint); margin-bottom:24px; }
 
   .metrics{
@@ -77,7 +77,7 @@
   .daystrip a span{color:var(--text-faint); font-size:12.5px;}
   .daystrip a.active{color:var(--text); border-bottom-color:var(--accent); font-weight:600;}
   .daystrip a.active span{color:var(--accent);}
-  /* ZADACHA_PRAZNO.md т.2: броят мачове до деня; дни без мачове - бледи. */
+  {% if lang != 'en' %}/* ZADACHA_PRAZNO.md т.2: броят мачове до деня; дни без мачове - бледи. */{% endif %}
   .daystrip a .dcount{font-size:11.5px; color:var(--text-faint); font-variant-numeric:tabular-nums;}
   .daystrip a.nomatch{opacity:0.4;}
   .daystrip a.nomatch.active{opacity:0.75;}
@@ -107,7 +107,7 @@
   }
   .colheader .r{text-align:right;}
 
-  /* ZADACHA_DIZAYN т.1: лентата над всяка лига-група в "Предстоящи". */
+  {% if lang != 'en' %}/* ZADACHA_DIZAYN т.1: лентата над всяка лига-група в "Предстоящи". */{% endif %}
   .league-group-head{
     display:flex; align-items:center; gap:10px; margin:22px 0 10px;
   }
@@ -126,8 +126,8 @@
   .league-group-head .lg-line{flex:1; height:1px; background:var(--line-soft);}
   .league-group-head .lg-count{font-size:12px; color:var(--text-faint); white-space:nowrap;}
 
-  /* ZADACHA_DIZAYN т.2: редовете стават самостоятелни карти, не слепени
-     редове в обща лента с 1px фуги (стария .predlist trick с background=border). */
+  {% if lang != 'en' %}/* ZADACHA_DIZAYN т.2: редовете стават самостоятелни карти, не слепени
+     редове в обща лента с 1px фуги (стария .predlist trick с background=border). */{% endif %}
   .predlist{display:flex; flex-direction:column; gap:10px;}
   .predrow{
     display:grid; grid-template-columns: 76px 1fr 240px; align-items:center;
@@ -138,9 +138,9 @@
   }
   .predrow:hover{ border-color:rgba(24,185,138,0.35); background:var(--panel2); }
   .pred-timecol{ grid-area:time; }
-  /* ZADACHA_DIZAYN т.4: часът - 20px/700, само за чист час (Предстоящи/В ход).
+  {% if lang != 'en' %}/* ZADACHA_DIZAYN т.4: часът - 20px/700, само за чист час (Предстоящи/В ход).
      Датите в "Приключили"/"Пропуснати" остават на старата, по-дребна гарнитура
-     (76px колоната е тясна за "19.09 14:30" на 20px bold). */
+     (76px колоната е тясна за "19.09 14:30" на 20px bold). */{% endif %}
   .pred-time{font-size:13.5px; color:var(--sub); font-weight:600;}
   .pred-time-hour{font-size:20px; color:var(--text); font-weight:700;}
   .pred-day{font-size:11.5px; color:var(--sub); font-weight:500; line-height:1.2;}
@@ -148,12 +148,12 @@
   .pred-league{font-size:12px; color:var(--text-faint); margin-top:4px; font-weight:400;}
   .league-logo{width:14px; height:14px; object-fit:contain; vertical-align:-2px; margin-right:3px;}
   .pred-match{grid-area:match; font-size:14.5px; font-weight:600; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
-  /* ZADACHA_DIZAYN т.5: резултатът на приключил мач - "чип" между имената. */
+  {% if lang != 'en' %}/* ZADACHA_DIZAYN т.5: резултатът на приключил мач - "чип" между имената. */{% endif %}
   .pred-score{
     display:inline-block; background:#22252b; border-radius:8px;
     padding:4px 12px; font-size:19px; font-weight:800; font-variant-numeric:tabular-nums;
   }
-  /* ZADACHA_DIZAYN т.3: гербовете 38px + резервен кръг с инициали, ако липсва лого. */
+  {% if lang != 'en' %}/* ZADACHA_DIZAYN т.3: гербовете 38px + резервен кръг с инициали, ако липсва лого. */{% endif %}
   .team-logo{width:38px; height:38px; object-fit:contain; vertical-align:middle;}
   .crest-fallback{
     display:none; width:38px; height:38px; border-radius:50%; background:var(--panel2);
@@ -162,8 +162,8 @@
   }
   .pred-pick{grid-area:pick; display:flex; justify-content:flex-end; align-items:center; gap:8px; flex-wrap:wrap;}
   .badge.inprogress{font-size:11px; color:var(--text-faint); font-weight:400;}
-  /* ZADACHA_PAZARI.md, ЧАСТ В: трите числа 1/X/2 - най-високото по-плътно,
-     без цвят и без знак. */
+  {% if lang != 'en' %}/* ZADACHA_PAZARI.md, ЧАСТ В: трите числа 1/X/2 - най-високото по-плътно,
+     без цвят и без знак. */{% endif %}
   .x12{ display:grid; grid-template-columns:repeat(3, 1fr); gap:6px; width:100%; }
   .x12 .o{ display:flex; flex-direction:column; align-items:center; gap:2px;
     background:var(--panel2); border:1px solid var(--border); border-radius:9px; padding:6px 4px; }
@@ -179,7 +179,7 @@
 
   .tab-note{ margin-bottom:14px; font-size:12px; color:var(--text-faint); }
 
-  /* A2 (19.09.2026): редът под "Приключили" - "Показани X от Y" + бутонът. */
+  {% if lang != 'en' %}/* A2 (19.09.2026): редът под "Приключили" - "Показани X от Y" + бутонът. */{% endif %}
   .showmore{ display:flex; align-items:center; justify-content:space-between;
     gap:14px; margin-top:14px; font-size:12.5px; color:var(--text-faint); flex-wrap:wrap; }
   .showmore a{ color:var(--accent); font-weight:600; border:1px solid var(--border);
@@ -211,9 +211,9 @@
     .metric:nth-child(2n){border-right:none;}
   }
 
-  /* ZADACHA_DIZAYN т.7: под 620px картата се пренарежда вертикално чрез
+  {% if lang != 'en' %}/* ZADACHA_DIZAYN т.7: под 620px картата се пренарежда вертикално чрез
      grid-template-areas - DOM редът остава непроменен, само визуалната
-     подредба. Колонните заглавия (.colheader) се крият. */
+     подредба. Колонните заглавия (.colheader) се крият. */{% endif %}
   @media (max-width: 620px){
     .colheader{display:none;}
     .league-group-head{margin:18px 0 8px;}
@@ -246,34 +246,34 @@
 {% macro crest(logo, name) %}{% if logo %}<img class="team-logo" src="{{ logo }}" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">{% endif %}<span class="crest-fallback"{% if not logo %} style="display:flex;"{% endif %}>{{ (name or '')[:3]|upper }}</span>{% endmacro %}
 
 {# ZADACHA_PAZARI.md, ЧАСТ В: 1/X/2; ако 1X2 не е публикуем - празно, без текст. #}
-{% macro x12(m) %}{% if m.x12 %}<div class="x12{{ ' exp' if m.x12_exp else '' }}">{% for o in m.x12 %}<div class="o{{ ' top' if o.top else '' }}"><span class="ol">{{ o.label }}</span><span class="op">{{ "%.0f"|format(o.pct) }}%</span></div>{% endfor %}</div>{% if m.x12_exp %}<span class="exp-tag" title="експериментална прогноза - за тази лига не е минала проверката">експ.</span>{% endif %}{% endif %}{% endmacro %}
+{% macro x12(m) %}{% if m.x12 %}<div class="x12{{ ' exp' if m.x12_exp else '' }}">{% for o in m.x12 %}<div class="o{{ ' top' if o.top else '' }}"><span class="ol">{{ o.label }}</span><span class="op">{{ "%.0f"|format(o.pct) }}%</span></div>{% endfor %}</div>{% if m.x12_exp %}<span class="exp-tag" title="{{ t('експериментална прогноза - за тази лига не е минала проверката') }}">{{ t("експ.") }}</span>{% endif %}{% endif %}{% endmacro %}
 
-  <div class="shell">
+  <div class="shell">{% if lang_switch %}{% include "_lang_button.html" %}{% endif %}
 
     <div class="heading-row">
       <div>
-        <h1>Прогнози</h1>
-        <div class="heading-sub">Числата преди мача — за всички големи първенства.{% if not public_hide %} Показваме и какво сме познали, и какво не.{% endif %} Обновява се на всеки {{ snapshot_interval_minutes }} минути.</div>
+        <h1>{{ t("Прогнози") }}</h1>
+        <div class="heading-sub">{{ t("Числата преди мача — за всички големи първенства.") }}{% if not public_hide %} {{ t("Показваме и какво сме познали, и какво не.") }}{% endif %} {{ t("Обновява се на всеки {n} минути.", n=snapshot_interval_minutes) }}</div>
       </div>
     </div>
 
     {% if not public_hide %}<div class="summary-line">
       <a href="#full-report" class="summary-text">
         {% if scorecard.n_settled and scorecard.actual_pct is not none %}
-          {{ scorecard.n_settled }} проверени прогнози · {% if scorecard.actual_pct < scorecard.promised_avg %}обещахме {{ "%.1f"|format(scorecard.promised_avg) }}%, познахме само {{ "%.1f"|format(scorecard.actual_pct) }}%{% else %}обещахме {{ "%.1f"|format(scorecard.promised_avg) }}%, познахме {{ "%.1f"|format(scorecard.actual_pct) }}%{% endif %}
+          {{ t("{n} проверени прогнози ·", n=scorecard.n_settled) }} {% if scorecard.actual_pct < scorecard.promised_avg %}{{ t("обещахме {p}%, познахме само {a}%", p="%.1f"|format(scorecard.promised_avg), a="%.1f"|format(scorecard.actual_pct)) }}{% else %}{{ t("обещахме {p}%, познахме {a}%", p="%.1f"|format(scorecard.promised_avg), a="%.1f"|format(scorecard.actual_pct)) }}{% endif %}
         {% else %}
-          Все още няма достатъчно уредени прогнози за отчет
+          {{ t("Все още няма достатъчно уредени прогнози за отчет") }}
         {% endif %}
       </a>
-      <a href="#full-report" class="summary-link">виж пълния отчет →</a>
+      <a href="#full-report" class="summary-link">{{ t("виж пълния отчет →") }}</a>
     </div>
 
     {% if yesterday %}
-    <div class="yesterday-line">Вчера: познахме {{ yesterday.correct }} от {{ yesterday.total }}</div>
+    <div class="yesterday-line">{{ t("Вчера: познахме {c} от {n}", c=yesterday.correct, n=yesterday.total) }}</div>
     {% endif %}{% endif %}
 
     {% if snapshot_stale_note %}
-    <div class="stale-banner">Числата може да не са най-новите.</div>
+    <div class="stale-banner">{{ t("Числата може да не са най-новите.") }}</div>
     {% endif %}
 
     <div class="daystrip">
@@ -288,7 +288,7 @@
         <input type="hidden" name="day" value="{{ day_offset }}">
         <input type="hidden" name="status" value="{{ status_tab }}">
         <select class="chip-select" name="league" onchange="this.form.submit()">
-          <option value="all" {% if league_filter=="all" %}selected{% endif %}>Всички лиги</option>
+          <option value="all" {% if league_filter=="all" %}selected{% endif %}>{{ t("Всички лиги") }}</option>
           {% for key, name in league_options %}
           <option value="{{ key }}" {% if key==league_filter %}selected{% endif %}>{{ name }}</option>
           {% endfor %}
@@ -298,32 +298,32 @@
     {% endif %}
 
     <div class="statustabs">
-      <a href="/prognozi?day={{ day_offset }}&status=upcoming&league={{ league_filter }}" class="{{ 'active' if status_tab=='upcoming' else '' }}">Предстоящи <span class="count">{{ upcoming_rows|length }}</span></a>
-      <a href="/prognozi?day={{ day_offset }}&status=finished&league={{ league_filter }}" class="{{ 'active' if status_tab=='finished' else '' }}">Приключили <span class="count">{{ finished_total }}</span></a>
+      <a href="/prognozi?day={{ day_offset }}&status=upcoming&league={{ league_filter }}" class="{{ 'active' if status_tab=='upcoming' else '' }}">{{ t("Предстоящи") }} <span class="count">{{ upcoming_rows|length }}</span></a>
+      <a href="/prognozi?day={{ day_offset }}&status=finished&league={{ league_filter }}" class="{{ 'active' if status_tab=='finished' else '' }}">{{ t("Приключили") }} <span class="count">{{ finished_total }}</span></a>
     </div>
 
     {% if status_tab == 'upcoming' %}
       {% if snapshot_empty %}
-      <div class="empty-note">Прогнозите за този ден още не са готови.</div>
+      <div class="empty-note">{{ t("Прогнозите за този ден още не са готови.") }}</div>
       {% else %}
         {% if not upcoming_rows and not in_progress_rows %}
         {# ZADACHA_PRAZNO.md т.3: защо е празно и кога се връщат мачовете -
            датата идва от снимката (next_match_phrase, web/prognozi.py). #}
         <div class="empty-note">
           {% if next_match_phrase %}
-            {% if selected_day_finished %}Мачовете за този ден приключиха.{% elif league_filter != 'all' %}В тази лига няма мачове този ден.{% else %}Първенствата почиват.{% endif %}
-            Следващите мачове са {{ next_match_phrase }}.
+            {% if selected_day_finished %}{{ t("Мачовете за този ден приключиха.") }}{% elif league_filter != 'all' %}{{ t("В тази лига няма мачове този ден.") }}{% else %}{{ t("Първенствата почиват.") }}{% endif %}
+            {{ t("Следващите мачове са {when}.", when=next_match_phrase) }}
           {% elif not any_match_ahead %}
-            Прогнозите за следващите дни още не са изчислени.
+            {{ t("Прогнозите за следващите дни още не са изчислени.") }}
           {% elif league_filter != 'all' %}
-            В тази лига няма мачове за този и следващите дни.
+            {{ t("В тази лига няма мачове за този и следващите дни.") }}
           {% else %}
-            Няма мачове за този и следващите дни.
+            {{ t("Няма мачове за този и следващите дни.") }}
           {% endif %}
         </div>
         {% endif %}
         {% if upcoming_rows %}
-        <div class="colheader"><div>Час</div><div>Мач</div><div class="x12h"><span>1</span><span>X</span><span>2</span></div></div>
+        <div class="colheader"><div>{{ t("Час") }}</div><div>{{ t("Мач") }}</div><div class="x12h"><span>1</span><span>X</span><span>2</span></div></div>
         {# ZADACHA_DIZAYN т.1: групиране по лига, групите подредени по часа на
            първия мач в тях. upcoming_rows идва вече сортиран хронологично от
            web/prognozi.py - затова първата поява на всяка лига в потока пада
@@ -341,13 +341,13 @@
           {% if g0.league_logo %}<img class="lg-badge" src="{{ g0.league_logo }}" alt="" onerror="this.style.display='none'">{% else %}<span class="lg-badge lg-flag">{{ g0.flag }}</span>{% endif %}
           <span class="lg-name">{{ lg }}</span>
           <span class="lg-line"></span>
-          <span class="lg-count">{{ group_rows|length }} {{ "мач" if group_rows|length == 1 else "мача" }}</span>
+          <span class="lg-count">{{ group_rows|length }} {{ t("мач") if group_rows|length == 1 else t("мача") }}</span>
         </div>
         <div class="predlist">
           {% for m in group_rows %}
           <a class="predrow" href="/prognozi/match/{{ m.fixture_id }}">
             <div class="pred-timecol">{% set _d = m.date|bg_day %}{% if _d %}<div class="pred-day">{{ _d }}</div>{% endif %}<div class="pred-time-hour">{{ m.date[-5:] }}</div></div>
-            <div class="pred-match">{{ crest(m.home_logo, m.home_cy) }}{{ m.home_cy }} — {{ m.away_cy }}{{ crest(m.away_logo, m.away_cy) }}{% if m.lineup_at %}<div class="pred-lineup">обновено след съставите {{ m.lineup_at }}</div>{% endif %}{% if m.text1 %}<div class="pred-text">{{ m.text1 }}</div>{% endif %}</div>
+            <div class="pred-match">{{ crest(m.home_logo, m.home_cy) }}{{ m.home_cy }} — {{ m.away_cy }}{{ crest(m.away_logo, m.away_cy) }}{% if m.lineup_at %}<div class="pred-lineup">{{ t("обновено след съставите {hm}", hm=m.lineup_at) }}</div>{% endif %}{% if m.text1 %}<div class="pred-text">{{ m.text1 }}</div>{% endif %}</div>
             <div class="pred-pick">{{ x12(m) }}</div>
           </a>
           {% endfor %}
@@ -356,13 +356,13 @@
         {% endif %}
 
         {% if in_progress_rows %}
-        <div class="tab-note" style="margin-top:20px;">Мачове в ход ({{ in_progress_rows|length }}). Показаното е отпреди началото на мача.</div>
+        <div class="tab-note" style="margin-top:20px;">{{ t("Мачове в ход ({n}). Показаното е отпреди началото на мача.", n=in_progress_rows|length) }}</div>
         <div class="predlist">
           {% for m in in_progress_rows %}
           <a class="predrow" href="/prognozi/match/{{ m.fixture_id }}">
             <div class="pred-timecol">{% set _d = m.date|bg_day %}{% if _d %}<div class="pred-day">{{ _d }}</div>{% endif %}<div class="pred-time-hour">{{ m.date[-5:] }}</div><div class="pred-league">{% if m.league_logo %}<img class="league-logo" src="{{ m.league_logo }}" alt="" onerror="this.style.display='none'">{% endif %}{{ m.flag }} {{ m.league_name }}</div></div>
-            <div class="pred-match">{{ crest(m.home_logo, m.home_cy) }}{{ m.home_cy }} — {{ m.away_cy }}{{ crest(m.away_logo, m.away_cy) }}{% if m.lineup_at %}<div class="pred-lineup">обновено след съставите {{ m.lineup_at }}</div>{% endif %}{% if m.text1 %}<div class="pred-text">{{ m.text1 }}</div>{% endif %}</div>
-            <div class="pred-pick">{{ x12(m) }}<span class="badge inprogress">резултатът се проверява</span></div>
+            <div class="pred-match">{{ crest(m.home_logo, m.home_cy) }}{{ m.home_cy }} — {{ m.away_cy }}{{ crest(m.away_logo, m.away_cy) }}{% if m.lineup_at %}<div class="pred-lineup">{{ t("обновено след съставите {hm}", hm=m.lineup_at) }}</div>{% endif %}{% if m.text1 %}<div class="pred-text">{{ m.text1 }}</div>{% endif %}</div>
+            <div class="pred-pick">{{ x12(m) }}<span class="badge inprogress">{{ t("резултатът се проверява") }}</span></div>
           </a>
           {% endfor %}
         </div>
@@ -371,10 +371,10 @@
       {% endif %}
     {% elif status_tab == 'finished' %}
       {% if not finished_rows %}
-      <div class="empty-note">Няма уредени мачове все още.</div>
+      <div class="empty-note">{{ t("Няма уредени мачове все още.") }}</div>
       {% else %}
-      <div class="tab-note">Всички приключили мачове, не само от избрания ден.</div>
-      <div class="colheader"><div>Дата</div><div>Мач</div><div class="x12h"><span>1</span><span>X</span><span>2</span></div></div>
+      <div class="tab-note">{{ t("Всички приключили мачове, не само от избрания ден.") }}</div>
+      <div class="colheader"><div>{{ t("Дата") }}</div><div>{{ t("Мач") }}</div><div class="x12h"><span>1</span><span>X</span><span>2</span></div></div>
       <div class="predlist">
         {% for m in finished_rows %}
         <a class="predrow" href="/prognozi/match/{{ m.fixture_id }}">
@@ -387,9 +387,9 @@
       {# A2 (19.09.2026): странициране - бутонът носи същия ден/таб/лига,
          само limit расте с 25. Изчезва, щом всичко е показано. #}
       <div class="showmore">
-        <span>Показани {{ finished_rows|length }} от {{ finished_total }}</span>
+        <span>{{ t("Показани {shown} от {total}", shown=finished_rows|length, total=finished_total) }}</span>
         {% if finished_has_more %}
-        <a href="/prognozi?day={{ day_offset }}&status=finished&league={{ league_filter }}&limit={{ finished_next_limit }}">Покажи още 25</a>
+        <a href="/prognozi?day={{ day_offset }}&status=finished&league={{ league_filter }}&limit={{ finished_next_limit }}">{{ t("Покажи още 25") }}</a>
         {% endif %}
       </div>
       {% endif %}
@@ -399,66 +399,66 @@
          нарочно: задачата казваше да падне само линкът на таба, бекендът да
          остане. Ако табът някога се върне, разкоментирай линка в .statustabs. #}
       {% if not skipped_rows %}
-      <div class="empty-note">Няма пропуснати мачове за този ден.</div>
+      <div class="empty-note">{{ t("Няма пропуснати мачове за този ден.") }}</div>
       {% else %}
-      <div class="colheader"><div>Час</div><div>Мач</div><div class="r"></div></div>
+      <div class="colheader"><div>{{ t("Час") }}</div><div>{{ t("Мач") }}</div><div class="r"></div></div>
       <div class="predlist">
         {% for m in skipped_rows %}
         <div class="predrow">
           <div class="pred-timecol">{% set _d = m.date|bg_day %}{% if _d %}<div class="pred-day">{{ _d }}</div>{% endif %}<div class="pred-time">{{ m.date[-5:] }}</div><div class="pred-league">{% if m.league_logo %}<img class="league-logo" src="{{ m.league_logo }}" alt="" onerror="this.style.display='none'">{% endif %}{{ m.flag }} {{ m.league_name }}</div></div>
-          <div class="pred-match">{{ crest(m.home_logo, m.home_cy) }}{{ m.home_cy }} — {{ m.away_cy }}{{ crest(m.away_logo, m.away_cy) }}{% if m.lineup_at %}<div class="pred-lineup">обновено след съставите {{ m.lineup_at }}</div>{% endif %}{% if m.text1 %}<div class="pred-text">{{ m.text1 }}</div>{% endif %}</div>
-          <div class="pred-pick" style="color:var(--text-faint);font-weight:400;">Изключен от прогнозите</div>
+          <div class="pred-match">{{ crest(m.home_logo, m.home_cy) }}{{ m.home_cy }} — {{ m.away_cy }}{{ crest(m.away_logo, m.away_cy) }}{% if m.lineup_at %}<div class="pred-lineup">{{ t("обновено след съставите {hm}", hm=m.lineup_at) }}</div>{% endif %}{% if m.text1 %}<div class="pred-text">{{ m.text1 }}</div>{% endif %}</div>
+          <div class="pred-pick" style="color:var(--text-faint);font-weight:400;">{{ t("Изключен от прогнозите") }}</div>
         </div>
         {% endfor %}
       </div>
       {% endif %}
     {% endif %}
 
-    {% if not public_hide %}<div class="report-label" id="full-report">Пълен отчет</div>
+    {% if not public_hide %}<div class="report-label" id="full-report">{{ t("Пълен отчет") }}</div>
     <div class="metrics">
       <div class="metric">
         <div class="num">{{ scorecard.n_settled }}</div>
-        <div class="label">уредени прогнози до момента</div>
+        <div class="label">{{ t("уредени прогнози до момента") }}</div>
       </div>
       <div class="metric">
         {% if scorecard.actual_pct is none or scorecard.promised_avg is none %}
         <div class="num">—</div>
-        <div class="label">колко точни са вероятностите ни</div>
+        <div class="label">{{ t("колко точни са вероятностите ни") }}</div>
         {% else %}
-        <div class="num compound">обещахме <span class="dim">{{ "%.1f"|format(scorecard.promised_avg) }}%</span> · познахме <span class="{{ 'up' if scorecard.actual_pct >= scorecard.promised_avg else 'down' }}">{{ "%.1f"|format(scorecard.actual_pct) }}%</span></div>
+        <div class="num compound">{{ t("обещахме") }} <span class="dim">{{ "%.1f"|format(scorecard.promised_avg) }}%</span> · {{ t("познахме") }} <span class="{{ 'up' if scorecard.actual_pct >= scorecard.promised_avg else 'down' }}">{{ "%.1f"|format(scorecard.actual_pct) }}%</span></div>
         {# A6 (ZADACHA_FAZA1.md, 19.09.2026): n вече го пише първата плочка
            ("уредени прогнози до момента") и е СЪЩОТО число - не се повтаря. #}
-        <div class="label">колко точни са вероятностите ни</div>
+        <div class="label">{{ t("колко точни са вероятностите ни") }}</div>
         {% endif %}
       </div>
     </div>{% endif %}
 
     <details class="howto"{% if public_hide %} id="howto"{% endif %}>
-      <summary>Как да чета тези числа</summary>
+      <summary>{{ t("Как да чета тези числа") }}</summary>
       <div class="howto-body">
         {# A5 (ZADACHA_FAZA1.md, 19.09.2026): петте раздела ("Какво значи нашето
            число?" ... "Какво сме измерили за себе си") са заменени с кратък
            речник - три реда. Двата цветни блока под тях остават непроменени. #}
-        <p><b>Процентът</b> до всеки изход — нашата прогноза.</p>
+        <p>{{ t("<b>Процентът</b> до всеки изход — нашата прогноза.")|safe }}</p>
 
         <div class="box warn">
-          <h2 style="margin-top:0;">⚠️ Честно казано засега</h2>
-          <p>Часовете са българско време.</p>
-          <p>Числата са оценка на нашия статистически модел и могат да грешат. Проверявали сме и дали следването на тези прогнози би било печелившо — не би било: измерено върху всички публикувани прогнози, резултатът е отрицателен и вече не се обяснява със случайност. Затова тук няма съвети за залагане, а само статистика: колко вероятен смятаме даден изход.</p>
-          <p style="margin-bottom:0;">Затова числата тук са <b>описателни</b> — показват какво сме измерили до момента. Не са съвет какво да правиш.</p>
+          <h2 style="margin-top:0;">{{ t("⚠️ Честно казано засега") }}</h2>
+          <p>{{ t("Часовете са българско време.") }}</p>
+          <p>{{ t("Числата са оценка на нашия статистически модел и могат да грешат. Проверявали сме и дали следването на тези прогнози би било печелившо — не би било: измерено върху всички публикувани прогнози, резултатът е отрицателен и вече не се обяснява със случайност. Затова тук няма съвети за залагане, а само статистика: колко вероятен смятаме даден изход.") }}</p>
+          <p style="margin-bottom:0;">{{ t("Затова числата тук са <b>описателни</b> — показват какво сме измерили до момента. Не са съвет какво да правиш.")|safe }}</p>
         </div>
 
         <div class="box age">
-          <h2 style="margin-top:0;">🔞 Отговорна игра</h2>
-          <p>Съдържанието в тази секция е информационно и статистическо. То не е съвет за залагане и не гарантира резултат — никой модел не може да гарантира изхода на спортно събитие.</p>
-          <p style="margin-bottom:0;">Хазартът е забранен за лица под 18 години. Залагането носи финансов риск и може да доведе до пристрастяване — играй отговорно, само с пари, които можеш да си позволиш да загубиш.</p>
+          <h2 style="margin-top:0;">{{ t("🔞 Отговорна игра") }}</h2>
+          <p>{{ t("Съдържанието в тази секция е информационно и статистическо. То не е съвет за залагане и не гарантира резултат — никой модел не може да гарантира изхода на спортно събитие.") }}</p>
+          <p style="margin-bottom:0;">{{ t("Хазартът е забранен за лица под 18 години. Залагането носи финансов риск и може да доведе до пристрастяване — играй отговорно, само с пари, които можеш да си позволиш да загубиш.") }}</p>
         </div>
       </div>
     </details>{% if public_hide %}
     <script>if (location.hash === "#howto") document.getElementById("howto").open = true;</script>{% endif %}
 
     <div class="foot-note">
-      Прогнозите се основават на статистически модел и не представляват съвет за залагане. Хазартът е забранен за лица под 18 години. Резултатите от миналото не гарантират бъдещи резултати.
+      {{ t("Прогнозите се основават на статистически модел и не представляват съвет за залагане. Хазартът е забранен за лица под 18 години. Резултатите от миналото не гарантират бъдещи резултати.") }}
     </div>
 
   </div>
