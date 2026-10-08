@@ -69,7 +69,6 @@
   .mtext{ margin:0 0 26px; padding:16px 18px; background:var(--panel2); border:1px solid var(--border); border-radius:12px; }
   .mtext-title{ font-size:12.5px; font-weight:600; color:var(--sub); margin:0 0 8px; }
   .mtext p{ font-size:14px; line-height:1.6; color:var(--text); margin:0 0 6px; }
-  .mtext .mtext-note{ font-size:11.5px; color:var(--text-faint); margin:8px 0 0; }
 </style>{% endif %}
 </head>
 <body>
@@ -104,7 +103,6 @@
     {% if match_text %}<div class="mtext">
       <div class="mtext-title">{{ t("За мача") }}</div>
       {% for t in match_text %}<p>{{ t }}</p>{% endfor %}
-      <p class="mtext-note">{{ t("Текстът е съставен автоматично само от числа в нашата база: формата, почивката и ударите — по мачовете в първенствата и европейските турнири, които следим (без купите); класирането — по резултатите в нея.") }}</p>
     </div>
     {% endif %}{% if public_view and sections %}{% include "_public_sections.html" %}{% elif all_view %}{% include "_all_sections.html" %}{% elif sections %}
     {% for sec in sections %}

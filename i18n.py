@@ -109,10 +109,6 @@ EN = {
     "Няма прогноза за този мач.": "There is no prediction for this match.",
     "срещу": "vs",
     "За мача": "About the match",
-    "Текстът е съставен автоматично само от числа в нашата база: формата, почивката и ударите — по мачовете в първенствата и "
-    "европейските турнири, които следим (без купите); класирането — по резултатите в нея.":
-        "This text is put together automatically, only from numbers in our database: form, rest and shots are based on the league and "
-        "European competition matches we follow (domestic cups excluded); the standings are based on the results in it.",
     "Искаш повече обяснения? → Как да чета тези числа": "Want more explanation? → How to read these numbers",
     "Прогнозите са вероятности, изчислени от модел. Не са гаранция за резултат.":
         "Predictions are probabilities calculated by a model. They are not a guarantee of any result.",
