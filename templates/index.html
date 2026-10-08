@@ -97,7 +97,7 @@
   <div><div style="font-size:22px;font-weight:700;">{{ "%.1f%%"|format(promised_avg) }}</div><div style="font-size:11px;color:var(--sub);">обещано средно</div></div>
   <div style="color:var(--sub);font-size:18px;">&rarr;</div>
   <div><div style="font-size:22px;font-weight:700;">{{ "%.1f%%"|format(actual_pct) }}</div><div style="font-size:11px;color:var(--sub);">реално познати</div></div>
-  <div style="margin-left:auto;font-size:11px;color:var(--sub);">само публикувани прогнози &middot; n={{n_settled}} приключили</div>
+  <div style="margin-left:auto;font-size:11px;color:var(--sub);">само публикувани прогнози &middot; n={{n_settled}} приключили{% if yesterday %} &middot; вчера: познахме {{ yesterday.correct }} от {{ yesterday.total }}{% endif %}</div>
 </div>
 {% endif %}
 

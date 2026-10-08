@@ -253,11 +253,11 @@
     <div class="heading-row">
       <div>
         <h1>Прогнози</h1>
-        <div class="heading-sub">Числата преди мача — за всички големи първенства. Показваме и какво сме познали, и какво не. Обновява се на всеки {{ snapshot_interval_minutes }} минути.</div>
+        <div class="heading-sub">Числата преди мача — за всички големи първенства.{% if not public_hide %} Показваме и какво сме познали, и какво не.{% endif %} Обновява се на всеки {{ snapshot_interval_minutes }} минути.</div>
       </div>
     </div>
 
-    <div class="summary-line">
+    {% if not public_hide %}<div class="summary-line">
       <a href="#full-report" class="summary-text">
         {% if scorecard.n_settled and scorecard.actual_pct is not none %}
           {{ scorecard.n_settled }} проверени прогнози · {% if scorecard.actual_pct < scorecard.promised_avg %}обещахме {{ "%.1f"|format(scorecard.promised_avg) }}%, познахме само {{ "%.1f"|format(scorecard.actual_pct) }}%{% else %}обещахме {{ "%.1f"|format(scorecard.promised_avg) }}%, познахме {{ "%.1f"|format(scorecard.actual_pct) }}%{% endif %}
@@ -270,7 +270,7 @@
 
     {% if yesterday %}
     <div class="yesterday-line">Вчера: познахме {{ yesterday.correct }} от {{ yesterday.total }}</div>
-    {% endif %}
+    {% endif %}{% endif %}
 
     {% if snapshot_stale_note %}
     <div class="stale-banner">Числата може да не са най-новите.</div>
@@ -414,7 +414,7 @@
       {% endif %}
     {% endif %}
 
-    <div class="report-label" id="full-report">Пълен отчет</div>
+    {% if not public_hide %}<div class="report-label" id="full-report">Пълен отчет</div>
     <div class="metrics">
       <div class="metric">
         <div class="num">{{ scorecard.n_settled }}</div>
@@ -431,9 +431,9 @@
         <div class="label">колко точни са вероятностите ни</div>
         {% endif %}
       </div>
-    </div>
+    </div>{% endif %}
 
-    <details class="howto">
+    <details class="howto"{% if public_hide %} id="howto"{% endif %}>
       <summary>Как да чета тези числа</summary>
       <div class="howto-body">
         {# A5 (ZADACHA_FAZA1.md, 19.09.2026): петте раздела ("Какво значи нашето
@@ -454,7 +454,8 @@
           <p style="margin-bottom:0;">Хазартът е забранен за лица под 18 години. Залагането носи финансов риск и може да доведе до пристрастяване — играй отговорно, само с пари, които можеш да си позволиш да загубиш.</p>
         </div>
       </div>
-    </details>
+    </details>{% if public_hide %}
+    <script>if (location.hash === "#howto") document.getElementById("howto").open = true;</script>{% endif %}
 
     <div class="foot-note">
       Прогнозите се основават на статистически модел и не представляват съвет за залагане. Хазартът е забранен за лица под 18 години. Резултатите от миналото не гарантират бъдещи резултати.

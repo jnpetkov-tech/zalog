@@ -885,6 +885,7 @@ def register_prognozi_routes(app, ctx):
             next_match_phrase=next_match_phrase, any_match_ahead=any_match_ahead,
             selected_day_finished=selected_day_finished,
             exp_on=_SHOW_EXP_IN_LIST and not _PUBLIC_HIDE, text_on=_MATCH_TEXT,
+            public_hide=_PUBLIC_HIDE,      # ZADACHA_EZIK т.0б: без отчета „обещахме/познахме“ на публичния списък
         )
 
     # Публична страница на мача (01.09.2026, задача от Дака, т.2). Изричен

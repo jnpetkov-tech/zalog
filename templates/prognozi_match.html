@@ -120,7 +120,7 @@
     <div class="empty-note">Няма прогноза за този мач.</div>
     {% endif %}
 
-    <div class="howto-link"><a href="/prognozi#full-report">Искаш повече обяснения? → Как да чета тези числа</a></div>{% if public_view %}
+    <div class="howto-link"><a href="/prognozi#{{ 'howto' if public_view else 'full-report' }}">Искаш повече обяснения? → Как да чета тези числа</a></div>{% if public_view %}
 
     <div class="foot-note">Прогнозите са вероятности, изчислени от модел. Не са гаранция за резултат.</div>{% endif %}
 

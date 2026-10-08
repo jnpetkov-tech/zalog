@@ -95,6 +95,18 @@ def register_daily_routes(app, ctx):
         # evaluation.py, Фаза I.2) - връща плочката, скрита в Фаза H.2.
         eval_summary = evaluation.summary(predictions, policy)
         today_str = date.today().isoformat()
+        # ZADACHA_EZIK т.0б (08.10.2026): „Вчера: познахме X от Y“ вече не е на публичния списък (PUBLIC_HIDE=1) - тук остава видимо.
+        # Същото като web/prognozi.py: публикуваните прогнози (evaluation.published_picks), уредени, вчерашната дата по софийско време.
+        yesterday = None
+        try:
+            from zoneinfo import ZoneInfo
+            y_str = (datetime.now(ZoneInfo("Europe/Sofia")).date() - timedelta(days=1)).isoformat()
+            y_rows = [p for p in evaluation.published_picks(predictions, policy)
+                      if p["status"] in ("won", "lost") and str(p["match_date"])[:10] == y_str]
+            if y_rows:
+                yesterday = {"total": len(y_rows), "correct": sum(p["status"] == "won" for p in y_rows)}
+        except Exception:
+            yesterday = None
 
         # Точка 3 (разговор с Дака, 24.08.2026): началната страница вече минава
         # през СЪЩИЯ механизъм като /value (get_value_opportunities), за да
@@ -140,7 +152,7 @@ def register_daily_routes(app, ctx):
                                         top_matches=top_matches, cyrillic=to_cyrillic,
                                         promised_avg=eval_summary["promised_avg"],
                                         actual_pct=eval_summary["actual_pct"],
-                                        n_settled=eval_summary["n_settled"],
+                                        n_settled=eval_summary["n_settled"], yesterday=yesterday,
                                         refresh_state=get_refresh_state())
 
     @daily_bp.route("/manual")
