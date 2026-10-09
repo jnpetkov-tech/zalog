@@ -1,0 +1,26 @@
+# ZADACHA_NACIONALNI2 А: коефициенти+резултати на европейските национални (само събиране, нищо публично)
+*/20 * * * * /home/inkas/sportbg-predictor/agent_loop.sh >> /home/inkas/sportbg-predictor/agent_loop.log 2>&1
+# ZADACHA_GOLQMA етап 2/3: статистика по играчи + събития (таван на квотата в backfill_common.py: спира под 5000 оставащи/ден)
+5,35 * * * * cd /home/inkas/sportbg-predictor && /usr/bin/flock -n /tmp/fetch_player_stats.lock venv/bin/python3 fetch_player_stats.py >> fetch_player_stats_cron.log 2>&1
+12,42 * * * * cd /home/inkas/sportbg-predictor && /usr/bin/flock -n /tmp/fetch_fixture_events.lock venv/bin/python3 fetch_fixture_events.py >> fetch_fixture_events_cron.log 2>&1
+# ТЕГЛЕНЕ3 Б4: нови набори от API-Football (fetch_api_sets.py) - lineups, sidelined, team_stats и др.; същият резерв/таван като другите тегления
+27,57 * * * * cd /home/inkas/sportbg-predictor && /usr/bin/flock -n /tmp/fetch_api_sets.lock venv/bin/python3 fetch_api_sets.py >> fetch_api_sets_cron.log 2>&1
+# СЯНКА (ZADACHA_SYANKA): слой в сянка - прогнози pre/final в layer_shadow (нищо публично), седмично преобучение (пон 05:20 UTC), седмичен отчет (пон 08:30 UTC)
+4,19,34,49 * * * * cd /home/inkas/sportbg-predictor && /usr/bin/flock -n /tmp/layer_shadow.lock nice -n 15 venv/bin/python3 layer_shadow.py --pre-only >> layer_shadow_cron.log 2>&1
+# ПАЗАЧ (ZADACHA_PAZACH 06.10.2026): layer_train.py пише само candidate.json; layer_gate.py проверява и само тогава сменя current.json
+# ПАЗАЧ_2 (06.10.2026): същото през layer_weekly_cron.sh + известие (notify.py) при грешка в преобучението/пазача
+20 5 * * 1 cd /home/inkas/sportbg-predictor && /usr/bin/flock -n /tmp/layer_train.lock ./layer_weekly_cron.sh
+30 8 * * 1 cd /home/inkas/sportbg-predictor && nice -n 19 venv/bin/python3 features/layer_shadow_report.py >> layer_shadow_report_cron.log 2>&1; /usr/bin/flock -n /tmp/syanka_commit.lock ./syanka_commit_cron.sh
+# РАЗВИТИЕ т.2: история на коефициентите (odds_log в predictions.db, само вътрешно мерило; first/daily от odds_cache, close - собствено теглене до 20 мин преди началото)
+*/5 * * * * cd /home/inkas/sportbg-predictor && /usr/bin/flock -n /tmp/odds_history.lock venv/bin/python3 odds_history_collect.py >> odds_history_cron.log 2>&1
+# ВСИЧКО т.5: отчет на 12.10.2026 08:00 UTC (скриптът сам проверява датата; в друг ден не прави нищо)
+0 8 12 10 * /usr/bin/flock -n /tmp/vsichko_report.lock /home/inkas/sportbg-predictor/vsichko_report_cron.sh
+# ZADACHA_SASTAVI_BARZO 02.10.2026: final по съставите на 5 мин (ids=) + бърза снимка само за мачовете с нов final
+*/5 * * * * cd /home/inkas/sportbg-predictor && /usr/bin/flock -n /tmp/layer_shadow.lock venv/bin/python3 layer_shadow.py --final-only >> layer_shadow_cron.log 2>&1; /usr/bin/flock -n /tmp/snapshot_final.lock venv/bin/python3 snapshot_final.py >> snapshot_final_cron.log 2>&1
+# ZADACHA_TEKST_2: контузените по играч за мачовете в следващите 48 ч (за текста на мача) - injuries_upcoming.py, ~3 заявки на пуск
+12 * * * * cd /home/inkas/sportbg-predictor && /usr/bin/flock -n /tmp/injuries_upcoming.lock venv/bin/python3 injuries_upcoming.py >> injuries_upcoming_cron.log 2>&1
+30 6 * * 1 cd /home/inkas/sportbg-predictor && /usr/bin/flock -w 7200 /tmp/layer_train.lock /usr/bin/flock -n /tmp/market_visibility.lock nice -n 19 venv/bin/python3 -W ignore market_visibility.py >> market_visibility_cron.log 2>&1
+# ZADACHA_VSICHKO_OT_API етап 1 (09.10.2026): вградената прогноза на API-то за мачовете в следващите 24 ч - само записване (api_predictions_log), не е признак
+8,38 * * * * cd /home/inkas/sportbg-predictor && /usr/bin/flock -n /tmp/api_predictions.lock venv/bin/python3 api_predictions_collect.py >> api_predictions_cron.log 2>&1
+# ZADACHA_VSICHKO_OT_API етап 2 (09.10.2026): купи и нови първенства 2022-2026 в novi/ (само събиране); спира само под резерва за сайта
+17,47 * * * * cd /home/inkas/sportbg-predictor && /usr/bin/flock -n /tmp/fetch_novi.lock nice -n 10 venv/bin/python3 fetch_novi.py >> novi/fetch_novi_cron.log 2>&1

@@ -1,0 +1,14372 @@
+[
+{
+"q": "Bulgaria",
+"id": 173,
+"name": "Second League",
+"type": "League",
+"country": "Bulgaria",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Bulgaria",
+"id": 174,
+"name": "Cup",
+"type": "Cup",
+"country": "Bulgaria",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Bulgaria",
+"id": 172,
+"name": "First League",
+"type": "League",
+"country": "Bulgaria",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Bulgaria",
+"id": 175,
+"name": "Third League - Northeast",
+"type": "League",
+"country": "Bulgaria",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Bulgaria",
+"id": 176,
+"name": "Third League - Northwest",
+"type": "League",
+"country": "Bulgaria",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Bulgaria",
+"id": 177,
+"name": "Third League - Southeast",
+"type": "League",
+"country": "Bulgaria",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Bulgaria",
+"id": 178,
+"name": "Third League - Southwest",
+"type": "League",
+"country": "Bulgaria",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Bulgaria",
+"id": 656,
+"name": "Super Cup",
+"type": "Cup",
+"country": "Bulgaria",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 39,
+"name": "Premier League",
+"type": "League",
+"country": "England",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 40,
+"name": "Championship",
+"type": "League",
+"country": "England",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 46,
+"name": "EFL Trophy",
+"type": "Cup",
+"country": "England",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 45,
+"name": "FA Cup",
+"type": "Cup",
+"country": "England",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 47,
+"name": "FA Trophy",
+"type": "Cup",
+"country": "England",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 48,
+"name": "League Cup",
+"type": "Cup",
+"country": "England",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 43,
+"name": "National League",
+"type": "League",
+"country": "England",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 41,
+"name": "League One",
+"type": "League",
+"country": "England",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 42,
+"name": "League Two",
+"type": "League",
+"country": "England",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 528,
+"name": "Community Shield",
+"type": "Cup",
+"country": "England",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 44,
+"name": "FA WSL",
+"type": "League",
+"country": "England",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 49,
+"name": "National League - Play-offs",
+"type": "League",
+"country": "England",
+"seasons": {}
+},
+{
+"q": "England",
+"id": 50,
+"name": "National League - North",
+"type": "League",
+"country": "England",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 51,
+"name": "National League - South",
+"type": "League",
+"country": "England",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 52,
+"name": "Non League Div One - Isthmian North",
+"type": "League",
+"country": "England",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 53,
+"name": "Non League Div One - Isthmian South Central",
+"type": "League",
+"country": "England",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 54,
+"name": "Non League Div One - Northern West",
+"type": "League",
+"country": "England",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 55,
+"name": "Non League Div One - Northern Midlands",
+"type": "League",
+"country": "England",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 56,
+"name": "Non League Div One - Southern South",
+"type": "League",
+"country": "England",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 57,
+"name": "Non League Div One - Isthmian South East",
+"type": "League",
+"country": "England",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 58,
+"name": "Non League Premier - Isthmian",
+"type": "League",
+"country": "England",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 59,
+"name": "Non League Premier - Northern",
+"type": "League",
+"country": "England",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 60,
+"name": "Non League Premier - Southern South",
+"type": "League",
+"country": "England",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 698,
+"name": "FA Women's Cup",
+"type": "Cup",
+"country": "England",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 670,
+"name": "Community Shield Women",
+"type": "Cup",
+"country": "England",
+"seasons": {}
+},
+{
+"q": "England",
+"id": 695,
+"name": "U18 Premier League - North",
+"type": "League",
+"country": "England",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 696,
+"name": "U18 Premier League - South",
+"type": "League",
+"country": "England",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 697,
+"name": "WSL Cup",
+"type": "Cup",
+"country": "England",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 699,
+"name": "Women's Championship",
+"type": "League",
+"country": "England",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 702,
+"name": "Premier League 2 Division One",
+"type": "League",
+"country": "England",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 703,
+"name": "Professional Development League",
+"type": "League",
+"country": "England",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 871,
+"name": "Premier League Cup",
+"type": "Cup",
+"country": "England",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 931,
+"name": "Non League Premier - Southern Central",
+"type": "League",
+"country": "England",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 932,
+"name": "Non League Div One - Northern East",
+"type": "League",
+"country": "England",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 933,
+"name": "Non League Div One - Southern Central",
+"type": "League",
+"country": "England",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 984,
+"name": "National League - North - Play-offs",
+"type": "League",
+"country": "England",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 985,
+"name": "National League - South - Play-offs",
+"type": "League",
+"country": "England",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 986,
+"name": "Non League Div One - Play-offs",
+"type": "League",
+"country": "England",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 987,
+"name": "U18 Premier League - Championship",
+"type": "League",
+"country": "England",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 993,
+"name": "Non League Premier - Isthmian - Play-offs",
+"type": "League",
+"country": "England",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 994,
+"name": "Non League Premier - Northern - Play-offs",
+"type": "League",
+"country": "England",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 995,
+"name": "Non League Premier - Southern South - Play-offs",
+"type": "League",
+"country": "England",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 996,
+"name": "Non League Premier - Southern Central - Play-offs",
+"type": "League",
+"country": "England",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 1022,
+"name": "Premier League - Summer Series",
+"type": "League",
+"country": "England",
+"seasons": {
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 1068,
+"name": "FA Youth Cup",
+"type": "Cup",
+"country": "England",
+"seasons": {
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "England",
+"id": 1156,
+"name": "National League Cup",
+"type": "Cup",
+"country": "England",
+"seasons": {
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 140,
+"name": "La Liga",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 141,
+"name": "Segunda División",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 142,
+"name": "Primera División Femenina",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 556,
+"name": "Super Cup",
+"type": "Cup",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 143,
+"name": "Copa del Rey",
+"type": "Cup",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 435,
+"name": "Primera División RFEF - Group 1",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 436,
+"name": "Primera División RFEF - Group 2",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 437,
+"name": "Primera División RFEF - Group 3",
+"type": "League",
+"country": "Spain",
+"seasons": {}
+},
+{
+"q": "Spain",
+"id": 438,
+"name": "Primera División RFEF - Group 4",
+"type": "League",
+"country": "Spain",
+"seasons": {}
+},
+{
+"q": "Spain",
+"id": 439,
+"name": "Tercera División RFEF - Group 1",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 440,
+"name": "Tercera División RFEF - Group 2",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 441,
+"name": "Tercera División RFEF - Group 3",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 442,
+"name": "Tercera División RFEF - Group 4",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 443,
+"name": "Tercera División RFEF - Group 5",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 444,
+"name": "Tercera División RFEF - Group 6",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 445,
+"name": "Tercera División RFEF - Group 7",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 446,
+"name": "Tercera División RFEF - Group 8",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 447,
+"name": "Tercera División RFEF - Group 9",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 448,
+"name": "Tercera División RFEF - Group 10",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 449,
+"name": "Tercera División RFEF - Group 11",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 450,
+"name": "Tercera División RFEF - Group 12",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 451,
+"name": "Tercera División RFEF - Group 13",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 452,
+"name": "Tercera División RFEF - Group 14",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 453,
+"name": "Tercera División RFEF - Group 15",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 454,
+"name": "Tercera División RFEF - Group 16",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 455,
+"name": "Tercera División RFEF - Group 17",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 456,
+"name": "Tercera División RFEF - Group 18",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 692,
+"name": "Primera División RFEF - Group 5",
+"type": "League",
+"country": "Spain",
+"seasons": {}
+},
+{
+"q": "Spain",
+"id": 735,
+"name": "Copa Federacion",
+"type": "Cup",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 875,
+"name": "Segunda División RFEF - Group 1",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 876,
+"name": "Segunda División RFEF - Group 2",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 877,
+"name": "Segunda División RFEF - Group 3",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 878,
+"name": "Segunda División RFEF - Group 4",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 879,
+"name": "Segunda División RFEF - Group 5",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 977,
+"name": "Tercera División RFEF - Promotion - Play-offs",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 1000,
+"name": "Segunda División RFEF - Play-offs",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 1006,
+"name": "Primera División RFEF - Play Offs",
+"type": "League",
+"country": "Spain",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 1058,
+"name": "Supercopa Femenina",
+"type": "Cup",
+"country": "Spain",
+"seasons": {
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Spain",
+"id": 1248,
+"name": "Copa de la Reina",
+"type": "Cup",
+"country": "Spain",
+"seasons": {
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 78,
+"name": "Bundesliga",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 79,
+"name": "2. Bundesliga",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 80,
+"name": "3. Liga",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 529,
+"name": "Super Cup",
+"type": "Cup",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 81,
+"name": "DFB Pokal",
+"type": "Cup",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 82,
+"name": "Frauen Bundesliga",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 488,
+"name": "U19 Bundesliga",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 83,
+"name": "Regionalliga - Bayern",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 84,
+"name": "Regionalliga - Nord",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 85,
+"name": "Regionalliga - Nordost",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 86,
+"name": "Regionalliga - SudWest",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 87,
+"name": "Regionalliga - West",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 715,
+"name": "DFB Junioren Pokal",
+"type": "Cup",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 744,
+"name": "Oberliga - Schleswig-Holstein",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 745,
+"name": "Oberliga - Hamburg",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 746,
+"name": "Oberliga - Mittelrhein",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 747,
+"name": "Oberliga - Westfalen",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 748,
+"name": "Oberliga - Niedersachsen",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 749,
+"name": "Oberliga - Bremen",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 750,
+"name": "Oberliga - Hessen",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 751,
+"name": "Oberliga - Niederrhein",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 752,
+"name": "Oberliga - Rheinland-Pfalz / Saar",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 753,
+"name": "Oberliga - Baden-Württemberg",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 754,
+"name": "Oberliga - Nordost-Nord",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 755,
+"name": "Oberliga - Nordost-Süd",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 938,
+"name": "Oberliga - Bayern Nord",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 939,
+"name": "Oberliga - Bayern Süd",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 947,
+"name": "DFB Pokal - Women",
+"type": "Cup",
+"country": "Germany",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 988,
+"name": "Oberliga - Promotion Round",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 989,
+"name": "Oberliga - Relegation Round",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 1002,
+"name": "Regionalliga - Promotion Play-offs",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 1003,
+"name": "Regionalliga - Relegation Round",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 1034,
+"name": "2. Frauen Bundesliga",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Germany",
+"id": 1137,
+"name": "Supercup der Frauen",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 135,
+"name": "Serie A",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 547,
+"name": "Super Cup",
+"type": "Cup",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 136,
+"name": "Serie B",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 137,
+"name": "Coppa Italia",
+"type": "Cup",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 138,
+"name": "Serie C - Girone A",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 139,
+"name": "Serie A Women",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 942,
+"name": "Serie C - Girone B",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 943,
+"name": "Serie C - Girone C",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 426,
+"name": "Serie D - Girone A",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 427,
+"name": "Serie D - Girone B",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 428,
+"name": "Serie D - Girone C",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 429,
+"name": "Serie D - Girone D",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 430,
+"name": "Serie D - Girone E",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 431,
+"name": "Serie D - Girone F",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 432,
+"name": "Serie D - Girone G",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 433,
+"name": "Serie D - Girone H",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 434,
+"name": "Serie D - Girone I",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 704,
+"name": "Coppa Italia Primavera",
+"type": "Cup",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 705,
+"name": "Campionato Primavera - 1",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 706,
+"name": "Campionato Primavera - 2",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 817,
+"name": "Super Cup Primavera",
+"type": "Cup",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 891,
+"name": "Coppa Italia Serie C",
+"type": "Cup",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 892,
+"name": "Coppa Italia Serie D",
+"type": "Cup",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 975,
+"name": "Serie C - Relegation - Play-offs",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 976,
+"name": "Serie C - Promotion - Play-offs",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 974,
+"name": "Serie C - Supercoppa Lega Finals",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 997,
+"name": "Serie D - Promotion - Play-offs",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 998,
+"name": "Serie D - Relegation - Play-offs",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 999,
+"name": "Serie D - Championship Round",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 1171,
+"name": "Coppa Italia Women",
+"type": "Cup",
+"country": "Italy",
+"seasons": {
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Italy",
+"id": 1198,
+"name": "Serie A Cup Women",
+"type": "Cup",
+"country": "Italy",
+"seasons": {
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "France",
+"id": 61,
+"name": "Ligue 1",
+"type": "League",
+"country": "France",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "France",
+"id": 62,
+"name": "Ligue 2",
+"type": "League",
+"country": "France",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "France",
+"id": 63,
+"name": "Ligue 3",
+"type": "League",
+"country": "France",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "France",
+"id": 66,
+"name": "Coupe de France",
+"type": "Cup",
+"country": "France",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "France",
+"id": 65,
+"name": "Coupe de la Ligue",
+"type": "Cup",
+"country": "France",
+"seasons": {}
+},
+{
+"q": "France",
+"id": 67,
+"name": "National 2 - Group A",
+"type": "League",
+"country": "France",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "France",
+"id": 68,
+"name": "National 2 - Group B",
+"type": "League",
+"country": "France",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "France",
+"id": 69,
+"name": "National 2 - Group C",
+"type": "League",
+"country": "France",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "France",
+"id": 70,
+"name": "National 2 - Group D",
+"type": "League",
+"country": "France",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "France",
+"id": 526,
+"name": "Trophée des Champions",
+"type": "Cup",
+"country": "France",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "France",
+"id": 64,
+"name": "Feminine Division 1",
+"type": "League",
+"country": "France",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "France",
+"id": 461,
+"name": "National 3 - Group A",
+"type": "League",
+"country": "France",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "France",
+"id": 462,
+"name": "National 3 - Group B",
+"type": "League",
+"country": "France",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "France",
+"id": 463,
+"name": "National 3 - Group C",
+"type": "League",
+"country": "France",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "France",
+"id": 464,
+"name": "National 3 - Group D",
+"type": "League",
+"country": "France",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "France",
+"id": 465,
+"name": "National 3 - Group E",
+"type": "League",
+"country": "France",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "France",
+"id": 466,
+"name": "National 3 - Group F",
+"type": "League",
+"country": "France",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "France",
+"id": 467,
+"name": "National 3 - Group H",
+"type": "League",
+"country": "France",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "France",
+"id": 468,
+"name": "National 3 - Group I",
+"type": "League",
+"country": "France",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "France",
+"id": 469,
+"name": "National 3 - Group J",
+"type": "League",
+"country": "France",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "France",
+"id": 470,
+"name": "National 3 - Group K",
+"type": "League",
+"country": "France",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "France",
+"id": 471,
+"name": "National 3 - Group L",
+"type": "League",
+"country": "France",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "France",
+"id": 472,
+"name": "National 3 - Group M",
+"type": "League",
+"country": "France",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "France",
+"id": 1029,
+"name": "National 3 - Group G",
+"type": "League",
+"country": "France",
+"seasons": {
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Portugal",
+"id": 94,
+"name": "Primeira Liga",
+"type": "League",
+"country": "Portugal",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Portugal",
+"id": 95,
+"name": "Segunda Liga",
+"type": "League",
+"country": "Portugal",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Portugal",
+"id": 96,
+"name": "Taça de Portugal",
+"type": "Cup",
+"country": "Portugal",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Portugal",
+"id": 550,
+"name": "Super Cup",
+"type": "Cup",
+"country": "Portugal",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Portugal",
+"id": 97,
+"name": "Taça da Liga",
+"type": "Cup",
+"country": "Portugal",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Portugal",
+"id": 457,
+"name": "Campeonato de Portugal Prio - Group A",
+"type": "League",
+"country": "Portugal",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Portugal",
+"id": 458,
+"name": "Campeonato de Portugal Prio - Group B",
+"type": "League",
+"country": "Portugal",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Portugal",
+"id": 459,
+"name": "Campeonato de Portugal Prio - Group C",
+"type": "League",
+"country": "Portugal",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Portugal",
+"id": 460,
+"name": "Campeonato de Portugal Prio - Group D",
+"type": "League",
+"country": "Portugal",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Portugal",
+"id": 681,
+"name": "Campeonato de Portugal Prio - Group E",
+"type": "League",
+"country": "Portugal",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Portugal",
+"id": 682,
+"name": "Campeonato de Portugal Prio - Group F",
+"type": "League",
+"country": "Portugal",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Portugal",
+"id": 683,
+"name": "Campeonato de Portugal Prio - Group G",
+"type": "League",
+"country": "Portugal",
+"seasons": {}
+},
+{
+"q": "Portugal",
+"id": 684,
+"name": "Campeonato de Portugal Prio - Group H",
+"type": "League",
+"country": "Portugal",
+"seasons": {}
+},
+{
+"q": "Portugal",
+"id": 701,
+"name": "Liga Revelação U23",
+"type": "League",
+"country": "Portugal",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Portugal",
+"id": 840,
+"name": "Taça Revelação U23",
+"type": "Cup",
+"country": "Portugal",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Portugal",
+"id": 865,
+"name": "Liga 3",
+"type": "League",
+"country": "Portugal",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Portugal",
+"id": 948,
+"name": "1a Divisão - Women",
+"type": "League",
+"country": "Portugal",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Portugal",
+"id": 991,
+"name": "Campeonato de Portugal Prio - Promotion Round",
+"type": "League",
+"country": "Portugal",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Portugal",
+"id": 1041,
+"name": "Júniores U19",
+"type": "League",
+"country": "Portugal",
+"seasons": {
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Netherlands",
+"id": 88,
+"name": "Eredivisie",
+"type": "League",
+"country": "Netherlands",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Netherlands",
+"id": 89,
+"name": "Eerste Divisie",
+"type": "League",
+"country": "Netherlands",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Netherlands",
+"id": 90,
+"name": "KNVB Beker",
+"type": "Cup",
+"country": "Netherlands",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Netherlands",
+"id": 91,
+"name": "Eredivisie Women",
+"type": "League",
+"country": "Netherlands",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Netherlands",
+"id": 543,
+"name": "Super Cup",
+"type": "Cup",
+"country": "Netherlands",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Netherlands",
+"id": 492,
+"name": "Tweede Divisie",
+"type": "League",
+"country": "Netherlands",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Netherlands",
+"id": 92,
+"name": "Derde Divisie",
+"type": "League",
+"country": "Netherlands",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Netherlands",
+"id": 93,
+"name": "Derde Divisie - Sunday",
+"type": "League",
+"country": "Netherlands",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Netherlands",
+"id": 675,
+"name": "U21 Divisie 1",
+"type": "League",
+"country": "Netherlands",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Netherlands",
+"id": 724,
+"name": "U18 Divisie 1",
+"type": "League",
+"country": "Netherlands",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Netherlands",
+"id": 883,
+"name": "Reserve League",
+"type": "League",
+"country": "Netherlands",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Netherlands",
+"id": 1004,
+"name": "Derde Divisie - Relegation Round",
+"type": "League",
+"country": "Netherlands",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Netherlands",
+"id": 1152,
+"name": "U19 Divisie 1",
+"type": "League",
+"country": "Netherlands",
+"seasons": {
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Netherlands",
+"id": 1190,
+"name": "Super Cup Women",
+"type": "Cup",
+"country": "Netherlands",
+"seasons": {
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Turkey",
+"id": 203,
+"name": "Süper Lig",
+"type": "League",
+"country": "Turkey",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Turkey",
+"id": 204,
+"name": "1. Lig",
+"type": "League",
+"country": "Turkey",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Turkey",
+"id": 205,
+"name": "2. Lig",
+"type": "League",
+"country": "Turkey",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Turkey",
+"id": 206,
+"name": "Türkiye Kupası",
+"type": "Cup",
+"country": "Turkey",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Turkey",
+"id": 552,
+"name": "3. Lig - Group 1",
+"type": "League",
+"country": "Turkey",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Turkey",
+"id": 553,
+"name": "3. Lig - Group 2",
+"type": "League",
+"country": "Turkey",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Turkey",
+"id": 554,
+"name": "3. Lig - Group 3",
+"type": "League",
+"country": "Turkey",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Turkey",
+"id": 551,
+"name": "Super Cup",
+"type": "Cup",
+"country": "Turkey",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Turkey",
+"id": 1007,
+"name": "3. Lig - Play-offs",
+"type": "League",
+"country": "Turkey",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Turkey",
+"id": 1027,
+"name": "3. Lig - Group 4",
+"type": "League",
+"country": "Turkey",
+"seasons": {
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Turkey",
+"id": 1240,
+"name": "U19 league",
+"type": "League",
+"country": "Turkey",
+"seasons": {
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 144,
+"name": "Jupiler Pro League",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 519,
+"name": "Super Cup",
+"type": "Cup",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 145,
+"name": "Challenger Pro League",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 146,
+"name": "Super League Women",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 149,
+"name": "Second Amateur Division - VFV A",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 150,
+"name": "Second Amateur Division - VFV B",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 151,
+"name": "Third Amateur Division - VFV A",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 152,
+"name": "Third Amateur Division - VFV B",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 147,
+"name": "Cup",
+"type": "Cup",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 148,
+"name": "Second Amateur Division - ACFF",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 153,
+"name": "Provincial - Antwerpen",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 154,
+"name": "Provincial - Brabant VFV",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 155,
+"name": "Provincial - Hainaut",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 156,
+"name": "Provincial - Liege",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 157,
+"name": "Provincial - Limburg",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 158,
+"name": "Provincial - Luxembourg",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 159,
+"name": "Provincial - Namur",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 160,
+"name": "Provincial - Oost-Vlaanderen",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 161,
+"name": "Provincial - West-Vlaanderen",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 487,
+"name": "First Amateur Division",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 518,
+"name": "Reserve Pro League",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 689,
+"name": "Third Amateur Division - ACFF A",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 690,
+"name": "Third Amateur Division - ACFF B",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 691,
+"name": "Provincial - Brabant ACFF",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 979,
+"name": "Provincial - Play-offs VV",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 980,
+"name": "Provincial - Play-offs ACFF",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 981,
+"name": "Third Amateur Division - Play-offs",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Belgium",
+"id": 1011,
+"name": "Second Amateur Division - Play-offs ",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Scotland",
+"id": 179,
+"name": "Premiership",
+"type": "League",
+"country": "Scotland",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Scotland",
+"id": 180,
+"name": "Championship",
+"type": "League",
+"country": "Scotland",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Scotland",
+"id": 183,
+"name": "League One",
+"type": "League",
+"country": "Scotland",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Scotland",
+"id": 184,
+"name": "League Two",
+"type": "League",
+"country": "Scotland",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Scotland",
+"id": 185,
+"name": "League Cup",
+"type": "Cup",
+"country": "Scotland",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Scotland",
+"id": 181,
+"name": "FA Cup",
+"type": "Cup",
+"country": "Scotland",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Scotland",
+"id": 182,
+"name": "Challenge Cup",
+"type": "Cup",
+"country": "Scotland",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Scotland",
+"id": 730,
+"name": "Football League - Highland League",
+"type": "League",
+"country": "Scotland",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Scotland",
+"id": 731,
+"name": "Football League - Lowland League",
+"type": "League",
+"country": "Scotland",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Scotland",
+"id": 992,
+"name": "Football League - Championship",
+"type": "League",
+"country": "Scotland",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Scotland",
+"id": 1074,
+"name": "SWPL Cup",
+"type": "Cup",
+"country": "Scotland",
+"seasons": {
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Scotland",
+"id": 1078,
+"name": "SWF Scottish Cup",
+"type": "Cup",
+"country": "Scotland",
+"seasons": {
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Greece",
+"id": 199,
+"name": "Cup",
+"type": "Cup",
+"country": "Greece",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Greece",
+"id": 198,
+"name": "Football League",
+"type": "League",
+"country": "Greece",
+"seasons": {}
+},
+{
+"q": "Greece",
+"id": 197,
+"name": "Super League 1",
+"type": "League",
+"country": "Greece",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Greece",
+"id": 494,
+"name": "Super League 2",
+"type": "League",
+"country": "Greece",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Greece",
+"id": 576,
+"name": "Gamma Ethniki - Group 1",
+"type": "League",
+"country": "Greece",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Greece",
+"id": 577,
+"name": "Gamma Ethniki - Group 2",
+"type": "League",
+"country": "Greece",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Greece",
+"id": 578,
+"name": "Gamma Ethniki - Group 3",
+"type": "League",
+"country": "Greece",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Greece",
+"id": 579,
+"name": "Gamma Ethniki - Group 4",
+"type": "League",
+"country": "Greece",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Greece",
+"id": 580,
+"name": "Gamma Ethniki - Group 5",
+"type": "League",
+"country": "Greece",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Greece",
+"id": 581,
+"name": "Gamma Ethniki - Group 6",
+"type": "League",
+"country": "Greece",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Greece",
+"id": 582,
+"name": "Gamma Ethniki - Group 7",
+"type": "League",
+"country": "Greece",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Greece",
+"id": 583,
+"name": "Gamma Ethniki - Group 8",
+"type": "League",
+"country": "Greece",
+"seasons": {
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Greece",
+"id": 693,
+"name": "Gamma Ethniki - Group 9",
+"type": "League",
+"country": "Greece",
+"seasons": {
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Greece",
+"id": 694,
+"name": "Gamma Ethniki - Group 10",
+"type": "League",
+"country": "Greece",
+"seasons": {
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Greece",
+"id": 990,
+"name": "Gamma Ethniki - Promotion Group",
+"type": "League",
+"country": "Greece",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Greece",
+"id": 1099,
+"name": "Gamma Ethniki - Relegation Play-offs",
+"type": "League",
+"country": "Greece",
+"seasons": {
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Greece",
+"id": 1210,
+"name": "Super Cup",
+"type": "Cup",
+"country": "Greece",
+"seasons": {
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2027": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Romania",
+"id": 283,
+"name": "Liga I",
+"type": "League",
+"country": "Romania",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Romania",
+"id": 284,
+"name": "Liga II",
+"type": "League",
+"country": "Romania",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": true,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Romania",
+"id": 555,
+"name": "Supercupa",
+"type": "Cup",
+"country": "Romania",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Romania",
+"id": 285,
+"name": "Cupa României",
+"type": "Cup",
+"country": "Romania",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Romania",
+"id": 728,
+"name": "Liga 1 Feminin",
+"type": "League",
+"country": "Romania",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Romania",
+"id": 784,
+"name": "Liga III - Serie 1",
+"type": "League",
+"country": "Romania",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Romania",
+"id": 785,
+"name": "Liga III - Serie 2",
+"type": "League",
+"country": "Romania",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Romania",
+"id": 786,
+"name": "Liga III - Serie 3",
+"type": "League",
+"country": "Romania",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Romania",
+"id": 787,
+"name": "Liga III - Serie 4",
+"type": "League",
+"country": "Romania",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Romania",
+"id": 788,
+"name": "Liga III - Serie 5",
+"type": "League",
+"country": "Romania",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Romania",
+"id": 789,
+"name": "Liga III - Serie 6",
+"type": "League",
+"country": "Romania",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Romania",
+"id": 790,
+"name": "Liga III - Serie 7",
+"type": "League",
+"country": "Romania",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Romania",
+"id": 791,
+"name": "Liga III - Serie 8",
+"type": "League",
+"country": "Romania",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Romania",
+"id": 792,
+"name": "Liga III - Serie 9",
+"type": "League",
+"country": "Romania",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Romania",
+"id": 793,
+"name": "Liga III - Serie 10",
+"type": "League",
+"country": "Romania",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Romania",
+"id": 1009,
+"name": "Liga III - Play-offs",
+"type": "League",
+"country": "Romania",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+}
+]
