@@ -53,6 +53,17 @@ NATIONAL_LEAGUES = {
     960: "Euro Championship - Qualification",
     4: "Euro Championship",
     1: "World Cup",
+    # ZADACHA_VSICHKO_OT_API етап 3 (09.10.2026): извън Европа - ID-тата от /leagues (search, archive/vsichko_ot_api_20261009/
+    # leagues_inventar_nacionalni.json). Същите правила: коефициенти + резултати, нищо не се показва.
+    34: "World Cup - Qualification South America",
+    29: "World Cup - Qualification Africa",
+    30: "World Cup - Qualification Asia",
+    31: "World Cup - Qualification CONCACAF",
+    9: "Copa America",
+    6: "Africa Cup of Nations",
+    36: "Africa Cup of Nations - Qualification",
+    22: "CONCACAF Gold Cup",
+    7: "Asian Cup",
 }
 # Приятелските: само резултати (данни за обучение, не се показват, без
 # коефициенти), веднъж на ден в пуска около 03:20, само сеньорски мачове между
@@ -187,7 +198,9 @@ def save_fixtures(rows):
 
 def append_results(rows):
     """Приключилите мачове, които още ги няма в nationals_merged_full.csv."""
-    finished = [r for r in rows if r["status"] in FINISHED and r["home_goals"] is not None]
+    # ZADACHA_VSICHKO_OT_API етап 3: API-то връща понякога "FT" с дата в бъдещето (Тунис - Ботсвана, 28.03.2027) - не се записва.
+    now_iso = datetime.now(timezone.utc).isoformat()
+    finished = [r for r in rows if r["status"] in FINISHED and r["home_goals"] is not None and str(r["date"]) <= now_iso]
     existing = set()
     if os.path.exists(RESULTS_CSV):
         with open(RESULTS_CSV, newline="", encoding="utf-8") as fh:
