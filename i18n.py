@@ -90,6 +90,15 @@ EN = {
         "by chance. That is why there is no betting advice here, only statistics: how likely we think an outcome is.",
     "Затова числата тук са <b>описателни</b> — показват какво сме измерили до момента. Не са съвет какво да правиш.":
         "So the numbers here are <b>descriptive</b> — they show what we have measured so far. They are not advice on what to do.",
+    # ZADACHA_CHESTNO (09.10.2026): кутията „Добре е да знаеш“ (само при PUBLIC_HIDE=1)
+    "Добре е да знаеш": "Good to know",
+    ("howto_public", "Часовете са българско време."): "Times are Bulgarian time.",
+    "Процентите са оценка на вероятността за всеки изход, изчислена от нашия статистически модел. Обновяват се, когато излязат нови "
+    "данни, включително съставите преди мача.":
+        "The percentages are our statistical model's estimate of the probability of each outcome. They are updated when new data "
+        "comes in, including the line-ups before the match.",
+    "Това е статистика, а не съвет за залагане или гаранция за резултат.":
+        "These are statistics, not betting advice or a guarantee of any result.",
     "🔞 Отговорна игра": "🔞 Responsible gambling",
     "Съдържанието в тази секция е информационно и статистическо. То не е съвет за залагане и не гарантира резултат — никой модел не може "
     "да гарантира изхода на спортно събитие.":
@@ -191,10 +200,13 @@ def _missing(s):
         pass
 
 
-def t(s, **kw):
+def t(s, ctx=None, **kw):
+    """ctx - когато един и същи български текст иска различен превод на различни места: първо се търси EN[(ctx, s)]."""
     out = s
     if current() == "en":
-        tr = EN.get(s)
+        tr = EN.get((ctx, s)) if ctx else None
+        if tr is None:
+            tr = EN.get(s)
         if tr is None:
             _missing(s)
         else:

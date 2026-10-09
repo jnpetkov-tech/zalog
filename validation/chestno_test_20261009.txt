@@ -1,0 +1,23 @@
+ZADACHA_CHESTNO тест на копие (21 проверки, 21 OK)
+
+OK   същите страници преди и след - 1704 отговора
+OK   кодовете на отговор - както преди
+OK   /prognozi на bg (PUBLIC_HIDE=1) - 200
+OK   /prognozi на en (PUBLIC_HIDE=1) - 200
+OK   PUBLIC_HIDE=1, bg: новата кутия „Добре е да знаеш“ на всяка страница с „Как да чета“ - 68 от 68
+OK   PUBLIC_HIDE=1, en: новата кутия „Good to know“ на всяка страница с „Как да чета“ - 68 от 68
+OK   PUBLIC_HIDE=1: никъде „печелившо“ (списък и мачове, bg и en)
+OK   PUBLIC_HIDE=1: никъде „отрицателен“ (списък и мачове, bg и en)
+OK   PUBLIC_HIDE=1: никъде „описателни“ (списък и мачове, bg и en)
+OK   PUBLIC_HIDE=1: никъде „Честно казано“ (списък и мачове, bg и en)
+OK   PUBLIC_HIDE=1: никъде „profitable“ (списък и мачове, bg и en)
+OK   PUBLIC_HIDE=1: никъде „negative“ (списък и мачове, bg и en)
+OK   PUBLIC_HIDE=1: никъде „descriptive“ (списък и мачове, bg и en)
+OK   PUBLIC_HIDE=1: никъде „To be honest“ (списък и мачове, bg и en)
+OK   PUBLIC_HIDE=1: без ⚠️ и без жълтата кутия (box warn)
+OK   PUBLIC_HIDE=1: „🔞 Отговорна игра“ и долният ред за 18+ - на място
+OK   PUBLIC_HIDE=1: „Отговорна игра“ - байт по байт както преди
+OK   en: нула кирилица (всички настройки)
+OK   PUBLIC_HIDE=0 (и с SHOW_ALL=1): байт по байт както преди - 1136 отговора
+OK   (за сведение) при PUBLIC_HIDE=0 старата кутия си стои - 272 страници
+OK   PUBLIC_HIDE=1: старият HTML със сменена само кутията = новият, байт по байт
