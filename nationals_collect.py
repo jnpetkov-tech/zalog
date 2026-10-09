@@ -293,6 +293,10 @@ def main():
     seasons = current_seasons()
     rows = []
     for lid, (season, start, end) in sorted(seasons.items()):
+        # ZADACHA_VSICHKO_OT_API етап 0 (09.10.2026): приятелските (FRIENDLIES_ID) са в seasons само за collect_friendlies() по-долу -
+        # тук гърмяха с KeyError в log() и спираха целия пуск от 25.09 00:20 (systemd nationals-collect.timer, Failed на всеки 30 мин).
+        if lid not in NATIONAL_LEAGUES:
+            continue
         if end < lo.isoformat() or start > hi.isoformat():
             continue
         r = af._api_get("/fixtures", params={

@@ -33,6 +33,7 @@
   променливата BACKFILL_MAX_RUN_SECONDS) - таймерът е на 30 минути, два
   пуска на един и същи скрипт не се застъпват (плюс flock в crontab).
 """
+import math
 import os
 import sys
 import time
@@ -45,9 +46,11 @@ import api_football
 REPO = os.path.dirname(os.path.abspath(__file__))
 DAILY_LIMIT = 7500         # само резерва, ако /status не отговори (реалният идва от /status)
 MINUTE_LIMIT = 300         # същото - реалният идва от x-ratelimit-limit
-RESERVE_MARGIN = 1000      # запас над най-тежкия ден
-RESERVE_MIN = 2500
-RESERVE_MAX = 6000
+# ZADACHA_VSICHKO_OT_API (Дака, 09.10.2026): резерв за сайта = max(RESERVE_FLOOR, RESERVE_FACTOR × най-тежкия ден на живата система за
+# последните 7 дни); без горна граница (старото: min(6000, max(2500, пик + 1000))). Всичко над резерва - за тегленията.
+RESERVE_FLOOR = 8000
+RESERVE_FACTOR = 1.5
+RESERVE_MAX = RESERVE_FLOOR  # резервата, когато резервът не може да се сметне (името остава - ползва го и layer_shadow.py)
 RESERVE_DAYS = 7
 API_CALLS_LOG = os.path.join(REPO, "api_calls.log")
 DAILY_USAGE_CSV = os.path.join(REPO, "api_daily_usage.csv")
@@ -124,7 +127,8 @@ def update_daily_usage(log_path=API_CALLS_LOG, csv_path=DAILY_USAGE_CSV):
 
 def live_reserve(today=None, usage=None):
     """(резерв, най-тежкият ден, датата му). Прозорец: последните 7 пълни дни
-    + днешният (непълен - може само да вдигне максимума). Без данни -> RESERVE_MAX."""
+    + днешният (непълен - може само да вдигне максимума). Без данни -> RESERVE_FLOOR.
+    Резерв = max(RESERVE_FLOOR, RESERVE_FACTOR × пик), закръглен нагоре до цяло число."""
     if usage is None:
         usage = update_daily_usage()
     today = today or datetime.utcnow().strftime("%Y-%m-%d")
@@ -132,9 +136,9 @@ def live_reserve(today=None, usage=None):
     window = [(t - timedelta(days=k)).strftime("%Y-%m-%d") for k in range(RESERVE_DAYS + 1)]
     seen = [(usage[d][2], d) for d in window if d in usage]
     if not seen:
-        return RESERVE_MAX, None, None
+        return RESERVE_FLOOR, None, None
     peak, peak_day = max(seen)
-    return min(RESERVE_MAX, max(RESERVE_MIN, peak + RESERVE_MARGIN)), peak, peak_day
+    return max(RESERVE_FLOOR, int(math.ceil(RESERVE_FACTOR * peak))), peak, peak_day
 
 
 class QuotaExhausted(Exception):
@@ -285,7 +289,7 @@ def run_queue(fetcher, jobs, process_one, max_items=None):
         fetcher.log(f"старт: оставащи заявки днес {fetcher.remaining_day} от {fetcher.daily_limit}, "
                     f"лимит на минута {fetcher.minute_limit}, темпо до {1 / fetcher.interval:.1f}/сек, "
                     f"резерв за сайта {fetcher.floor} "
-                    f"(най-тежък ден на сайта {peak} на {peak_day} + {RESERVE_MARGIN})")
+                    f"(max({RESERVE_FLOOR}, {RESERVE_FACTOR} × най-тежкия ден на сайта {peak} на {peak_day}))")
         if fetcher.remaining_day < fetcher.floor:
             raise QuotaExhausted(fetcher.remaining_day)
         for league, todo in jobs:
