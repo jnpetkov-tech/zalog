@@ -1,0 +1,122 @@
+== /fixtures {'live': 'all'}: 3 записа (2026-10-09T05:10:54)
+{
+ "fixture": {
+  "id": "int",
+  "referee": "NoneType",
+  "timezone": "str",
+  "date": "str",
+  "timestamp": "int",
+  "periods": {
+   "first": "NoneType",
+   "second": "NoneType"
+  },
+  "venue": {
+   "id": "int",
+   "name": "str",
+   "city": "str"
+  },
+  "status": {
+   "long": "str",
+   "short": "str",
+   "elapsed": "int",
+   "extra": "NoneType"
+  }
+ },
+ "league": {
+  "id": "int",
+  "name": "str",
+  "country": "str",
+  "logo": "str",
+  "flag": "str",
+  "season": "int",
+  "round": "str",
+  "standings": "bool"
+ },
+ "teams": {
+  "home": {
+   "id": "int",
+   "name": "str",
+   "logo": "str",
+   "winner": "NoneType"
+  },
+  "away": {
+   "id": "int",
+   "name": "str",
+   "logo": "str",
+   "winner": "NoneType"
+  }
+ },
+ "goals": {
+  "home": "int",
+  "away": "int"
+ },
+ "score": {
+  "halftime": {
+   "home": "int",
+   "away": "int"
+  },
+  "fulltime": {
+   "home": "NoneType",
+   "away": "NoneType"
+  },
+  "extratime": {
+   "home": "NoneType",
+   "away": "NoneType"
+  },
+  "penalty": {
+   "home": "NoneType",
+   "away": "NoneType"
+  }
+ },
+ "events": []
+}
+лиги: [(292, 'K League 1'), (293, 'K League 2'), (295, 'K3 League')]
+има събития: 0 статистика: 0
+== /odds/live {}: 3 записа (2026-10-09T05:10:54)
+{
+ "fixture": {
+  "id": "int",
+  "status": {
+   "long": "str",
+   "elapsed": "int",
+   "seconds": "str"
+  }
+ },
+ "league": {
+  "id": "int",
+  "season": "int"
+ },
+ "teams": {
+  "home": {
+   "id": "int",
+   "goals": "int"
+  },
+  "away": {
+   "id": "int",
+   "goals": "int"
+  }
+ },
+ "status": {
+  "stopped": "bool",
+  "blocked": "bool",
+  "finished": "bool"
+ },
+ "update": "str",
+ "odds": [
+  {
+   "id": "int",
+   "name": "str",
+   "values": [
+    {
+     "value": "…",
+     "odd": "…",
+     "handicap": "…",
+     "main": "…",
+     "suspended": "…"
+    }
+   ]
+  }
+ ]
+}
+пазари в първия: ['How many goals will Away Team score?', 'Asian Handicap (1st Half)', '1x2 (1st Half)', '3-Way Handicap', 'Final Score', 'Over/Under Line (1st Half)', 'Match Goals', 'European Handicap (1st Half)', 'Home Team Score a Goal (2nd Half)', 'Home Team  to Score in Both Halves', 'Result / Both Teams To Score', 'Both Teams To Score (1st Half)', 'Asian Handicap', 'To Win 2nd Half', 'Over/Under Line', 'Away Team Goals', 'Away Team to Score in Both Halves', 'Both Teams To Score (2nd Half)', 'Draw No Bet', 'Over/Under (1st Half)', 'Correct Score (1st Half)', 'Home Team Goals', 'Fulltime Result', 'Last Team to Score (3 way)', 'Half Time/Full Time', 'How many goals will Home Team score?', 'Goals Odd/Even', 'Both Teams to Score', 'Away Team Score a Goal (2nd Half)', 'Double Chance']
+заявки 2
