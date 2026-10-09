@@ -1,0 +1,13 @@
+{
+ "depth": 3,
+ "min_child": 100,
+ "l2": 100,
+ "fset": "ABCE",
+ "n_est": 400,
+ "shrink": 1.0,
+ "lr": 0.03,
+ "selected_on": "ранна половина (дата < 2025-09-23)",
+ "early_brier_candidate": 0.2222499988158207,
+ "early_brier_base": 0.22254240725815583,
+ "candidate_beats_base_on_early": true
+}
