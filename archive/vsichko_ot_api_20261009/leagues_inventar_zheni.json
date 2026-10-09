@@ -1,0 +1,3418 @@
+[
+{
+"q": "Women",
+"id": 8,
+"name": "World Cup - Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 146,
+"name": "Super League Women",
+"type": "League",
+"country": "Belgium",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 74,
+"name": "Brasileiro Women",
+"type": "League",
+"country": "Brazil",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 139,
+"name": "Serie A Women",
+"type": "League",
+"country": "Italy",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 91,
+"name": "Eredivisie Women",
+"type": "League",
+"country": "Netherlands",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 190,
+"name": "A-League Women",
+"type": "League",
+"country": "Australia",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 524,
+"name": "Olympics Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 254,
+"name": "NWSL Women",
+"type": "League",
+"country": "USA",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 525,
+"name": "UEFA Champions League Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 698,
+"name": "FA Women's Cup",
+"type": "Cup",
+"country": "England",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 641,
+"name": "NWSL Women - Challenge Cup",
+"type": "Cup",
+"country": "USA",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 649,
+"name": "Supreme Division Women",
+"type": "League",
+"country": "Russia",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 666,
+"name": "Friendlies Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 669,
+"name": "1. Liga Women",
+"type": "League",
+"country": "Czech-Republic",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 670,
+"name": "Community Shield Women",
+"type": "Cup",
+"country": "England",
+"seasons": {}
+},
+{
+"q": "Women",
+"id": 671,
+"name": "Úrvalsdeild Women",
+"type": "League",
+"country": "Iceland",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 699,
+"name": "Women's Championship",
+"type": "League",
+"country": "England",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 733,
+"name": "I Liga - Women",
+"type": "League",
+"country": "Slovakia",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 737,
+"name": "Svenska Cupen - Women",
+"type": "Cup",
+"country": "Sweden",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 739,
+"name": "AXA Women’s Super League",
+"type": "League",
+"country": "Switzerland",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 882,
+"name": "Olympics Women - Qualification Asia",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 743,
+"name": "UEFA Championship - Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": true,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 894,
+"name": "Asian Cup Women - Qualification",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 897,
+"name": "Asian Cup Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 912,
+"name": "CONCACAF Women U17",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 915,
+"name": "1. Division Women",
+"type": "League",
+"country": "Norway",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 918,
+"name": "UEFA U19 Championship - Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 920,
+"name": "World Cup - U20 - Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 922,
+"name": "Africa Cup of Nations - Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 927,
+"name": "World Cup - Women - Qualification Concacaf",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 945,
+"name": "International Champions Cup - Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 947,
+"name": "DFB Pokal - Women",
+"type": "Cup",
+"country": "Germany",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 948,
+"name": "1a Divisão - Women",
+"type": "League",
+"country": "Portugal",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 950,
+"name": "World Cup - U17 - Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 880,
+"name": "World Cup - Women - Qualification Europe",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2027": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1013,
+"name": "All-Island Cup - Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1033,
+"name": "Ekstraliga Women",
+"type": "League",
+"country": "Poland",
+"seasons": {
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1040,
+"name": "UEFA Nations League - Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1001,
+"name": "CONCACAF Women U20",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1046,
+"name": "CONCACAF Gold Cup - Qualification - Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1047,
+"name": "Olympics Women - Qualification CAF",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1057,
+"name": "CONCACAF Gold Cup - Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1070,
+"name": "AFC U20 Asian Cup - Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1101,
+"name": "AFC U17 Asian Cup - Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1102,
+"name": "UEFA U17 Championship - Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1103,
+"name": "Premiership Women",
+"type": "League",
+"country": "Northern-Ireland",
+"seasons": {
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1140,
+"name": "AFC Women's Champions League",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1164,
+"name": "CAF Women's Champions League",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1171,
+"name": "Coppa Italia Women",
+"type": "Cup",
+"country": "Italy",
+"seasons": {
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1190,
+"name": "Super Cup Women",
+"type": "Cup",
+"country": "Netherlands",
+"seasons": {
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1083,
+"name": "UEFA Championship - Women - Qualification",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1175,
+"name": "Women's President's Cup",
+"type": "Cup",
+"country": "Ireland",
+"seasons": {
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1188,
+"name": "EAFF E-1 Football Championship - Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1189,
+"name": "Asean Championship Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1191,
+"name": "UEFA Europa Cup - Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": true,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1198,
+"name": "Serie A Cup Women",
+"type": "Cup",
+"country": "Italy",
+"seasons": {
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1206,
+"name": "CONMEBOL Nations League Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1217,
+"name": "FIFA Women Champions Cup",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1227,
+"name": "Premier League Women",
+"type": "League",
+"country": "Saudi-Arabia",
+"seasons": {
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2027": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1229,
+"name": "Liga Women",
+"type": "League",
+"country": "Peru",
+"seasons": {
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1233,
+"name": "Super Cup Women",
+"type": "Cup",
+"country": "Russia",
+"seasons": {
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1243,
+"name": "Super League Women",
+"type": "League",
+"country": "South-Africa",
+"seasons": {
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1244,
+"name": "B-Liga Women",
+"type": "League",
+"country": "Denmark",
+"seasons": {
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "Women",
+"id": 1245,
+"name": "Asian Games Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "U21",
+"id": 38,
+"name": "UEFA U21 Championship",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2021": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U21",
+"id": 515,
+"name": "U21 League 1",
+"type": "League",
+"country": "Algeria",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U21",
+"id": 675,
+"name": "U21 Divisie 1",
+"type": "League",
+"country": "Netherlands",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U21",
+"id": 679,
+"name": "U21 League",
+"type": "League",
+"country": "Ukraine",
+"seasons": {}
+},
+{
+"q": "U21",
+"id": 850,
+"name": "UEFA U21 Championship - Qualification",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2027": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": true,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "U21",
+"id": 1200,
+"name": "Liga MX U21",
+"type": "League",
+"country": "Mexico",
+"seasons": {
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "U19",
+"id": 488,
+"name": "U19 Bundesliga",
+"type": "League",
+"country": "Germany",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "U19",
+"id": 493,
+"name": "UEFA U19 Championship",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2021": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U19",
+"id": 668,
+"name": "1. Liga U19",
+"type": "League",
+"country": "Czech-Republic",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "U19",
+"id": 823,
+"name": "Nasjonal U19 Champions League",
+"type": "Cup",
+"country": "Norway",
+"seasons": {
+"2021": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "U19",
+"id": 893,
+"name": "UEFA U19 Championship - Qualification",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2027": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U19",
+"id": 918,
+"name": "UEFA U19 Championship - Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U19",
+"id": 928,
+"name": "ASEAN Championship U19",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2022": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U19",
+"id": 1065,
+"name": "U19 League",
+"type": "League",
+"country": "Ukraine",
+"seasons": {
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "U19",
+"id": 1041,
+"name": "Júniores U19",
+"type": "League",
+"country": "Portugal",
+"seasons": {
+"2023": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U19",
+"id": 1122,
+"name": "OFC U19 Championship",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U19",
+"id": 1152,
+"name": "U19 Divisie 1",
+"type": "League",
+"country": "Netherlands",
+"seasons": {
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U19",
+"id": 1240,
+"name": "U19 league",
+"type": "League",
+"country": "Turkey",
+"seasons": {
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U19",
+"id": 1241,
+"name": "U19 league",
+"type": "League",
+"country": "Serbia",
+"seasons": {
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": true,
+"pred": true
+}
+}
+},
+{
+"q": "U17",
+"id": 587,
+"name": "World Cup - U17",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": true,
+"lu": true,
+"pl": true,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U17",
+"id": 886,
+"name": "UEFA U17 Championship - Qualification",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2027": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U17",
+"id": 912,
+"name": "CONCACAF Women U17",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U17",
+"id": 921,
+"name": "UEFA U17 Championship",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U17",
+"id": 950,
+"name": "World Cup - U17 - Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2022": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U17",
+"id": 963,
+"name": "CONCACAF U17",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U17",
+"id": 970,
+"name": "CONMEBOL - U17",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U17",
+"id": 973,
+"name": "CAF Cup of Nations - U17",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U17",
+"id": 1012,
+"name": "AFC U17 Asian Cup",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2023": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2027": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U17",
+"id": 1081,
+"name": "CONMEBOL - U17 Femenino",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U17",
+"id": 1101,
+"name": "AFC U17 Asian Cup - Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U17",
+"id": 1102,
+"name": "UEFA U17 Championship - Women",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2024": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": true,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U17",
+"id": 1128,
+"name": "Brasileiro U17",
+"type": "League",
+"country": "Brazil",
+"seasons": {
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U17",
+"id": 1161,
+"name": "AFC U17 Asian Cup - Qualification",
+"type": "Cup",
+"country": "World",
+"seasons": {
+"2024": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+},
+{
+"q": "U17",
+"id": 1179,
+"name": "Copa do Brasil U17",
+"type": "Cup",
+"country": "Brazil",
+"seasons": {
+"2025": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+},
+"2026": {
+"st": false,
+"lu": false,
+"pl": false,
+"inj": false,
+"odds": false,
+"pred": true
+}
+}
+}
+]
